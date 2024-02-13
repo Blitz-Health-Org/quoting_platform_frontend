@@ -34,16 +34,17 @@ const Modal = ({ onClose, setOpenSnackbarShare }: any) => {
   const [password, setPassword] = useState('');
   const [state, setState] = useState<stateProps>({
     files: [],
-    uploadStatus: "",
+    uploadStatus: "Select or Drag-In File",
   });
 
   const onDrop = (acceptedFiles: File[]) => {
     setState({ ...state, files: acceptedFiles });
+    handleUpload(acceptedFiles);
   };
 
-  const handleUpload = async () => {
-    if (state.files.length > 0) {
-      const promises = state.files.map(async (file: any) => {
+  const handleUpload = async (files: File[]) => {
+    if (files.length > 0) {
+      const promises = files.map(async (file: any) => {
         const randomDigit = Math.floor(Math.random() * 1024); // Generate random 8-bit digit
         const newFileName = `${file.name}_${randomDigit}`; // Append random digit to the file name
 
@@ -62,7 +63,7 @@ const Modal = ({ onClose, setOpenSnackbarShare }: any) => {
       const results = await Promise.all(promises);
       const successUploads = results.filter((result) => result.success);
 
-      if (successUploads.length === state.files.length) {
+      if (successUploads.length === files.length) {
         setState({
           files: [],
           uploadStatus: "Upload successful!",
@@ -80,7 +81,7 @@ const Modal = ({ onClose, setOpenSnackbarShare }: any) => {
 
   const { getRootProps, getInputProps, isDragActive } = useDropzone({
     onDrop,
-    multiple: true, // Allow multiple file uploads
+    multiple: false, // Allow only one file
   });
 
   const handleOverlayClick = (event: React.MouseEvent<HTMLDivElement>) => {
@@ -129,42 +130,41 @@ const Modal = ({ onClose, setOpenSnackbarShare }: any) => {
           <p className="text-2xl">Add a Client</p>
         </div>
         <form onSubmit={handleSubmit}>
-          <p className="text-sm mt-4">Name</p>
+          <p className="text-sm mt-4 mb-1">Name</p>
           <input
             placeholder="Acme Corporation Inc."
-            className="w-full border border-1 border-gray-200 rounded-md p-2 text-sm mb-1"
+            className="w-full border border-1 border-gray-200 rounded-md p-2 text-sm mb-3"
             value={name}
             onChange={(e) => setName(e.target.value)}
           />
-          <p className="text-sm mt-2">Lives (Optional)</p>
+          <div className="flex items-end">
+            <p className="text-sm mr-1">Lives</p>
+            <p className="text-xs text-gray-500">(Optional)</p>
+          </div>
           <input
             type="password"
             placeholder="2,438"
-            className="w-full border border-1 border-gray-200 rounded-md p-2 text-sm mt-1 mb-4"
+            className="w-full border border-1 border-gray-200 rounded-md p-2 text-sm mt-1 mb-3"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
           />
 
-<div className="modal-body">
+        <div className="modal-body">
+          <div className="flex items-end">
+            <p className="text-sm mr-1">Logo</p>
+            <p className="text-xs text-gray-500">(Optional)</p>
+          </div>
           {/* File Upload Section */}
-          <div className="mb-6 flex flex-col items-center justify-center">
+          <div className="mb-6 flex gap-2 items-center justify-start">
             <div
               {...getRootProps()}
-              className={`p-6 mb-2 mt-2 drop-shadow-sm outline outline-1 outline-gray-400/65 hover:outline-black w-full ${
+              className={`mb-2 mt-2 drop-shadow-sm outline outline-1 outline-gray-400/65 hover:outline-black w-fit px-2 ${
                 isDragActive ? "bg-gray-200" : "bg-gray-100"
               }`}
               style={{ borderRadius: "0.25rem" }}
             >
-              <div className="flex items-center justify-center mb-4">
-                <MdUpload className="h-8 w-8" />
-              </div>
               <input {...getInputProps()} />
-              <h1 className="text-lg mb-4 text-center">
-                {isDragActive
-                  ? "Drop the files here"
-                  : "Select or Drag-In Files"}
-              </h1>
-              {state.files.length > 0 && (
+              {/* {state.files.length > 0 && (
                 <div className="text-center mb-4">
                   {state.files.map((file, index) => (
                     <p className="truncate" key={index}>
@@ -172,26 +172,19 @@ const Modal = ({ onClose, setOpenSnackbarShare }: any) => {
                     </p>
                   ))}
                 </div>
-              )}
+              )} */}
               {state.uploadStatus && (
-                <div className="text-center mb-4 text-slate-600">
+                <div className="text-center text-sm mb-2 text-slate-600 mt-2">
                   {state.uploadStatus}
                 </div>
               )}
             </div>
-            <button
-              onClick={handleUpload}
-              className="w-full bg-slate-800 text-white py-2 px-4 rounded-md hover:bg-blue-600 focus:outline-none"
-              disabled={state.files.length === 0}
-            >
-              Upload
-            </button>
           </div>
         </div>
 
             <div className="flex w-full justify-end">
-              <button className="mr-2 outline outline-1 outline-gray-200 px-2 py-1 rounded-sm" type="button" onClick={onClose}>Close Modal</button>
-              <button className="outline outline-1 outline-gray-200 px-2 py-1 bg-blue-600/90 text-gray-100 rounded-sm" type="submit">Submit</button>
+              <button className="mr-2 outline outline-1 outline-gray-200 px-4 py-2 rounded-md" type="button" onClick={onClose}>Close Modal</button>
+              <button className="outline outline-1 outline-gray-200 px-4 py-2 bg-slate-800 text-gray-100 rounded-md" type="submit">Submit</button>
             </div>
         </form>
       </div>
