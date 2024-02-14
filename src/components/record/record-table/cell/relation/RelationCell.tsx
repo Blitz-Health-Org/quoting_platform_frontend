@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { PolicyField } from "@/src/metadata/metadata";
+import { PolicyField } from "@/src/types/metadata";
 import { Dropdown } from "@/src/components/ui/dropdown/Dropdown";
 import { RelationDropdownItems } from "@/src/components/record/record-table/cell/relation/RelationDropdownItems";
 import { createClient } from "@supabase/supabase-js";

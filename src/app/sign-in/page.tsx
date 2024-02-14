@@ -7,7 +7,7 @@ import { UserContext } from "@/src/context/UserContext";
 
 export default function Page() {
   const {
-    userId: [userId, setUserId],
+    userId: [userId, setUserId, loading],
   } = useContext(UserContext);
   const router = useRouter();
 
@@ -30,6 +30,10 @@ export default function Page() {
       setUserId(1);
       router.push("/");
     }
+  }
+
+  if (loading) {
+    return <></>;
   }
 
   return (

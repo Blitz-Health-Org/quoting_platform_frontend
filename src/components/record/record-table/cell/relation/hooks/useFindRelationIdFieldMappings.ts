@@ -1,4 +1,4 @@
-import { PolicyField } from "@/src/metadata/metadata";
+import { PolicyField } from "@/src/types/metadata";
 import { createClient } from "@supabase/supabase-js";
 import { debounce } from "lodash";
 import { useEffect, useState } from "react";

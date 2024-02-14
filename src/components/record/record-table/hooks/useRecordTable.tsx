@@ -3,7 +3,7 @@
 import { RecordContext } from "@/src/context/RecordContext";
 import { createClient } from "@supabase/supabase-js";
 import { Filter } from "@/src/types/custom/Filter";
-import { isFieldVisible } from "@/src/metadata/utils/isFieldVisible";
+import { isFieldVisible } from "@/src/types/utils/isFieldVisible";
 import {
   useState,
   useEffect,
@@ -12,8 +12,8 @@ import {
   SetStateAction,
   useRef,
 } from "react";
-import { PolicyField } from "@/src/metadata/metadata";
-import { Database } from "@/src/types/database.types";
+import { PolicyField } from "@/src/types/metadata";
+import { Database } from "@/src/types/database/database.types";
 import { getRecordFields } from "@/src/components/record/record-table/utils/getRecordFields";
 import { useFindRelationIdFieldMappings } from "@/src/components/record/record-table/cell/relation/hooks/useFindRelationIdFieldMappings";
 

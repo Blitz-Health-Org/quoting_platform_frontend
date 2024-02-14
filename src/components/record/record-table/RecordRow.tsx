@@ -5,7 +5,7 @@ import React, { useContext, useRef } from "react";
 import { RowContext } from "@/src/context/RowContext";
 import { ColumnContext } from "@/src/context/ColumnContext";
 import { CheckboxCell } from "@/src/components/record/record-table/cell/CheckboxCell";
-import { isNonUpdatable } from "@/src/metadata/utils/isNonUpdatable";
+import { isNonUpdatable } from "@/src/types/utils/isNonUpdatable";
 
 type RecordRowProps = {
   visibleFieldDefinitionObjects: PolicyField[];

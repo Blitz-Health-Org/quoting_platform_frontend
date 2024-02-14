@@ -19,7 +19,7 @@ import { NewClientModal } from "@/src/components/client/modal/NewClientModal";
 import { MdUpload } from "react-icons/md";
 import { ClientCard } from "@/src/components/client/ClientCard";
 import { UserContext } from "@/src/context/UserContext";
-import { ClientType } from "@/src/types/Client";
+import { ClientType } from "@/src/types/custom/Client";
 import { createClient } from "@supabase/supabase-js";
 import { useRouter } from "next/navigation";
 
@@ -40,10 +40,10 @@ export default function Home() {
   const router = useRouter();
 
   useEffect(() => {
-    if (!userId) {
+    if (!loading && !userId) {
       router.push("sign-in");
     }
-  }, [userId, router]);
+  }, [userId, router, loading]);
 
   const [clients, setClients] = useState<ClientType[]>([]);
 
@@ -109,7 +109,11 @@ export default function Home() {
               {clients.map((client) => {
                 return (
                   <>
-                    <ClientCard key={client.id} client={client} />
+                    <ClientCard
+                      key={client.id}
+                      client={client}
+                      setOpenSnackbarShare={setOpenSnackbarShare}
+                    />
                   </>
                 );
               })}

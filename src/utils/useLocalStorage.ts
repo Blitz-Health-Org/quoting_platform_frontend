@@ -7,12 +7,9 @@ export const useLocalStorage = <T>(
   const [storedValue, setStoredValue] = useState(initialValue);
   const [loading, setLoading] = useState(true);
 
-  console.log("stored value", storedValue);
-
   useEffect(() => {
     // Retrieve from localStorage
     const item = window.localStorage.getItem(key);
-    console.log("item", item);
     if (item) {
       setStoredValue(JSON.parse(item));
     }
