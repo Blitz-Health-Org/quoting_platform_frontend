@@ -187,8 +187,8 @@ const Modal = ({ onClose, setOpenSnackbarShare }: any) => {
         </div>
 
             <div className="flex w-full justify-end">
-              <button className="mr-2 outline outline-1 outline-gray-200 px-4 py-2 rounded-md" type="button" onClick={onClose}>Close Modal</button>
-              <button className="outline outline-1 outline-gray-200 px-4 py-2 bg-slate-800 text-gray-100 rounded-md" type="submit">Submit</button>
+              <button className="mr-2 outline outline-1 outline-gray-200 px-3 py-1 rounded-md" type="button" onClick={onClose}>Close Modal</button>
+              <button className="outline outline-1 outline-gray-200 px-3 py-1 bg-slate-800 text-gray-100 rounded-md" type="submit">Submit</button>
             </div>
         </form>
       </div>
