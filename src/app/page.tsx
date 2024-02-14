@@ -15,11 +15,11 @@ import { CiCirclePlus } from "react-icons/ci";
 import { BiPlus } from "react-icons/bi";
 import { useDropzone } from "react-dropzone";
 import { Snackbar, Alert } from "@mui/material";
-import { Modal } from "@/src/components/client/modal/NewClientModal";
+import { NewClientModal } from "@/src/components/client/modal/NewClientModal";
 import { MdUpload } from "react-icons/md";
 import { ClientCard } from "@/src/components/client/ClientCard";
 import { UserContext } from "@/src/context/UserContext";
-import { Client } from "@/src/types/Client";
+import { ClientType } from "@/src/types/Client";
 import { createClient } from "@supabase/supabase-js";
 
 interface stateProps {
@@ -39,11 +39,10 @@ export default function Home() {
     userId: [userId],
   } = useContext(UserContext);
 
-  const [clients, setClients] = useState<Client[]>([]);
+  const [clients, setClients] = useState<ClientType[]>([]);
 
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [openSnackbarShare, setOpenSnackbarShare] = useState(false); // Move state to Home component
-  console.log("client", clients);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -79,8 +78,7 @@ export default function Home() {
               <PiListBulletsBold className="mr-2" />
               <p className="mr-1">Quoting</p>
               <p className="mr-1 text-gray-400 text-xs">•</p>
-              <p className="mr-1 text-gray-400">(5)</p>
-              <RiArrowDropDownLine className="text-gray-400" />
+              <p className="mr-1 text-gray-400">({clients.length})</p>
             </div>
             <div className="flex items-center">
               <div className="text-sm md:text-base mr-1 outline outline-1 outline-gray-200 py-1 px-2 rounded-md flex items-center justify-center hover:bg-gray-100/80 cursor-pointer">
@@ -110,9 +108,10 @@ export default function Home() {
           </div>
 
           {isModalOpen && (
-            <Modal
+            <NewClientModal
               setOpenSnackbarShare={setOpenSnackbarShare}
               onClose={handleCloseModal}
+              setClients={setClients}
             />
           )}
           <Snackbar
