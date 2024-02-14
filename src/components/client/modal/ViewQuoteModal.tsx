@@ -35,7 +35,7 @@ export const ViewQuoteModal = ({ client, onClose }: Props) => {
 
   return (
     <div>
-      <Modal onClose={() => {}} modalComponent={<></>} />
+      <Modal onClose={onClose} modalComponent={<></>} />
     </div>
   );
 };

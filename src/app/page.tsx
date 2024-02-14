@@ -22,11 +22,7 @@ import { UserContext } from "@/src/context/UserContext";
 import { ClientType } from "@/src/types/custom/Client";
 import { createClient } from "@supabase/supabase-js";
 import { useRouter } from "next/navigation";
-
-interface stateProps {
-  files: File[];
-  uploadStatus: string;
-}
+import { SnackbarAlert } from "../components/ui/SnackbarAlert";
 
 const supabase = createClient(
   "https://xabksrsyvpqlikxxwfgi.supabase.co",
@@ -48,7 +44,19 @@ export default function Home() {
   const [clients, setClients] = useState<ClientType[]>([]);
 
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [openSnackbarShare, setOpenSnackbarShare] = useState(false); // Move state to Home component
+
+  const [snackbar, setSnackbar] = useState({
+    open: false,
+    message: "",
+    severity: "info", // default severity
+  });
+
+  function setOpenSnackbarShare(val: boolean) {
+    setSnackbar((prevState) => ({
+      ...prevState,
+      open: val,
+    }));
+  }
 
   useEffect(() => {
     const fetchData = async () => {
@@ -63,6 +71,27 @@ export default function Home() {
     };
     fetchData();
   }, [userId]);
+
+  const copyUrlToClipboard = () => {
+    // Use window.location.href to get the current URL
+    const url = window.location.href;
+
+    // Use the Clipboard API to write the text
+    navigator.clipboard
+      .writeText(url)
+      .then(() => {
+        // Optional: Display a message or call a function to indicate success
+        setSnackbar({
+          open: true,
+          message: "Copied to clipboard!",
+          severity: "success",
+        });
+      })
+      .catch((err) => {
+        // Optional: Handle any errors
+        console.error("Failed to copy URL to clipboard", err);
+      });
+  };
 
   const handleNewClientClick = () => {
     setIsModalOpen(!isModalOpen);
@@ -92,7 +121,7 @@ export default function Home() {
             <div className="flex items-center">
               <div className="text-sm md:text-base mr-1 outline outline-1 outline-gray-200 py-1 px-2 rounded-md flex items-center justify-center hover:bg-gray-100/80 cursor-pointer">
                 <CiShare1 className="mr-2" />
-                <p>Share Dashboard</p>
+                <button onClick={copyUrlToClipboard}>Share Dashboard</button>
               </div>
               <div
                 onClick={handleNewClientClick}
@@ -103,7 +132,6 @@ export default function Home() {
               </div>
             </div>
           </div>
-
           <div className="rounded-md w-full h-full flex-col overflow-scroll">
             <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2 h-fit overflow-scroll p-0.5">
               {clients.map((client) => {
@@ -119,7 +147,6 @@ export default function Home() {
               })}
             </div>
           </div>
-
           {isModalOpen && (
             <NewClientModal
               setOpenSnackbarShare={setOpenSnackbarShare}
@@ -127,20 +154,12 @@ export default function Home() {
               setClients={setClients}
             />
           )}
-          <Snackbar
-            key={`4`}
-            open={openSnackbarShare}
-            autoHideDuration={4000}
-            onClose={() => setOpenSnackbarShare(false)}
-          >
-            <Alert
-              onClose={() => setOpenSnackbarShare(false)}
-              severity="success"
-              variant="filled"
-            >
-              Client added.
-            </Alert>
-          </Snackbar>
+          <SnackbarAlert
+            openSnackbarShare={snackbar.open}
+            setOpenSnackbarShare={setOpenSnackbarShare}
+            snackbar={snackbar}
+          />
+          )
         </main>
       </div>
     </div>
