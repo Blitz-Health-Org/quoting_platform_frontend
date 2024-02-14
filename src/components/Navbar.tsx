@@ -64,7 +64,7 @@ export const Navbar = ({ selected }: { selected: string }) => {
                 isCarriersSelected ? "bg-gray-200" : ""
               }`}
             >
-              <LiaPeopleCarrySolid className="mr-2 ml-1" /> Carriers
+              <LiaPeopleCarrySolid className="mr-2 ml-1" /> Clients
             </a>
           </div>
 
