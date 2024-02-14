@@ -9,7 +9,7 @@ import { createClient } from "@supabase/supabase-js";
 import { Database } from "@/src/types/database.types";
 import _ from "lodash";
 import { ActionBar } from "@/src/components/record/record-table/ActionBar";
-import { PolicyField } from "@/src/metadata/metadata";
+import { PolicyField } from "@/src/types/metadata";
 
 //TODO: extract supabase
 const supabase = createClient<Database>(

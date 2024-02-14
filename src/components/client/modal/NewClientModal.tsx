@@ -7,7 +7,7 @@ import { createClient } from "@supabase/supabase-js";
 import BlumeLogo from "@/public/BlumeLogo.png";
 import { supabase } from "@/src/supabase";
 import { clientMetadataObject, ClientFieldType } from "@/src/types/metadata";
-import { ClientType } from "@/src/types/Client";
+import { ClientType } from "@/src/types/custom/Client";
 
 export type StateProps = {
   files: File[];

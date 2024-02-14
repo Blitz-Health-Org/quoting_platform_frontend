@@ -1,7 +1,7 @@
 //specific to status currently
 
 import { Dropdown } from "@/src/components/ui/dropdown/Dropdown";
-import { PolicyField } from "@/src/metadata/metadata";
+import { PolicyField } from "@/src/types/metadata";
 import { useState } from "react";
 
 const enumValues = ["Resolved", "Unresolved"];

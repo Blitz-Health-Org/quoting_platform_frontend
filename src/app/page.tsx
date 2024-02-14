@@ -19,7 +19,7 @@ import { NewClientModal } from "@/src/components/client/modal/NewClientModal";
 import { MdUpload } from "react-icons/md";
 import { ClientCard } from "@/src/components/client/ClientCard";
 import { UserContext } from "@/src/context/UserContext";
-import { ClientType } from "@/src/types/Client";
+import { ClientType } from "@/src/types/custom/Client";
 import { createClient } from "@supabase/supabase-js";
 import { useRouter } from "next/navigation";
 

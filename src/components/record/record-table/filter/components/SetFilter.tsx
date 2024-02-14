@@ -2,7 +2,7 @@ import { useRecordTable } from "@/src/components/record/record-table/hooks/useRe
 import { Dropdown } from "@/src/components/ui/dropdown/Dropdown";
 import { FilterContext } from "@/src/context/FilterContext";
 import { RecordContext } from "@/src/context/RecordContext";
-import { PolicyField } from "@/src/metadata/metadata";
+import { PolicyField } from "@/src/types/metadata";
 import { useContext, useEffect } from "react";
 
 // type SetFilterProps = {

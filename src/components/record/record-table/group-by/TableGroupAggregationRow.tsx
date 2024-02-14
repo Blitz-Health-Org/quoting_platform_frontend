@@ -1,7 +1,7 @@
 //TODO: Group by totaling when we have numbers
 
 import { AggregationRowCell } from "@/src/components/record/record-table/cell/AggregationRowCell";
-import { PolicyField } from "@/src/metadata/metadata";
+import { PolicyField } from "@/src/types/metadata";
 import { MdAttachMoney } from "react-icons/md";
 
 type TableGroupAggregationRowProps = {

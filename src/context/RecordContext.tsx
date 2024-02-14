@@ -1,9 +1,4 @@
-import {
-  Metadata,
-  Policy,
-  emptyPolicy,
-  metadata,
-} from "@/src/metadata/metadata";
+import { Metadata, Policy, emptyPolicy, metadata } from "@/src/types/metadata";
 import { Dispatch, SetStateAction, createContext, useState } from "react";
 
 type RecordContextProps = {

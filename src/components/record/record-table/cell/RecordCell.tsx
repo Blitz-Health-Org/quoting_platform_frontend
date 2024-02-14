@@ -6,7 +6,7 @@ import { RelationCell } from "@/src/components/record/record-table/cell/relation
 import { TextCell } from "@/src/components/record/record-table/cell/TextCell";
 import { useListenClickOutside } from "@/src/components/ui/dropdown/utils/useListenClickOutside";
 import { RowContext } from "@/src/context/RowContext";
-import { PolicyField } from "@/src/metadata/metadata";
+import { PolicyField } from "@/src/types/metadata";
 import { useContext, useEffect, useRef, useState } from "react";
 import { useHotkeys } from "react-hotkeys-hook";
 export function RecordCell({

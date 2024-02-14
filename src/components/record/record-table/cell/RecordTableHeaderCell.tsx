@@ -1,6 +1,6 @@
 //implement overflow scroll
 
-import { PolicyField } from "@/src/metadata/metadata";
+import { PolicyField } from "@/src/types/metadata";
 
 export function RecordTableHeaderCell({ field }: { field: PolicyField }) {
   const label = field.label;

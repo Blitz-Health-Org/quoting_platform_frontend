@@ -1,5 +1,5 @@
 import { CommissionTablePage } from "@/src/components/commissions/CommissionTablePage";
-import "./globals.css";
+import "../globals.css";
 import { Navbar } from "@/src/components/Navbar";
 export default function Home() {
   return (

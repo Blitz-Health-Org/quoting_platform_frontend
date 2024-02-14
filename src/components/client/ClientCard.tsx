@@ -1,4 +1,4 @@
-import { ClientType } from "@/src/types/Client";
+import { ClientType } from "@/src/types/custom/Client";
 import { FaBook, FaPlus } from "react-icons/fa6";
 import { IoEyeSharp } from "react-icons/io5";
 import Image from "next/image";
