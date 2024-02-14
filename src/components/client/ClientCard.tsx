@@ -10,22 +10,26 @@ import { IconBuilding } from "@tabler/icons-react";
 
 export type ClientCardProps = {
   client: ClientType;
+  setOpenSnackbarShare: (val: boolean) => void;
 };
 
-export const ClientCard = ({ client }: ClientCardProps) => {
+export const ClientCard = ({
+  client,
+  setOpenSnackbarShare,
+}: ClientCardProps) => {
   const [modalOpen, setModalOpen] = useState<string>("");
 
-  function handleCreateHandbook() {
+  function handleCreateHandbook(client: ClientType) {
     setModalOpen("createHandbook");
     return;
   }
 
-  function handleViewQuote() {
+  function handleViewQuote(client: ClientType) {
     setModalOpen("viewQuote");
     return;
   }
 
-  function handleAddNewQuote() {
+  function handleAddNewQuote(client: ClientType) {
     setModalOpen("addNewQuote");
     return;
   }
@@ -70,21 +74,31 @@ export const ClientCard = ({ client }: ClientCardProps) => {
           {/* TODO: Flush to bottom */}
           <div className="outline outline-1 hover:bg-gray-100/50 cursor-pointer font-light flex items-center justify-center outline-gray-200 p-0.5 rounded-sm mb-1 mt-3 text-sm">
             <FaBook className="mr-1" />
-            <button onClick={handleCreateHandbook}>Create Handbook</button>
+            <button onClick={() => handleCreateHandbook(client)}>
+              Create Handbook
+            </button>
           </div>
           <div className="outline outline-1 hover:bg-gray-100/50 cursor-pointer font-light flex items-center justify-center outline-gray-200 p-0.5 rounded-sm mb-1 mt-1 text-sm">
             <IoEyeSharp className="mr-1" />
-            <button onClick={handleViewQuote}>View Quotes</button>
+            <button onClick={() => handleViewQuote(client)}>View Quotes</button>
           </div>
           <div className="outline outline-1 hover:bg-gray-100/50 cursor-pointer font-light flex items-center justify-center outline-gray-200 p-0.5 rounded-sm mb-1 mt-1 text-sm">
             <FaPlus className="mr-1" />
-            <button onClick={handleAddNewQuote}>New Quote</button>
+            <button onClick={() => handleAddNewQuote(client)}>New Quote</button>
           </div>
         </div>
       </div>
       {modalOpen === "createHandbook" && <CreateHandbookModal />}
-      {modalOpen === "viewQuote" && <ViewQuoteModal />}
-      {modalOpen === "addNewQuote" && <AddNewQuoteModal />}
+      {modalOpen === "viewQuote" && <ViewQuoteModal client={client} />}
+      {modalOpen === "addNewQuote" && (
+        <AddNewQuoteModal
+          client={client}
+          onClose={() => {
+            setModalOpen("");
+          }}
+          setOpenSnackbarShare={setOpenSnackbarShare}
+        />
+      )}
     </>
   );
 };

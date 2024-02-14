@@ -1,17 +1,43 @@
 //TODO: Figure out a way to make sure that this matches the database
 
 //TODO: Check to make sure that only system variables are missing label, or make types stricter
-export type ClientFieldType = {
+export type FieldType = {
   field: string;
   type: string;
   isDefault: boolean;
   isSystem: boolean;
   isNullable: boolean;
+  isRelation?: boolean;
   label?: string;
   placeholder?: string;
 };
 
-export const clientMetadataObject: Record<string, ClientFieldType> = {
+export const quoteMetadataObject: Record<string, FieldType> = {
+  id: {
+    field: "id",
+    type: "number", //TODO: does it make sense for this to be js types or supabase types?
+    isDefault: true,
+    isSystem: true,
+    isNullable: false,
+  },
+  created_at: {
+    field: "created_at",
+    type: "string",
+    isDefault: true,
+    isSystem: false,
+    isNullable: false,
+    label: "Creation Date",
+  },
+  client_id: {
+    field: "client_id",
+    type: "number",
+    isDefault: false,
+    isSystem: true,
+    isNullable: false,
+  },
+};
+
+export const clientMetadataObject: Record<string, FieldType> = {
   id: {
     field: "id",
     type: "number", //TODO: does it make sense for this to be js types or supabase types?
