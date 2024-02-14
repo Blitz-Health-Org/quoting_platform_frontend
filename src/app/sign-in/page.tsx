@@ -7,9 +7,13 @@ import { UserContext } from "@/src/context/UserContext";
 
 export default function Page() {
   const {
-    userId: [, setUserId],
+    userId: [userId, setUserId],
   } = useContext(UserContext);
   const router = useRouter();
+
+  if (userId) {
+    router.push("/");
+  }
 
   function handleSubmit(e: React.SyntheticEvent) {
     event?.preventDefault();

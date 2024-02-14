@@ -39,9 +39,11 @@ export default function Home() {
   } = useContext(UserContext);
   const router = useRouter();
 
-  if (!userId) {
-    router.push("sign-in");
-  }
+  useEffect(() => {
+    if (!userId) {
+      router.push("sign-in");
+    }
+  }, [userId, router]);
 
   const [clients, setClients] = useState<ClientType[]>([]);
 
@@ -52,7 +54,6 @@ export default function Home() {
     const fetchData = async () => {
       const { data, error } = await supabase.from("clients").select();
       // .eq("user_id", userId);
-      console.log(`helllooo`, data);
 
       if (error) {
         console.error(`Error fetching client data:`, error);
@@ -70,6 +71,10 @@ export default function Home() {
   const handleCloseModal = () => {
     setIsModalOpen(!isModalOpen);
   };
+
+  if (userId === -1) {
+    return <></>;
+  }
 
   return (
     <div className="w-full h-full flex flex-row bg-white">
