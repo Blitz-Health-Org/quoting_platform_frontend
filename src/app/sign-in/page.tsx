@@ -61,7 +61,7 @@ export default function Page() {
             <div className="w-full mb-2">
               <p className="w-full">Password</p>
               <input
-                type="text"
+                type="password"
                 id="password"
                 name="password"
                 placeholder="******"
