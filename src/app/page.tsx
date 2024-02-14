@@ -40,10 +40,10 @@ export default function Home() {
   const router = useRouter();
 
   useEffect(() => {
-    if (!userId) {
+    if (!loading && !userId) {
       router.push("sign-in");
     }
-  }, [userId, router]);
+  }, [userId, router, loading]);
 
   const [clients, setClients] = useState<ClientType[]>([]);
 

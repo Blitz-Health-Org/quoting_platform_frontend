@@ -41,46 +41,46 @@ export const ClientCard = ({ client }: ClientCardProps) => {
         className="w-full flex flex-col justify-between bg-white shadow-sm outline outline-1 outline-gray-200 rounded-md p-3"
       >
         <div className="w-full">
-        <div className="flex items-center gap-1">
-          {client.icon ? (
-            <Image
-              src={client.icon} //TODO: provide defaultImage, make this default in the suapbase not case catching on the fe
-              alt="Description of the image"
-              width={30}
-              height={30}
-              className="mr-2 rounded-md"
-            />
-          ) : (
-            <IconBuilding className="mr-2" />
-          )}
-          <p>{client.name}</p>
-        </div>
-        <div className="text-gray-500 text-sm font-light mb-1">
-          <p className="mt-3"> Plans - 9 </p>
-          {/*//TODO:client.plans.length*/}
-          <p className="mt-0.5"> Quotes - 72 </p>
-          {/*//TODO:client.quotes.length*/}
-          {client.num_lives !== null && (
-            <p className="mt-0.5"> Lives - {client.num_lives} </p>
-          )}
-        </div>
+          <div className="flex items-center gap-1">
+            {client.icon ? (
+              <Image
+                src={client.icon} //TODO: provide defaultImage, make this default in the suapbase not case catching on the fe
+                alt="Description of the image"
+                width={30}
+                height={30}
+                className="mr-2 rounded-md"
+              />
+            ) : (
+              <IconBuilding className="mr-2" />
+            )}
+            <p>{client.name}</p>
+          </div>
+          <div className="text-gray-500 text-sm font-light mb-1">
+            <p className="mt-3"> Plans - 9 </p>
+            {/*//TODO:client.plans.length*/}
+            <p className="mt-0.5"> Quotes - 72 </p>
+            {/*//TODO:client.quotes.length*/}
+            {client.num_lives !== null && (
+              <p className="mt-0.5"> Lives - {client.num_lives} </p>
+            )}
+          </div>
         </div>
 
         <div className="w-full">
-        {/* TODO: Flush to bottom */}
-        <div className="outline outline-1 hover:bg-gray-100/50 cursor-pointer font-light flex items-center justify-center outline-gray-200 p-0.5 rounded-sm mb-1 mt-3 text-sm">
-          <FaBook className="mr-1" />
-          <button onClick={handleCreateHandbook}>Create Handbook</button>
+          {/* TODO: Flush to bottom */}
+          <div className="outline outline-1 hover:bg-gray-100/50 cursor-pointer font-light flex items-center justify-center outline-gray-200 p-0.5 rounded-sm mb-1 mt-3 text-sm">
+            <FaBook className="mr-1" />
+            <button onClick={handleCreateHandbook}>Create Handbook</button>
+          </div>
+          <div className="outline outline-1 hover:bg-gray-100/50 cursor-pointer font-light flex items-center justify-center outline-gray-200 p-0.5 rounded-sm mb-1 mt-1 text-sm">
+            <IoEyeSharp className="mr-1" />
+            <button onClick={handleViewQuote}>View Quotes</button>
+          </div>
+          <div className="outline outline-1 hover:bg-gray-100/50 cursor-pointer font-light flex items-center justify-center outline-gray-200 p-0.5 rounded-sm mb-1 mt-1 text-sm">
+            <FaPlus className="mr-1" />
+            <button onClick={handleAddNewQuote}>New Quote</button>
+          </div>
         </div>
-        <div className="outline outline-1 hover:bg-gray-100/50 cursor-pointer font-light flex items-center justify-center outline-gray-200 p-0.5 rounded-sm mb-1 mt-1 text-sm">
-          <IoEyeSharp className="mr-1" />
-          <button onClick={handleViewQuote}>View Quotes</button>
-        </div>
-        <div className="outline outline-1 hover:bg-gray-100/50 cursor-pointer font-light flex items-center justify-center outline-gray-200 p-0.5 rounded-sm mb-1 mt-1 text-sm">
-          <FaPlus className="mr-1" />
-          <button onClick={handleAddNewQuote}>New Quote</button>
-        </div>
-      </div>
       </div>
       {modalOpen === "createHandbook" && <CreateHandbookModal />}
       {modalOpen === "viewQuote" && <ViewQuoteModal />}
