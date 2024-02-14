@@ -59,10 +59,8 @@ export const ClientCard = ({ client }: ClientCardProps) => {
           {/*//TODO:client.plans.length*/}
           <p className="mt-0.5"> Quotes - 72 </p>
           {/*//TODO:client.quotes.length*/}
-          {client.num_lives ? (
+          {client.num_lives ?? (
             <p className="mt-0.5"> Lives - {client.num_lives} </p>
-          ) : (
-            <p className="mt-0.5">Lives - N/A</p>
           )}
         </div>
 

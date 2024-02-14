@@ -15,7 +15,7 @@ export const UserContextProvider = ({
 }: {
   children: React.ReactNode;
 }) => {
-  const [userId, setUserId] = useState<number | undefined>(1); //TODO: implement so it's not hard coded
+  const [userId, setUserId] = useState<number | undefined>();
   return (
     <>
       <UserContext.Provider value={{ userId: [userId, setUserId] }}>

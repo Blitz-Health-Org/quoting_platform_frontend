@@ -21,6 +21,7 @@ import { ClientCard } from "@/src/components/client/ClientCard";
 import { UserContext } from "@/src/context/UserContext";
 import { ClientType } from "@/src/types/Client";
 import { createClient } from "@supabase/supabase-js";
+import { useRouter } from "next/navigation";
 
 interface stateProps {
   files: File[];
@@ -32,12 +33,15 @@ const supabase = createClient(
   "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InhhYmtzcnN5dnBxbGlreHh3ZmdpIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MDc4NTM4NzgsImV4cCI6MjAyMzQyOTg3OH0.rUzmHolfckNk_wqKcNcmr0CD5C1hjt8iOShk3zM-uVw",
 );
 
-
-
 export default function Home() {
   const {
     userId: [userId],
   } = useContext(UserContext);
+  const router = useRouter();
+
+  if (!userId) {
+    router.push("sign-in");
+  }
 
   const [clients, setClients] = useState<ClientType[]>([]);
 

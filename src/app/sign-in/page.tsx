@@ -1,9 +1,33 @@
-import Image from "next/image";
-import Checkbox from "@mui/material/Checkbox";
+"use client";
 
-const label = { inputProps: { "aria-label": "Checkbox demo" } };
+import Image from "next/image";
+import { useRouter } from "next/navigation";
+import { useContext } from "react";
+import { UserContext } from "@/src/context/UserContext";
 
 export default function Page() {
+  const {
+    userId: [, setUserId],
+  } = useContext(UserContext);
+  const router = useRouter();
+
+  function handleSubmit(e: React.SyntheticEvent) {
+    event?.preventDefault();
+
+    e.preventDefault();
+    const target = e.target as typeof e.target & {
+      email: { value: string };
+      password: { value: string };
+    };
+    const email = target.email.value; // typechecks!
+    const password = target.password.value; // typechecks!
+
+    if (email === "email" && password === "password") {
+      setUserId(1);
+      router.push("/");
+    }
+  }
+
   return (
     <div className="w-full h-screen flex justify-center items-center bg-gray-400/50 backdrop-blur-md">
       <div className="w-1/2 sm:w-1/2 md:w-1/3 lg:w-1/4 h-fit bg-white shadow-lg rounded-lg">
@@ -19,7 +43,7 @@ export default function Page() {
           </div>
 
           <div className="mb-2 text-xl">Sign In</div>
-          <form className="w-full">
+          <form className="w-full" onSubmit={handleSubmit}>
             <div className="mb-1 w-full">
               <p className="w-full">Email</p>
               <input
