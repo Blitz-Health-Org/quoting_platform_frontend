@@ -1,69 +1,74 @@
-import { useState } from "react";
+//TODO: Type checking
+
+import { Dispatch, SetStateAction, useState } from "react";
 import { useDropzone } from "react-dropzone";
 import Image from "next/image";
 import { createClient } from "@supabase/supabase-js";
 import BlumeLogo from "@/public/BlumeLogo.png";
 import { supabase } from "@/src/supabase";
+import { clientMetadataObject, ClientFieldType } from "@/src/types/metadata";
+import { ClientType } from "@/src/types/Client";
 
 export type StateProps = {
   files: File[];
   uploadStatus: string;
+  setClients: Dispatch<SetStateAction<ClientType>>;
 };
 
-export const Modal = ({ onClose, setOpenSnackbarShare }: any) => {
-  const [name, setName] = useState("");
-  const [password, setPassword] = useState("");
-  const [state, setState] = useState<StateProps>({
-    files: [],
-    uploadStatus: "Select or Drag-In File",
-  });
+export const NewClientModal = ({
+  onClose,
+  setOpenSnackbarShare,
+  setClients,
+}: any) => {
+  const [fieldsValue, setFieldsValue] = useState<Record<string, any>>({});
 
-  const onDrop = (acceptedFiles: File[]) => {
-    setState({ ...state, files: acceptedFiles });
-    handleUpload(acceptedFiles);
+  const handleFieldChange = (field: string, value: any) => {
+    setFieldsValue((prevFields) => ({
+      ...prevFields,
+      [field]: value,
+    }));
   };
 
-  const handleUpload = async (files: File[]) => {
-    if (files.length > 0) {
-      const promises = files.map(async (file: any) => {
-        const randomDigit = Math.floor(Math.random() * 1024); // Generate random 8-bit digit
-        const newFileName = `${file.name}_${randomDigit}`; // Append random digit to the file name
+  // const onDrop = (acceptedFiles: File[]) => {
+  //   if (acceptedFiles.length !== 1) {
+  //     //error
+  //   }
+  //   handleFieldChange("icon", acceptedFiles[0]);
+  // };
 
-        const { data, error } = await supabase.storage
-          .from("images")
-          .upload(`path/${newFileName}`, file);
+  // const handleUpload = async (files: File[]) => {
+  //   if (files.length > 0) {
+  //     const promises = files.map(async (file: any) => {
+  //       const randomDigit = Math.floor(Math.random() * 1024); // Generate random 8-bit digit
+  //       const newFileName = `${file.name}_${randomDigit}`; // Append random digit to the file name
 
-        if (error) {
-          console.error(`Error uploading file ${newFileName}:`, error);
-          return { success: false, fileName: newFileName };
-        } else {
-          return { success: true, fileName: newFileName };
-        }
-      });
+  //       const { data, error } = await supabase.storage
+  //         .from("images")
+  //         .upload(`path/${newFileName}`, file);
 
-      const results = await Promise.all(promises);
-      const successUploads = results.filter((result) => result.success);
+  //       if (error) {
+  //         console.error(`Error uploading file ${newFileName}:`, error);
+  //         return { success: false, fileName: newFileName };
+  //       } else {
+  //         return { success: true, fileName: newFileName };
+  //       }
+  //     });
 
-      if (successUploads.length === files.length) {
-        setState({
-          files: [],
-          uploadStatus: "Upload successful!",
-        });
+  //     const results = await Promise.all(promises);
+  //     const successUploads = results.filter((result) => result.success);
 
-        // Additional actions after successful upload
-      } else {
-        setState({
-          ...state,
-          uploadStatus: "Upload failed for some files. Please try again.",
-        });
-      }
-    }
-  };
+  //     if (successUploads.length === files.length) {
+  //       // Additional actions after successful upload
+  //     } else {
+  //       //Implement
+  //     }
+  //   }
+  // };
 
-  const { getRootProps, getInputProps, isDragActive } = useDropzone({
-    onDrop,
-    multiple: false, // Allow only one file
-  });
+  // const { getRootProps, getInputProps, isDragActive } = useDropzone({
+  //   onDrop,
+  //   multiple: false, // Allow only one file
+  // });
 
   const handleOverlayClick = (event: React.MouseEvent<HTMLDivElement>) => {
     if (event.target === event.currentTarget) {
@@ -73,28 +78,39 @@ export const Modal = ({ onClose, setOpenSnackbarShare }: any) => {
 
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
-    setOpenSnackbarShare(true); // Use prop to set state
 
-    // Send data to Supabase
+    if (Object.values(fieldsValue).every((fieldValue) => !fieldValue)) {
+      return;
+    }
+    // SEND DATA
     try {
       const { data, error } = await supabase
-        .from("quoting_clients") // Replace with your actual table name
-        .upsert([
-          {
-            name,
-            password,
-          },
-        ]);
+        .from("clients") // Replace with your actual table name
+        .upsert(fieldsValue);
 
       if (error) {
         console.error("Error inserting data:", error);
       } else {
+        //UPDATE DATA
+        try {
+          const { data, error } = await supabase.from("clients").select();
+          if (error) {
+            console.error("Error retrieving data:", error);
+          } else {
+            setClients(data);
+            console.log("Data retrieved successfully:", data);
+            onClose(); // Close the modal after successful submission
+          }
+        } catch (error) {
+          console.error("Error connecting to Supabase:", error);
+        }
         console.log("Data inserted successfully:", data);
-        onClose(); // Close the modal after successful submission
       }
     } catch (error) {
       console.error("Error connecting to Supabase:", error);
     }
+
+    setOpenSnackbarShare(true); // Use prop to set state
   };
 
   return (
@@ -114,32 +130,44 @@ export const Modal = ({ onClose, setOpenSnackbarShare }: any) => {
           />
           <p className="text-2xl">Add a Client</p>
         </div>
-        <form onSubmit={handleSubmit}>
-          <p className="text-sm mt-4 mb-1">Name</p>
-          <input
-            placeholder="Acme Corporation Inc."
-            className="w-full border border-1 border-gray-200 rounded-md p-2 text-sm mb-3"
-            value={name}
-            onChange={(e) => setName(e.target.value)}
-          />
-          <div className="flex items-end">
-            <p className="text-sm mr-1">Lives</p>
-            <p className="text-xs text-gray-500">(Optional)</p>
-          </div>
-          <input
-            type="password"
-            placeholder="2,438"
-            className="w-full border border-1 border-gray-200 rounded-md p-2 text-sm mt-1 mb-3"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-          />
 
-          <div className="modal-body">
+        <form className="mt-4" onSubmit={handleSubmit}>
+          {Object.values(clientMetadataObject)
+            .filter(
+              (clientField) =>
+                !clientField.isDefault &&
+                !clientField.isSystem &&
+                !(clientField.field === "icon"),
+            )
+            .map((clientField: ClientFieldType) => {
+              console.log("clientFieldLabel", clientField.label);
+              return (
+                <>
+                  <div className="flex items-end">
+                    <p className="text-sm mr-1">{clientField.label}</p>
+                    {clientField.isNullable && (
+                      <p className="text-xs text-gray-500">(Optional)</p>
+                    )}
+                  </div>
+                  <input
+                    required={!clientField.isNullable}
+                    placeholder={clientField?.placeholder ?? undefined}
+                    className="w-full border border-1 border-gray-200 rounded-md p-2 text-sm mt-1 mb-3"
+                    value={fieldsValue[clientField.field]}
+                    onChange={(e) => {
+                      handleFieldChange(clientField.field, e.target.value);
+                    }}
+                  />
+                </>
+              );
+            })}
+
+          {/* <div className="modal-body">
             <div className="flex items-end">
               <p className="text-sm mr-1">Logo</p>
               <p className="text-xs text-gray-500">(Optional)</p>
             </div>
-            {/* File Upload Section */}
+           
             <div className="mb-6 flex gap-2 items-center justify-start">
               <div
                 {...getRootProps()}
@@ -149,7 +177,7 @@ export const Modal = ({ onClose, setOpenSnackbarShare }: any) => {
                 style={{ borderRadius: "0.25rem" }}
               >
                 <input {...getInputProps()} />
-                {/* {state.files.length > 0 && (
+                {state.files.length > 0 && (
                   <div className="text-center mb-4">
                     {state.files.map((file, index) => (
                       <p className="truncate" key={index}>
@@ -157,15 +185,13 @@ export const Modal = ({ onClose, setOpenSnackbarShare }: any) => {
                       </p>
                     ))}
                   </div>
-                )} */}
-                {state.uploadStatus && (
-                  <div className="text-center text-sm mb-2 text-slate-600 mt-2">
-                    {state.uploadStatus}
-                  </div>
                 )}
+                <div className="text-center text-sm mb-2 text-slate-600 mt-2">
+                  Upload
+                </div>
               </div>
             </div>
-          </div>
+          </div> */}
 
           <div className="flex w-full justify-end">
             <button

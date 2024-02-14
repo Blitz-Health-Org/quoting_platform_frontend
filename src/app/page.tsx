@@ -15,24 +15,23 @@ import { CiCirclePlus } from "react-icons/ci";
 import { BiPlus } from "react-icons/bi";
 import { useDropzone } from "react-dropzone";
 import { Snackbar, Alert } from "@mui/material";
-import { Modal } from "@/src/components/client/modal/NewClientModal";
+import { NewClientModal } from "@/src/components/client/modal/NewClientModal";
 import { MdUpload } from "react-icons/md";
 import { supabase } from "@/src/supabase";
 import { UserContext } from "@/src/context/UserContext";
 import { Database } from "@/src/types/database/database.types";
 import { ClientCard } from "@/src/components/client/ClientCard";
-import { Client } from "@/src/types/Client";
+import { ClientType } from "@/src/types/Client";
 
 export default function Home() {
   const {
     userId: [userId],
   } = useContext(UserContext);
 
-  const [clients, setClients] = useState<Client[]>([]);
+  const [clients, setClients] = useState<ClientType[]>([]);
 
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [openSnackbarShare, setOpenSnackbarShare] = useState(false); // Move state to Home component
-  console.log("client", clients);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -99,9 +98,10 @@ export default function Home() {
           </div>
 
           {isModalOpen && (
-            <Modal
+            <NewClientModal
               setOpenSnackbarShare={setOpenSnackbarShare}
               onClose={handleCloseModal}
+              setClients={setClients}
             />
           )}
           <Snackbar
