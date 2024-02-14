@@ -119,7 +119,7 @@ export const NewClientModal = ({
       style={{ backdropFilter: "blur(2px)" }}
       onClick={handleOverlayClick}
     >
-      <div className="bg-white p-4 rounded-md w-1/2 md:w-1/3 lg:1/4">
+      <div className="bg-white p-4 rounded-md w-1/2 md:w-1/3 lg:1/3">
         <div className="flex">
           <Image
             src={BlumeLogo}

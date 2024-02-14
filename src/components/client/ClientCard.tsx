@@ -38,8 +38,9 @@ export const ClientCard = ({ client }: ClientCardProps) => {
     <>
       <div
         onClick={handleClientCardClick}
-        className="w-full flex flex-col bg-white shadow-sm outline outline-1 outline-gray-200 rounded-md p-3"
+        className="w-full flex flex-col justify-between bg-white shadow-sm outline outline-1 outline-gray-200 rounded-md p-3"
       >
+        <div className="w-full">
         <div className="flex items-center gap-1">
           {client.icon ? (
             <Image
@@ -59,11 +60,13 @@ export const ClientCard = ({ client }: ClientCardProps) => {
           {/*//TODO:client.plans.length*/}
           <p className="mt-0.5"> Quotes - 72 </p>
           {/*//TODO:client.quotes.length*/}
-          {client.num_lives ?? (
+          {client.num_lives !== null && (
             <p className="mt-0.5"> Lives - {client.num_lives} </p>
           )}
         </div>
+        </div>
 
+        <div className="w-full">
         {/* TODO: Flush to bottom */}
         <div className="outline outline-1 hover:bg-gray-100/50 cursor-pointer font-light flex items-center justify-center outline-gray-200 p-0.5 rounded-sm mb-1 mt-3 text-sm">
           <FaBook className="mr-1" />
@@ -77,6 +80,7 @@ export const ClientCard = ({ client }: ClientCardProps) => {
           <FaPlus className="mr-1" />
           <button onClick={handleAddNewQuote}>New Quote</button>
         </div>
+      </div>
       </div>
       {modalOpen === "createHandbook" && <CreateHandbookModal />}
       {modalOpen === "viewQuote" && <ViewQuoteModal />}
