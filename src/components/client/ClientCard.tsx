@@ -19,17 +19,20 @@ export const ClientCard = ({
 }: ClientCardProps) => {
   const [modalOpen, setModalOpen] = useState<string>("");
 
-  function handleCreateHandbook(client: ClientType) {
+  console.log("modalOpen", modalOpen);
+
+  function handleCreateHandbook() {
     setModalOpen("createHandbook");
     return;
   }
 
-  function handleViewQuote(client: ClientType) {
+  function handleViewQuote() {
     setModalOpen("viewQuote");
     return;
   }
 
-  function handleAddNewQuote(client: ClientType) {
+  function handleAddNewQuote() {
+    console.log("check check");
     setModalOpen("addNewQuote");
     return;
   }
@@ -74,22 +77,33 @@ export const ClientCard = ({
           {/* TODO: Flush to bottom */}
           <div className="outline outline-1 hover:bg-gray-100/50 cursor-pointer font-light flex items-center justify-center outline-gray-200 p-0.5 rounded-sm mb-1 mt-3 text-sm">
             <FaBook className="mr-1" />
-            <button onClick={() => handleCreateHandbook(client)}>
-              Create Handbook
-            </button>
+            <button onClick={handleCreateHandbook}>Create Handbook</button>
           </div>
-          <div className="outline outline-1 hover:bg-gray-100/50 cursor-pointer font-light flex items-center justify-center outline-gray-200 p-0.5 rounded-sm mb-1 mt-1 text-sm">
+          <div
+            onClick={handleViewQuote}
+            className="outline outline-1 hover:bg-gray-100/50 cursor-pointer font-light flex items-center justify-center outline-gray-200 p-0.5 rounded-sm mb-1 mt-1 text-sm"
+          >
             <IoEyeSharp className="mr-1" />
-            <button onClick={() => handleViewQuote(client)}>View Quotes</button>
+            <button>View Quotes</button>
           </div>
-          <div className="outline outline-1 hover:bg-gray-100/50 cursor-pointer font-light flex items-center justify-center outline-gray-200 p-0.5 rounded-sm mb-1 mt-1 text-sm">
+          <div
+            onClick={handleAddNewQuote}
+            className="outline outline-1 hover:bg-gray-100/50 cursor-pointer font-light flex items-center justify-center outline-gray-200 p-0.5 rounded-sm mb-1 mt-1 text-sm"
+          >
             <FaPlus className="mr-1" />
-            <button onClick={() => handleAddNewQuote(client)}>New Quote</button>
+            <div>New Quote</div>
           </div>
         </div>
       </div>
       {modalOpen === "createHandbook" && <CreateHandbookModal />}
-      {modalOpen === "viewQuote" && <ViewQuoteModal client={client} />}
+      {modalOpen === "viewQuote" && (
+        <ViewQuoteModal
+          onClose={() => {
+            setModalOpen("");
+          }}
+          client={client}
+        />
+      )}
       {modalOpen === "addNewQuote" && (
         <AddNewQuoteModal
           client={client}
