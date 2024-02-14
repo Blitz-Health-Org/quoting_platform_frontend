@@ -1,6 +1,7 @@
 import Image from "next/image";
 import { GrDocumentPerformance } from "react-icons/gr";
 import { LiaPeopleCarrySolid } from "react-icons/lia";
+import { MdOutlineAttachMoney } from "react-icons/md";
 import { LuMails } from "react-icons/lu";
 import { FaLink } from "react-icons/fa6";
 import { MdOutlineSettings } from "react-icons/md";
@@ -9,9 +10,25 @@ import { FiHelpCircle } from "react-icons/fi";
 import { useState } from "react";
 import Link from "next/link";
 
+const Tabs = [
+  {
+    name: "Carriers",
+    icon: <LiaPeopleCarrySolid className="mr-2 ml-1" />,
+  },
+  {
+    name: "Policies",
+    icon: <GrDocumentPerformance className="h-4 w-4 mr-2 ml-1" />,
+  },
+  { name: "CRM", icon: <LuMails className="mr-2 ml-1" /> },
+  { name: "Commissions", icon: <MdOutlineAttachMoney className="mr-2 ml-1" /> },
+  { name: "Integrations", icon: <FaLink className="w-4 h-4 mr-2 ml-1" /> },
+  { name: "Settings" },
+];
+
 export const Header = ({ selected }: { selected: string }) => {
   const isPoliciesSelected = selected === "Policies";
   const isCarriersSelected = selected === "Carriers";
+  const isCommissionsSelected = selected === "Commissions";
   const isCRMSelected = selected === "CRM";
   const isIntegrationsSelected = selected === "Integrations";
   const isSettingsSelected = selected === "Settings";
@@ -60,6 +77,16 @@ export const Header = ({ selected }: { selected: string }) => {
           >
             <LuMails className="mr-2 ml-1" /> CRM
           </div>
+
+          <a
+            href="/"
+            style={{ fontSize: "13px" }}
+            className={`flex items-center font-light text-gray-700 ml-1 mb-1 w-full p-1 ${
+              isCarriersSelected ? "bg-gray-200" : ""
+            }`}
+          >
+            <MdOutlineAttachMoney className="mr-2 ml-1" /> Commissions
+          </a>
 
           <div className="text-sm ml-1 mt-6 mb-1 text-gray-500 w-full p-1">
             Other

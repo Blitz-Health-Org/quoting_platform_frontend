@@ -1,9 +1,10 @@
 "use client";
 
 import { Dispatch, SetStateAction, createContext, useState } from "react";
+import { useLocalStorage } from "../utils/useLocalStorage";
 
 export type UserContextProps = {
-  userId: [number | undefined, Dispatch<SetStateAction<number | undefined>>];
+  userId: [number | undefined, (value: number | undefined) => void];
 };
 
 export const UserContext = createContext<UserContextProps>({
@@ -15,7 +16,11 @@ export const UserContextProvider = ({
 }: {
   children: React.ReactNode;
 }) => {
-  const [userId, setUserId] = useState<number | undefined>();
+  const [userId, setUserId] = useLocalStorage<number | undefined>(
+    "blume_user_id",
+    -1,
+  ); //TODO: Fix this janky ass solution with -1 and undefined
+
   return (
     <>
       <UserContext.Provider value={{ userId: [userId, setUserId] }}>
