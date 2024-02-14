@@ -35,7 +35,7 @@ const supabase = createClient(
 
 export default function Home() {
   const {
-    userId: [userId],
+    userId: [userId, , loading],
   } = useContext(UserContext);
   const router = useRouter();
 
@@ -72,7 +72,7 @@ export default function Home() {
     setIsModalOpen(!isModalOpen);
   };
 
-  if (userId === -1) {
+  if (loading) {
     return <></>;
   }
 

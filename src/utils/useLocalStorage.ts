@@ -3,8 +3,9 @@ import { useEffect, useState } from "react";
 export const useLocalStorage = <T>(
   key: string,
   initialValue: T,
-): [T, (value: T) => void] => {
+): [T, (value: T) => void, boolean] => {
   const [storedValue, setStoredValue] = useState(initialValue);
+  const [loading, setLoading] = useState(true);
 
   console.log("stored value", storedValue);
 
@@ -15,6 +16,7 @@ export const useLocalStorage = <T>(
     if (item) {
       setStoredValue(JSON.parse(item));
     }
+    setLoading(false);
   }, [key]);
 
   const setValue = (value: T) => {
@@ -23,5 +25,5 @@ export const useLocalStorage = <T>(
     // Save to localStorage
     window.localStorage.setItem(key, JSON.stringify(value));
   };
-  return [storedValue, setValue];
+  return [storedValue, setValue, loading];
 };
