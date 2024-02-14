@@ -2,7 +2,7 @@
 
 import React, { useContext, useEffect, useState } from "react";
 import "./globals.css";
-import { Header } from "../components/Header";
+import { Navbar } from "../components/Navbar";
 import { PiListBulletsBold } from "react-icons/pi";
 import { RiArrowDropDownLine } from "react-icons/ri";
 import Apple from "../../public/Apple.jpg";
@@ -78,7 +78,7 @@ export default function Home() {
 
   return (
     <div className="w-full h-full flex flex-row bg-white">
-      <Header selected="Policies" />
+      <Navbar selected="Quotes" />
 
       <div className="w-full md:w-6/7">
         <main className="h-screen flex-col w-full bg-gray-100 bg-opacity-50 pl-2 pr-6 pt-5 pb-6 overflow-hidden text-gray-700">
