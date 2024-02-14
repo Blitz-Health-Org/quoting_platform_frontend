@@ -50,7 +50,7 @@ export const ClientCard = ({ client }: ClientCardProps) => {
               className="mr-2 rounded-md"
             />
           ) : (
-            <IconBuilding />
+            <IconBuilding className="mr-2" />
           )}
           <p>{client.name}</p>
         </div>
