@@ -9,7 +9,6 @@ export default function Left() {
     "Plan Name",
     "Provider Net.",
     "Network Status",
-    "Deductibles",
   ];
 
   const itemList2 = [
@@ -51,146 +50,144 @@ export default function Left() {
   const itemList11 = ["EE Only", "EE + Spouse", "EE + Child", "EE + Family"];
 
   return (
-    <div className="bg-white h-fit w-1/6 mt-4 rounded-lg outline outline-1 outline-gray-300 py-6 text-center">
+    <div className="bg-white h-fit min-w-56 mt-4 rounded-lg outline outline-1 outline-gray-300 py-6 text-center truncate">
       <div className="flex mb-16"></div>
       <div className="w-full text-sm">
         {itemList.map((item: any, index: any) => (
           <div key={index}>
             <hr className="w-full border-t-1 border-gray-300"></hr>
-            <div className="flex items-center h-full bg-violet-100/60 w-full">
+            <div className="flex items-center h-7 bg-violet-100/60 w-full">
               <p className="ml-4 my-1 break-all font-semibold">{item}</p>
             </div>
           </div>
         ))}
+        <hr className="w-full border-t-1 border-gray-500"></hr>
+        <div className="flex items-center h-7 bg-violet-100/60 w-full">
+          <p className="ml-4 break-all font-semibold">Deductibles</p>
+        </div>
         {itemList2.map((item: any, index: any) => (
           <div key={index}>
             <hr className="w-full border-t-1 border-gray-300"></hr>
-            <div className="flex items-center bg-white w-full h-full">
-              <p className="ml-4 my-1 break-all">{item}</p>
+            <div className="flex items-center bg-white w-full h-7">
+              <p className="ml-4 break-all">{item}</p>
             </div>
           </div>
         ))}
         <hr className="w-full border-t-1 border-gray-500"></hr>
-        <div className="flex items-center h-full bg-violet-100/60 w-full">
-          <p className="ml-4 my-1 break-all font-semibold">Visit to Provider</p>
+        <div className="flex items-center h-7 bg-violet-100/60 w-full">
+          <p className="ml-4 break-all font-semibold">Visit to Provider</p>
         </div>
         {itemList3.map((item: any, index: any) => (
           <div key={index}>
             <hr className="w-full border-t-1 border-gray-300"></hr>
-            <div className="flex items-center h-full bg-white w-full">
-              <p className="ml-4 my-1 break-all">{item}</p>
+            <div className="flex items-center h-7 bg-white w-full">
+              <p className="ml-4 break-all">{item}</p>
             </div>
           </div>
         ))}
         <hr className="w-full border-t-1 border-gray-500"></hr>
-        <div className="flex items-center h-full bg-violet-100/60 w-full">
-          <p className="ml-4 my-1 break-all font-semibold">Test</p>
+        <div className="flex items-center h-7 bg-violet-100/60 w-full">
+          <p className="ml-4 break-all font-semibold">Test</p>
         </div>
         {itemList4.map((item: any, index: any) => (
           <div key={index}>
             <hr className="w-full border-t-1 border-gray-300"></hr>
-            <div className="flex items-center h-full bg-white w-full">
-              <p className="ml-4 my-1 break-all">{item}</p>
+            <div className="flex items-center h-7 bg-white w-full">
+              <p className="ml-4 break-all">{item}</p>
             </div>
           </div>
         ))}
         <hr className="w-full border-t-1 border-gray-500"></hr>
-        <div className="flex items-center h-full bg-violet-100/60 w-full">
-          <p className="ml-4 my-1 break-all font-semibold">Drugs</p>
+        <div className="flex items-center h-7 bg-violet-100/60 w-full">
+          <p className="ml-4 break-all font-semibold">Drugs</p>
         </div>
         {itemList5.map((item: any, index: any) => (
           <div key={index}>
             <hr className="w-full border-t-1 border-gray-300"></hr>
-            <div className="flex items-center h-full bg-white w-full">
-              <p className="ml-4 my-1 break-all">{item}</p>
+            <div className="flex items-center h-7 bg-white w-full">
+              <p className="ml-4 break-all">{item}</p>
             </div>
           </div>
         ))}
         <hr className="w-full border-t-1 border-gray-500"></hr>
-        <div className="flex items-center h-full bg-violet-100/60 w-full">
-          <p className="ml-4 my-1 break-all font-semibold">
-            Outpatient Surgery
-          </p>
+        <div className="flex items-center h-7 bg-violet-100/60 w-full">
+          <p className="ml-4 break-all font-semibold">Outpatient Surgery</p>
         </div>
         {itemList6.map((item: any, index: any) => (
           <div key={index}>
             <hr className="w-full border-t-1 border-gray-500"></hr>
-            <div className="flex items-center h-full bg-white w-full">
-              <p className="ml-4 my-1 break-all">{item}</p>
+            <div className="flex items-center h-7 bg-white w-full">
+              <p className="ml-4 break-all">{item}</p>
             </div>
           </div>
         ))}
         <hr className="w-full border-t-1 border-gray-500"></hr>
-        <div className="flex items-center h-full bg-violet-100/60 w-full">
-          <p className="ml-4 my-1 break-all font-semibold">
+        <div className="flex items-center h-7 bg-violet-100/60 w-full">
+          <p className="ml-4 break-all font-semibold">
             Need Immediate Attention
           </p>
         </div>
         {itemList7.map((item: any, index: any) => (
           <div key={index}>
             <hr className="w-full border-t-1 border-gray-300"></hr>
-            <div className="flex items-center h-full bg-white w-full">
-              <p className="ml-4 my-1 break-all">{item}</p>
+            <div className="flex items-center h-7 bg-white w-full">
+              <p className="ml-4 break-all">{item}</p>
             </div>
           </div>
         ))}
         <hr className="w-full border-t-1 border-gray-500"></hr>
-        <div className="flex items-center h-full bg-violet-100/60 w-full">
-          <p className="ml-4 my-1 break-all font-semibold">Hospital Stay</p>
+        <div className="flex items-center h-7 bg-violet-100/60 w-full">
+          <p className="ml-4 break-all font-semibold">Hospital Stay</p>
         </div>
         {itemList8.map((item: any, index: any) => (
           <div key={index}>
             <hr className="w-full border-t-1 border-gray-300"></hr>
-            <div className="flex items-center h-full bg-white w-full">
-              <p className="ml-4 my-1 break-all">{item}</p>
+            <div className="flex items-center h-7 bg-white w-full">
+              <p className="ml-4 break-all">{item}</p>
             </div>
           </div>
         ))}
         <hr className="w-full border-t-1 border-gray-500"></hr>
-        <div className="flex items-center h-full bg-violet-100/60 w-full">
-          <p className="ml-4 my-1 break-all font-semibold">
-            Mental/Behavioral/SUD
-          </p>
+        <div className="flex items-center h-7 bg-violet-100/60 w-full">
+          <p className="ml-4 break-all font-semibold">Mental/Behavioral/SUD</p>
         </div>
         {itemList9.map((item: any, index: any) => (
           <div key={index}>
             <hr className="w-full border-t-1 border-gray-300"></hr>
-            <div className="flex items-center h-full bg-white w-full">
-              <p className="ml-4 my-1 break-all">{item}</p>
+            <div className="flex items-center h-7 bg-white w-full">
+              <p className="ml-4 break-all">{item}</p>
             </div>
           </div>
         ))}
         <hr className="w-full border-t-1 border-gray-500"></hr>
-        <div className="flex items-center h-full bg-violet-100/60 w-full">
-          <p className="ml-4 my-1 break-all font-semibold">
+        <div className="flex items-center h-7 bg-violet-100/60 w-full">
+          <p className="ml-4 break-all font-semibold">
             Other Special Health Needs
           </p>
         </div>
         {itemList10.map((item: any, index: any) => (
           <div key={index}>
             <hr className="w-full border-t-1 border-gray-300"></hr>
-            <div className="flex items-center h-full bg-white w-full">
-              <p className="ml-4 my-1 break-all">{item}</p>
+            <div className="flex items-center h-7 bg-white w-full">
+              <p className="ml-4 break-all">{item}</p>
             </div>
           </div>
         ))}
         <hr className="w-full border-t-1 border-gray-500"></hr>
-        <div className="flex items-center h-full bg-violet-100/60 w-full">
-          <p className="ml-4 my-1 font-semibold break-all">
-            Premiums/Enrollment
-          </p>
+        <div className="flex items-center h-7 bg-violet-100/60 w-full">
+          <p className="ml-4 font-semibold break-all">Premiums/Enrollment</p>
         </div>
         {itemList11.map((item: any, index: any) => (
           <div key={index}>
-            <div className="flex items-center h-full bg-white w-full">
-              <p className="ml-4 my-1 break-all">{item}</p>
+            <div className="flex items-center h-7 bg-white w-full">
+              <p className="ml-4 break-all">{item}</p>
             </div>
             <hr className="w-full border-t-1 border-gray-300"></hr>
           </div>
         ))}
         <hr className="w-full border-t-1 border-gray-500"></hr>
-        <div className="flex items-center h-full bg-violet-100/60 w-full">
-          <p className="ml-4 my-1 break-all font-semibold">Total Cost</p>
+        <div className="flex items-center h-7 bg-violet-100/60 w-full">
+          <p className="ml-4 break-all font-semibold">Total Cost</p>
         </div>
       </div>
     </div>
