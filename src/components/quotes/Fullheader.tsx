@@ -34,8 +34,8 @@ export default function Fullheader() {
           <Image
             src="/angus_logo.png" // Assuming your public folder is served from the root
             alt="Acme Corporation"
-            width={30} // Set the width as per your design
-            height={30} // Set the height as per your design
+            width={30}
+            height={30}
           />
         </div>
       </div>

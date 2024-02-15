@@ -25,6 +25,7 @@ export default function Subheader() {
             labelId="demo-simple-select-standard-label"
             id="demo-simple-select-standard"
             label="Age"
+            value=""
           >
             <MenuItem value="">
               <em>Blume Total Rating</em>
@@ -44,6 +45,7 @@ export default function Subheader() {
             labelId="demo-simple-select-standard-label"
             id="demo-simple-select-standard"
             label="Age"
+            value=""
           >
             <MenuItem value="">
               <em>None</em>

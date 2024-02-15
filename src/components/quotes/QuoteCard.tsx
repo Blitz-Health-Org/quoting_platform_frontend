@@ -1,9 +1,17 @@
+//TODO: finish linking this up to supabase
+
 import * as React from "react";
 import Image from "next/image";
 import Apple from "@/public/Screenshot.png";
 import { QuoteType } from "@/src/types/custom/Quote";
 
-export default function QuoteCard(quote: QuoteType) {
+export default function QuoteCard({ quote }: QuoteType) {
+  console.log("quote details", quote.plan_details?.date);
+
+  function valueOrDefault(val: any, def: string = "N/A") {
+    return val ?? def;
+  }
+
   return (
     <div className="bg-white h-full mb-4 w-1/4 mt-4 rounded-lg outline outline-1 outline-gray-300 py-6 text-center overscroll-none">
       <div className="flex w-full justify-center h-16">
@@ -24,26 +32,22 @@ export default function QuoteCard(quote: QuoteType) {
 
       <div className="flex flex-col items-center bg-violet-100/60">
         <textarea
-          defaultValue={
-            quote.plan_details?.date
-              ? `CURRENT - ${quote.plan_details?.date}`
-              : "N/A"
-          }
+          defaultValue={valueOrDefault(quote.plan_details?.date)}
           className="text-center resize-none text-sm content-center h-7 w-full bg-transparent focus:outline-0 focus:border focus:border-1 focus:border-gray-200 cursor-pointer focus:cursor-auto rounded-md p-1"
         />
         <hr className="w-full border-t-1 border-gray-300"></hr>
         <textarea
-          defaultValue={"Gold"}
+          defaultValue={valueOrDefault(quote.plan_details?.metal_tier)}
           className="text-center resize-none text-sm content-center h-7 w-full bg-transparent focus:outline-0 focus:border focus:border-1 focus:border-gray-200 cursor-pointer focus:cursor-auto rounded-md p-1"
         />
         <hr className="w-full border-t-1 border-gray-300"></hr>
         <textarea
-          defaultValue={"Gold 500/30"}
+          defaultValue={valueOrDefault(quote.plan_details?.plan_name)}
           className="text-center resize-none text-sm content-center h-7 w-full bg-transparent focus:outline-0 focus:border focus:border-1 focus:border-gray-200 cursor-pointer focus:cursor-auto rounded-md p-1"
         />
         <hr className="w-full border-t-1 border-gray-300"></hr>
         <textarea
-          defaultValue={"Full PPO"}
+          defaultValue={valueOrDefault(quote.provider_network)}
           className="text-center resize-none text-sm content-center h-7 w-full bg-transparent focus:outline-0 focus:border focus:border-1 focus:border-gray-200 cursor-pointer focus:cursor-auto rounded-md p-1"
         />
         <hr className="w-full border-t-1 border-gray-300"></hr>
@@ -73,11 +77,15 @@ export default function QuoteCard(quote: QuoteType) {
 
         <div className="flex w-full bg-white">
           <textarea
-            defaultValue={"N/A"}
+            defaultValue={valueOrDefault(
+              quote.plan_details?.in?.deductible?.overall,
+            )}
             className="text-center resize-none text-sm content-center h-7 w-1/2 border-r bg-transparent focus:outline-0 focus:border focus:border-1 focus:border-gray-200 cursor-pointer focus:cursor-auto p-1"
           />
           <textarea
-            defaultValue={"N/A"}
+            defaultValue={valueOrDefault(
+              quote.plan_details?.oon?.deductible?.overall,
+            )}
             className="text-center resize-none text-sm content-center h-7 w-1/2 bg-transparent focus:outline-0 focus:border focus:border-1 focus:border-gray-200 cursor-pointer focus:cursor-auto p-1"
           />
         </div>
@@ -85,11 +93,15 @@ export default function QuoteCard(quote: QuoteType) {
 
         <div className="flex w-full bg-white">
           <textarea
-            defaultValue={"$500/$1,000"}
+            defaultValue={valueOrDefault(
+              quote.plan_details?.in?.deductible?.medical,
+            )}
             className="text-center resize-none text-sm content-center h-7 w-1/2 border-r bg-transparent focus:outline-0 focus:border focus:border-1 focus:border-gray-200 cursor-pointer focus:cursor-auto p-1"
           />
           <textarea
-            defaultValue={"$1,000/$2,000"}
+            defaultValue={valueOrDefault(
+              quote.plan_details?.oon?.deductible?.medical,
+            )}
             className="text-center resize-none text-sm content-center h-7 w-1/2 bg-transparent focus:outline-0 focus:border focus:border-1 focus:border-gray-200 cursor-pointer focus:cursor-auto p-1"
           />
         </div>
@@ -97,11 +109,15 @@ export default function QuoteCard(quote: QuoteType) {
 
         <div className="flex w-full bg-white">
           <textarea
-            defaultValue={"$100/$200"}
+            defaultValue={valueOrDefault(
+              quote.plan_details?.in?.deductible?.prescription_drug,
+            )}
             className="text-center resize-none text-sm content-center h-7 w-1/2 border-r bg-transparent focus:outline-0 focus:border focus:border-1 focus:border-gray-200 cursor-pointer focus:cursor-auto p-1"
           />
           <textarea
-            defaultValue={"N/A"}
+            defaultValue={valueOrDefault(
+              quote.plan_details?.oon?.deductible?.prescription_drug,
+            )}
             className="text-center resize-none text-sm content-center h-7 w-1/2 bg-transparent focus:outline-0 focus:border focus:border-1 focus:border-gray-200 cursor-pointer focus:cursor-auto p-1"
           />
         </div>
@@ -109,11 +125,15 @@ export default function QuoteCard(quote: QuoteType) {
 
         <div className="flex w-full bg-white">
           <textarea
-            defaultValue={"$8,150/$16,300"}
+            defaultValue={valueOrDefault(
+              quote.plan_details?.in?.deductible?.oop,
+            )}
             className="text-center resize-none text-sm content-center h-7 w-1/2 border-r bg-transparent focus:outline-0 focus:border focus:border-1 focus:border-gray-200 cursor-pointer focus:cursor-auto p-1"
           />
           <textarea
-            defaultValue={"$16,300/$32,600"}
+            defaultValue={valueOrDefault(
+              quote.plan_details?.oon?.deductible.oop,
+            )}
             className="text-center resize-none text-sm content-center h-7 w-1/2 bg-transparent focus:outline-0 focus:border focus:border-1 focus:border-gray-200 cursor-pointer focus:cursor-auto p-1"
           />
         </div>
@@ -133,11 +153,15 @@ export default function QuoteCard(quote: QuoteType) {
 
         <div className="flex w-full bg-white">
           <textarea
-            defaultValue={"$30 Copay"}
+            defaultValue={valueOrDefault(
+              quote.plan_details?.in?.visit_to_provider?.primary_care_visit,
+            )}
             className="text-center resize-none text-sm content-center h-7 w-1/2 border-r bg-transparent focus:outline-0 focus:border focus:border-1 focus:border-gray-200 cursor-pointer focus:cursor-auto p-1"
           />
           <textarea
-            defaultValue={"40%"}
+            defaultValue={valueOrDefault(
+              quote.plan_details?.oon?.visit_to_provider?.primary_care_visit,
+            )}
             className="text-center resize-none text-sm content-center h-7 w-1/2 bg-transparent focus:outline-0 focus:border focus:border-1 focus:border-gray-200 cursor-pointer focus:cursor-auto p-1"
           />
         </div>
@@ -145,11 +169,15 @@ export default function QuoteCard(quote: QuoteType) {
 
         <div className="flex w-full bg-white">
           <textarea
-            defaultValue={"$55 Copay"}
+            defaultValue={valueOrDefault(
+              quote.plan_details?.in?.visit_to_provider?.specialist_visit,
+            )}
             className="text-center resize-none text-sm content-center h-7 w-1/2 border-r bg-transparent focus:outline-0 focus:border focus:border-1 focus:border-gray-200 cursor-pointer focus:cursor-auto p-1"
           />
           <textarea
-            defaultValue={"40%"}
+            defaultValue={valueOrDefault(
+              quote.plan_details?.oon?.visit_to_provider?.specialist_visit,
+            )}
             className="text-center resize-none text-sm content-center h-7 w-1/2 bg-transparent focus:outline-0 focus:border focus:border-1 focus:border-gray-200 cursor-pointer focus:cursor-auto p-1"
           />
         </div>

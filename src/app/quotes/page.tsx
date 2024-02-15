@@ -28,6 +28,7 @@ const QuotingPage = ({ client }: QuotingPageProps) => {
   };
   const router = useRouter();
   const [quotes, setQuotes] = useState<QuoteType[]>([]);
+  const [loading, setLoading] = useState<boolean>(true);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -47,6 +48,7 @@ const QuotingPage = ({ client }: QuotingPageProps) => {
       }
     };
     fetchData();
+    setLoading(false);
   }, []);
 
   console.log("quotes", quotes);
@@ -54,6 +56,10 @@ const QuotingPage = ({ client }: QuotingPageProps) => {
   const handleNewClientClick = () => {
     router.push("/");
   };
+
+  if (loading) {
+    return <></>;
+  }
 
   return (
     <div className="w-full h-fit bg-gray-100 pb-6">

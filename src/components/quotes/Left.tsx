@@ -58,7 +58,7 @@ export default function Left() {
           <div key={index}>
             <hr className="w-full border-t-1 border-gray-300"></hr>
             <div className="flex items-center h-full bg-violet-100/60 w-full">
-              <p className="ml-4 break-all font-semibold">{item}</p>
+              <p className="ml-4 my-1 break-all font-semibold">{item}</p>
             </div>
           </div>
         ))}
@@ -66,61 +66,63 @@ export default function Left() {
           <div key={index}>
             <hr className="w-full border-t-1 border-gray-300"></hr>
             <div className="flex items-center bg-white w-full h-full">
-              <p className="ml-4 break-all">{item}</p>
+              <p className="ml-4 my-1 break-all">{item}</p>
             </div>
           </div>
         ))}
         <hr className="w-full border-t-1 border-gray-500"></hr>
         <div className="flex items-center h-full bg-violet-100/60 w-full">
-          <p className="ml-4 break-all font-semibold">Visit to Provider</p>
+          <p className="ml-4 my-1 break-all font-semibold">Visit to Provider</p>
         </div>
         {itemList3.map((item: any, index: any) => (
           <div key={index}>
             <hr className="w-full border-t-1 border-gray-300"></hr>
             <div className="flex items-center h-full bg-white w-full">
-              <p className="ml-4 break-all">{item}</p>
+              <p className="ml-4 my-1 break-all">{item}</p>
             </div>
           </div>
         ))}
         <hr className="w-full border-t-1 border-gray-500"></hr>
         <div className="flex items-center h-full bg-violet-100/60 w-full">
-          <p className="ml-4 break-all font-semibold">Test</p>
+          <p className="ml-4 my-1 break-all font-semibold">Test</p>
         </div>
         {itemList4.map((item: any, index: any) => (
           <div key={index}>
             <hr className="w-full border-t-1 border-gray-300"></hr>
             <div className="flex items-center h-full bg-white w-full">
-              <p className="ml-4 break-all">{item}</p>
+              <p className="ml-4 my-1 break-all">{item}</p>
             </div>
           </div>
         ))}
         <hr className="w-full border-t-1 border-gray-500"></hr>
         <div className="flex items-center h-full bg-violet-100/60 w-full">
-          <p className="ml-4 break-all font-semibold">Drugs</p>
+          <p className="ml-4 my-1 break-all font-semibold">Drugs</p>
         </div>
         {itemList5.map((item: any, index: any) => (
           <div key={index}>
             <hr className="w-full border-t-1 border-gray-300"></hr>
             <div className="flex items-center h-full bg-white w-full">
-              <p className="ml-4 break-all">{item}</p>
+              <p className="ml-4 my-1 break-all">{item}</p>
             </div>
           </div>
         ))}
         <hr className="w-full border-t-1 border-gray-500"></hr>
         <div className="flex items-center h-full bg-violet-100/60 w-full">
-          <p className="ml-4 break-all font-semibold">Outpatient Surgery</p>
+          <p className="ml-4 my-1 break-all font-semibold">
+            Outpatient Surgery
+          </p>
         </div>
         {itemList6.map((item: any, index: any) => (
           <div key={index}>
             <hr className="w-full border-t-1 border-gray-500"></hr>
             <div className="flex items-center h-full bg-white w-full">
-              <p className="ml-4 break-all">{item}</p>
+              <p className="ml-4 my-1 break-all">{item}</p>
             </div>
           </div>
         ))}
         <hr className="w-full border-t-1 border-gray-500"></hr>
         <div className="flex items-center h-full bg-violet-100/60 w-full">
-          <p className="ml-4 break-all font-semibold">
+          <p className="ml-4 my-1 break-all font-semibold">
             Need Immediate Attention
           </p>
         </div>
@@ -128,37 +130,39 @@ export default function Left() {
           <div key={index}>
             <hr className="w-full border-t-1 border-gray-300"></hr>
             <div className="flex items-center h-full bg-white w-full">
-              <p className="ml-4 break-all">{item}</p>
+              <p className="ml-4 my-1 break-all">{item}</p>
             </div>
           </div>
         ))}
         <hr className="w-full border-t-1 border-gray-500"></hr>
         <div className="flex items-center h-full bg-violet-100/60 w-full">
-          <p className="ml-4 break-all font-semibold">Hospital Stay</p>
+          <p className="ml-4 my-1 break-all font-semibold">Hospital Stay</p>
         </div>
         {itemList8.map((item: any, index: any) => (
           <div key={index}>
             <hr className="w-full border-t-1 border-gray-300"></hr>
             <div className="flex items-center h-full bg-white w-full">
-              <p className="ml-4 break-all">{item}</p>
+              <p className="ml-4 my-1 break-all">{item}</p>
             </div>
           </div>
         ))}
         <hr className="w-full border-t-1 border-gray-500"></hr>
         <div className="flex items-center h-full bg-violet-100/60 w-full">
-          <p className="ml-4 break-all font-semibold">Mental/Behavioral/SUD</p>
+          <p className="ml-4 my-1 break-all font-semibold">
+            Mental/Behavioral/SUD
+          </p>
         </div>
         {itemList9.map((item: any, index: any) => (
           <div key={index}>
             <hr className="w-full border-t-1 border-gray-300"></hr>
             <div className="flex items-center h-full bg-white w-full">
-              <p className="ml-4 break-all">{item}</p>
+              <p className="ml-4 my-1 break-all">{item}</p>
             </div>
           </div>
         ))}
         <hr className="w-full border-t-1 border-gray-500"></hr>
         <div className="flex items-center h-full bg-violet-100/60 w-full">
-          <p className="ml-4 break-all font-semibold">
+          <p className="ml-4 my-1 break-all font-semibold">
             Other Special Health Needs
           </p>
         </div>
@@ -166,25 +170,27 @@ export default function Left() {
           <div key={index}>
             <hr className="w-full border-t-1 border-gray-300"></hr>
             <div className="flex items-center h-full bg-white w-full">
-              <p className="ml-4 break-all">{item}</p>
+              <p className="ml-4 my-1 break-all">{item}</p>
             </div>
           </div>
         ))}
         <hr className="w-full border-t-1 border-gray-500"></hr>
         <div className="flex items-center h-full bg-violet-100/60 w-full">
-          <p className="ml-4 font-semibold break-all">Premiums/Enrollment</p>
+          <p className="ml-4 my-1 font-semibold break-all">
+            Premiums/Enrollment
+          </p>
         </div>
         {itemList11.map((item: any, index: any) => (
           <div key={index}>
             <div className="flex items-center h-full bg-white w-full">
-              <p className="ml-4 break-all">{item}</p>
+              <p className="ml-4 my-1 break-all">{item}</p>
             </div>
             <hr className="w-full border-t-1 border-gray-300"></hr>
           </div>
         ))}
         <hr className="w-full border-t-1 border-gray-500"></hr>
         <div className="flex items-center h-full bg-violet-100/60 w-full">
-          <p className="ml-4 break-all font-semibold">Total Cost</p>
+          <p className="ml-4 my-1 break-all font-semibold">Total Cost</p>
         </div>
       </div>
     </div>
