@@ -7,6 +7,8 @@ import { useRouter } from "next/navigation";
 import { IoHelpCircleSharp } from "react-icons/io5";
 import Subheader from "../../components/Subheader";
 import Fullheader from "../../components/Fullheader";
+import Aetna from "../../components/Aetna";
+import Left from "../../components/Left";
 
 type Props = {};
 
@@ -14,32 +16,27 @@ const QuotingPage = (props: Props) => {
   const router = useRouter();
   const handleNewClientClick = () => {
     router.push("/");
-  };
-  return (
-    <div className="w-full h-fit bg-gray-100 pb-12">
 
-      <Fullheader/>
+  };
+
+  return (
+    <div className="w-full h-fit bg-gray-100 pb-6">
+      <Fullheader />
 
       <div className="h-full bg-gray-100 border border-gray-200 border-b-0 px-6 py-2">
-        
-        <Subheader/>
+        <Subheader />
 
-        <div className="flex gap-2 h-screen">
-          
-          <div className="bg-white h-full mb-4 w-1/5 mt-4 rounded-lg outline outline-1 outline-gray-300 p-6 text-center">
-            Does this work?
-          </div>
-
-          <div className="bg-white h-full mb-4 w-1/5 mt-4 rounded-lg outline outline-1 outline-gray-300 p-6 text-center">
-            Does this work?
-          </div>
-
+        <div className="w-fit overflow-x-auto">
+            <div className="w-fit p-0.5 flex h-fit gap-2">
+              <Left />
+              <Aetna />
+              <Aetna />
+              <Aetna />
+            </div>
         </div>
-
       </div>
-
     </div>
-    );
+  );
 };
 
 export default QuotingPage;
