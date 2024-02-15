@@ -41,6 +41,7 @@ const QuotingPage = ({ client }: QuotingPageProps) => {
           console.error("Error retrieving data:", error);
         } else {
           setQuotes(data);
+          setLoading(false);
           console.log("Data retrieved successfully:", data);
         }
       } catch (error) {
@@ -48,14 +49,13 @@ const QuotingPage = ({ client }: QuotingPageProps) => {
       }
     };
     fetchData();
-    setLoading(false);
-  }, []);
-
-  console.log("quotes", quotes);
+  }, [client.id]);
 
   const handleNewClientClick = () => {
     router.push("/");
   };
+
+  console.log("loading", loading);
 
   if (loading) {
     return <></>;

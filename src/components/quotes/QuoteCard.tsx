@@ -6,8 +6,6 @@ import Apple from "@/public/Screenshot.png";
 import { QuoteType } from "@/src/types/custom/Quote";
 
 export default function QuoteCard({ quote }: QuoteType) {
-  console.log("quote details", quote.plan_details?.date);
-
   function valueOrDefault(val: any, def: string = "N/A") {
     return val ?? def;
   }
