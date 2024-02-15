@@ -18,7 +18,14 @@ type QuotingPageProps = {
 };
 
 const QuotingPage = ({ client }: QuotingPageProps) => {
-  console.log("client here", client);
+  client = {
+    created_at: "323",
+    icon: "",
+    num_lives: 3,
+    user_id: 1,
+    name: "",
+    id: 1,
+  };
   const router = useRouter();
   const [quotes, setQuotes] = useState<QuoteType[]>([]);
 
@@ -40,7 +47,9 @@ const QuotingPage = ({ client }: QuotingPageProps) => {
       }
     };
     fetchData();
-  });
+  }, []);
+
+  console.log("quotes", quotes);
 
   const handleNewClientClick = () => {
     router.push("/");
