@@ -13,7 +13,7 @@ export default function QuoteCard({ quote }: QuoteType) {
   }
 
   return (
-    <div className="bg-white h-full mb-4 w-1/4 mt-4 rounded-lg outline outline-1 outline-gray-300 py-6 text-center overscroll-none">
+    <div className="bg-white h-full mb-4 min-w-80 mt-4 rounded-lg outline outline-1 outline-gray-300 py-6 mr-1 text-center overscroll-none">
       <div className="flex w-full justify-center h-16">
         <div className="w-fit">
           <Image
