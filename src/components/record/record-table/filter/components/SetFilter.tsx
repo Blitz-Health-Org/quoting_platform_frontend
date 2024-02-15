@@ -1,7 +1,7 @@
 import { useRecordTable } from "@/src/components/record/record-table/hooks/useRecordTable";
 import { Dropdown } from "@/src/components/ui/dropdown/Dropdown";
-import { FilterContext } from "@/src/context/FilterContext";
-import { RecordContext } from "@/src/context/RecordContext";
+import { FilterContext } from "@/src/context/commissions/FilterContext";
+import { RecordContext } from "@/src/context/commissions/RecordContext";
 import { PolicyField } from "@/src/types/metadata";
 import { useContext, useEffect } from "react";
 

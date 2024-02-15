@@ -1,7 +1,7 @@
 "use client";
 
 import RecordTable from "@/src/components/record/record-table/RecordTable";
-import { FilterContextProvider } from "@/src/context/FilterContext";
+import { FilterContextProvider } from "@/src/context/commissions/FilterContext";
 
 export type RecordTableContainerProps = {
   dateTableBody?: React.ReactNode;

@@ -6,7 +6,7 @@ import { MdUpload } from "react-icons/md";
 import { GrDocumentPerformance } from "react-icons/gr";
 import { useDropzone } from "react-dropzone";
 import { createClient } from "@supabase/supabase-js";
-import { GroupByContext } from "@/src/context/GroupByContext";
+import { GroupByContext } from "@/src/context/commissions/GroupByContext";
 
 interface stateProps {
   files: File[];

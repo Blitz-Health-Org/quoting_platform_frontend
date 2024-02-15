@@ -1,5 +1,5 @@
-import { GroupByContext } from "@/src/context/GroupByContext";
-import { RecordContext } from "@/src/context/RecordContext";
+import { GroupByContext } from "@/src/context/commissions/GroupByContext";
+import { RecordContext } from "@/src/context/commissions/RecordContext";
 import { useContext } from "react";
 
 export type NewRecordButtonProps = {

@@ -1,4 +1,4 @@
-import { GroupByContext } from "@/src/context/GroupByContext";
+import { GroupByContext } from "@/src/context/commissions/GroupByContext";
 import { useContext } from "react";
 
 export const ViewHeaderButtons = () => {

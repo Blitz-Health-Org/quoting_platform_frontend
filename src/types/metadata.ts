@@ -1,16 +1,29 @@
 //TODO: Figure out a way to make sure that this matches the database
 
-//TODO: Check to make sure that only system variables are missing label, or make types stricter
-export type FieldType = {
+type BaseFieldType = {
   field: string;
   type: string;
   isDefault: boolean;
-  isSystem: boolean;
   isNullable: boolean;
   isRelation?: boolean;
-  label?: string;
   placeholder?: string;
+  plan_details?: string;
+  json_structure?: string;
 };
+
+// Extension for system fields without 'label'
+type SystemField = BaseFieldType & {
+  isSystem: true;
+};
+
+// Extension for non-system fields with 'label'
+type NonSystemField = BaseFieldType & {
+  isSystem: false;
+  label: string; // Make 'label' mandatory for non-system fields
+};
+
+// Combined type using union
+type FieldType = SystemField | NonSystemField;
 
 export const quoteMetadataObject: Record<string, FieldType> = {
   id: {
@@ -34,6 +47,14 @@ export const quoteMetadataObject: Record<string, FieldType> = {
     isDefault: false,
     isSystem: true,
     isNullable: false,
+  },
+  plan_details: {
+    field: "plan_details",
+    type: "jsonb",
+    isDefault: true,
+    isSystem: true,
+    isNullable: false,
+    json_structure: "{}",
   },
 };
 

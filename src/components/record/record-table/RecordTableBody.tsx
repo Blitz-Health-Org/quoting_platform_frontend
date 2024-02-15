@@ -1,12 +1,12 @@
 //disable filter or groupby
 
 import { RecordRow } from "@/src/components/record/record-table/RecordRow";
-import { RowContextProvider } from "@/src/context/RowContext";
+import { RowContextProvider } from "@/src/context/commissions/RowContext";
 import { Dispatch, SetStateAction, useContext } from "react";
 import { TableGroupHeader } from "@/src/components/record/record-table/group-by/components/TableGroupHeader";
 import { TableGroupAggregationRow } from "@/src/components/record/record-table/group-by/TableGroupAggregationRow";
 import { createClient } from "@supabase/supabase-js";
-import { Database } from "@/src/types/database.types";
+import { Database } from "@/src/types/database/database.types";
 import _ from "lodash";
 import { ActionBar } from "@/src/components/record/record-table/ActionBar";
 import { PolicyField } from "@/src/types/metadata";

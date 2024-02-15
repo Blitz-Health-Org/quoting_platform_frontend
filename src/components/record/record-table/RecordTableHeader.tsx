@@ -1,7 +1,7 @@
 import { CheckboxAllCell } from "@/src/components/record/record-table/cell/CheckBoxAllCell";
 import { RecordTableHeaderCell } from "@/src/components/record/record-table/cell/RecordTableHeaderCell";
 import { useRecordTable } from "@/src/components/record/record-table/hooks/useRecordTable";
-import { RecordContext } from "@/src/context/RecordContext";
+import { RecordContext } from "@/src/context/commissions/RecordContext";
 import { useContext } from "react";
 
 export function RecordTableHeader() {

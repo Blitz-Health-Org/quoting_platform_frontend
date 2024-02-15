@@ -2,8 +2,8 @@
 import { RecordCell } from "@/src/components/record/record-table/cell/RecordCell";
 import React, { useContext, useRef } from "react";
 // import { FaTrash } from "react-icons/fa";
-import { RowContext } from "@/src/context/RowContext";
-import { ColumnContext } from "@/src/context/ColumnContext";
+import { RowContext } from "@/src/context/commissions/RowContext";
+import { ColumnContext } from "@/src/context/commissions/ColumnContext";
 import { CheckboxCell } from "@/src/components/record/record-table/cell/CheckboxCell";
 import { isNonUpdatable } from "@/src/types/utils/isNonUpdatable";
 

@@ -5,7 +5,7 @@ import { EnumCell } from "@/src/components/record/record-table/cell/EnumCell";
 import { RelationCell } from "@/src/components/record/record-table/cell/relation/RelationCell";
 import { TextCell } from "@/src/components/record/record-table/cell/TextCell";
 import { useListenClickOutside } from "@/src/components/ui/dropdown/utils/useListenClickOutside";
-import { RowContext } from "@/src/context/RowContext";
+import { RowContext } from "@/src/context/commissions/RowContext";
 import { PolicyField } from "@/src/types/metadata";
 import { useContext, useEffect, useRef, useState } from "react";
 import { useHotkeys } from "react-hotkeys-hook";

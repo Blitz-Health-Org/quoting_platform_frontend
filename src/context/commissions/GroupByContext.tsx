@@ -1,4 +1,4 @@
-import { PolicyField } from "../types/metadata";
+import { PolicyField } from "../../types/metadata";
 import { Dispatch, SetStateAction, createContext, useState } from "react";
 
 type GroupContextProps = {

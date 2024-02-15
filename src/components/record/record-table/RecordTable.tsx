@@ -9,9 +9,9 @@ import { RecordTableHeader } from "@/src/components/record/record-table/RecordTa
 import { RecordTableBody } from "@/src/components/record/record-table/RecordTableBody";
 import { RecordViewHeader } from "@/src/components/record/record-table/view/RecordViewHeader";
 import { useRecordTable } from "@/src/components/record/record-table/hooks/useRecordTable";
-import { FilterContext } from "@/src/context/FilterContext";
-import { GroupByContext } from "@/src/context/GroupByContext";
-import { RecordContext } from "@/src/context/RecordContext";
+import { FilterContext } from "@/src/context/commissions/FilterContext";
+import { GroupByContext } from "@/src/context/commissions/GroupByContext";
+import { RecordContext } from "@/src/context/commissions/RecordContext";
 import { Graphs } from "@/src/components/record/record-table/graph/Graphs";
 import { MdAutoGraph } from "react-icons/md";
 

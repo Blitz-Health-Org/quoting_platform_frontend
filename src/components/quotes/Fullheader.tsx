@@ -1,19 +1,21 @@
-import * as React from 'react';
+import * as React from "react";
 import Image from "next/image";
 import { IoMdArrowBack } from "react-icons/io";
 import { IoHelpCircleSharp } from "react-icons/io5";
 import { useRouter } from "next/navigation";
 
 export default function Fullheader() {
-
   const router = useRouter();
   const handleNewClientClick = () => {
     router.push("/");
   };
 
   return (
-    <div className="flex items-center justify-between h-12 bg-white outline outline-1 outline-gray-200 px-6"> 
-      <div className="flex items-center cursor-pointer" onClick={handleNewClientClick}>
+    <div className="flex items-center justify-between h-12 bg-white outline outline-1 outline-gray-200 px-6">
+      <div
+        className="flex items-center cursor-pointer"
+        onClick={handleNewClientClick}
+      >
         <IoMdArrowBack className="mr-2" />
         <p>Client Dashboard</p>
       </div>

@@ -1,6 +1,6 @@
 //TODO: Get rid of vestigial setRows and rely completely on refetch (add deps to useEffect)
 
-import { RecordContext } from "@/src/context/RecordContext";
+import { RecordContext } from "@/src/context/commissions/RecordContext";
 import { createClient } from "@supabase/supabase-js";
 import { Filter } from "@/src/types/custom/Filter";
 import { isFieldVisible } from "@/src/types/utils/isFieldVisible";

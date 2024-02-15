@@ -2,8 +2,8 @@
 
 import RecordTableContainer from "@/src/components/record/record-table/RecordTableContainer";
 import { RecordHeader } from "@/src/components/record/record-table/group-by/components/GroupByShortcutHeader";
-import { GroupByContextProvider } from "@/src/context/GroupByContext";
-import { RecordContextProvider } from "@/src/context/RecordContext";
+import { GroupByContextProvider } from "@/src/context/commissions/GroupByContext";
+import { RecordContextProvider } from "@/src/context/commissions/RecordContext";
 
 export const CommissionTablePage = () => {
   const tableName = {

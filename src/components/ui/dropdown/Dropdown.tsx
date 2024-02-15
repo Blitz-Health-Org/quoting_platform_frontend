@@ -8,7 +8,7 @@ import {
   useFloating,
 } from "@floating-ui/react";
 import { useListenClickOutside } from "@/src/components/ui/dropdown/utils/useListenClickOutside";
-import { RecordContext } from "@/src/context/RecordContext";
+import { RecordContext } from "@/src/context/commissions/RecordContext";
 
 type DropdownProps = {
   clickableComponent: React.ReactNode;

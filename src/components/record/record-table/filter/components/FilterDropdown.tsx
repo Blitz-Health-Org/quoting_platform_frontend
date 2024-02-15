@@ -4,7 +4,7 @@
 
 import { AppliedFilters } from "@/src/components/record/record-table/filter/components/AppliedFilters";
 import { FilterFooter } from "@/src/components/record/record-table/filter/components/FilterFooter";
-import { FilterContext } from "@/src/context/FilterContext";
+import { FilterContext } from "@/src/context/commissions/FilterContext";
 import { useContext, useState } from "react";
 
 export const FilterDropdown = () => {

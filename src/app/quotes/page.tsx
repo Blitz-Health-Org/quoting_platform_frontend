@@ -1,22 +1,48 @@
-"use client"
+"use client";
 
-import React from "react";
+import React, { useEffect, useState } from "react";
 import Image from "next/image";
 import { IoMdArrowBack } from "react-icons/io";
 import { useRouter } from "next/navigation";
 import { IoHelpCircleSharp } from "react-icons/io5";
-import Subheader from "../../components/Subheader";
-import Fullheader from "../../components/Fullheader";
-import Aetna from "../../components/Aetna";
-import Left from "../../components/Left";
+import Subheader from "../../components/quotes/Subheader";
+import Fullheader from "../../components/quotes/Fullheader";
+import QuoteCard from "../../components/quotes/QuoteCard";
+import Left from "../../components/quotes/Left";
+import { ClientType } from "@/src/types/custom/Client";
+import { supabase } from "@/src/supabase";
+import { QuoteType } from "@/src/types/custom/Quote";
 
-type Props = {};
+type QuotingPageProps = {
+  client: ClientType;
+};
 
-const QuotingPage = (props: Props) => {
+const QuotingPage = ({ client }: QuotingPageProps) => {
   const router = useRouter();
+  const [quotes, setQuotes] = useState<QuoteType[]>([]);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const { data, error } = await supabase
+          .from("quotes")
+          .select()
+          .eq("client_id", client.id);
+        if (error) {
+          console.error("Error retrieving data:", error);
+        } else {
+          setQuotes(data);
+          console.log("Data retrieved successfully:", data);
+        }
+      } catch (error) {
+        console.error("Error connecting to Supabase:", error);
+      }
+    };
+    fetchData();
+  });
+
   const handleNewClientClick = () => {
     router.push("/");
-
   };
 
   return (
@@ -27,12 +53,12 @@ const QuotingPage = (props: Props) => {
         <Subheader />
 
         <div className="w-fit overflow-x-auto">
-            <div className="w-fit p-0.5 flex h-fit gap-2">
-              <Left />
-              <Aetna />
-              <Aetna />
-              <Aetna />
-            </div>
+          <div className="w-fit p-0.5 flex h-fit gap-2">
+            <Left />
+            {quotes.map((quote) => {
+              return <QuoteCard key={quote.id} quote={quote} />;
+            })}
+          </div>
         </div>
       </div>
     </div>

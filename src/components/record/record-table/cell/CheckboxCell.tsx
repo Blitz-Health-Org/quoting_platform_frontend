@@ -1,4 +1,4 @@
-import { RecordContext } from "@/src/context/RecordContext";
+import { RecordContext } from "@/src/context/commissions/RecordContext";
 import { useContext, useState } from "react";
 
 export const CheckboxCell = ({ rowId }: { rowId: number }) => {

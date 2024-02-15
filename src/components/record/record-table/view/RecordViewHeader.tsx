@@ -4,7 +4,7 @@ import { Dropdown } from "@/src/components/ui/dropdown/Dropdown";
 import { useRecordTable } from "@/src/components/record/record-table/hooks/useRecordTable";
 import { CiBoxList } from "react-icons/ci";
 import { useContext } from "react";
-import { RecordContext } from "@/src/context/RecordContext";
+import { RecordContext } from "@/src/context/commissions/RecordContext";
 
 export const RecordViewHeader = () => {
   const { tableName } = useContext(RecordContext);

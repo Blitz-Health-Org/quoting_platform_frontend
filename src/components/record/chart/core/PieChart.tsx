@@ -3,7 +3,7 @@ import { ErrorBoundary } from "react-error-boundary";
 import { Pie } from "react-chartjs-2";
 import { Chart as ChartJS, ArcElement, Tooltip, Legend } from "chart.js";
 import { useRecordTable } from "@/src/components/record/record-table/hooks/useRecordTable";
-import { RecordContext } from "@/src/context/RecordContext";
+import { RecordContext } from "@/src/context/commissions/RecordContext";
 import { useContext } from "react";
 
 export const PieChart = () => {
