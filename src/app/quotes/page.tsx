@@ -19,7 +19,7 @@ type QuotingPageProps = {
   client: ClientType;
 };
 
-const QuotingPage = ({ client }: QuotingPageProps) => {
+export default function QuotingPage({ client }: QuotingPageProps) {
   client = {
     created_at: "323",
     icon: "",
@@ -109,6 +109,4 @@ const QuotingPage = ({ client }: QuotingPageProps) => {
       </div>
     </div>
   );
-};
-
-export default QuotingPage;
+}
