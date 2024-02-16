@@ -1,4 +1,4 @@
-import { Database } from "@/src/types/database.types";
+import { Database } from "@/src/types/database/database.types";
 import { createClient } from "@supabase/supabase-js";
 import { filter } from "lodash";
 

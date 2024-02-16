@@ -19,8 +19,9 @@ type QuotingPageProps = {
   client: ClientType;
 };
 
-export default function QuotingPage({ client }: QuotingPageProps) {
-  client = {
+export default function QuotingPage() {
+  //TODO: fix
+  const client = {
     created_at: "323",
     icon: "",
     num_lives: 3,

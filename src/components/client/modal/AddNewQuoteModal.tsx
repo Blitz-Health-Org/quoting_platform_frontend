@@ -4,7 +4,11 @@ import Image from "next/image";
 import { useState } from "react";
 import BlumeLogo from "@/public/BlumeLogo.png";
 import { supabase } from "@/src/supabase";
-import { FieldType, quoteMetadataObject } from "@/src/types/metadata";
+import {
+  FieldType,
+  NonSystemField,
+  quoteMetadataObject,
+} from "@/src/types/metadata";
 import { ClientType } from "@/src/types/custom/Client";
 import { QuoteType } from "@/src/types/custom/Quote";
 
@@ -96,7 +100,9 @@ export const AddNewQuoteModal = ({
               return (
                 <>
                   <div className="flex items-end">
-                    <p className="text-sm mr-1">{field.label}</p>
+                    <p className="text-sm mr-1">
+                      {(field as NonSystemField).label}
+                    </p>
                     {field.isNullable && (
                       <p className="text-xs text-gray-500">(Optional)</p>
                     )}

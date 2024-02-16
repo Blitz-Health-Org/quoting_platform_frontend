@@ -1,5 +1,5 @@
 import { Metadata, metadata } from "@/src/types/metadata";
-import { Database } from "@/src/types/database.types";
+import { Database } from "@/src/types/database/database.types";
 
 type RowType<TableName extends keyof Database["public"]["Tables"]> =
   Database["public"]["Tables"][TableName]["Row"];
