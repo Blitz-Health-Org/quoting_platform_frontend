@@ -15,7 +15,15 @@ import { QuoteType } from "@/src/types/custom/Quote";
 type AddNewQuoteModalProps = {
   client: ClientType;
   onClose: () => void;
-  setOpenSnackbarShare: (val: boolean) => void;
+  setOpenSnackbarShare: ({
+    open,
+    message,
+    severity,
+  }: {
+    open: boolean;
+    message: string;
+    severity: string;
+  }) => void;
 };
 export const AddNewQuoteModal = ({
   client,
@@ -72,7 +80,11 @@ export const AddNewQuoteModal = ({
       console.error("Error connecting to Supabase:", error);
     }
 
-    setOpenSnackbarShare(true); // Use prop to set state
+    setOpenSnackbarShare({
+      open: true,
+      message: `New Quote Added to ${client.name}!`,
+      severity: "success",
+    }); // Use prop to set state
   };
 
   return (

@@ -1,5 +1,5 @@
 import { ClientType } from "@/src/types/custom/Client";
-import { FaBook, FaPlus } from "react-icons/fa6";
+import { FaBook, FaPlus, FaTrash } from "react-icons/fa6";
 import { IoEyeSharp } from "react-icons/io5";
 import Image from "next/image";
 import { AddNewQuoteModal } from "@/src/components/client/modal/AddNewQuoteModal";
@@ -7,19 +7,29 @@ import { CreateHandbookModal } from "@/src/components/client/modal/CreateHandboo
 import { ViewQuoteModal } from "@/src/components/client/modal/ViewQuoteModal";
 import { useState } from "react";
 import { IconBuilding } from "@tabler/icons-react";
+import { supabase } from "@/src/supabase";
+import error from "next/error";
 
 export type ClientCardProps = {
   client: ClientType;
-  setOpenSnackbarShare: (val: boolean) => void;
+  handleClientDelete: (client: ClientType) => void;
+  setOpenSnackbarShare: ({
+    open,
+    message,
+    severity,
+  }: {
+    open: boolean;
+    message: string;
+    severity: string;
+  }) => void;
 };
 
 export const ClientCard = ({
   client,
   setOpenSnackbarShare,
+  handleClientDelete,
 }: ClientCardProps) => {
   const [modalOpen, setModalOpen] = useState<string>("");
-
-  console.log("modalOpen", modalOpen);
 
   function handleCreateHandbook() {
     setModalOpen("createHandbook");
@@ -45,8 +55,14 @@ export const ClientCard = ({
     <>
       <div
         onClick={handleClientCardClick}
-        className="w-full flex flex-col justify-between bg-white shadow-sm outline outline-1 outline-gray-200 rounded-md p-3"
+        className="w-full flex relative flex-col justify-between bg-white shadow-sm outline outline-1 outline-gray-200 rounded-md p-3"
       >
+        <button
+          className="absolute right-0 top-0 mt-2 mr-2"
+          onClick={() => handleClientDelete(client)}
+        >
+          <FaTrash />
+        </button>
         <div className="w-full">
           <div className="flex items-center gap-1">
             {client.icon ? (

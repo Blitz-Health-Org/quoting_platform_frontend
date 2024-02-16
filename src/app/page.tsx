@@ -23,6 +23,7 @@ import { ClientType } from "@/src/types/custom/Client";
 import { createClient } from "@supabase/supabase-js";
 import { useRouter } from "next/navigation";
 import { SnackbarAlert } from "../components/ui/SnackbarAlert";
+import error from "next/error";
 
 const supabase = createClient(
   "https://xabksrsyvpqlikxxwfgi.supabase.co",
@@ -50,13 +51,6 @@ export default function Home() {
     message: "",
     severity: "info", // default severity
   });
-
-  function setOpenSnackbarShare(val: boolean) {
-    setSnackbar((prevState) => ({
-      ...prevState,
-      open: val,
-    }));
-  }
 
   useEffect(() => {
     const fetchData = async () => {
@@ -96,6 +90,50 @@ export default function Home() {
   const handleNewClientClick = () => {
     setIsModalOpen(!isModalOpen);
   };
+
+  async function handleClientDelete(client: ClientType) {
+    // SEND DATA
+    try {
+      const { error } = await supabase
+        .from("clients")
+        .delete()
+        .eq("id", client.id);
+
+      if (error) {
+        setSnackbar({
+          open: true,
+          message: "Delete failed",
+          severity: "error",
+        });
+        console.error("Error inserting data:", error);
+      } else {
+        //UPDATE DATA
+        try {
+          const { data, error } = await supabase.from("clients").select();
+          if (error) {
+            console.error("Error retrieving data:", error);
+          } else {
+            setClients(data);
+            console.log("Data retrieved successfully:", data);
+          }
+        } catch (error) {
+          console.error("Error connecting to Supabase:", error);
+        }
+        setSnackbar({
+          open: true,
+          message: `${client.name} Deleted!`,
+          severity: "success",
+        });
+      }
+    } catch (error) {
+      setSnackbar({
+        open: true,
+        message: "Delete failed",
+        severity: "error",
+      });
+      console.error("Error connecting to Supabase:", error);
+    }
+  }
 
   const handleCloseModal = () => {
     setIsModalOpen(!isModalOpen);
@@ -140,7 +178,8 @@ export default function Home() {
                     <ClientCard
                       key={client.id}
                       client={client}
-                      setOpenSnackbarShare={setOpenSnackbarShare}
+                      setOpenSnackbarShare={setSnackbar}
+                      handleClientDelete={handleClientDelete}
                     />
                   </>
                 );
@@ -149,14 +188,14 @@ export default function Home() {
           </div>
           {isModalOpen && (
             <NewClientModal
-              setOpenSnackbarShare={setOpenSnackbarShare}
+              setOpenSnackbarShare={setSnackbar}
               onClose={handleCloseModal}
               setClients={setClients}
             />
           )}
           <SnackbarAlert
             openSnackbarShare={snackbar.open}
-            setOpenSnackbarShare={setOpenSnackbarShare}
+            setOpenSnackbarShare={setSnackbar}
             snackbar={snackbar}
           />
           )

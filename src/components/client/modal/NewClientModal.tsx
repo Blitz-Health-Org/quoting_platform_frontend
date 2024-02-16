@@ -114,7 +114,11 @@ export const NewClientModal = ({
       console.error("Error connecting to Supabase:", error);
     }
 
-    setOpenSnackbarShare(true); // Use prop to set state
+    setOpenSnackbarShare({
+      open: true,
+      message: "New Client Created!",
+      severity: "success",
+    }); // Use prop to set state
   };
 
   return (

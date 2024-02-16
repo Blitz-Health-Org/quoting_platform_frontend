@@ -3,7 +3,15 @@ import { Snackbar, Alert } from "@mui/material";
 
 type SnackBarAlertProps = {
   openSnackbarShare: boolean;
-  setOpenSnackbarShare: (val: boolean) => void;
+  setOpenSnackbarShare: ({
+    open,
+    message,
+    severity,
+  }: {
+    open: boolean;
+    message: string;
+    severity: any;
+  }) => void;
   snackbar: {
     open: boolean;
     message: string;
@@ -21,10 +29,14 @@ export const SnackbarAlert = ({
       key={`4`}
       open={openSnackbarShare}
       autoHideDuration={4000}
-      onClose={() => setOpenSnackbarShare(false)}
+      onClose={() =>
+        setOpenSnackbarShare({ open: false, message: "", severity: "info" })
+      }
     >
       <Alert
-        onClose={() => setOpenSnackbarShare(false)}
+        onClose={() =>
+          setOpenSnackbarShare({ open: false, message: "", severity: "info" })
+        }
         severity={(snackbar.severity as any) ?? "success"} //fuck this inane typing
         variant="filled"
       >
