@@ -1,5 +1,3 @@
-//TODO: finish linking this up to supabase
-
 import * as React from "react";
 import Image from "next/image";
 import Apple from "@/public/Screenshot.png";
@@ -15,9 +13,14 @@ type QuoteCardProps = {
 export default function QuoteCard({
   quote,
   nonObjectVisibleQuoteFields,
+  objectVisibleQuoteFields,
 }: QuoteCardProps) {
   function valueOrDefault(val: any, def: string = "N/A") {
     return val ?? def;
+  }
+
+  if (quote.name === "Aetna") {
+    console.log("aetna", quote.deductibles.in.medical);
   }
 
   return (
@@ -53,7 +56,7 @@ export default function QuoteCard({
 
         <div className="flex w-full">
           <textarea
-            defaultValue={"PPO"}
+            defaultValue={valueOrDefault(quote.plan_type)}
             className="text-center font-semibold resize-none text-sm content-center h-7 w-1/2 bg-transparent focus:outline-0 focus:border focus:border-1 focus:border-gray-200 cursor-pointer focus:cursor-auto p-1"
           />
           <textarea
@@ -63,493 +66,47 @@ export default function QuoteCard({
         </div>
         <hr className="w-full border-t-1 border-gray-500"></hr>
 
-        <div className="flex w-full">
-          <textarea
-            disabled
-            className="text-center resize-none text-sm content-center h-7 w-1/2 bg-transparent border-r focus:outline-0 focus:border focus:border-1 focus:border-gray-200 focus:cursor-auto p-1"
-          />
-          <textarea
-            disabled
-            className="text-center resize-none text-sm content-center h-7 w-1/2 bg-transparent focus:outline-0 focus:border focus:border-1 focus:border-gray-200 focus:cursor-auto p-1"
-          />
-        </div>
-        <hr className="w-full border-t-1 border-gray-300"></hr>
+        {objectVisibleQuoteFields.map((objectField) => {
+          return (
+            <>
+              <div className="flex w-full">
+                <textarea
+                  disabled
+                  className="text-center resize-none text-sm content-center h-7 w-1/2 bg-transparent border-r focus:outline-0 focus:border focus:border-1 focus:border-gray-200 focus:cursor-auto p-1"
+                />
+                <textarea
+                  disabled
+                  className="text-center resize-none text-sm content-center h-7 w-1/2 bg-transparent focus:outline-0 focus:border focus:border-1 focus:border-gray-200 focus:cursor-auto p-1"
+                />
+              </div>
 
-        <div className="flex w-full bg-white">
-          <textarea
-            defaultValue={valueOrDefault(
-              quote.plan_details?.in?.deductible?.overall,
-            )}
-            className="text-center resize-none text-sm content-center h-7 w-1/2 border-r bg-transparent focus:outline-0 focus:border focus:border-1 focus:border-gray-200 cursor-pointer focus:cursor-auto p-1"
-          />
-          <textarea
-            defaultValue={valueOrDefault(
-              quote.plan_details?.oon?.deductible?.overall,
-            )}
-            className="text-center resize-none text-sm content-center h-7 w-1/2 bg-transparent focus:outline-0 focus:border focus:border-1 focus:border-gray-200 cursor-pointer focus:cursor-auto p-1"
-          />
-        </div>
-        <hr className="w-full border-t-1 border-gray-300"></hr>
-
-        <div className="flex w-full bg-white">
-          <textarea
-            defaultValue={valueOrDefault(
-              quote.plan_details?.in?.deductible?.medical,
-            )}
-            className="text-center resize-none text-sm content-center h-7 w-1/2 border-r bg-transparent focus:outline-0 focus:border focus:border-1 focus:border-gray-200 cursor-pointer focus:cursor-auto p-1"
-          />
-          <textarea
-            defaultValue={valueOrDefault(
-              quote.plan_details?.oon?.deductible?.medical,
-            )}
-            className="text-center resize-none text-sm content-center h-7 w-1/2 bg-transparent focus:outline-0 focus:border focus:border-1 focus:border-gray-200 cursor-pointer focus:cursor-auto p-1"
-          />
-        </div>
-        <hr className="w-full border-t-1 border-gray-300"></hr>
-
-        <div className="flex w-full bg-white">
-          <textarea
-            defaultValue={valueOrDefault(
-              quote.plan_details?.in?.deductible?.prescription_drug,
-            )}
-            className="text-center resize-none text-sm content-center h-7 w-1/2 border-r bg-transparent focus:outline-0 focus:border focus:border-1 focus:border-gray-200 cursor-pointer focus:cursor-auto p-1"
-          />
-          <textarea
-            defaultValue={valueOrDefault(
-              quote.plan_details?.oon?.deductible?.prescription_drug,
-            )}
-            className="text-center resize-none text-sm content-center h-7 w-1/2 bg-transparent focus:outline-0 focus:border focus:border-1 focus:border-gray-200 cursor-pointer focus:cursor-auto p-1"
-          />
-        </div>
-        <hr className="w-full border-t-1 border-gray-300"></hr>
-
-        <div className="flex w-full bg-white">
-          <textarea
-            defaultValue={valueOrDefault(
-              quote.plan_details?.in?.deductible?.oop,
-            )}
-            className="text-center resize-none text-sm content-center h-7 w-1/2 border-r bg-transparent focus:outline-0 focus:border focus:border-1 focus:border-gray-200 cursor-pointer focus:cursor-auto p-1"
-          />
-          <textarea
-            defaultValue={valueOrDefault(
-              quote.plan_details?.oon?.deductible.oop,
-            )}
-            className="text-center resize-none text-sm content-center h-7 w-1/2 bg-transparent focus:outline-0 focus:border focus:border-1 focus:border-gray-200 cursor-pointer focus:cursor-auto p-1"
-          />
-        </div>
-        <hr className="w-full border-t-1 border-gray-500"></hr>
-
-        <div className="flex w-full">
-          <textarea
-            disabled
-            className="text-center resize-none text-sm content-center h-7 w-1/2 border-r bg-transparent focus:outline-0 focus:border focus:border-1 focus:border-gray-200 focus:cursor-auto p-1"
-          />
-          <textarea
-            disabled
-            className="text-center resize-none text-sm content-center h-7 w-1/2 bg-transparent focus:outline-0 focus:border focus:border-1 focus:border-gray-200 focus:cursor-auto p-1"
-          />
-        </div>
-        <hr className="w-full border-t-1 border-gray-300"></hr>
-
-        <div className="flex w-full bg-white">
-          <textarea
-            defaultValue={valueOrDefault(
-              quote.plan_details?.in?.visit_to_provider?.primary_care_visit,
-            )}
-            className="text-center resize-none text-sm content-center h-7 w-1/2 border-r bg-transparent focus:outline-0 focus:border focus:border-1 focus:border-gray-200 cursor-pointer focus:cursor-auto p-1"
-          />
-          <textarea
-            defaultValue={valueOrDefault(
-              quote.plan_details?.oon?.visit_to_provider?.primary_care_visit,
-            )}
-            className="text-center resize-none text-sm content-center h-7 w-1/2 bg-transparent focus:outline-0 focus:border focus:border-1 focus:border-gray-200 cursor-pointer focus:cursor-auto p-1"
-          />
-        </div>
-        <hr className="w-full border-t-1 border-gray-300"></hr>
-
-        <div className="flex w-full bg-white">
-          <textarea
-            defaultValue={valueOrDefault(
-              quote.plan_details?.in?.visit_to_provider?.specialist_visit,
-            )}
-            className="text-center resize-none text-sm content-center h-7 w-1/2 border-r bg-transparent focus:outline-0 focus:border focus:border-1 focus:border-gray-200 cursor-pointer focus:cursor-auto p-1"
-          />
-          <textarea
-            defaultValue={valueOrDefault(
-              quote.plan_details?.oon?.visit_to_provider?.specialist_visit,
-            )}
-            className="text-center resize-none text-sm content-center h-7 w-1/2 bg-transparent focus:outline-0 focus:border focus:border-1 focus:border-gray-200 cursor-pointer focus:cursor-auto p-1"
-          />
-        </div>
-        <hr className="w-full border-t-1 border-gray-300"></hr>
-
-        <div className="flex w-full bg-white">
-          <textarea
-            defaultValue={"No Charge"}
-            className="text-center resize-none text-sm content-center h-7 w-1/2 border-r bg-transparent focus:outline-0 focus:border focus:border-1 focus:border-gray-200 cursor-pointer focus:cursor-auto p-1"
-          />
-          <textarea
-            defaultValue={"Not Covered"}
-            className="text-center resize-none text-sm content-center h-7 w-1/2 bg-transparent focus:outline-0 focus:border focus:border-1 focus:border-gray-200 cursor-pointer focus:cursor-auto p-1"
-          />
-        </div>
-        <hr className="w-full border-t-1 border-gray-500"></hr>
-
-        <div className="flex w-full">
-          <textarea
-            disabled
-            className="text-center resize-none text-sm content-center h-7 w-1/2 border-r bg-transparent focus:outline-0 focus:border focus:border-1 focus:border-gray-200 focus:cursor-auto p-1"
-          />
-          <textarea
-            disabled
-            className="text-center resize-none text-sm content-center h-7 w-1/2 bg-transparent focus:outline-0 focus:border focus:border-1 focus:border-gray-200 focus:cursor-auto p-1"
-          />
-        </div>
-        <hr className="w-full border-t-1 border-gray-300"></hr>
-
-        <div className="flex w-full bg-white">
-          <textarea
-            defaultValue={"$30 Copay/20%"}
-            className="text-center resize-none text-sm content-center h-7 w-1/2 border-r bg-transparent focus:outline-0 focus:border focus:border-1 focus:border-gray-200 cursor-pointer focus:cursor-auto p-1"
-          />
-          <textarea
-            defaultValue={"40% up to $350/Day"}
-            className="text-center resize-none text-sm content-center h-7 w-1/2 bg-transparent focus:outline-0 focus:border focus:border-1 focus:border-gray-200 cursor-pointer focus:cursor-auto p-1"
-          />
-        </div>
-        <hr className="w-full border-t-1 border-gray-300"></hr>
-
-        <div className="flex w-full bg-white">
-          <textarea
-            defaultValue={"$50 Copay/$100 Copay"}
-            className="text-center resize-none text-sm content-center h-7 w-1/2 border-r bg-transparent focus:outline-0 focus:border focus:border-1 focus:border-gray-200 cursor-pointer focus:cursor-auto p-1"
-          />
-          <textarea
-            defaultValue={"40% up to $350/Day"}
-            className="text-center resize-none text-sm content-center h-7 w-1/2 bg-transparent focus:outline-0 focus:border focus:border-1 focus:border-gray-200 cursor-pointer focus:cursor-auto p-1"
-          />
-        </div>
-        <hr className="w-full border-t-1 border-gray-300"></hr>
-
-        <div className="flex w-full bg-white">
-          <textarea
-            defaultValue={"20%/$100 Copay + 20%"}
-            className="text-center resize-none text-sm content-center h-7 w-1/2 border-r bg-transparent focus:outline-0 focus:border focus:border-1 focus:border-gray-200 cursor-pointer focus:cursor-auto p-1"
-          />
-          <textarea
-            defaultValue={"40% up to $350/Day"}
-            className="text-center resize-none text-sm content-center h-7 w-1/2 bg-transparent focus:outline-0 focus:border focus:border-1 focus:border-gray-200 cursor-pointer focus:cursor-auto p-1"
-          />
-        </div>
-        <hr className="w-full border-t-1 border-gray-500"></hr>
-
-        <div className="flex w-full">
-          <textarea
-            disabled
-            className="text-center resize-none text-sm content-center h-7 w-1/2 border-r bg-transparent focus:outline-0 focus:border focus:border-1 focus:border-gray-200 cursor-pointer focus:cursor-auto p-1"
-          />
-          <textarea
-            disabled
-            className="text-center resize-none text-sm content-center h-7 w-1/2 bg-transparent focus:outline-0 focus:border focus:border-1 focus:border-gray-200 cursor-pointer focus:cursor-auto p-1"
-          />
-        </div>
-        <hr className="w-full border-t-1 border-gray-300"></hr>
-
-        <div className="flex w-full bg-white">
-          <textarea
-            defaultValue={"$15 Copay"}
-            className="text-center resize-none text-sm content-center h-7 w-1/2 border-r bg-transparent focus:outline-0 focus:border focus:border-1 focus:border-gray-200 cursor-pointer focus:cursor-auto p-1"
-          />
-          <textarea
-            defaultValue={"Not Covered"}
-            className="text-center resize-none text-sm content-center h-7 w-1/2 bg-transparent focus:outline-0 focus:border focus:border-1 focus:border-gray-200 cursor-pointer focus:cursor-auto p-1"
-          />
-        </div>
-        <hr className="w-full border-t-1 border-gray-300"></hr>
-
-        <div className="flex w-full bg-white">
-          <textarea
-            defaultValue={"$50 Copay"}
-            className="text-center resize-none text-sm content-center h-7 w-1/2 border-r bg-transparent focus:outline-0 focus:border focus:border-1 focus:border-gray-200 cursor-pointer focus:cursor-auto p-1"
-          />
-          <textarea
-            defaultValue={"Not Covered"}
-            className="text-center resize-none text-sm content-center h-7 w-1/2 bg-transparent focus:outline-0 focus:border focus:border-1 focus:border-gray-200 cursor-pointer focus:cursor-auto p-1"
-          />
-        </div>
-        <hr className="w-full border-t-1 border-gray-300"></hr>
-
-        <div className="flex w-full bg-white">
-          <textarea
-            defaultValue={"$80 Copay"}
-            className="text-center resize-none text-sm content-center h-7 w-1/2 border-r bg-transparent focus:outline-0 focus:border focus:border-1 focus:border-gray-200 cursor-pointer focus:cursor-auto p-1"
-          />
-          <textarea
-            defaultValue={"Not Covered"}
-            className="text-center resize-none text-sm content-center h-7 w-1/2 bg-transparent focus:outline-0 focus:border focus:border-1 focus:border-gray-200 cursor-pointer focus:cursor-auto p-1"
-          />
-        </div>
-        <hr className="w-full border-t-1 border-gray-300"></hr>
-
-        <div className="flex w-full bg-white">
-          <textarea
-            defaultValue={"30% up to $250"}
-            className="text-center resize-none text-sm content-center h-7 w-1/2 border-r bg-transparent focus:outline-0 focus:border focus:border-1 focus:border-gray-200 cursor-pointer focus:cursor-auto p-1"
-          />
-          <textarea
-            defaultValue={"Not Covered"}
-            className="text-center resize-none text-sm content-center h-7 w-1/2 bg-transparent focus:outline-0 focus:border focus:border-1 focus:border-gray-200 cursor-pointer focus:cursor-auto p-1"
-          />
-        </div>
-        <hr className="w-full border-t-1 border-gray-500"></hr>
-
-        <div className="flex w-full">
-          <textarea
-            disabled
-            className="text-center resize-none text-sm content-center h-7 w-1/2 border-r bg-transparent focus:outline-0 focus:border focus:border-1 focus:border-gray-200 focus:cursor-auto p-1"
-          />
-          <textarea
-            disabled
-            className="text-center resize-none text-sm content-center h-7 w-1/2 bg-transparent focus:outline-0 focus:border focus:border-1 focus:border-gray-200 focus:cursor-auto p-1"
-          />
-        </div>
-        <hr className="w-full border-t-1 border-gray-300"></hr>
-
-        <div className="flex w-full bg-white">
-          <textarea
-            defaultValue={"20%"}
-            className="text-center resize-none text-sm content-center h-7 w-1/2 border-r bg-transparent focus:outline-0 focus:border focus:border-1 focus:border-gray-200 cursor-pointer focus:cursor-auto p-1"
-          />
-          <textarea
-            defaultValue={"40% up to $350/Day"}
-            className="text-center resize-none text-sm content-center h-7 w-1/2 bg-transparent focus:outline-0 focus:border focus:border-1 focus:border-gray-200 cursor-pointer focus:cursor-auto p-1"
-          />
-        </div>
-        <hr className="w-full border-t-1 border-gray-500"></hr>
-
-        <div className="flex w-full">
-          <textarea
-            disabled
-            className="text-center resize-none text-sm content-center h-7 w-1/2 border-r bg-transparent focus:outline-0 focus:border focus:border-1 focus:border-gray-200 cursor-pointer focus:cursor-auto p-1"
-          />
-          <textarea
-            disabled
-            className="text-center resize-none text-sm content-center h-7 w-1/2 bg-transparent focus:outline-0 focus:border focus:border-1 focus:border-gray-200 cursor-pointer focus:cursor-auto p-1"
-          />
-        </div>
-        <hr className="w-full border-t-1 border-gray-300"></hr>
-
-        <div className="flex w-full bg-white">
-          <textarea
-            defaultValue={"$250 + 20% ER + 20% DR"}
-            className="text-center resize-none text-sm content-center h-7 w-1/2 border-r bg-transparent focus:outline-0 focus:border focus:border-1 focus:border-gray-200 cursor-pointer focus:cursor-auto p-1"
-          />
-          <textarea
-            defaultValue={"$250 + 20% ER + 20% DR"}
-            className="text-center resize-none text-sm content-center h-7 w-1/2 bg-transparent focus:outline-0 focus:border focus:border-1 focus:border-gray-200 cursor-pointer focus:cursor-auto p-1"
-          />
-        </div>
-        <hr className="w-full border-t-1 border-gray-300"></hr>
-
-        <div className="flex w-full bg-white">
-          <textarea
-            defaultValue={"20%"}
-            className="text-center resize-none text-sm content-center h-7 w-1/2 border-r bg-transparent focus:outline-0 focus:border focus:border-1 focus:border-gray-200 cursor-pointer focus:cursor-auto p-1"
-          />
-          <textarea
-            defaultValue={"20%"}
-            className="text-center resize-none text-sm content-center h-7 w-1/2 bg-transparent focus:outline-0 focus:border focus:border-1 focus:border-gray-200 cursor-pointer focus:cursor-auto p-1"
-          />
-        </div>
-        <hr className="w-full border-t-1 border-gray-300"></hr>
-
-        <div className="flex w-full bg-white">
-          <textarea
-            defaultValue={"$30 Copay"}
-            className="text-center resize-none text-sm content-center h-7 w-1/2 border-r bg-transparent focus:outline-0 focus:border focus:border-1 focus:border-gray-200 cursor-pointer focus:cursor-auto p-1"
-          />
-          <textarea
-            defaultValue={"40%"}
-            className="text-center resize-none text-sm content-center h-7 w-1/2 bg-transparent focus:outline-0 focus:border focus:border-1 focus:border-gray-200 cursor-pointer focus:cursor-auto p-1"
-          />
-        </div>
-        <hr className="w-full border-t-1 border-gray-500"></hr>
-
-        <div className="flex w-full">
-          <textarea
-            disabled
-            className="text-center resize-none text-sm content-center h-7 w-1/2 border-r bg-transparent focus:outline-0 focus:border focus:border-1 focus:border-gray-200 focus:cursor-auto p-1"
-          />
-          <textarea
-            disabled
-            className="text-center resize-none text-sm content-center h-7 w-1/2 bg-transparent focus:outline-0 focus:border focus:border-1 focus:border-gray-200 focus:cursor-auto p-1"
-          />
-        </div>
-        <hr className="w-full border-t-1 border-gray-300"></hr>
-
-        <div className="flex w-full bg-white">
-          <textarea
-            defaultValue={"20%"}
-            className="text-center resize-none text-sm content-center h-7 w-1/2 border-r bg-transparent focus:outline-0 focus:border focus:border-1 focus:border-gray-200 cursor-pointer focus:cursor-auto p-1"
-          />
-          <textarea
-            defaultValue={"40% up to $2,000/Day"}
-            className="text-center resize-none text-sm content-center h-7 w-1/2 bg-transparent focus:outline-0 focus:border focus:border-1 focus:border-gray-200 cursor-pointer focus:cursor-auto p-1"
-          />
-        </div>
-        <hr className="w-full border-t-1 border-gray-300"></hr>
-
-        <div className="flex w-full bg-white">
-          <textarea
-            defaultValue={"20%"}
-            className="text-center resize-none text-sm content-center h-7 w-1/2 border-r bg-transparent focus:outline-0 focus:border focus:border-1 focus:border-gray-200 cursor-pointer focus:cursor-auto p-1"
-          />
-          <textarea
-            defaultValue={"40%"}
-            className="text-center resize-none text-sm content-center h-7 w-1/2 bg-transparent focus:outline-0 focus:border focus:border-1 focus:border-gray-200 cursor-pointer focus:cursor-auto p-1"
-          />
-        </div>
-        <hr className="w-full border-t-1 border-gray-500"></hr>
-
-        <div className="flex w-full">
-          <textarea
-            disabled
-            className="text-center resize-none text-sm content-center h-7 w-1/2 border-r bg-transparent focus:outline-0 focus:border focus:border-1 focus:border-gray-200 focus:cursor-auto p-1"
-          />
-          <textarea
-            disabled
-            className="text-center resize-none text-sm content-center h-7 w-1/2 bg-transparent focus:outline-0 focus:border focus:border-1 focus:border-gray-200 focus:cursor-auto p-1"
-          />
-        </div>
-        <hr className="w-full border-t-1 border-gray-300"></hr>
-
-        <div className="flex w-full bg-white">
-          <textarea
-            defaultValue={"$30 Copay"}
-            className="text-center resize-none text-sm content-center h-7 w-1/2 border-r bg-transparent focus:outline-0 focus:border focus:border-1 focus:border-gray-200 cursor-pointer focus:cursor-auto p-1"
-          />
-          <textarea
-            defaultValue={"40%"}
-            className="text-center resize-none text-sm content-center h-7 w-1/2 bg-transparent focus:outline-0 focus:border focus:border-1 focus:border-gray-200 cursor-pointer focus:cursor-auto p-1"
-          />
-        </div>
-        <hr className="w-full border-t-1 border-gray-300"></hr>
-
-        <div className="flex w-full bg-white">
-          <textarea
-            defaultValue={"20%"}
-            className="text-center resize-none text-sm content-center h-7 w-1/2 border-r bg-transparent focus:outline-0 focus:border focus:border-1 focus:border-gray-200 cursor-pointer focus:cursor-auto p-1"
-          />
-          <textarea
-            defaultValue={"40% up to $2,000/Day"}
-            className="text-center resize-none text-sm content-center h-7 w-1/2 bg-transparent focus:outline-0 focus:border focus:border-1 focus:border-gray-200 cursor-pointer focus:cursor-auto p-1"
-          />
-        </div>
-        <hr className="w-full border-t-1 border-gray-300"></hr>
-
-        <div className="flex w-full bg-white">
-          <textarea
-            defaultValue={"$30 Copay"}
-            className="text-center resize-none text-sm content-center h-7 w-1/2 border-r bg-transparent focus:outline-0 focus:border focus:border-1 focus:border-gray-200 cursor-pointer focus:cursor-auto p-1"
-          />
-          <textarea
-            defaultValue={"40%"}
-            className="text-center resize-none text-sm content-center h-7 w-1/2 bg-transparent focus:outline-0 focus:border focus:border-1 focus:border-gray-200 cursor-pointer focus:cursor-auto p-1"
-          />
-        </div>
-        <hr className="w-full border-t-1 border-gray-300"></hr>
-
-        <div className="flex w-full bg-white">
-          <textarea
-            defaultValue={"20%"}
-            className="text-center resize-none text-sm content-center h-7 w-1/2 border-r bg-transparent focus:outline-0 focus:border focus:border-1 focus:border-gray-200 cursor-pointer focus:cursor-auto p-1"
-          />
-          <textarea
-            defaultValue={"40% up to $2,000/Day"}
-            className="text-center resize-none text-sm content-center h-7 w-1/2 bg-transparent focus:outline-0 focus:border focus:border-1 focus:border-gray-200 cursor-pointer focus:cursor-auto p-1"
-          />
-        </div>
-        <hr className="w-full border-t-1 border-gray-500"></hr>
-
-        <div className="flex w-full">
-          <textarea
-            disabled
-            className="text-center resize-none text-sm content-center h-7 w-1/2 border-r bg-transparent focus:outline-0 focus:border focus:border-1 focus:border-gray-200 focus:cursor-auto p-1"
-          />
-          <textarea
-            disabled
-            className="text-center resize-none text-sm content-center h-7 w-1/2 bg-transparent focus:outline-0 focus:border focus:border-1 focus:border-gray-200 focus:cursor-auto p-1"
-          />
-        </div>
-        <hr className="w-full border-t-1 border-gray-300"></hr>
-
-        <div className="flex w-full bg-white">
-          <textarea
-            defaultValue={"20%"}
-            className="text-center resize-none text-sm content-center h-7 w-1/2 border-r bg-transparent focus:outline-0 focus:border focus:border-1 focus:border-gray-200 cursor-pointer focus:cursor-auto p-1"
-          />
-          <textarea
-            defaultValue={"40% up to $350/Day"}
-            className="text-center resize-none text-sm content-center h-7 w-1/2 bg-transparent focus:outline-0 focus:border focus:border-1 focus:border-gray-200 cursor-pointer focus:cursor-auto p-1"
-          />
-        </div>
-        <hr className="w-full border-t-1 border-gray-300"></hr>
-
-        <div className="flex w-full bg-white">
-          <textarea
-            defaultValue={"50%"}
-            className="text-center resize-none text-sm content-center h-7 w-1/2 border-r bg-transparent focus:outline-0 focus:border focus:border-1 focus:border-gray-200 cursor-pointer focus:cursor-auto p-1"
-          />
-          <textarea
-            defaultValue={"Not Covered"}
-            className="text-center resize-none text-sm content-center h-7 w-1/2 bg-transparent focus:outline-0 focus:border focus:border-1 focus:border-gray-200 cursor-pointer focus:cursor-auto p-1"
-          />
-        </div>
-        <hr className="w-full border-t-1 border-gray-500"></hr>
-
-        <div className="flex w-full">
-          <textarea
-            disabled
-            className="text-center resize-none text-sm content-center h-7 w-1/2 border-r bg-transparent focus:outline-0 focus:border focus:border-1 focus:border-gray-200 focus:cursor-auto p-1"
-          />
-          <textarea
-            disabled
-            className="text-center resize-none text-sm content-center h-7 w-1/2 bg-transparent focus:outline-0 focus:border focus:border-1 focus:border-gray-200 focus:cursor-auto p-1"
-          />
-        </div>
-        <hr className="w-full border-t-1 border-gray-300"></hr>
-
-        <div className="flex w-full bg-white">
-          <textarea
-            defaultValue={"$80 / 26 employees"}
-            className="text-center resize-none text-sm content-center h-7 w-full bg-transparent focus:outline-0 focus:border focus:border-1 focus:border-gray-200 cursor-pointer focus:cursor-auto p-1"
-          />
-        </div>
-        <hr className="w-full border-t-1 border-gray-300"></hr>
-
-        <div className="flex w-full bg-white">
-          <textarea
-            defaultValue={"$150 / 12 employees"}
-            className="text-center resize-none text-sm content-center h-7 w-full bg-transparent focus:outline-0 focus:border focus:border-1 focus:border-gray-200 cursor-pointer focus:cursor-auto p-1"
-          />
-        </div>
-        <hr className="w-full border-t-1 border-gray-300"></hr>
-
-        <div className="flex w-full bg-white">
-          <textarea
-            defaultValue={"$100 / 14 employees"}
-            className="text-center resize-none text-sm content-center h-7 w-full bg-transparent focus:outline-0 focus:border focus:border-1 focus:border-gray-200 cursor-pointer focus:cursor-auto p-1"
-          />
-        </div>
-        <hr className="w-full border-t-1 border-gray-300"></hr>
-
-        <div className="flex w-full bg-white">
-          <textarea
-            defaultValue={"$250 / 14 employees"}
-            className="text-center resize-none text-sm content-center h-7 w-full bg-transparent focus:outline-0 focus:border focus:border-1 focus:border-gray-200 cursor-pointer focus:cursor-auto p-1"
-          />
-        </div>
-        <hr className="w-full border-t-1 border-gray-500"></hr>
+              {Object.entries(
+                JSON.parse(objectField.json_structure as string),
+              ).map(([subFieldKey, value]) => {
+                return (
+                  <>
+                    <hr className="w-full border-t-1 border-gray-300"></hr>
+                    <div className="flex w-full bg-white">
+                      <textarea
+                        defaultValue={valueOrDefault(
+                          quote[objectField.field]?.in[subFieldKey],
+                        )}
+                        className="text-center resize-none text-sm content-center h-7 w-1/2 border-r bg-transparent focus:outline-0 focus:border focus:border-1 focus:border-gray-200 cursor-pointer focus:cursor-auto p-1"
+                      />
+                      <textarea
+                        defaultValue={valueOrDefault(
+                          quote[objectField.field]?.oon[subFieldKey],
+                        )}
+                        className="text-center resize-none text-sm content-center h-7 w-1/2 bg-transparent focus:outline-0 focus:border focus:border-1 focus:border-gray-200 cursor-pointer focus:cursor-auto p-1"
+                      />
+                    </div>
+                  </>
+                );
+              })}
+              <hr className="w-full border-t-1 border-gray-500"></hr>
+            </>
+          );
+        })}
 
         <div className="flex w-full">
           <textarea

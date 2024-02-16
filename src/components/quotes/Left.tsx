@@ -1,6 +1,4 @@
 import * as React from "react";
-import Image from "next/image";
-import Apple from "../../public/Screenshot.png";
 import { FieldType, NonSystemField } from "@/src/types/metadata";
 
 export type LeftProps = {
