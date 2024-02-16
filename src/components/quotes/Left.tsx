@@ -10,9 +10,9 @@ export default function Left({
   nonObjectVisibleQuoteFields,
   objectVisibleQuoteFields,
 }: LeftProps) {
-  const topLevelItemList = nonObjectVisibleQuoteFields.map(
-    (field) => field.label,
-  );
+  const topLevelItemList = nonObjectVisibleQuoteFields
+    .filter((field) => field.field !== "name" && field.field !== "website")
+    .map((field) => field.label);
 
   return (
     <div className="bg-white h-fit min-w-56 mt-4 rounded-lg outline outline-1 outline-gray-300 py-6 text-center truncate">

@@ -1,8 +1,11 @@
-import * as React from "react";
+import { useRef, useState } from "react";
 import Image from "next/image";
 import Apple from "@/public/Screenshot.png";
 import { QuoteType } from "@/src/types/custom/Quote";
 import { NonSystemField } from "@/src/types/metadata";
+import { supabase } from "@/src/supabase";
+import { useListenClickOutside } from "../ui/dropdown/utils/useListenClickOutside";
+import { valueOrDefault } from "chart.js/dist/helpers/helpers.core";
 
 type QuoteCardProps = {
   quote: QuoteType;
@@ -15,13 +18,63 @@ export default function QuoteCard({
   nonObjectVisibleQuoteFields,
   objectVisibleQuoteFields,
 }: QuoteCardProps) {
+  const [internalQuote, setInternalQuote] = useState<QuoteType>(quote);
+  const [textAreaSelected, setTextAreaSelected] = useState<boolean>(false);
+  const ref1 = useRef();
+  const ref2 = useRef();
+  const ref3 = useRef();
+
+  const totalValue = "$8780"; //implement calculation
+
   function valueOrDefault(val: any, def: string = "N/A") {
     return val ?? def;
   }
 
-  if (quote.name === "Aetna") {
-    console.log("aetna", quote.deductibles.in.medical);
+  function handleQuoteChange(field: string, subField?: string) {
+    return (event: React.ChangeEvent<HTMLTextAreaElement>) => {
+      const newValue = event.target.value;
+
+      let updatedQuote;
+      if (subField) {
+        updatedQuote = {
+          ...internalQuote,
+          [field]: {
+            ...internalQuote[field],
+            [subField]: newValue,
+          },
+        };
+      } else {
+        updatedQuote = {
+          ...internalQuote,
+          [field]: newValue,
+        };
+      }
+      console.log("why not working", updatedQuote);
+      setInternalQuote(updatedQuote);
+    };
   }
+
+  useListenClickOutside({
+    refs: [ref1 as any, ref2 as any, ref3 as any],
+    callback: async (event) => {
+      // SEND DATA
+      try {
+        const { data, error } = await supabase
+          .from("quotes") // Replace with your actual table name
+          .upsert(internalQuote);
+
+        if (error) {
+          console.error("Error inserting data:", error);
+        } else {
+          console.log("Data inserted successfully:", data);
+        }
+      } catch (error) {
+        console.error("Error connecting to Supabase:", error);
+      }
+      setTextAreaSelected(false);
+    },
+    enabled: textAreaSelected,
+  });
 
   return (
     <div className="bg-white h-full mb-4 min-w-80 mt-4 rounded-lg outline outline-1 outline-gray-300 py-6 mr-1 text-center overscroll-none">
@@ -36,30 +89,39 @@ export default function QuoteCard({
           />
         </div>
         <div className="flex flex-col w-fit justify-center items-start ml-1 mb-4">
-          <h1 className="font-bold text-xl">{quote?.name}</h1>
-          <p className="text-sm">{quote?.website}</p>
+          <h1 className="font-bold text-xl">{internalQuote?.name}</h1>
+          <p className="text-sm">{internalQuote?.website}</p>
         </div>
       </div>
 
       <div className="flex flex-col items-center bg-violet-100/60">
-        {nonObjectVisibleQuoteFields.map((field) => {
-          return (
-            <>
-              <textarea
-                defaultValue={valueOrDefault(quote[field.field])}
-                className="text-center resize-none text-sm content-center h-7 w-full bg-transparent focus:outline-0 focus:border focus:border-1 focus:border-gray-200 cursor-pointer focus:cursor-auto rounded-md p-1"
-              />
-              <hr className="w-full border-t-1 border-gray-300"></hr>
-            </>
-          );
-        })}
+        {nonObjectVisibleQuoteFields
+          .filter(
+            (field) => field.field !== "name" && field.field !== "website",
+          )
+          .map((field) => {
+            return (
+              <>
+                <textarea
+                  ref={ref1 as any}
+                  onClick={() => setTextAreaSelected(true)}
+                  onChange={handleQuoteChange(field.field)}
+                  value={valueOrDefault(internalQuote[field.field])}
+                  className="text-center resize-none text-sm content-center h-7 w-full bg-transparent focus:outline-0 focus:border focus:border-1 focus:border-gray-200 cursor-pointer focus:cursor-auto rounded-md p-1"
+                />
+                <hr className="w-full border-t-1 border-gray-300"></hr>
+              </>
+            );
+          })}
 
         <div className="flex w-full">
           <textarea
-            defaultValue={valueOrDefault(quote.plan_type)}
+            disabled
+            value={valueOrDefault(internalQuote.plan_type)}
             className="text-center font-semibold resize-none text-sm content-center h-7 w-1/2 bg-transparent focus:outline-0 focus:border focus:border-1 focus:border-gray-200 cursor-pointer focus:cursor-auto p-1"
           />
           <textarea
+            disabled
             defaultValue={"Out-of-Network"}
             className="text-center font-semibold resize-none text-sm content-center h-7 w-1/2 bg-transparent focus:outline-0 focus:border focus:border-1 focus:border-gray-200 cursor-pointer focus:cursor-auto p-1"
           />
@@ -88,14 +150,26 @@ export default function QuoteCard({
                     <hr className="w-full border-t-1 border-gray-300"></hr>
                     <div className="flex w-full bg-white">
                       <textarea
-                        defaultValue={valueOrDefault(
-                          quote[objectField.field]?.in[subFieldKey],
+                        ref={ref3 as any}
+                        onClick={() => setTextAreaSelected(true)}
+                        onChange={handleQuoteChange(
+                          objectField.field,
+                          `in.${subFieldKey}`,
+                        )}
+                        value={valueOrDefault(
+                          internalQuote[objectField.field]?.in[subFieldKey],
                         )}
                         className="text-center resize-none text-sm content-center h-7 w-1/2 border-r bg-transparent focus:outline-0 focus:border focus:border-1 focus:border-gray-200 cursor-pointer focus:cursor-auto p-1"
                       />
                       <textarea
-                        defaultValue={valueOrDefault(
-                          quote[objectField.field]?.oon[subFieldKey],
+                        ref={ref2 as any}
+                        onClick={() => setTextAreaSelected(true)}
+                        onChange={handleQuoteChange(
+                          objectField.field,
+                          `oon.${subFieldKey}`,
+                        )}
+                        value={valueOrDefault(
+                          internalQuote[objectField.field]?.oon[subFieldKey],
                         )}
                         className="text-center resize-none text-sm content-center h-7 w-1/2 bg-transparent focus:outline-0 focus:border focus:border-1 focus:border-gray-200 cursor-pointer focus:cursor-auto p-1"
                       />
@@ -110,7 +184,7 @@ export default function QuoteCard({
 
         <div className="flex w-full">
           <textarea
-            defaultValue={"$8,780"}
+            defaultValue={totalValue}
             className="font-semibold text-center resize-none text-sm content-center h-7 w-full border-r bg-transparent focus:outline-0 focus:border focus:border-1 focus:border-gray-200 cursor-pointer focus:cursor-auto p-1"
           />
         </div>

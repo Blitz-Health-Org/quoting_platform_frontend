@@ -6,7 +6,11 @@ import Image from "next/image";
 import { createClient } from "@supabase/supabase-js";
 import BlumeLogo from "@/public/BlumeLogo.png";
 import { supabase } from "@/src/supabase";
-import { clientMetadataObject, FieldType } from "@/src/types/metadata";
+import {
+  clientMetadataObject,
+  FieldType,
+  NonSystemField,
+} from "@/src/types/metadata";
 import { ClientType } from "@/src/types/custom/Client";
 
 export type StateProps = {
@@ -139,12 +143,17 @@ export const NewClientModal = ({
                 !clientField.isSystem &&
                 !(clientField.field === "icon"),
             )
-            .map((clientField: FieldType) => {
-              console.log("clientFieldLabel", clientField.label);
+            .map((clientField) => {
+              console.log(
+                "clientFieldLabel",
+                (clientField as NonSystemField).label,
+              );
               return (
                 <>
                   <div className="flex items-end">
-                    <p className="text-sm mr-1">{clientField.label}</p>
+                    <p className="text-sm mr-1">
+                      {(clientField as NonSystemField).label}
+                    </p>
                     {clientField.isNullable && (
                       <p className="text-xs text-gray-500">(Optional)</p>
                     )}

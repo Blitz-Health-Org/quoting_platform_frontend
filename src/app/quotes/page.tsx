@@ -42,7 +42,12 @@ const QuotingPage = ({ client }: QuotingPageProps) => {
         if (error) {
           console.error("Error retrieving data:", error);
         } else {
-          setQuotes(data);
+          const orderedByAlphaData = data.sort((rowA, rowB) => {
+            if (rowA.name < rowB.name) return -1;
+            if (rowA.name > rowB.name) return 1;
+            return 0;
+          });
+          setQuotes(orderedByAlphaData);
           setLoading(false);
           console.log("Data retrieved successfully:", data);
         }
@@ -68,8 +73,6 @@ const QuotingPage = ({ client }: QuotingPageProps) => {
   const handleNewClientClick = () => {
     router.push("/");
   };
-
-  console.log("loading", loading);
 
   if (loading) {
     return <></>;

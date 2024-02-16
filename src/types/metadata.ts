@@ -33,6 +33,22 @@ export const quoteMetadataObject: Record<string, FieldType> = {
     isSystem: true,
     isNullable: false,
   },
+  name: {
+    field: "name",
+    type: "string",
+    isDefault: false,
+    isSystem: false,
+    isNullable: false,
+    label: "Name",
+  },
+  website: {
+    field: "website",
+    type: "string",
+    isDefault: false,
+    isSystem: false,
+    isNullable: false,
+    label: "Website",
+  },
   created_at: {
     field: "created_at",
     type: "string",
