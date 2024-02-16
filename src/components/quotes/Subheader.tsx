@@ -10,9 +10,9 @@ import { IoMdDownload } from "react-icons/io";
 
 export default function Subheader() {
   return (
-    <div className="grid grid-cols-3 gap-4 flex items-center">
+    <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
       {/* Left-aligned form */}
-      <div className="flex gap-2">
+      <div className="flex gap-2 justify-center lg:justify-start">
         <FormControl
           variant="standard"
           sx={{ m: 1, minWidth: 120 }}
@@ -63,7 +63,7 @@ export default function Subheader() {
       </div>
 
       {/* Right-aligned buttons */}
-      <div className="flex items-center justify-end font-light">
+      <div className="flex items-center lg:justify-end font-light justify-center">
         <div className="flex items-center gap-2 cursor-pointer outline outline-1 outline-neutral-600 mr-2 rounded-sm bg-neutral-700/80 text-sm text-gray-100 px-2 py-1">
           <FaMap />
           <p>Census Data</p>
