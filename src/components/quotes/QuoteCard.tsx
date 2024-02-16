@@ -19,6 +19,7 @@ export default function QuoteCard({
   objectVisibleQuoteFields,
 }: QuoteCardProps) {
   const [internalQuote, setInternalQuote] = useState<QuoteType>(quote);
+  console.log("now internalquote", internalQuote);
   const [textAreaSelected, setTextAreaSelected] = useState<boolean>(false);
   const ref1 = useRef();
   const ref2 = useRef();
@@ -30,26 +31,44 @@ export default function QuoteCard({
     return val ?? def;
   }
 
-  function handleQuoteChange(field: string, subField?: string) {
+  function handleQuoteChange(path: string) {
     return (event: React.ChangeEvent<HTMLTextAreaElement>) => {
       const newValue = event.target.value;
 
-      let updatedQuote;
-      if (subField) {
-        updatedQuote = {
-          ...internalQuote,
-          [field]: {
-            ...internalQuote[field],
-            [subField]: newValue,
-          },
-        };
-      } else {
-        updatedQuote = {
-          ...internalQuote,
-          [field]: newValue,
-        };
-      }
-      console.log("why not working", updatedQuote);
+      // Split the path into parts if it's nested, e.g., 'oop.name' becomes ['oop', 'name']
+      const pathParts = path.split(".");
+
+      // Function to recursively update the nested object
+      const updateNestedObject = (obj: any, pathParts: any, value: any) => {
+        // Clone the object at the current level
+        let updated = { ...obj };
+
+        // If we're at the last part of the path, update the value
+        if (pathParts.length === 1) {
+          updated[pathParts[0]] = value;
+        } else {
+          // If not, recursively update the next level
+          const [currentPart, ...remainingParts] = pathParts;
+          updated[currentPart] = updateNestedObject(
+            obj[currentPart] || {},
+            remainingParts,
+            value,
+          );
+        }
+
+        return updated;
+      };
+
+      // Update the internalQuote using the recursive function
+      const updatedQuote = updateNestedObject(
+        internalQuote,
+        pathParts,
+        newValue,
+      );
+
+      console.log("Updating", path, updatedQuote);
+
+      // Update the state with the new quote
       setInternalQuote(updatedQuote);
     };
   }
@@ -153,11 +172,10 @@ export default function QuoteCard({
                         ref={ref3 as any}
                         onClick={() => setTextAreaSelected(true)}
                         onChange={handleQuoteChange(
-                          objectField.field,
-                          `in.${subFieldKey}`,
+                          `${objectField.field}.in.${subFieldKey}`,
                         )}
                         value={valueOrDefault(
-                          internalQuote[objectField.field]?.in[subFieldKey],
+                          internalQuote[objectField.field]?.in?.[subFieldKey],
                         )}
                         className="text-center resize-none text-sm content-center h-7 w-1/2 border-r bg-transparent focus:outline-0 focus:border focus:border-1 focus:border-gray-200 cursor-pointer focus:cursor-auto p-1"
                       />
@@ -165,11 +183,10 @@ export default function QuoteCard({
                         ref={ref2 as any}
                         onClick={() => setTextAreaSelected(true)}
                         onChange={handleQuoteChange(
-                          objectField.field,
-                          `oon.${subFieldKey}`,
+                          `${objectField.field}.oon.${subFieldKey}`,
                         )}
                         value={valueOrDefault(
-                          internalQuote[objectField.field]?.oon[subFieldKey],
+                          internalQuote[objectField.field]?.oon?.[subFieldKey],
                         )}
                         className="text-center resize-none text-sm content-center h-7 w-1/2 bg-transparent focus:outline-0 focus:border focus:border-1 focus:border-gray-200 cursor-pointer focus:cursor-auto p-1"
                       />
