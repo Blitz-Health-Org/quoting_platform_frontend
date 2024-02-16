@@ -1,5 +1,5 @@
-import { PolicyField } from "../metadata";
+import { FieldType } from "../metadata";
 
-export function isFieldVisible(field: PolicyField) {
-  return !field.isSystem && !(field.field === "client_id");
+export function isFieldVisible(field: FieldType) {
+  return !field.isSystem;
 }

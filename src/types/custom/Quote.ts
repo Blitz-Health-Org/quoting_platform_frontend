@@ -1,2 +1,4 @@
+import { FieldType } from "../metadata";
+
 //TODO: implement
-export type QuoteType = any;
+export type QuoteType = Record<string, any>;

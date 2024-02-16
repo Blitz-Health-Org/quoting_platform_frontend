@@ -12,18 +12,18 @@ type BaseFieldType = {
 };
 
 // Extension for system fields without 'label'
-type SystemField = BaseFieldType & {
+export type SystemField = BaseFieldType & {
   isSystem: true;
 };
 
 // Extension for non-system fields with 'label'
-type NonSystemField = BaseFieldType & {
+export type NonSystemField = BaseFieldType & {
   isSystem: false;
   label: string; // Make 'label' mandatory for non-system fields
 };
 
 // Combined type using union
-type FieldType = SystemField | NonSystemField;
+export type FieldType = SystemField | NonSystemField;
 
 export const quoteMetadataObject: Record<string, FieldType> = {
   id: {
@@ -37,9 +37,8 @@ export const quoteMetadataObject: Record<string, FieldType> = {
     field: "created_at",
     type: "string",
     isDefault: true,
-    isSystem: false,
+    isSystem: true,
     isNullable: false,
-    label: "Creation Date",
   },
   client_id: {
     field: "client_id",
@@ -48,13 +47,243 @@ export const quoteMetadataObject: Record<string, FieldType> = {
     isSystem: true,
     isNullable: false,
   },
-  plan_details: {
-    field: "plan_details",
+  deductibles: {
+    field: "deductibles",
     type: "jsonb",
     isDefault: true,
-    isSystem: true,
+    isSystem: false,
+    isNullable: true,
+    json_structure: `{
+      "overall": {
+        "label": "Overall (Ind./Fam.)"
+      },
+      "medical": {
+        "label": "Medical (Ind./Fam.)"
+      },
+      "prescription_drug": {
+        "label": "Prescription Drug"
+      },
+      "oop": {
+        "label": "Out-of-Pocket (Ind./Fam.)"
+      }
+    }`,
+    label: "Deductibles",
+  },
+  visit_to_provider: {
+    field: "visit_to_provider",
+    type: "jsonb",
+    isDefault: true,
+    isSystem: false,
     isNullable: false,
-    json_structure: "{}",
+    json_structure: `{
+      "primary_care_visit": {
+        "label": "Primary Care Visit"
+      },
+      "specialist_visit": {
+        "label": "Specialist Visit"
+      },
+      "preventative_care": {
+        "label": "Preventative Care"
+      }
+    }`,
+    label: "Visit to Provider",
+  },
+  test: {
+    field: "test",
+    type: "jsonb",
+    isDefault: true,
+    isSystem: false,
+    isNullable: false,
+    json_structure: `{
+      "laboratory_test": {
+        "label": "Laboratory Test"
+      },
+      "x_rays_diagnostics": {
+        "label": "X-Rays / Diagnostics"
+      },
+      "imaging": {
+        "label": "Imaging"
+      }
+    }`,
+    label: "Plan Details",
+  },
+  drugs: {
+    field: "drugs",
+    type: "jsonb",
+    isDefault: true,
+    isSystem: false,
+    isNullable: false,
+    json_structure: `{
+      "tier_1": {
+        "label": "Tier 1"
+      },
+      "tier_2": {
+        "label": "Tier 2"
+      },
+      "tier_3": {
+        "label": "Tier 3"
+      },
+      "tier_4": {
+        "label": "Tier 4"
+      }
+    }`,
+    label: "Drugs",
+  },
+  outpatient_surgery: {
+    field: "outpatient_surgery",
+    type: "jsonb",
+    isDefault: true,
+    isSystem: false,
+    isNullable: false,
+    json_structure: `{
+      "facility_fee": {
+        "label": "Facility Fee"
+      }
+    }`,
+    label: "Outpatient Surgery",
+  },
+  need_immediate_attention: {
+    field: "need_immediate_attention",
+    type: "jsonb",
+    isDefault: true,
+    isSystem: false,
+    isNullable: false,
+    json_structure: `{
+      "emergency_room_services": {
+        "label": "Emergency Room Services"
+      },
+      "emergency_medical_trans": {
+        "label": "Emergency Medical Trans."
+      },
+      "urgent_care": {
+        "label": "Urgent Care"
+      }
+    }`,
+    label: "Need Immediate Attention",
+  },
+  hospital_stay: {
+    field: "hospital_stay",
+    type: "jsonb",
+    isDefault: true,
+    isSystem: false,
+    isNullable: false,
+    json_structure: `{
+      "facility_fee": {
+        "label": "Facility Fee"
+      },
+      "physician_surgeon_fee": {
+        "label": "Physician/Surgeon Fee"
+      }
+    }`,
+    label: "Hospital Stay",
+  },
+  mental_behavior_sud: {
+    field: "mental_behavior_sud",
+    type: "jsonb",
+    isDefault: true,
+    isSystem: false,
+    isNullable: false,
+    json_structure: `{
+      "outpatient_mental_health": {
+        "label": "Outpatient Mental Health"
+      },
+      "inpatient_mental_health": {
+        "label": "Inpatient Mental Health"
+      },
+      "sud_outpatient": {
+        "label": "SUD - Outpatient"
+      },
+      "sud_inpatient": {
+        "label": "SUD - Inpatient"
+      }
+    }`,
+    label: "Mental/Behavior/SUD",
+  },
+  other_special_health_needs: {
+    field: "other_special_health_needs",
+    type: "jsonb",
+    isDefault: true,
+    isSystem: false,
+    isNullable: false,
+    json_structure: `{
+      "rehabilitation": {
+        "label": "Rehabilitation"
+      },
+      "durable_medical_equipment": {
+        "label": "Durable Medical Equipment"
+      }
+    }`,
+    label: "Other Special Health Needs",
+  },
+  premiums_enrollment: {
+    field: "premiums_enrollment",
+    type: "jsonb",
+    isDefault: true,
+    isSystem: false,
+    isNullable: false,
+    json_structure: `{
+      "ee_only": {
+        "label": "EE Only"
+      },
+      "ee_spouse": {
+        "label": "EE + Spouse"
+      },
+      "ee_child": {
+        "label": "EE + Child"
+      },
+      "ee_family": {
+        "label": "EE + Family"
+      }
+    }`,
+    label: "Premiums/Enrollment",
+  },
+  effective_date: {
+    field: "effective_date",
+    type: "string", // Assuming this is a date string
+    isDefault: false,
+    isSystem: false,
+    isNullable: false,
+    label: "Effective Date",
+  },
+  metal_tier: {
+    field: "metal_tier",
+    type: "string", // This could be an enum if you have specific metal tiers
+    isDefault: false,
+    isSystem: false,
+    isNullable: false,
+    label: "Metal Tier",
+  },
+  plan_name: {
+    field: "plan_name",
+    type: "string",
+    isDefault: false,
+    isSystem: false,
+    isNullable: false,
+    label: "Plan Name",
+  },
+  provider_network: {
+    field: "provider_network",
+    type: "string",
+    isDefault: false,
+    isSystem: false,
+    isNullable: false,
+    label: "Provider Network",
+  },
+  // network_status: {
+  //   field: "network_status",
+  //   type: "string", // This could also be an enum if there are specific statuses
+  //   isDefault: false,
+  //   isSystem: false,
+  //   isNullable: false,
+  //   label: "Network Status",
+  // },
+  plan_type: {
+    field: "plan_type",
+    type: "string",
+    isDefault: false,
+    isSystem: false,
+    isNullable: false,
+    label: "Plan Type",
   },
 };
 
@@ -70,9 +299,8 @@ export const clientMetadataObject: Record<string, FieldType> = {
     field: "created_at",
     type: "string",
     isDefault: true,
-    isSystem: false,
+    isSystem: true,
     isNullable: false,
-    label: "Creation Date",
   },
   //   user_id: { //TODO: Implement relation
   //   }
