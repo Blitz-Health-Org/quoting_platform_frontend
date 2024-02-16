@@ -67,9 +67,8 @@ const QuotingPage = ({ client }: QuotingPageProps) => {
 
       <div className="h-full bg-gray-100 border border-gray-200 border-b-0 px-6 py-2">
         <Subheader />
-
         <div className="w-full overflow-x-auto">
-          <div className="p-0.5 flex h-fit gap-2">
+          <div className="p-0.5 flex h-fit w-fit gap-2">
             <Left />
             {quotes.length > 0 ? (
               quotes.map((quote) => {
