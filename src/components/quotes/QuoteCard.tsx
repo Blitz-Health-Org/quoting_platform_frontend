@@ -4,8 +4,18 @@ import * as React from "react";
 import Image from "next/image";
 import Apple from "@/public/Screenshot.png";
 import { QuoteType } from "@/src/types/custom/Quote";
+import { NonSystemField } from "@/src/types/metadata";
 
-export default function QuoteCard({ quote }: QuoteType) {
+type QuoteCardProps = {
+  quote: QuoteType;
+  nonObjectVisibleQuoteFields: NonSystemField[];
+  objectVisibleQuoteFields: NonSystemField[];
+};
+
+export default function QuoteCard({
+  quote,
+  nonObjectVisibleQuoteFields,
+}: QuoteCardProps) {
   function valueOrDefault(val: any, def: string = "N/A") {
     return val ?? def;
   }
@@ -29,26 +39,18 @@ export default function QuoteCard({ quote }: QuoteType) {
       </div>
 
       <div className="flex flex-col items-center bg-violet-100/60">
-        <textarea
-          defaultValue={valueOrDefault(quote.plan_details?.date)}
-          className="text-center resize-none text-sm content-center h-7 w-full bg-transparent focus:outline-0 focus:border focus:border-1 focus:border-gray-200 cursor-pointer focus:cursor-auto rounded-md p-1"
-        />
-        <hr className="w-full border-t-1 border-gray-300"></hr>
-        <textarea
-          defaultValue={valueOrDefault(quote.plan_details?.metal_tier)}
-          className="text-center resize-none text-sm content-center h-7 w-full bg-transparent focus:outline-0 focus:border focus:border-1 focus:border-gray-200 cursor-pointer focus:cursor-auto rounded-md p-1"
-        />
-        <hr className="w-full border-t-1 border-gray-300"></hr>
-        <textarea
-          defaultValue={valueOrDefault(quote.plan_details?.plan_name)}
-          className="text-center resize-none text-sm content-center h-7 w-full bg-transparent focus:outline-0 focus:border focus:border-1 focus:border-gray-200 cursor-pointer focus:cursor-auto rounded-md p-1"
-        />
-        <hr className="w-full border-t-1 border-gray-300"></hr>
-        <textarea
-          defaultValue={valueOrDefault(quote.provider_network)}
-          className="text-center resize-none text-sm content-center h-7 w-full bg-transparent focus:outline-0 focus:border focus:border-1 focus:border-gray-200 cursor-pointer focus:cursor-auto rounded-md p-1"
-        />
-        <hr className="w-full border-t-1 border-gray-300"></hr>
+        {nonObjectVisibleQuoteFields.map((field) => {
+          return (
+            <>
+              <textarea
+                defaultValue={valueOrDefault(quote[field.field])}
+                className="text-center resize-none text-sm content-center h-7 w-full bg-transparent focus:outline-0 focus:border focus:border-1 focus:border-gray-200 cursor-pointer focus:cursor-auto rounded-md p-1"
+              />
+              <hr className="w-full border-t-1 border-gray-300"></hr>
+            </>
+          );
+        })}
+
         <div className="flex w-full">
           <textarea
             defaultValue={"PPO"}

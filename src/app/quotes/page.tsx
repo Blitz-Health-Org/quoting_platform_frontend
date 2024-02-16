@@ -12,6 +12,8 @@ import Left from "../../components/quotes/Left";
 import { ClientType } from "@/src/types/custom/Client";
 import { supabase } from "@/src/supabase";
 import { QuoteType } from "@/src/types/custom/Quote";
+import { NonSystemField, quoteMetadataObject } from "@/src/types/metadata";
+import { isFieldVisible } from "@/src/types/utils/isFieldVisible";
 
 type QuotingPageProps = {
   client: ClientType;
@@ -51,6 +53,18 @@ const QuotingPage = ({ client }: QuotingPageProps) => {
     fetchData();
   }, [client.id]);
 
+  const visibleQuoteFields = Object.values(quoteMetadataObject).filter((val) =>
+    isFieldVisible(val),
+  ) as NonSystemField[];
+
+  const nonObjectVisibleQuoteFields = visibleQuoteFields.filter(
+    (val) => val.type !== "jsonb",
+  );
+
+  const objectVisibleQuoteFields = visibleQuoteFields.filter(
+    (val) => val.type == "jsonb",
+  );
+
   const handleNewClientClick = () => {
     router.push("/");
   };
@@ -70,10 +84,20 @@ const QuotingPage = ({ client }: QuotingPageProps) => {
 
         <div className="w-full overflow-x-auto">
           <div className="p-0.5 flex h-fit gap-2">
-            <Left />
+            <Left
+              nonObjectVisibleQuoteFields={nonObjectVisibleQuoteFields}
+              objectVisibleQuoteFields={objectVisibleQuoteFields}
+            />
             {quotes.length > 0 ? (
               quotes.map((quote) => {
-                return <QuoteCard key={quote.id} quote={quote} />;
+                return (
+                  <QuoteCard
+                    key={quote.id}
+                    quote={quote}
+                    nonObjectVisibleQuoteFields={nonObjectVisibleQuoteFields}
+                    objectVisibleQuoteFields={objectVisibleQuoteFields}
+                  />
+                );
               })
             ) : (
               <div className="w-full mt-5 text-center">No Quotes Available</div>
