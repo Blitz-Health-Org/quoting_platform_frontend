@@ -1,7 +1,14 @@
+import { Modal } from "../../ui/Modal";
 import React from "react";
 
-type Props = {};
+type CreateHandbookModalProps = {
+  onClose: () => void;
+};
 
-export const CreateHandbookModal = (props: Props) => {
-  return <div>CreateHandbookModal</div>;
+export const CreateHandbookModal = ({ onClose }: CreateHandbookModalProps) => {
+  return (
+    <div>
+      <Modal onClose={onClose} modalComponent={<>Createhandbookmodal</>} />
+    </div>
+  );
 };

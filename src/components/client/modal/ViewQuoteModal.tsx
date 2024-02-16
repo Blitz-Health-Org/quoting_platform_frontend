@@ -24,7 +24,6 @@ export const ViewQuoteModal = ({ client, onClose }: Props) => {
         } else {
           setQuotes(data);
           console.log("Data retrieved successfully:", data);
-          onClose(); // Close the modal after successful submission
         }
       } catch (error) {
         console.error("Error connecting to Supabase:", error);
@@ -35,7 +34,7 @@ export const ViewQuoteModal = ({ client, onClose }: Props) => {
 
   return (
     <div>
-      <Modal onClose={onClose} modalComponent={<></>} />
+      <Modal onClose={onClose} modalComponent={<>hello</>} />
     </div>
   );
 };

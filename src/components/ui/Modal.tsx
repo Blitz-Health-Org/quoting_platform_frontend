@@ -13,11 +13,13 @@ export const Modal = ({ onClose, modalComponent }: ModalProps) => {
 
   return (
     <div
-      className={`fixed inset-0 bg-gray-800 bg-opacity-50 flex items-center justify-center`}
+      className={`fixed z-10 inset-0 bg-gray-800 bg-opacity-50 flex items-center justify-center`}
       style={{ backdropFilter: "blur(2px)" }}
       onClick={handleOverlayClick}
     >
-      {modalComponent}
+      <div className="bg-white p-4 rounded-md w-1/2 md:w-1/3 lg:1/3">
+        {modalComponent}
+      </div>
     </div>
   );
 };
