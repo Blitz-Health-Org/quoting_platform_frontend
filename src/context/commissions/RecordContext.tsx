@@ -1,12 +1,23 @@
-import { Metadata, Policy, emptyPolicy, metadata } from "@/src/types/metadata";
+import { PolicyField, metadata } from "@/src/types/metadata";
 import { Dispatch, SetStateAction, createContext, useState } from "react";
 
 type RecordContextProps = {
+  visibleFieldDefinitionObjects: [
+    PolicyField[],
+    Dispatch<SetStateAction<PolicyField[]>>,
+  ];
   record: [
     Record<string, any>[],
     Dispatch<SetStateAction<Record<string, any>[]>>,
   ];
-  recordFields: Policy;
+  filteredRecords: [
+    Record<string, any>[],
+    Dispatch<SetStateAction<Record<string, any>[]>>,
+  ];
+  groupedFilteredRecords: [
+    Record<string, any>,
+    Dispatch<SetStateAction<Record<string, any>>>,
+  ];
   checked: [number[], Dispatch<SetStateAction<number[]>>];
   userCreatedRecord: [boolean, Dispatch<SetStateAction<boolean>>];
   tableName: {
@@ -16,8 +27,10 @@ type RecordContextProps = {
 };
 
 export const RecordContext = createContext<RecordContextProps>({
+  visibleFieldDefinitionObjects: [[], () => {}],
   record: [[], () => {}],
-  recordFields: emptyPolicy,
+  filteredRecords: [[], () => {}],
+  groupedFilteredRecords: [[], () => {}],
   userCreatedRecord: [false, () => {}],
   checked: [[], () => {}],
   tableName: { singular: "", plural: "" },
@@ -36,25 +49,39 @@ export function RecordContextProvider({
   const [isUserCreatedRecordActive, setIsUserCreatedRecordActive] =
     useState<boolean>(false);
   const [records, setRecords] = useState<Record<string, any>[]>([]);
+  const [filteredRecords, setFilteredRecords] = useState<Record<string, any>[]>(
+    [],
+  );
+  const [groupedFilteredRecords, setGroupedFilteredRecords] = useState<
+    Record<string, any>
+  >([]);
   const [checkedBoxIds, setCheckedBoxIds] = useState<number[]>([]);
+  const [visibleFieldDefinitionObjects, setvisibleFieldDefinitionObjects] =
+    useState<PolicyField[]>([]);
+
   if (!Object.keys(metadata).includes(tableName.plural.toLowerCase())) {
     throw new Error(`Table not found, ${tableName.plural.toLowerCase()}`);
   }
-  const recordFields =
-    metadata[tableName.plural.toLowerCase() as keyof Metadata];
-
   return (
     <>
       <RecordContext.Provider
         value={{
           record: [records, setRecords],
-          recordFields,
+          filteredRecords: [filteredRecords, setFilteredRecords],
+          groupedFilteredRecords: [
+            groupedFilteredRecords,
+            setGroupedFilteredRecords,
+          ],
           userCreatedRecord: [
             isUserCreatedRecordActive,
             setIsUserCreatedRecordActive,
           ],
           checked: [checkedBoxIds, setCheckedBoxIds],
           tableName,
+          visibleFieldDefinitionObjects: [
+            visibleFieldDefinitionObjects,
+            setvisibleFieldDefinitionObjects,
+          ],
         }}
       >
         {children}

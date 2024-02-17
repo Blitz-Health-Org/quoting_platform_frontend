@@ -6,6 +6,7 @@ import { RowContext } from "@/src/context/commissions/RowContext";
 import { ColumnContext } from "@/src/context/commissions/ColumnContext";
 import { CheckboxCell } from "@/src/components/record/record-table/cell/CheckboxCell";
 import { isNonUpdatable } from "@/src/types/utils/isNonUpdatable";
+import { parseStrictFloat } from "./utils/parseStrictFloat";
 
 type RecordRowProps = {
   visibleFieldDefinitionObjects: PolicyField[];
@@ -29,31 +30,38 @@ export const RecordRow = ({
       .filter(([key]) => !nonUpdatableFields.includes(key))
       .reduce((obj, [key, value]) => ({ ...obj, [key]: value }), {});
 
-    const fieldTypes = visibleFieldDefinitionObjects.map((field) => field.type);
-
     if (nonUpdatableFields.includes(field)) {
       alert("Field is calculated and cannot be updated");
       return;
     }
-    console.log("enummmmmm");
+
+    const fieldDefinition = visibleFieldDefinitionObjects.find(
+      (fieldObject) => fieldObject.field === field,
+    );
+
     if (
-      fieldTypes[field] === "double precision" &&
+      fieldDefinition.type === "double precision" &&
       typeof newValue === "string"
     ) {
       try {
-        newValue = parseFloat(newValue);
+        console.log("new val here", newValue);
+        newValue = parseStrictFloat(newValue);
       } catch {
-        throw new Error("invalid value, must pass a number");
+        alert(
+          `Must pass a number to ${field} field. Non-numeric changes will not be saved`,
+        );
+        return;
       }
     } else if (
-      fieldTypes[field] === "double precision[]" &&
+      fieldDefinition.type === "double precision[]" &&
       Array.isArray(newValue)
     ) {
       newValue = newValue.map((val) => {
         try {
           return typeof val === "string" ? parseFloat(val) : val;
         } catch {
-          throw new Error("Type error in updated field");
+          alert("Type error in updated field");
+          return;
         }
       });
     }

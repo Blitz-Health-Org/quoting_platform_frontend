@@ -3,19 +3,11 @@
 import { RecordContext } from "@/src/context/commissions/RecordContext";
 import { createClient } from "@supabase/supabase-js";
 import { Filter } from "@/src/types/custom/Filter";
-import { isFieldVisible } from "@/src/types/utils/isFieldVisible";
-import {
-  useState,
-  useEffect,
-  useContext,
-  Dispatch,
-  SetStateAction,
-  useRef,
-} from "react";
+import { useState, useEffect, useContext } from "react";
 import { PolicyField } from "@/src/types/metadata";
 import { Database } from "@/src/types/database/database.types";
-import { getRecordFields } from "@/src/components/record/record-table/utils/getRecordFields";
-import { useFindRelationIdFieldMappings } from "@/src/components/record/record-table/cell/relation/hooks/useFindRelationIdFieldMappings";
+import { isFieldVisible } from "@/src/types/utils/isFieldVisible";
+import { getRecordFields } from "../utils/getRecordFields";
 
 const supabase = createClient<Database>(
   "https://ifaekiywtbedsipmwtkr.supabase.co",
@@ -26,126 +18,135 @@ export function useRecordTable(
   tableName: { singular: string; plural: string },
   filters?: Filter[],
   groupFieldObject?: Partial<PolicyField>,
-  record?: [any[], Dispatch<SetStateAction<any[]>>],
 ) {
-  const [visibleFieldDefinitionObjects, setvisibleFieldDefinitionObjects] =
-    useState<PolicyField[]>([]);
-
-  const { record: internalRecord } = useContext(RecordContext);
-  const [records, setRecords] = record ?? internalRecord;
+  const {
+    record,
+    filteredRecords: [, setFilteredRecords],
+    groupedFilteredRecords: [, setGroupedFilteredRecords],
+    visibleFieldDefinitionObjects: [, setVisibleFieldDefinitionObjects],
+  } = useContext(RecordContext);
+  const [, setRecords] = record;
   const [loading, setLoading] = useState<boolean>(true);
-  const fieldMetadata = useRef<Record<string, PolicyField>>();
 
+  //FETCH RECORDS
   useEffect(() => {
     async function fetchData() {
+      const supabaseTableName = tableName.plural.toLowerCase();
+
       const { data, error } = await supabase
-        .from("policies ")
+        .from(supabaseTableName)
         .select()
         .order("id");
       if (!error) {
-        console.log("setted here");
-        setRecords(data as any);
-        fieldMetadata.current = getRecordFields(tableName.plural.toLowerCase()); // hardcoded
+        const validRecords = data.filter((record) => {
+          const date = new Date(record.created_at);
+          if (isNaN(date.getTime())) {
+            return false;
+          }
 
-        const visibleFieldDefinitionObjects = fieldMetadata.current
-          ? Object.values(fieldMetadata.current).filter((value: any) =>
-              isFieldVisible(value),
-            )
-          : [];
-        setvisibleFieldDefinitionObjects(visibleFieldDefinitionObjects);
+          for (const key in record) {
+            if (record.hasOwnProperty(key)) {
+              if (record[key] === undefined) {
+                return false;
+              }
+            }
+          }
+
+          return true;
+        });
+        const dateSortedRecords = validRecords.sort((recordA, recordB) => {
+          return (
+            new Date(recordB.created_at).getTime() -
+            new Date(recordA.created_at).getTime()
+          );
+        });
+        console.log("record", dateSortedRecords);
+        setRecords(dateSortedRecords as any);
+
+        let internalFilteredRecords = dateSortedRecords;
+        if (filters) {
+          for (const filter of filters) {
+            if (filter.value) {
+              internalFilteredRecords = dateSortedRecords.filter(
+                (record: Record<string, any>) => {
+                  return record[filter.field] === filter.value;
+                },
+              );
+            }
+          }
+        }
+        setFilteredRecords(internalFilteredRecords);
+
         setLoading(false);
       } else {
         console.error(error);
       }
     }
+
     fetchData();
-  }, [setRecords, tableName.plural]);
 
-  const validRecords = records.filter((record) => {
-    const date = new Date(record.created_at);
-    if (isNaN(date.getTime())) {
-      return false;
-    }
+    //SET FIELD METADATA
+    const fieldMetadata = getRecordFields(tableName.plural.toLowerCase());
 
-    for (const key in record) {
-      if (record.hasOwnProperty(key)) {
-        if (record[key] === undefined) {
-          return false;
-        }
-      }
-    }
+    const visibleFieldDefinitionObjects = fieldMetadata
+      ? Object.values(fieldMetadata).filter((value: any) =>
+          isFieldVisible(value),
+        )
+      : [];
 
-    return true;
-  });
+    setVisibleFieldDefinitionObjects(visibleFieldDefinitionObjects);
+  }, [
+    filters,
+    setFilteredRecords,
+    setRecords,
+    setVisibleFieldDefinitionObjects,
+    tableName.plural,
+  ]);
 
-  const dateSortedRecords = validRecords.sort((recordA, recordB) => {
-    return (
-      new Date(recordB.created_at).getTime() -
-      new Date(recordA.created_at).getTime()
-    );
-  });
+  let internalGroupedFilteredRecords: any = {};
 
-  let filteredRecords = dateSortedRecords;
-  if (filters) {
-    for (const filter of filters) {
-      if (filter.value) {
-        console.log("check check", filteredRecords, filter);
-        filteredRecords = filteredRecords.filter(
-          (record: Record<string, any>) => {
-            return record[filter.field] === filter.value;
-          },
-        );
-      }
-    }
-  }
+  // setGroupedFilteredRecords({});
 
-  let groupedFilteredRecords: Record<string, Record<string, any>[]> = {};
+  // const completeGroupFieldObject = visibleFieldDefinitionObjects.find(
+  //   (fieldDefinitionObject) => {
+  //     return (
+  //       fieldDefinitionObject.label === groupFieldObject?.label &&
+  //       fieldDefinitionObject.field === groupFieldObject?.field
+  //     );
+  //   },
+  // );
+  // const { relationIdFieldMappings } = useFindRelationIdFieldMappings(
+  //   groupFieldObject?.field && record
+  //     ? record.map((record) => (record as any)[groupFieldObject.field as any])
+  //     : undefined,
+  //   completeGroupFieldObject,
+  // );
 
-  const completeGroupFieldObject = visibleFieldDefinitionObjects.find(
-    (fieldDefinitionObject) => {
-      return (
-        fieldDefinitionObject.label === groupFieldObject?.label &&
-        fieldDefinitionObject.field === groupFieldObject?.field
-      );
-    },
-  );
-  const { relationIdFieldMappings } = useFindRelationIdFieldMappings(
-    groupFieldObject?.field && record
-      ? record.map((record) => (record as any)[groupFieldObject.field as any])
-      : undefined,
-    completeGroupFieldObject,
-  );
-
-  console.log("groupFieldObject", groupFieldObject);
-  const groupField = groupFieldObject?.field ?? "client";
-  filteredRecords.forEach((record) => {
-    // const groupIdValue = (record as any)[groupField as any];
-    // const mapping = relationIdFieldMappings?.find(
-    //   (mapping) =>
-    //     mapping?.[completeGroupFieldObject?.relationIdField as any] ===
-    //     groupIdValue,
-    // );
-    // const groupValue =
-    //   mapping?.[completeGroupFieldObject?.relationLabel as any];
-    const groupValue = record[groupField];
-    if (
-      groupValue !== null &&
-      typeof groupValue !== "undefined" &&
-      !(typeof groupValue === "object" && Object.keys(groupValue).length === 0)
-    ) {
-      if (!groupedFilteredRecords[groupValue]) {
-        groupedFilteredRecords[groupValue] = [];
-      }
-      groupedFilteredRecords[groupValue].push(record);
-    }
-  });
+  // console.log("groupFieldObject", groupFieldObject);
+  // const groupField = groupFieldObject?.field ?? "client";
+  // filteredRecords.forEach((record) => {
+  //   // const groupIdValue = (record as any)[groupField as any];
+  //   // const mapping = relationIdFieldMappings?.find(
+  //   //   (mapping) =>
+  //   //     mapping?.[completeGroupFieldObject?.relationIdField as any] ===
+  //   //     groupIdValue,
+  //   // );
+  //   // const groupValue =
+  //   //   mapping?.[completeGroupFieldObject?.relationLabel as any];
+  //   const groupValue = record[groupField];
+  //   if (
+  //     groupValue !== null &&
+  //     typeof groupValue !== "undefined" &&
+  //     !(typeof groupValue === "object" && Object.keys(groupValue).length === 0)
+  //   ) {
+  //     if (!groupedFilteredRecords[groupValue]) {
+  //       groupedFilteredRecords[groupValue] = [];
+  //     }
+  //     groupedFilteredRecords[groupValue].push(record);
+  //   }
+  // });
 
   return {
-    records,
-    setRecords,
-    filteredRecords,
-    groupedFilteredRecords,
-    visibleFieldDefinitionObjects,
     loading,
   };
 }

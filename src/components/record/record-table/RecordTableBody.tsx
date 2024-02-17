@@ -2,7 +2,7 @@
 
 import { RecordRow } from "@/src/components/record/record-table/RecordRow";
 import { RowContextProvider } from "@/src/context/commissions/RowContext";
-import { Dispatch, SetStateAction, useContext } from "react";
+import { Dispatch, SetStateAction } from "react";
 import { TableGroupHeader } from "@/src/components/record/record-table/group-by/components/TableGroupHeader";
 import { TableGroupAggregationRow } from "@/src/components/record/record-table/group-by/TableGroupAggregationRow";
 import { createClient } from "@supabase/supabase-js";
@@ -27,7 +27,7 @@ type RecordTableBodyProps = {
   filteredRecords: any[];
   groupedFilteredRecords: Record<string, Record<string, any>[]>;
   groupFieldObject: Partial<PolicyField>;
-  checked: [number[], SetStateAction<Dispatch<number[]>>];
+  checked: [number[], Dispatch<SetStateAction<number[]>>];
 };
 
 export const RecordTableBody = ({
@@ -95,13 +95,6 @@ export const RecordTableBody = ({
     }
     // deep comparison of oldrecord, updatedRecord, if the same, return
 
-    console.log(
-      "change bitch",
-      records,
-      records.map((record) =>
-        record.id === updatedRecord.id ? updatedRecord : record,
-      ),
-    );
     setRecords(
       records.map((record) =>
         record.id === updatedRecord.id ? updatedRecord : record,
@@ -114,8 +107,8 @@ export const RecordTableBody = ({
       .select();
   }
 
-  if (!filteredRecords) {
-    return;
+  if (filteredRecords.length === 0) {
+    return <div className="w-full text-center">No Records</div>;
   }
 
   if (groupFieldObject?.label) {

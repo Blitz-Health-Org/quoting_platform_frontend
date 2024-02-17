@@ -52,11 +52,13 @@ export function RecordCell({
   useListenClickOutside({
     refs: [ref],
     callback: async (event) => {
+      console.log("does this work");
       if (isCellSelected) {
+        console.log("does this work 2", ref.current);
         event.stopImmediatePropagation();
         setIsCellSelected(false);
-        if ((event.target as any).value) {
-          onEnter(field.field, (event.target as any).value);
+        if ((ref.current as any).value) {
+          onEnter(field.field, ref.current.value);
         }
       }
     },

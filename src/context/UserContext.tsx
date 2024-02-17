@@ -1,6 +1,6 @@
 "use client";
 
-import { Dispatch, SetStateAction, createContext, useState } from "react";
+import { createContext } from "react";
 import { useLocalStorage } from "../utils/useLocalStorage";
 
 export type UserContextProps = {
@@ -19,7 +19,7 @@ export const UserContextProvider = ({
   const [userId, setUserId, loading] = useLocalStorage<number | undefined>(
     "blume_user_id",
     undefined,
-  ); //TODO: Fix this janky ass solution with -1 and undefined
+  );
 
   return (
     <>

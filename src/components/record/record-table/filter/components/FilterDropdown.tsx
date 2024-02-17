@@ -5,14 +5,19 @@
 import { AppliedFilters } from "@/src/components/record/record-table/filter/components/AppliedFilters";
 import { FilterFooter } from "@/src/components/record/record-table/filter/components/FilterFooter";
 import { FilterContext } from "@/src/context/commissions/FilterContext";
-import { useContext, useState } from "react";
+import { Dispatch, SetStateAction, useContext, useState } from "react";
 
-export const FilterDropdown = () => {
+export const FilterDropdown = ({
+  controlledDropdownOpen,
+}: {
+  controlledDropdownOpen: [boolean, Dispatch<SetStateAction<boolean>>];
+}) => {
   const {
     fieldObject: [fieldObject, setFieldObject],
     filters: [filters, setFilters],
   } = useContext(FilterContext);
   const [filterSetActive, setFilterSetActive] = useState<boolean>(false);
+  const [, setIsFilterDropdownOpen] = controlledDropdownOpen;
   console.log("filters", filters);
 
   function handleClick() {
@@ -20,25 +25,32 @@ export const FilterDropdown = () => {
     setFilterSetActive(true);
   }
 
+  function handleReset() {
+    setFilters([]);
+    setFilterSetActive(false);
+    setIsFilterDropdownOpen(false);
+    setFieldObject({ field: "", value: "", type: "" });
+  }
+
   function handleSubmit() {
-    console.log("did it work? submit");
-    if (
-      filters.findIndex(
-        (filter) =>
-          filter.field === fieldObject.field &&
-          filter.value === fieldObject.value,
-      ) === -1
-    ) {
-      if (fieldObject) {
+    if (fieldObject) {
+      if (
+        filters.findIndex(
+          (filter) =>
+            filter.field === fieldObject.field &&
+            filter.value === fieldObject.value,
+        ) === -1
+      ) {
         const updatedFilters = [
           ...filters,
           { field: fieldObject.field, value: fieldObject.value },
         ];
         setFilters(updatedFilters);
+        setFilterSetActive(false);
+        setIsFilterDropdownOpen(false);
+        setFieldObject({ field: "", value: "", type: "" });
       }
-      setFieldObject({ field: "", value: "", type: "" });
     }
-    setFilterSetActive(false);
   }
 
   return (
@@ -48,7 +60,12 @@ export const FilterDropdown = () => {
       ) : (
         <>No filters</>
       )}
-      <FilterFooter onClick={handleClick} onSubmit={handleSubmit} />
+      <FilterFooter
+        filterSetActive={filterSetActive}
+        onClick={handleClick}
+        onReset={handleReset}
+        onSubmit={handleSubmit}
+      />
     </div>
   );
 };

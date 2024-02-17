@@ -22,7 +22,6 @@ export function FilterContextProvider({
   const [filters, setFilters] = useState<Filter[]>([]);
   const [fieldObject, setFieldObject] = useState<PolicyField>({
     field: "",
-    value: "",
     type: "",
   });
 

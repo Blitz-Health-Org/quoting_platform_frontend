@@ -1,4 +1,3 @@
-import { useRecordTable } from "@/src/components/record/record-table/hooks/useRecordTable";
 import { Dropdown } from "@/src/components/ui/dropdown/Dropdown";
 import { FilterContext } from "@/src/context/commissions/FilterContext";
 import { RecordContext } from "@/src/context/commissions/RecordContext";
@@ -10,8 +9,9 @@ import { useContext, useEffect } from "react";
 // }
 
 export const SetFilter = () => {
-  const { tableName } = useContext(RecordContext);
-  const { visibleFieldDefinitionObjects, loading } = useRecordTable(tableName);
+  const {
+    visibleFieldDefinitionObjects: [visibleFieldDefinitionObjects],
+  } = useContext(RecordContext);
 
   const {
     fieldObject: [fieldObject, setFieldObject],
@@ -27,11 +27,6 @@ export const SetFilter = () => {
       });
     }
   }, [visibleFieldDefinitionObjects, setFieldObject]);
-
-  //@VARUN: refactor this to be inside of whatever component you make, since its outside right now the component changes shape when
-  if (loading) {
-    return <></>;
-  }
 
   if (!visibleFieldDefinitionObjects.length) {
     return <>No Available Fields</>;
@@ -60,7 +55,6 @@ export const SetFilter = () => {
                   onClick={() =>
                     setFieldObject({
                       label: fieldObject.label,
-                      value: fieldObject.value,
                       field: fieldObject.field,
                     })
                   }

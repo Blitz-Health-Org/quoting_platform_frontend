@@ -17,9 +17,16 @@ import { MdAutoGraph } from "react-icons/md";
 
 export type RecordTableProps = {
   dateTableBody: React.ReactNode;
+  tableName: {
+    singular: string;
+    plural: string;
+  };
 };
 
-export default function RecordTable({ dateTableBody }: RecordTableProps) {
+export default function RecordTable({
+  dateTableBody,
+  tableName,
+}: RecordTableProps) {
   // const handleNewButtonClick = () => {
   //   const policy: Row = {};
   //   setPolicies([...policies, policy] as any);
@@ -31,24 +38,27 @@ export default function RecordTable({ dateTableBody }: RecordTableProps) {
   const {
     groupField: [groupFieldObject],
   } = useContext(GroupByContext);
+
+  const { loading } = useRecordTable(tableName, filters, groupFieldObject);
+
   const {
     record,
+    filteredRecords: [filteredRecords],
+    groupedFilteredRecords: [groupedFilteredRecords],
     userCreatedRecord: [
       isUserCreatedRecordActive,
       setIsUserCreatedRecordActive,
     ],
     checked,
-    tableName,
+    visibleFieldDefinitionObjects: [visibleFieldDefinitionObjects],
   } = useContext(RecordContext);
 
-  let {
-    filteredRecords,
-    visibleFieldDefinitionObjects,
-    groupedFilteredRecords,
-  } = useRecordTable(tableName, filters, groupFieldObject, record);
+  if (loading) {
+    return <></>;
+  }
 
   return (
-    <div className="rounded-lg bg-white pb-20 pt-6 pl-6 pr-6 border border-1 border-gray-300 h-screen overflow-x-hidden overflow-y-auto">
+    <div className="w-full rounded-lg bg-white pb-20 pt-6 pl-6 pr-6 border border-1 border-gray-300 h-screen overflow-x-hidden overflow-y-auto">
       <div className="w-full flex-col">
         <div className="text-sm mb-5 flex items-center">
           <MdAutoGraph className="mr-1 h-5 w-5" />
@@ -66,7 +76,7 @@ export default function RecordTable({ dateTableBody }: RecordTableProps) {
       <div className="mt-4 flex flex-col w-full bg-white h-fit">
         <RecordViewHeader />
         <div className="flex">
-          <div className="flex flex-col overflow-x-scroll">
+          <div className="flex flex-col overflow-x-scroll w-full">
             <RecordTableHeader />
             <RecordTableBody
               userCreatedRecord={[

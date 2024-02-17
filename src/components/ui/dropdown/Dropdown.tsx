@@ -1,4 +1,4 @@
-import { useContext, useRef, useState } from "react";
+import { Dispatch, SetStateAction, useContext, useRef, useState } from "react";
 
 import {
   autoUpdate,
@@ -18,6 +18,7 @@ type DropdownProps = {
   onClick?: () => {};
   initialDropdown?: boolean;
   collapseOnClick?: boolean;
+  controlledDropdownOpen?: [boolean, Dispatch<SetStateAction<boolean>>];
 };
 
 export const Dropdown = ({
@@ -27,13 +28,16 @@ export const Dropdown = ({
   dropdownPlacement = "bottom-end",
   onClick,
   collapseOnClick = true,
+  controlledDropdownOpen,
 }: DropdownProps) => {
   const containerRef = useRef<HTMLDivElement>(null);
   const {
     userCreatedRecord: [, setIsUserCreatedRecordActive],
   } = useContext(RecordContext);
 
-  const [isDropdownOpen, setIsDropdownOpen] = useState<boolean>(false);
+  const internalIsDropdownOpen = useState<boolean>(false);
+  const [isDropdownOpen, setIsDropdownOpen] =
+    controlledDropdownOpen ?? internalIsDropdownOpen;
 
   const offsetMiddlewares = [];
 

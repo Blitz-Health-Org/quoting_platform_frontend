@@ -32,9 +32,9 @@ export function RowContextProvider({
 }) {
   const [row, setRow] = useState<Row>(initialRow);
 
-  useEffect(() => {
-    setRow(initialRow);
-  }, [initialRow]);
+  // useEffect(() => {
+  //   setRow(initialRow);
+  // }, [initialRow]);
 
   return (
     <>

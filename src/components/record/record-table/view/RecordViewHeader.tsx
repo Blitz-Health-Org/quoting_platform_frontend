@@ -3,12 +3,16 @@ import { ViewHeaderButtons } from "@/src/components/record/record-table/view/Vie
 import { Dropdown } from "@/src/components/ui/dropdown/Dropdown";
 import { useRecordTable } from "@/src/components/record/record-table/hooks/useRecordTable";
 import { CiBoxList } from "react-icons/ci";
-import { useContext } from "react";
+import { useContext, useState } from "react";
 import { RecordContext } from "@/src/context/commissions/RecordContext";
 
 export const RecordViewHeader = () => {
-  const { tableName } = useContext(RecordContext);
-  let { filteredRecords } = useRecordTable(tableName);
+  const {
+    filteredRecords: [filteredRecords],
+  } = useContext(RecordContext);
+
+  const [isFilterDropdownOpen, setIsFilterDropdownOpen] =
+    useState<boolean>(false);
   // const [isHorizontalScroll, setIsHorizontalScroll] = useState<boolean>(false);
 
   // useEffect(() => {
@@ -40,13 +44,24 @@ export const RecordViewHeader = () => {
 
         <div className={`col-span-1 flex flex-row justify-end items-center`}>
           <Dropdown
+            controlledDropdownOpen={[
+              isFilterDropdownOpen,
+              setIsFilterDropdownOpen,
+            ]}
             collapseOnClick={false}
             clickableComponent={
               <button className="mx-1 px-1 py-1 text-sm rounded-sm bg-white cursor-pointer text-center">
                 Filter
               </button>
             }
-            dropdownComponents={<FilterDropdown />}
+            dropdownComponents={
+              <FilterDropdown
+                controlledDropdownOpen={[
+                  isFilterDropdownOpen,
+                  setIsFilterDropdownOpen,
+                ]}
+              />
+            }
           />
 
           {/* <Dropdown clickableComponent = {<button className="mx-1 px-2 py-1 text-sm rounded-sm outline outline-1 outline-gray-300 shadow-sm bg-white cursor-pointer text-center">Sort By</button>} dropdownComponents={<div>stuff</div>}/> */}

@@ -102,8 +102,6 @@ export const Graphs = ({
     return data;
   });
 
-  console.log("groupedFilteredRecords", groupedFilteredRecords);
-
   return (
     <div className="gap-10 flex w-full overflow-x-auto mb-6">
       <div className="rounded-sm shadow-sm outline outline-1 outline-gray-200 ml-1 mt-1 mb-1">
