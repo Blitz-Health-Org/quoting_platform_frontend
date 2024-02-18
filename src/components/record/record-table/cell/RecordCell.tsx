@@ -25,14 +25,12 @@ export function RecordCell({
 
   const fieldValue = row[field.field];
 
-  if (row.id === 6 && field.type === "enum") {
-    console.log("fieldValue in recordcell", fieldValue);
-  }
   const [isCellSelected, setIsCellSelected] = useState<boolean>(
     isUserCreatedRow && isFirstField ? true : false,
   );
 
   const ref = useRef() as any;
+  const relationRef = useRef() as any;
 
   const enterRef = useHotkeys(
     "enter",
@@ -50,14 +48,12 @@ export function RecordCell({
   );
 
   useListenClickOutside({
-    refs: [ref],
+    refs: [ref, relationRef],
     callback: async (event) => {
-      console.log("does this work");
       if (isCellSelected) {
-        console.log("does this work 2", ref.current);
         event.stopImmediatePropagation();
         setIsCellSelected(false);
-        if ((ref.current as any).value) {
+        if ((ref?.current as any).value) {
           onEnter(field.field, ref.current.value);
         }
       }
@@ -78,6 +74,7 @@ export function RecordCell({
       <div
         className="w-full"
         onClick={() => {
+          console.log("why doesnt this work");
           setIsCellSelected(true);
         }}
       >
@@ -89,6 +86,7 @@ export function RecordCell({
           field={field}
           onEnter={onEnter}
           isCellSelected={isCellSelected}
+          setIsCellSelected={setIsCellSelected}
         />
       </div>
     );

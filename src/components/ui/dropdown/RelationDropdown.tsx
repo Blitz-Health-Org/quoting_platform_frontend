@@ -19,9 +19,13 @@ type DropdownProps = {
   initialDropdown?: boolean;
   collapseOnClick?: boolean;
   controlledDropdownOpen?: [boolean, Dispatch<SetStateAction<boolean>>];
+  setRefs: any;
+  setIsCellSelected: any;
 };
 
-export const Dropdown = ({
+export const RelationDropdown = ({
+  setRefs,
+  setIsCellSelected,
   clickableComponent,
   dropdownComponents,
   dropdownOffset = { x: 0, y: 0 },
@@ -30,12 +34,12 @@ export const Dropdown = ({
   collapseOnClick = true,
   controlledDropdownOpen,
 }: DropdownProps) => {
-  const containerRef = useRef<HTMLDivElement>(null);
+  //   const containerRef = useRef<HTMLDivElement>(null);
   const {
     userCreatedRecord: [, setIsUserCreatedRecordActive],
   } = useContext(RecordContext);
 
-  const internalIsDropdownOpen = useState<boolean>(false);
+  const internalIsDropdownOpen = useState<boolean>(true);
   const [isDropdownOpen, setIsDropdownOpen] =
     controlledDropdownOpen ?? internalIsDropdownOpen;
 
@@ -49,16 +53,16 @@ export const Dropdown = ({
     offsetMiddlewares.push(offset({ mainAxis: dropdownOffset.y }));
   }
 
-  useListenClickOutside({
-    refs: [containerRef],
-    callback: (event) => {
-      event.stopImmediatePropagation();
-      if (isDropdownOpen) {
-        setIsDropdownOpen(false);
-      }
-    },
-    enabled: isDropdownOpen,
-  });
+  //   useListenClickOutside({
+  //     refs: [containerRef],
+  //     callback: (event) => {
+  //       event.stopImmediatePropagation();
+  //       if (isDropdownOpen) {
+  //         setIsDropdownOpen(false);
+  //       }
+  //     },
+  //     enabled: isDropdownOpen,
+  //   });
 
   const { refs, floatingStyles } = useFloating({
     placement: dropdownPlacement,
@@ -67,12 +71,16 @@ export const Dropdown = ({
   });
 
   function handleDropdownClick() {
-    setIsDropdownOpen(!isDropdownOpen);
+    console.log("dropdown open in click", isDropdownOpen);
+    setIsCellSelected(true);
+    if (!isDropdownOpen) {
+      setIsDropdownOpen(true);
+    }
     onClick?.();
   }
 
   return (
-    <div ref={containerRef}>
+    <div ref={setRefs}>
       {clickableComponent && (
         <div onClick={handleDropdownClick} ref={refs.setReference}>
           {clickableComponent}

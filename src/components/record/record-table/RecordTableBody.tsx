@@ -10,6 +10,7 @@ import { Database } from "@/src/types/database/database.types";
 import _ from "lodash";
 import { ActionBar } from "@/src/components/record/record-table/ActionBar";
 import { PolicyField } from "@/src/types/metadata";
+import { isNonUpdatable } from "@/src/types/utils/isNonUpdatable";
 
 //TODO: extract supabase
 const supabase = createClient<Database>(
@@ -86,8 +87,20 @@ export const RecordTableBody = ({
   }
 
   async function handleUpdateRecord(updatedRecord: Record<string, any>) {
-    const oldRecord = records.find((record) => record.id === updatedRecord.id);
+    let oldRecord = records.find(
+      (record) => record.id === updatedRecord.id,
+    ) as any;
 
+    const nonUpdatableFields = visibleFieldDefinitionObjects.filter((field) =>
+      isNonUpdatable(field),
+    );
+    const nonUpdatableFieldNames = nonUpdatableFields.map(
+      (field) => field.field,
+    );
+
+    oldRecord = Object.entries(oldRecord)
+      .filter(([key, value]) => !nonUpdatableFieldNames.includes(key))
+      .reduce((obj, [key, value]) => ({ ...obj, [key]: value }), {});
     console.log("old and new", oldRecord, updatedRecord);
     if (_.isEqual(oldRecord, updatedRecord)) {
       console.log("No changes detected. Update aborted.");

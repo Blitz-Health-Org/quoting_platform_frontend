@@ -67,7 +67,7 @@ export function useRecordTable(
         if (filters) {
           for (const filter of filters) {
             if (filter.value) {
-              internalFilteredRecords = dateSortedRecords.filter(
+              internalFilteredRecords = internalFilteredRecords.filter(
                 (record: Record<string, any>) => {
                   return record[filter.field] === filter.value;
                 },

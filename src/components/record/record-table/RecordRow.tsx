@@ -25,12 +25,16 @@ export const RecordRow = ({
     const nonUpdatableFields = visibleFieldDefinitionObjects.filter((field) =>
       isNonUpdatable(field),
     );
+    const nonUpdatableFieldNames = nonUpdatableFields.map(
+      (field) => field.field,
+    );
+    console.log("nunupdatabe", nonUpdatableFieldNames, row);
 
     const filteredRow = Object.entries(row)
-      .filter(([key]) => !nonUpdatableFields.includes(key))
+      .filter(([key, value]) => !nonUpdatableFieldNames.includes(key))
       .reduce((obj, [key, value]) => ({ ...obj, [key]: value }), {});
 
-    if (nonUpdatableFields.includes(field)) {
+    if (nonUpdatableFieldNames.includes(field)) {
       alert("Field is calculated and cannot be updated");
       return;
     }

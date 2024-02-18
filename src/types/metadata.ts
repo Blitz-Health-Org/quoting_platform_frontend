@@ -460,13 +460,15 @@ export const metadata: Metadata = {
       field: "client_id",
       isRelation: true,
       relationTable: "clients",
+      relationLabel: "name",
       relationIdField: "id",
-      isSystem: true,
+      label: "Client ID",
     },
     expected_annual_revenue: {
       type: "double precision",
       field: "expected_annual_revenue",
       label: "Expected Annual Revenue",
+      isCalculated: true,
     },
     actual_ytd_revenue: {
       type: "bigint",
