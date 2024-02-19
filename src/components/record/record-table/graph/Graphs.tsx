@@ -40,28 +40,27 @@ export const Graphs = ({
         projected = actualAverage * (index + 1);
       }
 
-      expected += record["expected_monthly_revenue"] * (index + 1); // Assuming this is a fixed value for simplification
+      expected += record["expected_monthly_revenue"] * (index + 1);
     });
 
-    // Construct the data object for each month
     const data = {
       name: month,
-      expected: expected,
+      expected: expected.toFixed(2),
     };
 
-    // Add actual or projected field appropriately
     if (index < currentMonthIndex) {
-      data.actual = actual;
+      data.actual = actual.toFixed(2);
     } else if (index == currentMonthIndex) {
-      data.actual = actual;
-      data.projected = projected;
+      data.actual = actual.toFixed(2);
+      data.projected = projected.toFixed(2);
     } else {
-      data.projected = projected;
+      data.projected = projected.toFixed(2);
     }
 
     return data;
   });
 
+  // Repeat the rounding logic for projectedData as well
   const projectedData = months.map((month, index) => {
     let expected = 0;
     let actual = 0;
@@ -80,23 +79,21 @@ export const Graphs = ({
         projected = actualAverage * (index + 1);
       }
 
-      expected += record["expected_monthly_revenue"] * (index + 1); // Assuming this is a fixed value for simplification
+      expected += record["expected_monthly_revenue"] * (index + 1);
     });
 
-    // Construct the data object for each month
     const data = {
       name: month,
-      expected: expected,
+      expected: expected.toFixed(2),
     };
 
-    // Add actual or projected field appropriately
     if (index < currentMonthIndex) {
-      data.actual = actual;
+      data.actual = actual.toFixed(2);
     } else if (index == currentMonthIndex) {
-      data.actual = actual;
-      data.projected = projected;
+      data.actual = actual.toFixed(2);
+      data.projected = projected.toFixed(2);
     } else {
-      data.projected = projected;
+      data.projected = projected.toFixed(2);
     }
 
     return data;
