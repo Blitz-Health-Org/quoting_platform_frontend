@@ -89,19 +89,29 @@ export const RecordRow = ({
 
   return (
     <div className="flex flex-row items-center w-full">
-      <CheckboxCell rowId={row.id} />
-      {visibleFieldDefinitionObjects.map((field, index) => {
-        return (
-          <ColumnContext.Provider key={index} value={{ field }}>
-            <RecordCell
-              isFirstField={index === 0}
-              key={index}
-              field={field}
-              onEnter={handleEnter}
-            />
-          </ColumnContext.Provider>
-        );
-      })}
+      <div
+        className={`flex flex-row items-center w-full ${
+          row.status === "Resolved"
+            ? "bg-green-500"
+            : row.status === "Unresolved"
+              ? "bg-red-500"
+              : "bg-yellow-500"
+        }`}
+      >
+        <CheckboxCell rowId={row.id} />
+        {visibleFieldDefinitionObjects.map((field, index) => {
+          return (
+            <ColumnContext.Provider key={index} value={{ field }}>
+              <RecordCell
+                isFirstField={index === 0}
+                key={index}
+                field={field}
+                onEnter={handleEnter}
+              />
+            </ColumnContext.Provider>
+          );
+        })}
+      </div>
     </div>
   );
 };
