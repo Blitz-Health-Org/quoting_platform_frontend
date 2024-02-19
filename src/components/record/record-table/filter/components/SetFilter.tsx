@@ -2,7 +2,7 @@ import { Dropdown } from "@/src/components/ui/dropdown/Dropdown";
 import { FilterContext } from "@/src/context/commissions/FilterContext";
 import { RecordContext } from "@/src/context/commissions/RecordContext";
 import { PolicyField } from "@/src/types/metadata";
-import { useContext, useEffect } from "react";
+import { useContext, useEffect, useRef } from "react";
 
 // type SetFilterProps = {
 //     setNewFilter: Dispatch<SetStateAction<{}>>;
@@ -65,6 +65,7 @@ export const SetFilter = () => {
         />
       </div>
       <textarea
+        autoFocus={true}
         className="w-full border border-1 border-gray-200 rounded-md p-2 text-sm"
         placeholder={`Enter desired ${fieldObject.label}`}
         value={fieldObject.value}

@@ -5,14 +5,36 @@ import { useRecordTable } from "@/src/components/record/record-table/hooks/useRe
 import { CiBoxList } from "react-icons/ci";
 import { useContext, useState } from "react";
 import { RecordContext } from "@/src/context/commissions/RecordContext";
+import { FilterContext } from "@/src/context/commissions/FilterContext";
+import { Filter } from "@/src/types/custom/Filter";
+import { filter } from "lodash";
 
 export const RecordViewHeader = () => {
   const {
     filteredRecords: [filteredRecords],
   } = useContext(RecordContext);
 
+  const {
+    filters: [filters, setFilters],
+  } = useContext(FilterContext);
+
   const [isFilterDropdownOpen, setIsFilterDropdownOpen] =
     useState<boolean>(false);
+
+  function handleDeleteFilter(filter: Filter) {
+    return () => {
+      setFilters(
+        filters.filter(
+          (iteratedFilter) =>
+            !(
+              iteratedFilter.field === filter.field &&
+              iteratedFilter.value === filter.value
+            ),
+        ),
+      );
+    };
+  }
+
   // const [isHorizontalScroll, setIsHorizontalScroll] = useState<boolean>(false);
 
   // useEffect(() => {
@@ -32,7 +54,7 @@ export const RecordViewHeader = () => {
   // }, []);
 
   return (
-    <>
+    <div>
       <div className="grid grid-cols-2 gap-4 w-full mb-4">
         <div className="col-span-1 h-full">
           <div className="text-center flex items-center justify-left text-sm h-full">
@@ -85,6 +107,23 @@ export const RecordViewHeader = () => {
           /> */}
         </div>
       </div>
-    </>
+      <div className="mb-2">
+        {filters.map((filter, index) => {
+          return (
+            <span className=" p-1 bg-slate-200 text-xs rounded-md" key={index}>
+              <span className="mr-2">
+                {filter.field} = {filter.value}
+              </span>
+              <button
+                onClick={handleDeleteFilter(filter)}
+                className="hover:text-red-600"
+              >
+                X
+              </button>
+            </span>
+          );
+        })}
+      </div>
+    </div>
   );
 };
