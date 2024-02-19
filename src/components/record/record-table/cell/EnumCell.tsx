@@ -25,6 +25,7 @@ export const EnumCell = ({
 }: EnumCellProps) => {
   return (
     <Dropdown
+      collapseOnClick
       clickableComponent={
         <textarea
           ref={setRefs}

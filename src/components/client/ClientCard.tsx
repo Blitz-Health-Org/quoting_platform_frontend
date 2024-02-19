@@ -42,7 +42,6 @@ export const ClientCard = ({
   }
 
   function handleAddNewQuote() {
-    console.log("check check");
     setModalOpen("addNewQuote");
     return;
   }

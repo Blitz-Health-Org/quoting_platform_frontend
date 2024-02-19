@@ -19,7 +19,7 @@ export default function QuoteCard({
   objectVisibleQuoteFields,
 }: QuoteCardProps) {
   const [internalQuote, setInternalQuote] = useState<QuoteType>(quote);
-  console.log("now internalquote", internalQuote);
+
   const [textAreaSelected, setTextAreaSelected] = useState<boolean>(false);
   const ref1 = useRef();
   const ref2 = useRef();
@@ -65,8 +65,6 @@ export default function QuoteCard({
         pathParts,
         newValue,
       );
-
-      console.log("Updating", path, updatedQuote);
 
       // Update the state with the new quote
       setInternalQuote(updatedQuote);

@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
 import { PolicyField } from "@/src/types/metadata";
-import { Dropdown } from "@/src/components/ui/dropdown/Dropdown";
 import { RelationDropdownItems } from "@/src/components/record/record-table/cell/relation/RelationDropdownItems";
 import { createClient } from "@supabase/supabase-js";
 import { debounce } from "lodash";
@@ -37,7 +36,6 @@ export const RelationCell = ({
   const internalIdValue = parseInt(idValue);
 
   const [selectedRecords, setSelectedRecords] = useState<any[]>([]);
-  const [isDropdownOpen, setIsDropdownOpen] = useState<boolean>(true);
 
   const [fieldValue, setFieldValue] = useState<string>("");
 
@@ -115,15 +113,11 @@ export const RelationCell = ({
     debouncedSetSearchFilter(event.currentTarget.value);
   }
 
-  console.log("iscellselected", isCellSelected);
-  //could run into some bugs here with incomplete field data
-
   return (
     <>
       <RelationDropdown
         setRefs={setRefs}
         setIsCellSelected={setIsCellSelected}
-        controlledDropdownOpen={[isDropdownOpen, setIsDropdownOpen]}
         clickableComponent={
           <textarea
             className="block truncate border-l-0 border-t-0 hover:border-l hover:border-t focus:border-t focus:border-l focus:z-50 resize-none cursor-pointer focus:outline-0 focus:border-gray-400 hover:border-gray-400/80 focus:cursor-auto h-7 text-sm border border-1 border-gray-200 w-32 py-1 px-1 z-0 hover:rounded-md focus:rounded-md"

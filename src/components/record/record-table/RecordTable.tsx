@@ -53,6 +53,8 @@ export default function RecordTable({
     visibleFieldDefinitionObjects: [visibleFieldDefinitionObjects],
   } = useContext(RecordContext);
 
+  console.log("top level filtered records", filteredRecords);
+
   if (loading) {
     return <></>;
   }
@@ -83,7 +85,7 @@ export default function RecordTable({
                 isUserCreatedRecordActive,
                 setIsUserCreatedRecordActive,
               ]}
-              record={record}
+              record={record as any}
               filteredRecords={filteredRecords}
               visibleFieldDefinitionObjects={visibleFieldDefinitionObjects}
               groupedFilteredRecords={groupedFilteredRecords}

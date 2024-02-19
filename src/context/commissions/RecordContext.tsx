@@ -1,5 +1,11 @@
 import { PolicyField, metadata } from "@/src/types/metadata";
-import { Dispatch, SetStateAction, createContext, useState } from "react";
+import {
+  Dispatch,
+  SetStateAction,
+  createContext,
+  useEffect,
+  useState,
+} from "react";
 
 type RecordContextProps = {
   visibleFieldDefinitionObjects: [
@@ -7,8 +13,8 @@ type RecordContextProps = {
     Dispatch<SetStateAction<PolicyField[]>>,
   ];
   record: [
-    Record<string, any>[],
-    Dispatch<SetStateAction<Record<string, any>[]>>,
+    Record<string, any>[] | null,
+    Dispatch<SetStateAction<Record<string, any>[] | null>>,
   ];
   filteredRecords: [
     Record<string, any>[],
@@ -28,7 +34,7 @@ type RecordContextProps = {
 
 export const RecordContext = createContext<RecordContextProps>({
   visibleFieldDefinitionObjects: [[], () => {}],
-  record: [[], () => {}],
+  record: [null, () => {}],
   filteredRecords: [[], () => {}],
   groupedFilteredRecords: [[], () => {}],
   userCreatedRecord: [false, () => {}],
@@ -48,7 +54,7 @@ export function RecordContextProvider({
 }) {
   const [isUserCreatedRecordActive, setIsUserCreatedRecordActive] =
     useState<boolean>(false);
-  const [records, setRecords] = useState<Record<string, any>[]>([]);
+  const [records, setRecords] = useState<Record<string, any>[] | null>(null);
   const [filteredRecords, setFilteredRecords] = useState<Record<string, any>[]>(
     [],
   );

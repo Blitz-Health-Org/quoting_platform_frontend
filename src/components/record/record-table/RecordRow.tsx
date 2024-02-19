@@ -7,6 +7,8 @@ import { ColumnContext } from "@/src/context/commissions/ColumnContext";
 import { CheckboxCell } from "@/src/components/record/record-table/cell/CheckboxCell";
 import { isNonUpdatable } from "@/src/types/utils/isNonUpdatable";
 import { parseStrictFloat } from "./utils/parseStrictFloat";
+import { RecordContext } from "@/src/context/commissions/RecordContext";
+import _ from "lodash";
 
 type RecordRowProps = {
   visibleFieldDefinitionObjects: PolicyField[];
@@ -17,9 +19,12 @@ export const RecordRow = ({
   visibleFieldDefinitionObjects,
   onEnter,
 }: RecordRowProps) => {
+  const { row } = useContext(RowContext);
   const {
-    row: [row],
-  } = useContext(RowContext);
+    record: [records],
+  } = useContext(RecordContext);
+
+  if (row.id === 75) console.log("row here", row);
 
   function handleEnter(field: string, newValue, isRelation?: boolean) {
     const nonUpdatableFields = visibleFieldDefinitionObjects.filter((field) =>
@@ -28,14 +33,24 @@ export const RecordRow = ({
     const nonUpdatableFieldNames = nonUpdatableFields.map(
       (field) => field.field,
     );
-    console.log("nunupdatabe", nonUpdatableFieldNames, row);
 
-    const filteredRow = Object.entries(row)
-      .filter(([key, value]) => !nonUpdatableFieldNames.includes(key))
-      .reduce((obj, [key, value]) => ({ ...obj, [key]: value }), {});
+    let updatedRecord = { ...row, [field]: newValue };
 
-    if (nonUpdatableFieldNames.includes(field)) {
+    let oldRecord = records.find(
+      (record) => record.id === updatedRecord.id,
+    ) as any;
+
+    if (
+      nonUpdatableFieldNames.includes(field) &&
+      !_.isEqual(oldRecord, updatedRecord)
+    ) {
       alert("Field is calculated and cannot be updated");
+      return;
+    }
+
+    console.log("old and new", oldRecord, updatedRecord);
+    if (_.isEqual(oldRecord, updatedRecord)) {
+      console.log("No changes detected. Update aborted.");
       return;
     }
 
@@ -48,7 +63,6 @@ export const RecordRow = ({
       typeof newValue === "string"
     ) {
       try {
-        console.log("new val here", newValue);
         newValue = parseStrictFloat(newValue);
       } catch {
         alert(
@@ -70,11 +84,7 @@ export const RecordRow = ({
       });
     }
 
-    console.log("row update", field, newValue);
-
-    const newRow = { ...filteredRow, [field]: newValue };
-
-    onEnter(newRow);
+    onEnter(updatedRecord);
   }
 
   return (

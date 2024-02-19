@@ -71,11 +71,12 @@ export const RelationDropdown = ({
   });
 
   function handleDropdownClick() {
-    console.log("dropdown open in click", isDropdownOpen);
     setIsCellSelected(true);
+
     if (!isDropdownOpen) {
       setIsDropdownOpen(true);
     }
+
     onClick?.();
   }
 
@@ -97,7 +98,9 @@ export const RelationDropdown = ({
             }
           }}
         >
-          {dropdownComponents}
+          <div onClick={() => setIsDropdownOpen(false)}>
+            {dropdownComponents}
+          </div>
         </div>
       )}
     </div>

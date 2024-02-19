@@ -34,8 +34,6 @@ export const SetFilter = () => {
 
   // const [relationOperator, setRelationOperator]= useState();
 
-  console.log("chcek this", visibleFieldDefinitionObjects);
-
   return (
     <div className="flex flex-col w-full">
       <div className="flex mb-2">

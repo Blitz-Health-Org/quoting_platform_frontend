@@ -1,5 +1,3 @@
-//TODO: Get rid of vestigial setRows and rely completely on refetch (add deps to useEffect)
-
 import { RecordContext } from "@/src/context/commissions/RecordContext";
 import { createClient } from "@supabase/supabase-js";
 import { Filter } from "@/src/types/custom/Filter";
@@ -25,45 +23,65 @@ export function useRecordTable(
     groupedFilteredRecords: [, setGroupedFilteredRecords],
     visibleFieldDefinitionObjects: [, setVisibleFieldDefinitionObjects],
   } = useContext(RecordContext);
-  const [, setRecords] = record;
+  const [records, setRecords] = record;
   const [loading, setLoading] = useState<boolean>(true);
 
   //FETCH RECORDS
   useEffect(() => {
     async function fetchData() {
-      const supabaseTableName = tableName.plural.toLowerCase();
+      if (!records) {
+        const supabaseTableName = tableName.plural.toLowerCase();
 
-      const { data, error } = await supabase
-        .from(supabaseTableName)
-        .select()
-        .order("id");
-      if (!error) {
-        const validRecords = data.filter((record) => {
-          const date = new Date(record.created_at);
-          if (isNaN(date.getTime())) {
-            return false;
-          }
+        const { data, error } = await supabase
+          .from(supabaseTableName)
+          .select()
+          .order("id");
+        if (!error) {
+          const validRecords = data.filter((record) => {
+            const date = new Date(record.created_at);
+            if (isNaN(date.getTime())) {
+              return false;
+            }
 
-          for (const key in record) {
-            if (record.hasOwnProperty(key)) {
-              if (record[key] === undefined) {
-                return false;
+            for (const key in record) {
+              if (record.hasOwnProperty(key)) {
+                if (record[key] === undefined) {
+                  return false;
+                }
+              }
+            }
+
+            return true;
+          });
+          const dateSortedRecords = validRecords.sort((recordA, recordB) => {
+            return (
+              new Date(recordB.created_at).getTime() -
+              new Date(recordA.created_at).getTime()
+            );
+          });
+          setRecords(dateSortedRecords as any);
+
+          let internalFilteredRecords = dateSortedRecords;
+          if (filters) {
+            for (const filter of filters) {
+              if (filter.value) {
+                internalFilteredRecords = internalFilteredRecords.filter(
+                  (record: Record<string, any>) => {
+                    return record[filter.field] === filter.value;
+                  },
+                );
               }
             }
           }
+          console.log("does this not rung");
+          setFilteredRecords(internalFilteredRecords);
 
-          return true;
-        });
-        const dateSortedRecords = validRecords.sort((recordA, recordB) => {
-          return (
-            new Date(recordB.created_at).getTime() -
-            new Date(recordA.created_at).getTime()
-          );
-        });
-        console.log("record", dateSortedRecords);
-        setRecords(dateSortedRecords as any);
-
-        let internalFilteredRecords = dateSortedRecords;
+          setLoading(false);
+        } else {
+          console.error(error);
+        }
+      } else {
+        let internalFilteredRecords = records;
         if (filters) {
           for (const filter of filters) {
             if (filter.value) {
@@ -78,8 +96,6 @@ export function useRecordTable(
         setFilteredRecords(internalFilteredRecords);
 
         setLoading(false);
-      } else {
-        console.error(error);
       }
     }
 
@@ -97,6 +113,7 @@ export function useRecordTable(
     setVisibleFieldDefinitionObjects(visibleFieldDefinitionObjects);
   }, [
     filters,
+    records,
     setFilteredRecords,
     setRecords,
     setVisibleFieldDefinitionObjects,

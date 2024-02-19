@@ -7,7 +7,6 @@ import { TableGroupHeader } from "@/src/components/record/record-table/group-by/
 import { TableGroupAggregationRow } from "@/src/components/record/record-table/group-by/TableGroupAggregationRow";
 import { createClient } from "@supabase/supabase-js";
 import { Database } from "@/src/types/database/database.types";
-import _ from "lodash";
 import { ActionBar } from "@/src/components/record/record-table/ActionBar";
 import { PolicyField } from "@/src/types/metadata";
 import { isNonUpdatable } from "@/src/types/utils/isNonUpdatable";
@@ -56,7 +55,6 @@ export const RecordTableBody = ({
 
   async function handleCreateNewRecord(newRecord: Record<string, any>) {
     //manually checking for now
-    console.log("why this running");
     const isAllFieldsEmpty = Object.keys(newRecord).every((key) => {
       if (key === "created_at" || key === "id") return true;
       const value = newRecord[key];
@@ -87,9 +85,11 @@ export const RecordTableBody = ({
   }
 
   async function handleUpdateRecord(updatedRecord: Record<string, any>) {
-    let oldRecord = records.find(
-      (record) => record.id === updatedRecord.id,
-    ) as any;
+    setRecords(
+      records.map((record) =>
+        record.id === updatedRecord.id ? updatedRecord : record,
+      ),
+    );
 
     const nonUpdatableFields = visibleFieldDefinitionObjects.filter((field) =>
       isNonUpdatable(field),
@@ -97,22 +97,9 @@ export const RecordTableBody = ({
     const nonUpdatableFieldNames = nonUpdatableFields.map(
       (field) => field.field,
     );
-
-    oldRecord = Object.entries(oldRecord)
-      .filter(([key, value]) => !nonUpdatableFieldNames.includes(key))
+    updatedRecord = Object.entries(updatedRecord)
+      .filter(([key]) => !nonUpdatableFieldNames.includes(key))
       .reduce((obj, [key, value]) => ({ ...obj, [key]: value }), {});
-    console.log("old and new", oldRecord, updatedRecord);
-    if (_.isEqual(oldRecord, updatedRecord)) {
-      console.log("No changes detected. Update aborted.");
-      return;
-    }
-    // deep comparison of oldrecord, updatedRecord, if the same, return
-
-    setRecords(
-      records.map((record) =>
-        record.id === updatedRecord.id ? updatedRecord : record,
-      ),
-    );
 
     await supabase
       .from("policies")

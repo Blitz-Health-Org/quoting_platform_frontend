@@ -374,6 +374,7 @@ export type Policy = {
   owner_id: PolicyField;
   // carrier_id: PolicyField;
   client_id: PolicyField;
+  carrier_id: PolicyField;
   jan_payment: PolicyField;
   feb_payment: PolicyField;
   mar_payment: PolicyField;
@@ -391,8 +392,8 @@ export type Policy = {
   actual_ytd_revenue: PolicyField;
   projected_yearly_revenue: PolicyField;
   monthly_payments: PolicyField;
-  client: PolicyField;
-  carrier: PolicyField;
+  // client: PolicyField;
+  // carrier: PolicyField;
   // Add additional fields as necessary
 };
 
@@ -449,12 +450,20 @@ export const metadata: Metadata = {
     //   relationLabel: "name",
     // label: "Carrier",
     // },
-    client: {
-      type: "text",
-      field: "client",
-      label: "Client",
+    // client: {
+    //   type: "text",
+    //   field: "client",
+    //   label: "Client",
+    // },
+    carrier_id: {
+      type: "bigint",
+      field: "carrier",
+      isRelation: true,
+      relationTable: "carriers",
+      relationLabel: "name",
+      relationIdField: "id",
+      label: "Carrier",
     },
-    carrier: { type: "text", field: "carrier", label: "Carrier" },
     client_id: {
       type: "bigint",
       field: "client_id",
@@ -462,7 +471,7 @@ export const metadata: Metadata = {
       relationTable: "clients",
       relationLabel: "name",
       relationIdField: "id",
-      label: "Client ID",
+      label: "Client",
     },
     expected_annual_revenue: {
       type: "double precision",
@@ -570,7 +579,7 @@ export const emptyPolicy: Policy = {
   expected_monthly_revenue: { ...emptyPolicyField, type: "double precision" },
   owner_id: { ...emptyPolicyField, type: "bigint", isSystem: true },
   // carrier_id: { ...emptyPolicyField, type: "bigint", isSystem: true },
-  client_id: { ...emptyPolicyField, type: "bigint", isSystem: true },
+  // client_id: { ...emptyPolicyField, type: "bigint", isSystem: true },
   jan_payment: { ...emptyPolicyField, type: "double precision" },
   feb_payment: { ...emptyPolicyField, type: "double precision" },
   mar_payment: { ...emptyPolicyField, type: "double precision" },
@@ -596,7 +605,7 @@ export const emptyPolicy: Policy = {
     isCalculated: true,
   },
   monthly_payments: { ...emptyPolicyField, type: "jsonb" },
-  client: { ...emptyPolicyField },
-  carrier: { ...emptyPolicyField },
+  client_id: { ...emptyPolicyField },
+  carrier_id: { ...emptyPolicyField },
   // Continue with the rest of your fields
 };

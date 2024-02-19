@@ -18,10 +18,8 @@ export const FilterDropdown = ({
   } = useContext(FilterContext);
   const [filterSetActive, setFilterSetActive] = useState<boolean>(false);
   const [, setIsFilterDropdownOpen] = controlledDropdownOpen;
-  console.log("filters", filters);
 
   function handleClick() {
-    console.log("did it work click");
     setFilterSetActive(true);
   }
 

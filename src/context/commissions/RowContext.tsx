@@ -12,12 +12,12 @@ const now = new Date();
 const formattedNow = formatISO(now);
 
 type RowContextProps = {
-  row: [any, Dispatch<SetStateAction<any>>];
+  row: any;
   isUserCreatedRow: boolean;
 };
 
 export const RowContext = createContext<RowContextProps>({
-  row: [{}, () => {}],
+  row: null,
   isUserCreatedRow: false,
 });
 
@@ -30,15 +30,11 @@ export function RowContextProvider({
   isUserCreatedRow?: boolean;
   initialRow?: Row;
 }) {
-  const [row, setRow] = useState<Row>(initialRow);
-
-  // useEffect(() => {
-  //   setRow(initialRow);
-  // }, [initialRow]);
+  const row = initialRow;
 
   return (
     <>
-      <RowContext.Provider value={{ row: [row, setRow], isUserCreatedRow }}>
+      <RowContext.Provider value={{ row, isUserCreatedRow }}>
         {children}
       </RowContext.Provider>
     </>

@@ -9,6 +9,7 @@ import { RowContext } from "@/src/context/commissions/RowContext";
 import { PolicyField } from "@/src/types/metadata";
 import { useContext, useEffect, useRef, useState } from "react";
 import { useHotkeys } from "react-hotkeys-hook";
+import { ReadOnlyCell } from "./ReadOnlyCell";
 export function RecordCell({
   onEnter,
   field,
@@ -18,10 +19,7 @@ export function RecordCell({
   field: PolicyField;
   isFirstField: boolean;
 }) {
-  const {
-    row: [row],
-    isUserCreatedRow,
-  } = useContext(RowContext);
+  const { row, isUserCreatedRow } = useContext(RowContext);
 
   const fieldValue = row[field.field];
 
@@ -51,7 +49,7 @@ export function RecordCell({
     refs: [ref, relationRef],
     callback: async (event) => {
       if (isCellSelected) {
-        event.stopImmediatePropagation();
+        // event.stopImmediatePropagation();
         setIsCellSelected(false);
         if ((ref?.current as any).value) {
           onEnter(field.field, ref.current.value);
@@ -68,13 +66,30 @@ export function RecordCell({
     }
   };
 
+  if (field.isCalculated) {
+    return (
+      <div
+        className="w-full"
+        onClick={() => {
+          setIsCellSelected(true);
+        }}
+      >
+        <ReadOnlyCell
+          setRefs={setRefs}
+          isFirstField={isFirstField}
+          isUserCreatedRow={isUserCreatedRow}
+          defaultValue={fieldValue}
+        />
+      </div>
+    );
+  }
+
   //TODO @VARUN: make this have '...' for overflow, or some sort of ui indication of continuation
   if (field.isRelation) {
     return (
       <div
         className="w-full"
         onClick={() => {
-          console.log("why doesnt this work");
           setIsCellSelected(true);
         }}
       >
