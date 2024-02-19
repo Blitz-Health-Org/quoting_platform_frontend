@@ -10,7 +10,7 @@ import {
 import { useListenClickOutside } from "@/src/components/ui/dropdown/utils/useListenClickOutside";
 import { RecordContext } from "@/src/context/commissions/RecordContext";
 
-type DropdownProps = {
+type TableCellDropdownProps = {
   clickableComponent: React.ReactNode;
   dropdownComponents: React.ReactNode;
   dropdownOffset?: { x?: number; y?: number };
@@ -23,7 +23,7 @@ type DropdownProps = {
   setIsCellSelected: any;
 };
 
-export const RelationDropdown = ({
+export const TableCellDropdown = ({
   setRefs,
   setIsCellSelected,
   clickableComponent,
@@ -33,7 +33,7 @@ export const RelationDropdown = ({
   onClick,
   collapseOnClick = true,
   controlledDropdownOpen,
-}: DropdownProps) => {
+}: TableCellDropdownProps) => {
   //   const containerRef = useRef<HTMLDivElement>(null);
   const {
     userCreatedRecord: [, setIsUserCreatedRecordActive],

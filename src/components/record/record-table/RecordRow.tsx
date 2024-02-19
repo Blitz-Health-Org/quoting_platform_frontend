@@ -38,6 +38,7 @@ export const RecordRow = ({
       (record) => record.id === updatedRecord.id,
     ) as any;
 
+    console.log("old and new", oldRecord, updatedRecord);
     if (
       nonUpdatableFieldNames.includes(field) &&
       !_.isEqual(oldRecord, updatedRecord)

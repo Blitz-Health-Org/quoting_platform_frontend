@@ -114,6 +114,8 @@ export function RecordCell({
         }}
       >
         <EnumCell
+          isCellSelected={isCellSelected}
+          setIsCellSelected={setIsCellSelected}
           setRefs={setRefs}
           isFirstField={isFirstField}
           isUserCreatedRow={isUserCreatedRow}
