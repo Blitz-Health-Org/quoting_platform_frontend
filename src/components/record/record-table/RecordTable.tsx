@@ -61,7 +61,7 @@ export default function RecordTable({
   }
 
   return (
-    <div className="w-full rounded-lg bg-white pb-20 pt-6 pl-6 pr-6 border border-1 border-gray-300 h-screen overflow-x-hidden overflow-y-auto">
+    <>
       <div className="w-full flex-col">
         <div className="text-sm mb-5 flex items-center">
           <MdAutoGraph className="mr-1 h-5 w-5" />
@@ -98,6 +98,6 @@ export default function RecordTable({
           {dateTableBody}
         </div>
       </div>
-    </div>
+    </>
   );
 }

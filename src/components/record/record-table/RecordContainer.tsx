@@ -40,17 +40,19 @@ export default function RecordTableContainer({
                   tabs={TABS}
                   setSelectedTab={setTab}
                 />
-                {tab === "Table" ? (
-                  <RecordTable
-                    tableName={tableName}
-                    dateTableBody={dateTableBody}
-                    // setTab={setTab}
-                  />
-                ) : tab === "Overview" ? (
-                  <RecordOverview tableName={tableName} setTab={setTab} />
-                ) : (
-                  <></>
-                )}
+                <div className="w-full rounded-lg bg-white pb-20 pt-6 pl-6 pr-6 border border-1 border-gray-300 h-screen overflow-x-hidden overflow-y-auto">
+                  {tab === "Table" ? (
+                    <RecordTable
+                      tableName={tableName}
+                      dateTableBody={dateTableBody}
+                      // setTab={setTab}
+                    />
+                  ) : tab === "Overview" ? (
+                    <RecordOverview tableName={tableName} setTab={setTab} />
+                  ) : (
+                    <></>
+                  )}
+                </div>
               </div>
             </div>
           </GroupByContextProvider>
