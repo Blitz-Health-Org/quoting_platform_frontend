@@ -8,9 +8,11 @@ import {
   RecordContext,
   RecordContextProvider,
 } from "@/src/context/commissions/RecordContext";
-import { useContext } from "react";
+import { useContext, useState } from "react";
 import { RecordHeader } from "./group-by/components/GroupByShortcutHeader";
 import { GroupByContextProvider } from "@/src/context/commissions/GroupByContext";
+import RecordOverview from "./RecordOverview";
+import TabHeader from "./TabHeader";
 
 export type RecordTableContainerProps = {
   dateTableBody?: React.ReactNode;
@@ -20,10 +22,14 @@ export type RecordTableContainerProps = {
   };
 };
 
+const TABS = ["Table", "Overview"];
+
 export default function RecordTableContainer({
   dateTableBody,
   tableName,
 }: RecordTableContainerProps) {
+  const [tab, setTab] = useState<string>("Table");
+
   return (
     <>
       <RecordContextProvider
@@ -33,11 +39,23 @@ export default function RecordTableContainer({
           <GroupByContextProvider>
             <div className="w-full h-full rounded-t-lg">
               <RecordHeader tableName={tableName} />
-              <div className="flex">
-                <RecordTable
-                  tableName={tableName}
-                  dateTableBody={dateTableBody}
+              <div className="flex flex-col mt-3">
+                <TabHeader
+                  selectedTab={tab}
+                  tabs={TABS}
+                  setSelectedTab={setTab}
                 />
+                {tab === "Table" ? (
+                  <RecordTable
+                    tableName={tableName}
+                    dateTableBody={dateTableBody}
+                    // setTab={setTab}
+                  />
+                ) : tab === "Overview" ? (
+                  <RecordOverview tableName={tableName} setTab={setTab} />
+                ) : (
+                  <></>
+                )}
               </div>
             </div>
           </GroupByContextProvider>
