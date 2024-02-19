@@ -1,7 +1,13 @@
 import { RecordContext } from "@/src/context/commissions/RecordContext";
 import { useContext, useState } from "react";
 
-export const CheckboxCell = ({ rowId }: { rowId: number }) => {
+export const CheckboxCell = ({
+  rowId,
+  statusColor,
+}: {
+  rowId: number;
+  statusColor: string;
+}) => {
   const {
     checked: [checkedBoxIds, setCheckedBoxIds],
   } = useContext(RecordContext);
@@ -17,7 +23,9 @@ export const CheckboxCell = ({ rowId }: { rowId: number }) => {
   }
 
   return (
-    <div className="flex justify-center items-center py-0.5 h-full">
+    <div
+      className={`${statusColor} flex justify-center items-center py-0.5 h-full`}
+    >
       <input
         className="mr-3"
         onChange={handleChange}
