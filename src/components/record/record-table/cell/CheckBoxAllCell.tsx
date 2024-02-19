@@ -8,6 +8,10 @@ export const CheckboxAllCell = () => {
     checked: [checkedBoxIds, setCheckBoxIds],
   } = useContext(RecordContext);
 
+  if (!records) {
+    return <></>;
+  }
+
   const allChecked = records.length === checkedBoxIds.length;
 
   function handleChange() {
@@ -15,12 +19,14 @@ export const CheckboxAllCell = () => {
     if (allChecked) {
       setCheckBoxIds([]);
     } else {
-      setCheckBoxIds(records.map((record) => record.id));
+      setCheckBoxIds(
+        (records as Record<string, any>[]).map((record) => record.id),
+      );
     }
   }
 
   return (
-    <div className="border border-t-0 border-r-0 border-l-0 border-gray-200 flex justify-center items-center py-1 h-full">
+    <div className="border bg-slate-200 border-t-0 border-r-0 border-l-0 border-gray-200 flex justify-center items-center py-1 h-full">
       <input
         className="mr-3"
         onChange={handleChange}

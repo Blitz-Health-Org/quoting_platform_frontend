@@ -30,6 +30,7 @@ type RecordContextProps = {
     singular: string;
     plural: string;
   };
+  expanded: [boolean, Dispatch<SetStateAction<boolean>>];
 };
 
 export const RecordContext = createContext<RecordContextProps>({
@@ -40,6 +41,7 @@ export const RecordContext = createContext<RecordContextProps>({
   userCreatedRecord: [false, () => {}],
   checked: [[], () => {}],
   tableName: { singular: "", plural: "" },
+  expanded: [false, () => {}],
 });
 
 export function RecordContextProvider({
@@ -64,6 +66,7 @@ export function RecordContextProvider({
   const [checkedBoxIds, setCheckedBoxIds] = useState<number[]>([]);
   const [visibleFieldDefinitionObjects, setvisibleFieldDefinitionObjects] =
     useState<PolicyField[]>([]);
+  const [isExpanded, setIsExpanded] = useState<boolean>(false);
 
   if (!Object.keys(metadata).includes(tableName.plural.toLowerCase())) {
     throw new Error(`Table not found, ${tableName.plural.toLowerCase()}`);
@@ -88,6 +91,7 @@ export function RecordContextProvider({
             visibleFieldDefinitionObjects,
             setvisibleFieldDefinitionObjects,
           ],
+          expanded: [isExpanded, setIsExpanded],
         }}
       >
         {children}

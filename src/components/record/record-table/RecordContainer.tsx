@@ -2,12 +2,7 @@
 
 import RecordTable from "@/src/components/record/record-table/RecordTable";
 import { FilterContextProvider } from "@/src/context/commissions/FilterContext";
-import { isFieldVisible } from "@/src/types/utils/isFieldVisible";
-import { getRecordFields } from "./utils/getRecordFields";
-import {
-  RecordContext,
-  RecordContextProvider,
-} from "@/src/context/commissions/RecordContext";
+import { RecordContextProvider } from "@/src/context/commissions/RecordContext";
 import { useContext, useState } from "react";
 import { RecordHeader } from "./group-by/components/GroupByShortcutHeader";
 import { GroupByContextProvider } from "@/src/context/commissions/GroupByContext";

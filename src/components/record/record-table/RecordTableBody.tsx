@@ -2,7 +2,7 @@
 
 import { RecordRow } from "@/src/components/record/record-table/RecordRow";
 import { RowContextProvider } from "@/src/context/commissions/RowContext";
-import { Dispatch, SetStateAction } from "react";
+import { Dispatch, SetStateAction, useContext } from "react";
 import { TableGroupHeader } from "@/src/components/record/record-table/group-by/components/TableGroupHeader";
 import { TableGroupAggregationRow } from "@/src/components/record/record-table/group-by/TableGroupAggregationRow";
 import { createClient } from "@supabase/supabase-js";
@@ -10,6 +10,7 @@ import { Database } from "@/src/types/database/database.types";
 import { ActionBar } from "@/src/components/record/record-table/ActionBar";
 import { PolicyField } from "@/src/types/metadata";
 import { isNonUpdatable } from "@/src/types/utils/isNonUpdatable";
+import { RecordContext } from "@/src/context/commissions/RecordContext";
 
 //TODO: extract supabase
 const supabase = createClient<Database>(

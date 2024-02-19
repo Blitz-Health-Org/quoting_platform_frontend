@@ -6,6 +6,7 @@ import { PolicyField } from "@/src/types/metadata";
 import { Database } from "@/src/types/database/database.types";
 import { isFieldVisible } from "@/src/types/utils/isFieldVisible";
 import { getRecordFields } from "../utils/getRecordFields";
+import { collapsedVisibleFields } from "../constants/collapsedVisibleFields";
 
 const supabase = createClient<Database>(
   "https://ifaekiywtbedsipmwtkr.supabase.co",
@@ -22,6 +23,7 @@ export function useRecordTable(
     filteredRecords: [, setFilteredRecords],
     groupedFilteredRecords: [, setGroupedFilteredRecords],
     visibleFieldDefinitionObjects: [, setVisibleFieldDefinitionObjects],
+    expanded: [isExpanded],
   } = useContext(RecordContext);
   const [records, setRecords] = record;
   const [loading, setLoading] = useState<boolean>(true);
@@ -104,15 +106,18 @@ export function useRecordTable(
     //SET FIELD METADATA
     const fieldMetadata = getRecordFields(tableName.plural.toLowerCase());
 
-    const visibleFieldDefinitionObjects = fieldMetadata
-      ? Object.values(fieldMetadata).filter((value: any) =>
-          isFieldVisible(value),
-        )
-      : [];
+    const visibleFieldDefinitionObjects = isExpanded
+      ? fieldMetadata
+        ? Object.values(fieldMetadata).filter((value: any) =>
+            isFieldVisible(value),
+          )
+        : []
+      : collapsedVisibleFields;
 
     setVisibleFieldDefinitionObjects(visibleFieldDefinitionObjects);
   }, [
     filters,
+    isExpanded,
     records,
     setFilteredRecords,
     setRecords,

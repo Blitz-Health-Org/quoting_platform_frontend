@@ -14,6 +14,8 @@ import { GroupByContext } from "@/src/context/commissions/GroupByContext";
 import { RecordContext } from "@/src/context/commissions/RecordContext";
 import { Graphs } from "@/src/components/record/record-table/graph/Graphs";
 import { MdAutoGraph } from "react-icons/md";
+import ExpandCollapseButton from "./ExpandCollapseButton";
+import { collapsedVisibleFields } from "./constants/collapsedVisibleFields";
 
 export type RecordTableProps = {
   dateTableBody: React.ReactNode;
@@ -51,6 +53,7 @@ export default function RecordTable({
     ],
     checked,
     visibleFieldDefinitionObjects: [visibleFieldDefinitionObjects],
+    expanded: [isExpanded],
   } = useContext(RecordContext);
 
   if (loading) {
@@ -76,7 +79,7 @@ export default function RecordTable({
       <div className="mt-4 flex flex-col w-full bg-white h-fit">
         <RecordViewHeader />
         <div className="flex">
-          <div className="flex flex-col overflow-x-scroll w-full">
+          <div className="flex flex-col overflow-x-scroll w-full border border-gray-200">
             <RecordTableHeader />
             <RecordTableBody
               userCreatedRecord={[
@@ -91,6 +94,7 @@ export default function RecordTable({
               checked={checked}
             />
           </div>
+          <ExpandCollapseButton />
           {dateTableBody}
         </div>
       </div>
