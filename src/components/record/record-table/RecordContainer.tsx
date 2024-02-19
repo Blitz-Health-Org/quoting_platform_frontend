@@ -17,7 +17,10 @@ export type RecordTableContainerProps = {
   };
 };
 
-const TABS = ["Table", "Overview"];
+const TABS = [
+  "Table",
+  // "Overview"
+];
 
 export default function RecordTableContainer({
   dateTableBody,

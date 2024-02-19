@@ -26,7 +26,7 @@ export const CheckboxAllCell = () => {
   }
 
   return (
-    <div className="border bg-slate-200 border-t-0 border-r-0 border-l-0 border-gray-200 flex justify-center items-center py-1 h-full">
+    <div className="border bg-slate-200 border-l-0 border-r-0 border-gray-400 flex justify-center items-center py-0.5 h-full">
       <input
         className="mr-3"
         onChange={handleChange}

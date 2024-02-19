@@ -11,6 +11,9 @@ import { ActionBar } from "@/src/components/record/record-table/ActionBar";
 import { PolicyField } from "@/src/types/metadata";
 import { isNonUpdatable } from "@/src/types/utils/isNonUpdatable";
 import { RecordContext } from "@/src/context/commissions/RecordContext";
+import { isFieldVisible } from "@/src/types/utils/isFieldVisible";
+import { collapsedVisibleFields } from "./constants/collapsedVisibleFields";
+import { getRecordFields } from "./utils/getRecordFields";
 
 //TODO: extract supabase
 const supabase = createClient<Database>(
@@ -44,6 +47,8 @@ export const RecordTableBody = ({
   const [isUserCreatedRecordActive, setIsUserCreatedRecordActive] =
     userCreatedRecord;
   const [checkedBoxIds, setCheckedBoxIds] = checked;
+
+  const { tableName } = useContext(RecordContext);
 
   async function deleteRecords() {
     setRecords(records.filter((record) => !checkedBoxIds.includes(record.id)));
@@ -92,11 +97,25 @@ export const RecordTableBody = ({
       ),
     );
 
-    const nonUpdatableFields = visibleFieldDefinitionObjects.filter((field) =>
-      isNonUpdatable(field),
+    const fieldMetadata = getRecordFields(tableName.plural.toLowerCase());
+
+    const totalVisibleFieldDefinitionObjects = fieldMetadata
+      ? Object.values(fieldMetadata).filter((value: any) =>
+          isFieldVisible(value),
+        )
+      : [];
+
+    const nonUpdatableFields = totalVisibleFieldDefinitionObjects.filter(
+      (field) => isNonUpdatable(field),
     );
     const nonUpdatableFieldNames = nonUpdatableFields.map(
       (field) => field.field,
+    );
+
+    console.log(
+      "updatedRecord",
+      Object.entries(updatedRecord),
+      nonUpdatableFieldNames,
     );
     updatedRecord = Object.entries(updatedRecord)
       .filter(([key]) => !nonUpdatableFieldNames.includes(key))

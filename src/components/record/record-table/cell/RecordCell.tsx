@@ -69,7 +69,7 @@ export function RecordCell({
   if (field.isCalculated) {
     return (
       <div
-        className="w-full"
+        className="min-w-32"
         onClick={() => {
           setIsCellSelected(true);
         }}
@@ -88,7 +88,7 @@ export function RecordCell({
   if (field.isRelation) {
     return (
       <div
-        className="w-full"
+        className="min-w-32"
         onClick={() => {
           setIsCellSelected(true);
         }}
@@ -108,7 +108,7 @@ export function RecordCell({
   } else if (field.type === "enum") {
     return (
       <div
-        className="w-full"
+        className="min-w-32"
         onClick={() => {
           setIsCellSelected(true);
         }}
@@ -133,7 +133,7 @@ export function RecordCell({
   ) {
     return (
       <div
-        className="w-full"
+        className="min-w-32"
         onClick={() => {
           setIsCellSelected(true);
         }}
@@ -149,7 +149,7 @@ export function RecordCell({
   } else {
     return (
       <div
-        className="w-full"
+        className="min-w-32"
         onClick={() => {
           setIsCellSelected(true);
         }}

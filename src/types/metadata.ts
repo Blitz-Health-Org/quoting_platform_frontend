@@ -432,7 +432,7 @@ export const metadata: Metadata = {
     expected_monthly_revenue: {
       type: "double precision",
       field: "expected_monthly_revenue",
-      label: "Expected Monthly Revenue",
+      label: "Exp. Monthly Revenue",
     },
     owner_id: {
       type: "bigint",
@@ -550,7 +550,7 @@ export const metadata: Metadata = {
       type: "double precision",
       field: "projected_yearly_revenue",
       isCalculated: true,
-      label: "Projected Yearly Revenue",
+      label: "Proj. Yearly Revenue",
     },
     monthly_payments: {
       type: "jsonb",

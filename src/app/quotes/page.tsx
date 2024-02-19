@@ -56,7 +56,7 @@ export default function QuotingPage() {
           console.log("Data retrieved successfully:", data);
         }
       } catch (error) {
-        console.error("Error connecting to Supabase:", error);
+        alert("Error connecting to database");
       }
     };
     fetchData();

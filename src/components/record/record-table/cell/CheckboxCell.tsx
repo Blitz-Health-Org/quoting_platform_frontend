@@ -17,7 +17,7 @@ export const CheckboxCell = ({ rowId }: { rowId: number }) => {
   }
 
   return (
-    <div className="flex justify-center items-center py-1 h-full">
+    <div className="flex justify-center items-center py-0.5 h-full">
       <input
         className="mr-3"
         onChange={handleChange}

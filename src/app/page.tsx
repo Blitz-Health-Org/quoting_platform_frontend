@@ -20,15 +20,10 @@ import { MdUpload } from "react-icons/md";
 import { ClientCard } from "@/src/components/client/ClientCard";
 import { UserContext } from "@/src/context/UserContext";
 import { ClientType } from "@/src/types/custom/Client";
-import { createClient } from "@supabase/supabase-js";
 import { useRouter } from "next/navigation";
 import { SnackbarAlert } from "../components/ui/SnackbarAlert";
 import error from "next/error";
-
-const supabase = createClient(
-  "https://xabksrsyvpqlikxxwfgi.supabase.co",
-  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InhhYmtzcnN5dnBxbGlreHh3ZmdpIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MDc4NTM4NzgsImV4cCI6MjAyMzQyOTg3OH0.rUzmHolfckNk_wqKcNcmr0CD5C1hjt8iOShk3zM-uVw",
-);
+import { supabase } from "../supabase";
 
 export default function Home() {
   const {
@@ -58,7 +53,7 @@ export default function Home() {
       // .eq("user_id", userId);
 
       if (error) {
-        console.error(`Error fetching client data:`, error);
+        alert("Error updating data");
       } else {
         setClients(data); //TODO: make sure the data recieved matches client type
       }
@@ -111,13 +106,17 @@ export default function Home() {
         try {
           const { data, error } = await supabase.from("clients").select();
           if (error) {
-            console.error("Error retrieving data:", error);
+            alert("Error retrieving data");
           } else {
             setClients(data);
             console.log("Data retrieved successfully:", data);
           }
         } catch (error) {
-          console.error("Error connecting to Supabase:", error);
+          setSnackbar({
+            open: true,
+            message: "Delete failed",
+            severity: "error",
+          });
         }
         setSnackbar({
           open: true,
@@ -131,7 +130,6 @@ export default function Home() {
         message: "Delete failed",
         severity: "error",
       });
-      console.error("Error connecting to Supabase:", error);
     }
   }
 

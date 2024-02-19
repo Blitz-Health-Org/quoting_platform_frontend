@@ -24,8 +24,6 @@ export const RecordRow = ({
     record: [records],
   } = useContext(RecordContext);
 
-  if (row.id === 75) console.log("row here", row);
-
   function handleEnter(field: string, newValue, isRelation?: boolean) {
     const nonUpdatableFields = visibleFieldDefinitionObjects.filter((field) =>
       isNonUpdatable(field),
@@ -48,7 +46,6 @@ export const RecordRow = ({
       return;
     }
 
-    console.log("old and new", oldRecord, updatedRecord);
     if (_.isEqual(oldRecord, updatedRecord)) {
       console.log("No changes detected. Update aborted.");
       return;
@@ -88,30 +85,28 @@ export const RecordRow = ({
   }
 
   return (
-    <div className="flex flex-row items-center w-full">
-      <div
-        className={`flex flex-row items-center w-full ${
-          row.status === "Resolved"
-            ? "bg-green-300"
-            : row.status === "Unresolved"
-              ? "bg-red-300"
-              : "bg-yellow-300"
-        }`}
-      >
-        <CheckboxCell rowId={row.id} />
-        {visibleFieldDefinitionObjects.map((field, index) => {
-          return (
-            <ColumnContext.Provider key={index} value={{ field }}>
-              <RecordCell
-                isFirstField={index === 0}
-                key={index}
-                field={field}
-                onEnter={handleEnter}
-              />
-            </ColumnContext.Provider>
-          );
-        })}
-      </div>
+    <div
+      className={`flex flex-row items-center w-full ${
+        row.status === "Resolved"
+          ? "bg-green-300"
+          : row.status === "Unresolved"
+            ? "bg-red-300"
+            : "bg-yellow-300"
+      }`}
+    >
+      <CheckboxCell rowId={row.id} />
+      {visibleFieldDefinitionObjects.map((field, index) => {
+        return (
+          <ColumnContext.Provider key={index} value={{ field }}>
+            <RecordCell
+              isFirstField={index === 0}
+              key={index}
+              field={field}
+              onEnter={handleEnter}
+            />
+          </ColumnContext.Provider>
+        );
+      })}
     </div>
   );
 };
