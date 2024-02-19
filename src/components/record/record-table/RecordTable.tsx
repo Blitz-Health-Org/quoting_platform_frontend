@@ -63,10 +63,10 @@ export default function RecordTable({
   return (
     <>
       <div className="w-full flex-col">
-        <div className="text-sm mb-5 flex items-center">
+        {/* <div className="text-sm mb-5 flex items-center">
           <MdAutoGraph className="mr-1 h-5 w-5" />
           <p>Graphs (3)</p>
-        </div>
+        </div> */}
         <Graphs
           groupedFilteredRecords={groupedFilteredRecords}
           groupFieldObject={groupFieldObject}
