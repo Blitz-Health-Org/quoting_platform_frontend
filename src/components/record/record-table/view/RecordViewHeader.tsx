@@ -59,7 +59,7 @@ export const RecordViewHeader = () => {
         <div className="col-span-1 h-full">
           <div className="text-center flex items-center justify-left text-sm h-full">
             <CiBoxList className="w-5 h-5" />
-            <p className="ml-1.5 mr-1.5"> View All Records</p>
+            <p className="ml-1.5 mr-1.5"> Records</p>
             <p>({filteredRecords.length})</p>
           </div>
         </div>
