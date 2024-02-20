@@ -32,6 +32,12 @@ export const ClientCard = ({
 }: ClientCardProps) => {
   const [modalOpen, setModalOpen] = useState<string>("");
 
+  const [snackbar, setSnackbar] = useState({
+    open: false,
+    message: "",
+    severity: "info", // default severity
+  });
+
   function handleCreateHandbook() {
     setOpenSnackbarShare({
       open: true,
@@ -121,6 +127,7 @@ export const ClientCard = ({
             setModalOpen("");
           }}
           client={client}
+          setOpenSnackbarShare={setSnackbar}
         />
       )}
       {modalOpen === "addNewQuote" && (

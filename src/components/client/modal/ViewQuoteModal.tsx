@@ -11,11 +11,20 @@ import { FaFilePdf } from "react-icons/fa";
 type Props = {
   client: ClientType;
   onClose: () => void;
+  setOpenSnackbarShare: ({
+    open,
+    message,
+    severity,
+  }: {
+    open: boolean;
+    message: string;
+    severity: string;
+  }) => void;
 };
 
 type QuoteTypeWithCheckbox = QuoteType & { isSelected: boolean };
 
-export const ViewQuoteModal = ({ client, onClose }: Props) => {
+export const ViewQuoteModal = ({ client, onClose, setOpenSnackbarShare }: Props) => {
   const [quotes, setQuotes] = useState<QuoteTypeWithCheckbox[] | undefined>();
   const [selectedQuotes, setSelectedQuotes] = useState<QuoteTypeWithCheckbox[]>([]);
   console.log('rerender');
@@ -64,15 +73,26 @@ export const ViewQuoteModal = ({ client, onClose }: Props) => {
     setSelectedQuotes(selected);
       const { data: insertData, error: insertError } = await supabase
         .from('clients') // Replace with your actual Supabase table name
-        .upsert({ client_id: client.id, selected_quotes: selected});
+        .upsert({ id: client.id, selected_quotes: selected});
       
       if (insertError) {
         console.error('Error inserting row into Supabase table:', insertError);
         return { success: false };
       } else {
+
+        setOpenSnackbarShare({
+          open: true,
+          message: "New Client Created!",
+          severity: "success",
+        }); // Use prop to set state
+
+        setTimeout(() => {
+          onClose();
+        }, 3000);
+
         return { success: true};
       }
-    console.log(selected)
+      
   };
 
   return (
