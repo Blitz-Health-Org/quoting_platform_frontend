@@ -1,12 +1,7 @@
+import { supabase } from "@/src/supabase";
 import { PolicyField } from "@/src/types/metadata";
-import { createClient } from "@supabase/supabase-js";
-import { debounce } from "lodash";
+import error from "next/error";
 import { useEffect, useState } from "react";
-
-const supabase = createClient(
-  "https://ifaekiywtbedsipmwtkr.supabase.co",
-  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlmYWVraXl3dGJlZHNpcG13dGtyIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTcwNjgyNjU1NCwiZXhwIjoyMDIyNDAyNTU0fQ.37mTjcmzwBWCIm1RIeaREROrnoEFSYAXyFrY48NDCsA",
-);
 
 export const useFindRelationIdFieldMappings = (
   internalIdValues: number[] | undefined,

@@ -1,5 +1,4 @@
 import { RecordContext } from "@/src/context/commissions/RecordContext";
-import { createClient } from "@supabase/supabase-js";
 import { Filter } from "@/src/types/custom/Filter";
 import { useState, useEffect, useContext } from "react";
 import { PolicyField } from "@/src/types/metadata";
@@ -7,11 +6,7 @@ import { Database } from "@/src/types/database/database.types";
 import { isFieldVisible } from "@/src/types/utils/isFieldVisible";
 import { getRecordFields } from "../utils/getRecordFields";
 import { collapsedVisibleFields } from "../constants/collapsedVisibleFields";
-
-const supabase = createClient<Database>(
-  "https://ifaekiywtbedsipmwtkr.supabase.co",
-  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlmYWVraXl3dGJlZHNpcG13dGtyIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTcwNjgyNjU1NCwiZXhwIjoyMDIyNDAyNTU0fQ.37mTjcmzwBWCIm1RIeaREROrnoEFSYAXyFrY48NDCsA",
-);
+import { supabase } from "@/src/supabase";
 
 export function useRecordTable(
   tableName: { singular: string; plural: string },

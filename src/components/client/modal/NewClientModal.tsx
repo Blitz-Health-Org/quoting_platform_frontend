@@ -3,7 +3,6 @@
 import { Dispatch, SetStateAction, useState } from "react";
 import { useDropzone } from "react-dropzone";
 import Image from "next/image";
-import { createClient } from "@supabase/supabase-js";
 import BlumeLogo from "@/public/BlumeLogo.png";
 import { supabase } from "@/src/supabase";
 import {
