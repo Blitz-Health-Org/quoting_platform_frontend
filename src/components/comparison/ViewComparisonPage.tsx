@@ -1,80 +1,60 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
-import Image from "next/image";
-import { IoMdArrowBack } from "react-icons/io";
-import { IoHelpCircleSharp } from "react-icons/io5";
-import Subheader from "../../components/comparison/Subheader";
-import Fullheader from "../../components/comparison/Fullheader";
-import QuoteCard from "../../components/comparison/QuoteCard";
-import Left from "../../components/comparison/Left";
+import { useRouter } from "next/navigation";
+import Subheader from "./Subheader";
+import Fullheader from "./Fullheader";
+import QuoteCard from "./QuoteCard";
+import Left from "./Left";
 import { ClientType } from "@/src/types/custom/Client";
 import { supabase } from "@/src/supabase";
 import { QuoteType } from "@/src/types/custom/Quote";
 import { NonSystemField, quoteMetadataObject } from "@/src/types/metadata";
 import { isFieldVisible } from "@/src/types/utils/isFieldVisible";
-import { useSearchParams, useRouter } from "next/navigation";
 
-type QuotingPageProps = {
+type ViewComparisonPage = {
   client: ClientType;
 };
 
-export default function QuotingPage() {
-  const [client, setClient] = useState(null);
+export const ViewComparisonPage = () => {
+  //TODO: fix
+  const client = {
+    created_at: "323",
+    icon: "",
+    num_lives: 3,
+    user_id: 1,
+    name: "",
+    id: 1,
+  };
+  const router = useRouter();
   const [quotes, setQuotes] = useState<QuoteType[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
 
-  const router = useRouter();
-
-  const searchParams = useSearchParams();
-
   useEffect(() => {
-    const clientId = searchParams.get("clientId");
-    const quoteIds = searchParams.get("quoteIds");
-
-    console.log("client", clientId, quoteIds);
-
-    if (clientId && quoteIds) {
-      // Convert quoteIds back into an array of IDs
-      const ids = quoteIds.split(",").map((id) => id.trim());
-      fetchClientAndQuotes(clientId, ids);
-    }
-
-    setLoading(false);
-  }, [searchParams]);
-
-  const fetchClientAndQuotes = async (clientId: string, quoteIds: string[]) => {
-    try {
-      const { data: clientData, error: clientError } = await supabase
-        .from("clients")
-        .select("*")
-        .eq("id", clientId)
-        .single();
-
-      if (clientError) throw clientError;
-
-      setClient(clientData);
-
-      // Fetch quotes data by IDs, assuming 'id' is in quoteIds array
-      const { data: quotesData, error: quotesError } = await supabase
-        .from("quotes")
-        .select("*")
-        .in("id", quoteIds);
-
-      if (quotesError) throw quotesError;
-
-      const orderedByAlphaData = quotesData.sort((rowA, rowB) => {
-        if (rowA.name < rowB.name) return -1;
-        if (rowA.name > rowB.name) return 1;
-        return 0;
-      });
-
-      setQuotes(orderedByAlphaData);
-    } catch (error) {
-      console.error("Error fetching data:", error);
-      // Optionally handle errors, such as setting an error state or showing a notification
-    }
-  };
+    const fetchData = async () => {
+      try {
+        const { data, error } = await supabase
+          .from("quotes")
+          .select()
+          .eq("client_id", client.id);
+        if (error) {
+          console.error("Error retrieving data:", error);
+        } else {
+          const orderedByAlphaData = data.sort((rowA, rowB) => {
+            if (rowA.name < rowB.name) return -1;
+            if (rowA.name > rowB.name) return 1;
+            return 0;
+          });
+          setQuotes(orderedByAlphaData);
+          setLoading(false);
+          console.log("Data retrieved successfully:", data);
+        }
+      } catch (error) {
+        alert("Error connecting to database");
+      }
+    };
+    fetchData();
+  }, [client.id]);
 
   const visibleQuoteFields = Object.values(quoteMetadataObject).filter((val) =>
     isFieldVisible(val),
@@ -127,4 +107,4 @@ export default function QuotingPage() {
       </div>
     </div>
   );
-}
+};
