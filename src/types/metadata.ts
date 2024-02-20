@@ -345,6 +345,14 @@ export const clientMetadataObject: Record<string, FieldType> = {
     isNullable: true,
     label: "No. of Lives",
   },
+  plan_category: {
+    field: "plan_category",
+    type: "string",
+    isDefault: false,
+    isSystem: false,
+    isNullable: true,
+    label: "Plan Type",
+  },
 };
 
 //COMMISSIONS

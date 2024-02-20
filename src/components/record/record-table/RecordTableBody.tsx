@@ -131,7 +131,7 @@ export const RecordTableBody = ({
         {`No groups specified (check that entries exist for ${groupFieldObject.label} column)`}
       </div>
     ) : (
-      <div className="bg-white flex flex-col gap-0">
+      <div className="bg-white flex flex-col gap-0 h-auto">
         {Object.entries(groupedFilteredRecords).map(
           ([group, records], index) => {
             return (
@@ -163,7 +163,7 @@ export const RecordTableBody = ({
 
   return (
     <>
-      <div className="flex flex-col gap-0">
+      <div className="flex flex-col gap-0 h-full">
         {isUserCreatedRecordActive && (
           <>
             <RowContextProvider isUserCreatedRow>

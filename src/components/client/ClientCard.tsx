@@ -9,6 +9,7 @@ import { useState } from "react";
 import { IconBuilding } from "@tabler/icons-react";
 import { supabase } from "@/src/supabase";
 import error from "next/error";
+import { SnackbarAlert } from "../ui/SnackbarAlert";
 
 export type ClientCardProps = {
   client: ClientType;
@@ -32,7 +33,11 @@ export const ClientCard = ({
   const [modalOpen, setModalOpen] = useState<string>("");
 
   function handleCreateHandbook() {
-    setModalOpen("createHandbook");
+    setOpenSnackbarShare({
+      open: true,
+      message: `This feature is coming soon!`,
+      severity: "info",
+    }); // Use prop to set state
     return;
   }
 
@@ -99,14 +104,14 @@ export const ClientCard = ({
             className="outline outline-1 hover:bg-gray-100/50 cursor-pointer font-light flex items-center justify-center outline-gray-200 p-0.5 rounded-sm mb-1 mt-1 text-sm"
           >
             <IoEyeSharp className="mr-1" />
-            <button onClick={handleViewQuote}>View Quotes</button>
+            <button onClick={handleViewQuote}>View Comparison</button>
           </div>
           <div
             onClick={handleAddNewQuote}
             className="outline outline-1 hover:bg-gray-100/50 cursor-pointer font-light flex items-center justify-center outline-gray-200 p-0.5 rounded-sm mb-1 mt-1 text-sm"
           >
             <FaPlus className="mr-1" />
-            <div>New Quote</div>
+            <div>Add Quotes</div>
           </div>
         </div>
       </div>
@@ -126,13 +131,11 @@ export const ClientCard = ({
         />
       )}
       {modalOpen === "addNewQuote" && (
-        <AddNewQuoteModal
-          client={client}
-          onClose={() => {
-            setModalOpen("");
-          }}
-          setOpenSnackbarShare={setOpenSnackbarShare}
-        />
+        <CreateHandbookModal
+        onClose={() => {
+          setModalOpen("");
+        }}
+      />
       )}
     </>
   );

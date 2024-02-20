@@ -76,10 +76,10 @@ export default function RecordTable({
       </div>
       <div className="border-t border-gray-200 w-full my-4"></div>
 
-      <div className="mt-4 flex flex-col w-full bg-white h-fit">
+      <div className="mt-4 flex flex-col w-full bg-white h-fit overflow-y-scroll">
         <RecordViewHeader />
-        <div className="flex">
-          <div className="flex flex-col overflow-x-scroll w-full border border-gray-200">
+        <div className="flex h-fit">
+          <div className="flex flex-col overflow-scroll w-full border border-gray-200">
             <RecordTableHeader />
             <RecordTableBody
               userCreatedRecord={[

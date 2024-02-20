@@ -24,7 +24,7 @@ export const CheckboxCell = ({
 
   return (
     <div
-      className={`${statusColor} flex justify-center items-center py-0.5 h-full`}
+      className={`${statusColor} border-b flex justify-center items-center py-0.5 h-full`}
     >
       <input
         className="mr-3"

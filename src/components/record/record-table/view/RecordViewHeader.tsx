@@ -65,6 +65,7 @@ export const RecordViewHeader = () => {
         </div>
 
         <div className={`col-span-1 flex flex-row justify-end items-center`}>
+          <button className="mx-1 px-1 py-1 text-sm rounded-sm bg-white cursor-pointer text-center">Expand</button>
           <Dropdown
             controlledDropdownOpen={[
               isFilterDropdownOpen,

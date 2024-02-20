@@ -146,7 +146,7 @@ export default function Home() {
       <Navbar selected="Quotes" />
 
       <div className="w-full md:w-6/7">
-        <main className="h-screen flex-col w-full bg-gray-100 bg-opacity-50 pl-2 pr-6 pt-5 pb-6 overflow-hidden text-gray-700">
+        <main className="h-screen overflow-hidden flex-col w-full bg-gray-100 bg-opacity-50 pl-2 pr-6 pt-5 pb-6 text-gray-700">
           <div className="flex w-full items-center mb-4 mt-1 justify-between">
             <div className="flex items-center text-sm md:text-base">
               <PiListBulletsBold className="mr-2" />
@@ -168,7 +168,7 @@ export default function Home() {
               </div>
             </div>
           </div>
-          <div className="rounded-md w-full h-full flex-col overflow-scroll">
+          <div className="rounded-md w-full flex-col h-full pb-12 overflow-y-scroll">
             <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2 h-fit overflow-scroll p-0.5">
               {clients.map((client) => {
                 return (
@@ -196,7 +196,6 @@ export default function Home() {
             setOpenSnackbarShare={setSnackbar}
             snackbar={snackbar}
           />
-          )
         </main>
       </div>
     </div>
