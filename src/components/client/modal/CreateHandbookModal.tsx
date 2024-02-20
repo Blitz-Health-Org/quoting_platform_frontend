@@ -9,14 +9,19 @@ import { FaX } from "react-icons/fa6";
 
 type CreateHandbookModalProps = {
   onClose: () => void;
+  client: any;
 };
 
 type StateProps = {
   files: File[];
   uploadStatus: string;
+  filesPaths: string[];
 };
 
-export const CreateHandbookModal = ({ onClose }: CreateHandbookModalProps) => {
+export const CreateHandbookModal = ({ onClose, client }: CreateHandbookModalProps) => {
+  
+  const links: string[] = [];
+  
   const handleOverlayClick = (e: React.MouseEvent<HTMLDivElement>) => {
     // Check if the click was outside the modal content
     if (e.target === e.currentTarget) {
@@ -27,6 +32,7 @@ export const CreateHandbookModal = ({ onClose }: CreateHandbookModalProps) => {
   const [state, setState] = useState<StateProps>({
     files: [],
     uploadStatus: "",
+    filesPaths: [],
   });
 
   const onDrop = (acceptedFiles: File[]) => {
@@ -35,32 +41,68 @@ export const CreateHandbookModal = ({ onClose }: CreateHandbookModalProps) => {
 
   const handleUpload = async () => {
     if (state.files.length > 0) {
+      const paths: string[] = [];
+      const fileNames: string[] = [];
+  
       const promises = state.files.map(async (file) => {
-        const randomDigit = Math.floor(Math.random() * 1024); // Generate random 8-bit digit
-        const newFileName = `${file.name}_${randomDigit}`; // Append random digit to the file name
-
+        const randomDigit = Math.floor(Math.random() * 1024);
+        const newFileName = `${file.name}_${randomDigit}`;
+  
         const { data, error } = await supabase.storage
           .from("images")
           .upload(`path/${newFileName}`, file);
-
+  
+        const path = data?.path;
+  
         if (error) {
           console.error(`Error uploading file ${newFileName}:`, error);
           return { success: false, fileName: newFileName };
         } else {
-          return { success: true, fileName: newFileName };
+          console.log("Downloadable URL:", data);
+          // Append the path to the temporary array if it's not already in the list
+          if (path && !state.filesPaths.includes(path)) {
+            paths.push(path);
+          }
+          if (newFileName) {
+            fileNames.push(file.name);
+          }
+          return { success: true, fileName: newFileName, path };
         }
       });
-
+  
       const results = await Promise.all(promises);
       const successUploads = results.filter((result) => result.success);
-
+  
       if (successUploads.length === state.files.length) {
-        setState({
+        // Combine old paths and new paths, avoiding duplicates
+  
+        setState((prevState) => ({
+          ...prevState,
           files: [],
           uploadStatus: "Upload successful!",
+        }));
+    
+        // Update Supabase table with the new file paths
+        const insertPromises = paths.map(async (path, index) => {
+          const { data: insertData, error: insertError } = await supabase
+            .from('quotes') // Replace with your actual Supabase table name
+            .upsert({ client_id: client.id, file_urls: path, file_name: fileNames[index] });
+          
+          if (insertError) {
+            console.error('Error inserting row into Supabase table:', insertError);
+            return { success: false, fileName: path };
+          } else {
+            return { success: true, fileName: path };
+          }
         });
-
-        // Additional actions after successful upload
+  
+        const insertResults = await Promise.all(insertPromises);
+  
+        if (insertResults.every((result) => result.success)) {
+          console.log("Rows inserted into Supabase successfully");
+        } else {
+          console.error("Error inserting some rows into Supabase");
+        }
       } else {
         setState({
           ...state,
@@ -68,7 +110,10 @@ export const CreateHandbookModal = ({ onClose }: CreateHandbookModalProps) => {
         });
       }
     }
-  };
+    setTimeout(() => {
+      onClose();
+    }, 3000);
+  };  
 
   const { getRootProps, getInputProps, isDragActive } = useDropzone({
     onDrop,

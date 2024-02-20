@@ -120,6 +120,7 @@ export const ClientCard = ({
           onClose={() => {
             setModalOpen("");
           }}
+          client={client}
         />
       )}
       {modalOpen === "viewQuote" && (
@@ -135,6 +136,7 @@ export const ClientCard = ({
           onClose={() => {
             setModalOpen("");
           }}
+          client={client}
         />
       )}
     </>
