@@ -36,7 +36,7 @@ export const CreateHandbookModal = ({ onClose }: CreateHandbookModalProps) => {
   const handleUpload = async () => {
     if (state.files.length > 0) {
       const promises = state.files.map(async (file) => {
-        const randomDigit = Math.floor(Math.random() * 2048); // Generate random 8-bit digit
+        const randomDigit = Math.floor(Math.random() * 1024); // Generate random 8-bit digit
         const newFileName = `${file.name}_${randomDigit}`; // Append random digit to the file name
 
         const { data, error } = await supabase.storage
@@ -102,7 +102,7 @@ export const CreateHandbookModal = ({ onClose }: CreateHandbookModalProps) => {
         </div>
         <div className="modal-body">
           {/* File Upload Section */}
-          <div className="flex flex-col items-center justify-center">
+          <div className="flex flex-col items-center justify-center cursor-pointer">
             <div
               {...getRootProps()}
               className={`p-6 mb-2 mt-2 drop-shadow-sm outline outline-1 outline-gray-400/65 hover:outline-black w-full ${
