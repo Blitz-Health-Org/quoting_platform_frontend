@@ -106,7 +106,7 @@ export const RecordRow = ({
                   ? "bg-green-100"
                   : row.status === "Unresolved"
                     ? "bg-red-100"
-                    : "bg-neutral-100"
+                    : "bg-white"
               }
               isFirstField={index === 0}
               key={index}
