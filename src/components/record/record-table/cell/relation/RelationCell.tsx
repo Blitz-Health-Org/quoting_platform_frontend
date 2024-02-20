@@ -1,15 +1,10 @@
 import { useEffect, useState } from "react";
 import { PolicyField } from "@/src/types/metadata";
 import { RelationDropdownItems } from "@/src/components/record/record-table/cell/relation/RelationDropdownItems";
-import { createClient } from "@supabase/supabase-js";
 import { debounce } from "lodash";
 import error from "next/error";
 import { TableCellDropdown } from "@/src/components/ui/dropdown/TableCellDropdown";
-
-const supabase = createClient(
-  "https://ifaekiywtbedsipmwtkr.supabase.co",
-  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlmYWVraXl3dGJlZHNpcG13dGtyIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTcwNjgyNjU1NCwiZXhwIjoyMDIyNDAyNTU0fQ.37mTjcmzwBWCIm1RIeaREROrnoEFSYAXyFrY48NDCsA",
-);
+import { supabase } from "@/src/supabase";
 
 type RelationCellProps = {
   field: PolicyField;

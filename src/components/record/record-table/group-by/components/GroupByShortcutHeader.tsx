@@ -5,8 +5,8 @@ import { useContext, useState } from "react";
 import { MdUpload } from "react-icons/md";
 import { GrDocumentPerformance } from "react-icons/gr";
 import { useDropzone } from "react-dropzone";
-import { createClient } from "@supabase/supabase-js";
 import { GroupByContext } from "@/src/context/commissions/GroupByContext";
+import { supabase } from "@/src/supabase";
 
 interface stateProps {
   files: File[];
@@ -14,11 +14,6 @@ interface stateProps {
 }
 
 const Modal = ({ onClose }: { onClose: () => void }) => {
-  const supabase = createClient(
-    "https://ifaekiywtbedsipmwtkr.supabase.co",
-    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlmYWVraXl3dGJlZHNpcG13dGtyIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTcwNjgyNjU1NCwiZXhwIjoyMDIyNDAyNTU0fQ.37mTjcmzwBWCIm1RIeaREROrnoEFSYAXyFrY48NDCsA",
-  );
-
   const handleOverlayClick = (e: React.MouseEvent<HTMLDivElement>) => {
     // Check if the click was outside the modal content
     if (e.target === e.currentTarget) {

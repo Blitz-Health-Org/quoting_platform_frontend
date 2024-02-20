@@ -5,7 +5,6 @@ import { RowContextProvider } from "@/src/context/commissions/RowContext";
 import { Dispatch, SetStateAction, useContext } from "react";
 import { TableGroupHeader } from "@/src/components/record/record-table/group-by/components/TableGroupHeader";
 import { TableGroupAggregationRow } from "@/src/components/record/record-table/group-by/TableGroupAggregationRow";
-import { createClient } from "@supabase/supabase-js";
 import { Database } from "@/src/types/database/database.types";
 import { ActionBar } from "@/src/components/record/record-table/ActionBar";
 import { PolicyField } from "@/src/types/metadata";
@@ -14,12 +13,7 @@ import { RecordContext } from "@/src/context/commissions/RecordContext";
 import { isFieldVisible } from "@/src/types/utils/isFieldVisible";
 import { collapsedVisibleFields } from "./constants/collapsedVisibleFields";
 import { getRecordFields } from "./utils/getRecordFields";
-
-//TODO: extract supabase
-const supabase = createClient<Database>(
-  "https://ifaekiywtbedsipmwtkr.supabase.co",
-  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlmYWVraXl3dGJlZHNpcG13dGtyIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTcwNjgyNjU1NCwiZXhwIjoyMDIyNDAyNTU0fQ.37mTjcmzwBWCIm1RIeaREROrnoEFSYAXyFrY48NDCsA",
-);
+import { supabase } from "@/src/supabase";
 
 type RecordTableBodyProps = {
   visibleFieldDefinitionObjects: PolicyField[];
@@ -53,7 +47,7 @@ export const RecordTableBody = ({
   async function deleteRecords() {
     setRecords(records.filter((record) => !checkedBoxIds.includes(record.id)));
     const { error } = await supabase
-      .from("policies")
+      .from(tableName.plural)
       .delete()
       .in("id", checkedBoxIds);
     setCheckedBoxIds([] as any);
@@ -79,7 +73,7 @@ export const RecordTableBody = ({
     setRecords([newRecord, ...records]);
 
     const { error } = await supabase
-      .from("policies")
+      .from(tableName.plural)
       .insert(newRecord)
       .select();
 
@@ -122,7 +116,7 @@ export const RecordTableBody = ({
       .reduce((obj, [key, value]) => ({ ...obj, [key]: value }), {});
 
     await supabase
-      .from("policies")
+      .from(tableName.plural)
       .upsert(updatedRecord, { onConflict: "id" })
       .select();
   }
