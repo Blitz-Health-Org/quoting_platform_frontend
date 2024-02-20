@@ -43,7 +43,7 @@ export default function RecordTableContainer({
                   tabs={TABS}
                   setSelectedTab={setTab}
                 /> */}
-                <div className="w-full rounded-lg bg-white pb-6 pt-6 pl-6 pr-6 border border-1 border-gray-300 h-fit overflow-x-hidden">
+                <div className="w-full rounded-lg bg-white pb-6 pt-6 pl-6 pr-6 border border-1 border-gray-300 h-fit overflow-x-hidden mb-6">
                   {tab === "Table" ? (
                     <RecordTable
                       tableName={tableName}
