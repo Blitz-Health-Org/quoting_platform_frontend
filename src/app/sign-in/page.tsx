@@ -29,6 +29,8 @@ export default function Page() {
     if (email === "email" && password === "password") {
       setUserId(1);
       router.push("/");
+    } else {
+      alert("Wrong credentials");
     }
   }
 
