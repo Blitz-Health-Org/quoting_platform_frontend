@@ -90,10 +90,10 @@ export const RecordRow = ({
       <CheckboxCell
         statusColor={
           row.status === "Resolved"
-            ? "bg-green-300"
+            ? "bg-green-100"
             : row.status === "Unresolved"
-              ? "bg-red-300"
-              : "bg-yellow-300"
+              ? "bg-red-100"
+              : "bg-neutral-100/50"
         }
         rowId={row.id}
       />
