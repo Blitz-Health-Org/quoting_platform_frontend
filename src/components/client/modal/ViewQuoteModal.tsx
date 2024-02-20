@@ -59,9 +59,19 @@ export const ViewQuoteModal = ({ client, onClose }: Props) => {
     );
   };
 
-  const handleNextClick = () => {
+  const handleNextClick = async () => {
     const selected = quotes?.filter((quote) => quote.isSelected) || [];
     setSelectedQuotes(selected);
+      const { data: insertData, error: insertError } = await supabase
+        .from('clients') // Replace with your actual Supabase table name
+        .upsert({ client_id: client.id, selected_quotes: selected});
+      
+      if (insertError) {
+        console.error('Error inserting row into Supabase table:', insertError);
+        return { success: false };
+      } else {
+        return { success: true};
+      }
     console.log(selected)
   };
 
@@ -71,7 +81,7 @@ export const ViewQuoteModal = ({ client, onClose }: Props) => {
       style={{ backdropFilter: "blur(2px)" }}
       onClick={handleOverlayClick}
     >
-      <div className="bg-white p-4 rounded-md w-1/2 md:w-1/3 lg:1/3">
+      <div className="bg-white p-4 rounded-md w-1/2 md:w-1/3 lg:w-1/3 h-fit">
         <div className="flex justify-between items-center mb-4 modal-header">
           <div className="flex">
             <Image
@@ -91,8 +101,8 @@ export const ViewQuoteModal = ({ client, onClose }: Props) => {
           </button>
         </div>
           {quotes && quotes.length > 0 ? (
-              <div className="overflow-y-scroll">
-                <h3 className="text-xl font-semibold mb-2">File Names:</h3>
+              <div className="overflow-y-scroll h-56">
+                <h3 className="text-xl font-semibold mb-2">Choose Files</h3>
                 <ul>
                 {quotes.map((quote: QuoteTypeWithCheckbox) => (
                 <li key={quote.id} className="flex truncate gap-2">

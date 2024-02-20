@@ -7,7 +7,7 @@ import Image from "next/image";
 import BlumeLogo from "@/public/BlumeLogo.png";
 import { FaX } from "react-icons/fa6";
 
-type CreateHandbookModalProps = {
+type AddQuoteProps = {
   onClose: () => void;
   client: any;
 };
@@ -18,7 +18,7 @@ type StateProps = {
   filesPaths: string[];
 };
 
-export const CreateHandbookModal = ({ onClose, client }: CreateHandbookModalProps) => {
+export const AddQuote = ({ onClose, client }: AddQuoteProps) => {
   
   const links: string[] = [];
   

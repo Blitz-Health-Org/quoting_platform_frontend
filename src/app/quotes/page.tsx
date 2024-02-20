@@ -15,7 +15,6 @@ import { QuoteType } from "@/src/types/custom/Quote";
 import { NonSystemField, quoteMetadataObject } from "@/src/types/metadata";
 import { isFieldVisible } from "@/src/types/utils/isFieldVisible";
 import { AddNewQuoteModal } from "@/src/components/client/modal/AddNewQuoteModal";
-import { CreateHandbookModal } from "@/src/components/client/modal/CreateHandbookModal";
 import { ViewQuoteModal } from "@/src/components/client/modal/ViewQuoteModal";
 
 type QuotingPageProps = {
