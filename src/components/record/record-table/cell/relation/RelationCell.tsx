@@ -29,6 +29,7 @@ export const RelationCell = ({
   setIsCellSelected,
 }: RelationCellProps) => {
   const internalIdValue = parseInt(idValue);
+  console.log("eee", internalIdValue, field.relationIdField);
 
   const [selectedRecords, setSelectedRecords] = useState<any[]>([]);
 

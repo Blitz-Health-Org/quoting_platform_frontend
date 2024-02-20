@@ -21,80 +21,39 @@ export const Graphs = ({
 }: GraphsProps) => {
   // Determine the current month's index
   const currentMonthIndex = new Date().getMonth();
+  let ytdTotal = 0;
 
-  const projectedVersusExpectedData = months.map((month, index) => {
+  const expectedVersusActualVersusProjectedData = months.map((month, index) => {
     let expected = 0;
     let actual = 0;
-    let projected = 0;
 
     filteredRecords.forEach((record) => {
       // Sum actual payments up to the current month
-      monthlyPaymentFields
-        .slice(0, index + 1)
-        .forEach((paymentField, paymentIndex) => {
-          actual += record[paymentField] || 0;
-        });
-
-      if (index >= currentMonthIndex) {
-        const actualAverage = actual / (currentMonthIndex + 1);
-        projected = actualAverage * (index + 1);
-      }
+      monthlyPaymentFields.slice(0, index + 1).forEach((paymentField) => {
+        actual += record[paymentField] || 0;
+      });
 
       expected += record["expected_monthly_revenue"] * (index + 1);
     });
+
+    if (index === currentMonthIndex) {
+      ytdTotal = actual;
+    }
 
     const data = {
       name: month,
       expected: expected.toFixed(2),
     };
 
-    if (index < currentMonthIndex) {
-      data.actual = actual.toFixed(2);
-    } else if (index == currentMonthIndex) {
-      data.actual = actual.toFixed(2);
-      data.projected = projected.toFixed(2);
-    } else {
-      data.projected = projected.toFixed(2);
+    if (index >= currentMonthIndex) {
+      console.log("currentMonthIndex", currentMonthIndex);
+      data.projected = (
+        (ytdTotal / (currentMonthIndex + 1)) *
+        (index + 1)
+      ).toFixed(2);
     }
 
-    return data;
-  });
-
-  // Repeat the rounding logic for projectedData as well
-  const projectedData = months.map((month, index) => {
-    let expected = 0;
-    let actual = 0;
-    let projected = 0;
-
-    filteredRecords.forEach((record) => {
-      // Sum actual payments up to the current month
-      monthlyPaymentFields
-        .slice(0, index + 1)
-        .forEach((paymentField, paymentIndex) => {
-          actual += record[paymentField] || 0;
-        });
-
-      if (index >= currentMonthIndex) {
-        const actualAverage = actual / (currentMonthIndex + 1);
-        projected = actualAverage * (index + 1);
-      }
-
-      expected += record["expected_monthly_revenue"] * (index + 1);
-    });
-
-    const data = {
-      name: month,
-      expected: expected.toFixed(2),
-    };
-
-    if (index < currentMonthIndex) {
-      data.actual = actual.toFixed(2);
-    } else if (index == currentMonthIndex) {
-      data.actual = actual.toFixed(2);
-      data.projected = projected.toFixed(2);
-    } else {
-      data.projected = projected.toFixed(2);
-    }
+    data.actual = actual.toFixed(2);
 
     return data;
   });
@@ -105,14 +64,14 @@ export const Graphs = ({
         <h1 className="m-3 font-semibold">Expected vs Actual ($)</h1>
         <hr className="mb-2 mt-2"></hr>
         <div className="m-3">
-          <LineChart data={projectedVersusExpectedData} />
+          <LineChart data={expectedVersusActualVersusProjectedData} />
         </div>
       </div>
       <div className="rounded-sm shadow-sm outline outline-1 outline-gray-200 ml-1 mt-1 mb-1">
         <h1 className="m-3 font-semibold">Projected Revenue ($)</h1>
         <hr className="mb-2 mt-2"></hr>
         <div className="m-3">
-          <LineChart2 data={projectedData} />
+          <LineChart2 data={expectedVersusActualVersusProjectedData} />
         </div>
       </div>
       {Object.keys(groupedFilteredRecords).length > 0 && (

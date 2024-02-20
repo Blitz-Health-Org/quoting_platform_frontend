@@ -109,7 +109,7 @@ export function RecordCell({
           setRefs={setRefs}
           isFirstField={isFirstField}
           isUserCreatedRow={isUserCreatedRow}
-          defaultValue={""}
+          defaultValue={fieldValue}
         />
       )}
     </div>

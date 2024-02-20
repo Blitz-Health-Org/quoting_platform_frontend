@@ -457,7 +457,7 @@ export const metadata: Metadata = {
     // },
     carrier_id: {
       type: "bigint",
-      field: "carrier",
+      field: "carrier_id",
       isRelation: true,
       relationTable: "carriers",
       relationLabel: "name",

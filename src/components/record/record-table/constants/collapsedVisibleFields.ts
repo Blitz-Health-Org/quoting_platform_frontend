@@ -6,7 +6,7 @@ export const collapsedVisibleFields = [
   },
   {
     type: "bigint",
-    field: "carrier",
+    field: "carrier_id",
     isRelation: true,
     relationTable: "carriers",
     relationLabel: "name",
