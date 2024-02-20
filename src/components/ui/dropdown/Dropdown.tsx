@@ -74,6 +74,7 @@ export const Dropdown = ({
   });
 
   function handleDropdownClick() {
+    console.log("always fires??");
     setIsDropdownOpen(!isDropdownOpen);
     onClick?.();
   }

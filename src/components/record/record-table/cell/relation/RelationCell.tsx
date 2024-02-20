@@ -4,7 +4,7 @@ import { RelationDropdownItems } from "@/src/components/record/record-table/cell
 import { createClient } from "@supabase/supabase-js";
 import { debounce } from "lodash";
 import error from "next/error";
-import { RelationDropdown } from "@/src/components/ui/dropdown/RelationDropdown";
+import { TableCellDropdown } from "@/src/components/ui/dropdown/TableCellDropdown";
 
 const supabase = createClient(
   "https://ifaekiywtbedsipmwtkr.supabase.co",
@@ -115,7 +115,7 @@ export const RelationCell = ({
 
   return (
     <>
-      <RelationDropdown
+      <TableCellDropdown
         setRefs={setRefs}
         setIsCellSelected={setIsCellSelected}
         clickableComponent={

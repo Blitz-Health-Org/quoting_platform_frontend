@@ -14,10 +14,12 @@ export function RecordCell({
   onEnter,
   field,
   isFirstField,
+  statusColor,
 }: {
   onEnter: (field: string, newValue: any) => void;
   field: PolicyField;
   isFirstField: boolean;
+  statusColor: string;
 }) {
   const { row, isUserCreatedRow } = useContext(RowContext);
 
@@ -66,33 +68,21 @@ export function RecordCell({
     }
   };
 
-  if (field.isCalculated) {
-    return (
-      <div
-        className="min-w-32"
-        onClick={() => {
-          setIsCellSelected(true);
-        }}
-      >
+  return (
+    <div
+      className={`min-w-32 ${statusColor}`}
+      onClick={() => {
+        setIsCellSelected(true);
+      }}
+    >
+      {field.isCalculated ? (
         <ReadOnlyCell
           setRefs={setRefs}
           isFirstField={isFirstField}
           isUserCreatedRow={isUserCreatedRow}
           defaultValue={fieldValue}
         />
-      </div>
-    );
-  }
-
-  //TODO @VARUN: make this have '...' for overflow, or some sort of ui indication of continuation
-  if (field.isRelation) {
-    return (
-      <div
-        className="min-w-32"
-        onClick={() => {
-          setIsCellSelected(true);
-        }}
-      >
+      ) : field.isRelation ? (
         <RelationCell
           setRefs={setRefs}
           isFirstField={isFirstField}
@@ -103,17 +93,10 @@ export function RecordCell({
           isCellSelected={isCellSelected}
           setIsCellSelected={setIsCellSelected}
         />
-      </div>
-    );
-  } else if (field.type === "enum") {
-    return (
-      <div
-        className="min-w-32"
-        onClick={() => {
-          setIsCellSelected(true);
-        }}
-      >
+      ) : field.type === "enum" ? (
         <EnumCell
+          isCellSelected={isCellSelected}
+          setIsCellSelected={setIsCellSelected}
           setRefs={setRefs}
           isFirstField={isFirstField}
           isUserCreatedRow={isUserCreatedRow}
@@ -121,46 +104,14 @@ export function RecordCell({
           onEnter={onEnter}
           field={field}
         />
-      </div>
-    );
-  } else if (
-    field.type === "text" ||
-    field.type === "bigint" ||
-    field.type === "double precision" ||
-    field.type === "jsonb" ||
-    field.type === "double precision[]" ||
-    field.type === "boolean"
-  ) {
-    return (
-      <div
-        className="min-w-32"
-        onClick={() => {
-          setIsCellSelected(true);
-        }}
-      >
-        <TextCell
-          setRefs={setRefs}
-          isFirstField={isFirstField}
-          isUserCreatedRow={isUserCreatedRow}
-          defaultValue={fieldValue}
-        />
-      </div>
-    );
-  } else {
-    return (
-      <div
-        className="min-w-32"
-        onClick={() => {
-          setIsCellSelected(true);
-        }}
-      >
+      ) : (
         <TextCell
           setRefs={setRefs}
           isFirstField={isFirstField}
           isUserCreatedRow={isUserCreatedRow}
           defaultValue={""}
         />
-      </div>
-    );
-  }
+      )}
+    </div>
+  );
 }
