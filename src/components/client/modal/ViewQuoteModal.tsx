@@ -90,31 +90,25 @@ export const ViewQuoteModal = ({ client, onClose }: Props) => {
             <FaX />
           </button>
         </div>
-        {quotes && (
-          <div>
-            <ul>
-            {quotes && quotes.length > 0 ? (
-              <div>
+          {quotes && quotes.length > 0 ? (
+              <div className="overflow-y-scroll">
                 <h3 className="text-xl font-semibold mb-2">File Names:</h3>
                 <ul>
-                  {quotes.map((quote: QuoteTypeWithCheckbox) => (
-                    <li key={quote.id}>
-                      <input
-                        type="checkbox"
-                        checked={quote.isSelected}
-                        onChange={() => handleCheckboxChange(quote.id)}
-                      />
-                      {quote.fileName}
-                    </li>
-                  ))}
+                {quotes.map((quote: QuoteTypeWithCheckbox) => (
+                <li key={quote.id} className="flex truncate gap-2">
+                  <input
+                    type="checkbox"
+                    checked={quote.isSelected}
+                    onChange={() => handleCheckboxChange(quote.id)}
+                  />
+                  <div>{quote.file_name}</div>
+                </li>
+              ))}
                 </ul>
               </div>
             ) : (
               <h3 className="text-large font-semibold mb-2">No quotes available, please upload a quote to get started.</h3>
             )}
-            </ul>
-          </div>
-        )}
         <hr className="mb-4 mt-4"></hr>
         <p className="text-xs text-right mb-4 text-gray-400">
           Your data is encrypted with bank-level TLS encryption.
