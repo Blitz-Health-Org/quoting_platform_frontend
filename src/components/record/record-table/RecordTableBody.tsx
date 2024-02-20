@@ -169,7 +169,7 @@ export const RecordTableBody = ({
 
   return (
     <>
-      <div className="flex flex-col gap-0">
+      <div className="flex flex-col gap-0 h-96">
         {isUserCreatedRecordActive && (
           <>
             <RowContextProvider isUserCreatedRow>
