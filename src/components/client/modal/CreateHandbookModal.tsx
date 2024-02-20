@@ -83,16 +83,16 @@ export const CreateHandbookModal = ({ onClose }: CreateHandbookModalProps) => {
     >
       <div className="bg-white p-8 rounded-md max-w-md w-full h-fit modal-content">
         <div className="flex justify-between items-center mb-4 modal-header">
-        <div className="flex">
-          <Image
-            src={BlumeLogo}
-            alt="Description of the image"
-            width={30}
-            height={30}
-            className="mr-2 rounded-md"
-          />
-          <p className="text-2xl">Upload Quotes</p>
-        </div>
+          <div className="flex">
+            <Image
+              src={BlumeLogo}
+              alt="Description of the image"
+              width={30}
+              height={30}
+              className="mr-2 rounded-md"
+            />
+            <p className="text-2xl">Upload Quotes</p>
+          </div>
           <button
             onClick={onClose}
             className="text-gray-500 hover:text-gray-700 focus:outline-none"

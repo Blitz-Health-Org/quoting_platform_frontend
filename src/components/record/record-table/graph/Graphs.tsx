@@ -45,6 +45,8 @@ export const Graphs = ({
       expected: expected.toFixed(2),
     };
 
+    data.actual = actual.toFixed(2);
+
     if (index >= currentMonthIndex) {
       console.log("currentMonthIndex", currentMonthIndex);
       data.projected = (
@@ -53,7 +55,9 @@ export const Graphs = ({
       ).toFixed(2);
     }
 
-    data.actual = actual.toFixed(2);
+    if (index > currentMonthIndex) {
+      data.actual = null;
+    }
 
     return data;
   });
@@ -64,7 +68,12 @@ export const Graphs = ({
         <h1 className="m-3 font-semibold">Expected vs Actual ($)</h1>
         <hr className="mb-2 mt-2"></hr>
         <div className="m-3">
-          <LineChart data={expectedVersusActualVersusProjectedData} />
+          <LineChart
+            data={expectedVersusActualVersusProjectedData.slice(
+              0,
+              currentMonthIndex + 1,
+            )}
+          />
         </div>
       </div>
       <div className="rounded-sm shadow-sm outline outline-1 outline-gray-200 ml-1 mt-1 mb-1">

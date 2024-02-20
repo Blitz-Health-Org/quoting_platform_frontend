@@ -132,10 +132,10 @@ export const ClientCard = ({
       )}
       {modalOpen === "addNewQuote" && (
         <CreateHandbookModal
-        onClose={() => {
-          setModalOpen("");
-        }}
-      />
+          onClose={() => {
+            setModalOpen("");
+          }}
+        />
       )}
     </>
   );

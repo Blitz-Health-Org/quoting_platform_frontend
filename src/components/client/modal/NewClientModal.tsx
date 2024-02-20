@@ -128,17 +128,17 @@ export const NewClientModal = ({
       onClick={handleOverlayClick}
     >
       <div className="bg-white p-4 rounded-md w-1/2 md:w-1/3 lg:1/3">
-      <div className="flex justify-between items-center mb-4 modal-header">
-        <div className="flex">
-          <Image
-            src={BlumeLogo}
-            alt="Description of the image"
-            width={30}
-            height={30}
-            className="mr-2 rounded-md"
-          />
-          <p className="text-2xl">New Client</p>
-        </div>
+        <div className="flex justify-between items-center mb-4 modal-header">
+          <div className="flex">
+            <Image
+              src={BlumeLogo}
+              alt="Description of the image"
+              width={30}
+              height={30}
+              className="mr-2 rounded-md"
+            />
+            <p className="text-2xl">New Client</p>
+          </div>
           <button
             onClick={onClose}
             className="text-gray-500 hover:text-gray-700 focus:outline-none"
@@ -217,7 +217,9 @@ export const NewClientModal = ({
           </div> */}
 
           <hr className="mb-4"></hr>
-          <p className="text-xs text-right mb-4 text-gray-400">Your data is encrypted with bank-level TLS encryption.</p>
+          <p className="text-xs text-right mb-4 text-gray-400">
+            Your data is encrypted with bank-level TLS encryption.
+          </p>
           <div className="flex w-full justify-end">
             <button
               className="mr-2 outline outline-1 outline-gray-400 px-4 py-1 rounded-sm font-medium hover:outline-gray-500 hover:bg-gray-100"

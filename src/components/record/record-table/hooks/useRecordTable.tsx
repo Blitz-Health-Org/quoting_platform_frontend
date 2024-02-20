@@ -31,8 +31,15 @@ export function useRecordTable(
 
         const { data, error } = await supabase
           .from(supabaseTableName)
-          .select()
+          .select(
+            `
+            *,
+            client_id:client_id (id, name),
+            carrier_id:carrier_id (id, name)
+            `,
+          )
           .order("id");
+        console.log("data", data);
         if (!error) {
           const validRecords = data.filter((record) => {
             const date = new Date(record.created_at);

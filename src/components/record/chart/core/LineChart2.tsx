@@ -37,11 +37,11 @@ export const LineChart2 = ({ data }: { data: any[] }) => {
       <Tooltip />
       <Legend />
 
-      <Bar dataKey="actual" fill="#5800D6" />
+      <Bar dataKey="actual" fill="#459E00" />
       <Line
         type="monotone"
         dataKey="projected"
-        stroke="#459E00"
+        stroke="#5800D6"
         strokeDasharray="5 5" // This creates the dotted effect
       />
     </ComposedChart>
