@@ -88,10 +88,10 @@ export const RecordRow = ({
     <div
       className={`flex flex-row items-center w-full ${
         row.status === "Resolved"
-          ? "bg-green-300"
+          ? "bg-green-100"
           : row.status === "Unresolved"
-            ? "bg-red-300"
-            : "bg-yellow-300"
+            ? "bg-red-100"
+            : "bg-neutral-100/20"
       }`}
     >
       <CheckboxCell rowId={row.id} />
