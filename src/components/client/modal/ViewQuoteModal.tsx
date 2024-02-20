@@ -13,11 +13,20 @@ import { useRouter } from "next/navigation";
 type Props = {
   client: ClientType;
   onClose: () => void;
+  setOpenSnackbarShare: ({
+    open,
+    message,
+    severity,
+  }: {
+    open: boolean;
+    message: string;
+    severity: string;
+  }) => void;
 };
 
 type QuoteTypeWithCheckbox = QuoteType & { isSelected: boolean };
 
-export const ViewQuoteModal = ({ client, onClose }: Props) => {
+export const ViewQuoteModal = ({ client, onClose, setOpenSnackbarShare }: Props) => {
   const [quotes, setQuotes] = useState<QuoteTypeWithCheckbox[]>([]);
 
   const router = useRouter();
@@ -83,7 +92,7 @@ export const ViewQuoteModal = ({ client, onClose }: Props) => {
       style={{ backdropFilter: "blur(2px)" }}
       onClick={handleOverlayClick}
     >
-      <div className="bg-white p-4 rounded-md w-1/2 md:w-1/3 lg:1/3">
+      <div className="bg-white p-4 rounded-md w-1/2 md:w-1/3 lg:w-1/3 h-fit">
         <div className="flex justify-between items-center mb-4 modal-header">
           <div className="flex">
             <Image
@@ -102,11 +111,10 @@ export const ViewQuoteModal = ({ client, onClose }: Props) => {
             <FaX />
           </button>
         </div>
-        {quotes && quotes.length > 0 ? (
-          <>
-            <div className="overflow-y-scroll">
-              <h3 className="text-xl font-semibold mb-2">File Names:</h3>
-              <ul>
+          {quotes && quotes.length > 0 ? (
+              <div className="overflow-y-scroll h-56">
+                <h3 className="text-xl font-semibold mb-2">Choose Files</h3>
+                <ul>
                 {quotes.map((quote: QuoteTypeWithCheckbox) => (
                   <li key={quote.id} className="flex truncate gap-2">
                     <input
