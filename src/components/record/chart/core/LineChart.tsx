@@ -29,7 +29,7 @@ export const LineChart = ({ data }: { data: any[] }) => {
       width={330}
       height={250}
       data={data}
-      margin={{ top: 10, right: 30, left: 20, bottom: 0 }}
+      margin={{ top: 50, right: 30, left: 30, bottom: 30 }}
     >
       <defs>{/* Gradient definitions as before */}</defs>
       <XAxis dataKey="name" />

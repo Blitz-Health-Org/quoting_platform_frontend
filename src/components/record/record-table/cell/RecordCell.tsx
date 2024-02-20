@@ -87,7 +87,7 @@ export function RecordCell({
           setRefs={setRefs}
           isFirstField={isFirstField}
           isUserCreatedRow={isUserCreatedRow}
-          idValue={fieldValue}
+          relationObject={fieldValue}
           field={field}
           onEnter={onEnter}
           isCellSelected={isCellSelected}
@@ -109,7 +109,7 @@ export function RecordCell({
           setRefs={setRefs}
           isFirstField={isFirstField}
           isUserCreatedRow={isUserCreatedRow}
-          defaultValue={""}
+          defaultValue={fieldValue}
         />
       )}
     </div>

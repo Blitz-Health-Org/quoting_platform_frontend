@@ -116,7 +116,7 @@ export const RecordTableBody = ({
       .reduce((obj, [key, value]) => ({ ...obj, [key]: value }), {});
 
     await supabase
-      .from(tableName.plural)
+      .from(tableName.plural.toLowerCase())
       .upsert(updatedRecord, { onConflict: "id" })
       .select();
   }

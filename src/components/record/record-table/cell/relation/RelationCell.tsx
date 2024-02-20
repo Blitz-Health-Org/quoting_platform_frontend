@@ -5,13 +5,14 @@ import { debounce } from "lodash";
 import error from "next/error";
 import { TableCellDropdown } from "@/src/components/ui/dropdown/TableCellDropdown";
 import { supabase } from "@/src/supabase";
+import { row } from "../../view/constants/initializeEmptyUserCreatedRow";
 
 type RelationCellProps = {
   field: PolicyField;
   setRefs: (element: any) => void;
   isFirstField: boolean;
   isUserCreatedRow: boolean;
-  idValue: string;
+  relationObject: any;
   onEnter: any;
   isCellSelected?: boolean;
   setIsCellSelected?: (val: boolean) => void;
@@ -23,76 +24,63 @@ export const RelationCell = ({
   setRefs,
   isFirstField,
   isUserCreatedRow,
-  idValue,
+  relationObject,
   onEnter,
   isCellSelected,
   setIsCellSelected,
 }: RelationCellProps) => {
-  const internalIdValue = parseInt(idValue);
+  console.log("relation", relationObject);
+
+  const internalIdValue = parseInt(relationObject?.id);
 
   const [selectedRecords, setSelectedRecords] = useState<any[]>([]);
 
-  const [fieldValue, setFieldValue] = useState<string>("");
+  const [fieldValue, setFieldValue] = useState<string>(
+    relationObject?.name ?? "",
+  );
 
   const debouncedSetSearchFilter = debounce(setFieldValue, 100, {
     leading: true,
   });
 
   useEffect(() => {
-    const fetchData = async () => {
-      if (internalIdValue) {
+    if (isCellSelected) {
+      const fetchData = async () => {
         if (
-          field?.relationIdField &&
-          field?.relationLabel &&
-          field?.relationTable
+          field.relationIdField &&
+          field.relationLabel &&
+          field.relationTable
         ) {
-          const { data, error } = await supabase
-            .from(field.relationTable)
-            .select(`${field.relationLabel}`)
-            .eq(field.relationIdField, internalIdValue)
-            .single();
+          if (!fieldValue) {
+            const { data: matchingRelationRecords, error } = await supabase
+              .from(field.relationTable)
+              .select(`${field.relationLabel}, ${field.relationIdField}`)
+              .limit(5);
 
-          if (!error) {
-            setFieldValue(data?.[field.relationLabel as any]);
+            if (error) {
+              console.error(error);
+            } else {
+              setSelectedRecords(matchingRelationRecords);
+            }
+          } else {
+            const { data: matchingRelationRecords, error } = await supabase
+              .from(field.relationTable)
+              .select(`${field.relationLabel}, ${field.relationIdField}`)
+              .like(field.relationLabel, `%${fieldValue}%`)
+              .limit(5);
+
+            if (error) {
+              console.error(error);
+            } else {
+              setSelectedRecords(matchingRelationRecords);
+            }
           }
         }
-      }
-    };
-    fetchData();
-  }, [field, internalIdValue]);
+      };
 
-  useEffect(() => {
-    const fetchData = async () => {
-      if (field.relationIdField && field.relationLabel && field.relationTable) {
-        if (!fieldValue) {
-          const { data: matchingRelationRecords, error } = await supabase
-            .from(field.relationTable)
-            .select(`${field.relationLabel}, ${field.relationIdField}`)
-            .limit(5);
-
-          if (error) {
-            console.error(error);
-          } else {
-            setSelectedRecords(matchingRelationRecords);
-          }
-        } else {
-          const { data: matchingRelationRecords, error } = await supabase
-            .from(field.relationTable)
-            .select(`${field.relationLabel}, ${field.relationIdField}`)
-            .like(field.relationLabel, `%${fieldValue}%`)
-            .limit(5);
-
-          if (error) {
-            console.error(error);
-          } else {
-            setSelectedRecords(matchingRelationRecords);
-          }
-        }
-      }
-    };
-
-    fetchData();
-  }, [field, fieldValue, internalIdValue]);
+      fetchData();
+    }
+  }, [field, fieldValue, internalIdValue, isCellSelected]);
 
   function handleDropdownItemClick(item: any) {
     return () => {
