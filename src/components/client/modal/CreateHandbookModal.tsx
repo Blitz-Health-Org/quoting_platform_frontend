@@ -3,6 +3,9 @@ import { useDropzone } from "react-dropzone";
 import { MdUpload } from "react-icons/md";
 import { Modal } from "../../ui/Modal";
 import React, { useState } from "react";
+import Image from "next/image";
+import BlumeLogo from "@/public/BlumeLogo.png";
+import { FaX } from "react-icons/fa6";
 
 type CreateHandbookModalProps = {
   onClose: () => void;
@@ -33,7 +36,7 @@ export const CreateHandbookModal = ({ onClose }: CreateHandbookModalProps) => {
   const handleUpload = async () => {
     if (state.files.length > 0) {
       const promises = state.files.map(async (file) => {
-        const randomDigit = Math.floor(Math.random() * 1024); // Generate random 8-bit digit
+        const randomDigit = Math.floor(Math.random() * 2048); // Generate random 8-bit digit
         const newFileName = `${file.name}_${randomDigit}`; // Append random digit to the file name
 
         const { data, error } = await supabase.storage
@@ -78,23 +81,32 @@ export const CreateHandbookModal = ({ onClose }: CreateHandbookModalProps) => {
       className="fixed top-0 left-0 w-full h-full flex items-center justify-center modal-overlay z-50 bg-gray-400/50"
       style={{ backdropFilter: "blur(3px)" }}
     >
-      <div className="bg-white p-8 rounded-md max-w-md w-full modal-content">
+      <div className="bg-white p-8 rounded-md max-w-md w-full h-fit modal-content">
         <div className="flex justify-between items-center mb-4 modal-header">
-          <h2 className="text-lg font-semibold">Upload Documents</h2>
+        <div className="flex">
+          <Image
+            src={BlumeLogo}
+            alt="Description of the image"
+            width={30}
+            height={30}
+            className="mr-2 rounded-md"
+          />
+          <p className="text-2xl">Upload Quotes</p>
+        </div>
           <button
             onClick={onClose}
             className="text-gray-500 hover:text-gray-700 focus:outline-none"
           >
-            X
+            <FaX />
           </button>
         </div>
         <div className="modal-body">
           {/* File Upload Section */}
-          <div className="mb-6 flex flex-col items-center justify-center">
+          <div className="flex flex-col items-center justify-center">
             <div
               {...getRootProps()}
               className={`p-6 mb-2 mt-2 drop-shadow-sm outline outline-1 outline-gray-400/65 hover:outline-black w-full ${
-                isDragActive ? "bg-gray-200" : "bg-gray-100"
+                isDragActive ? "bg-gray-200/50" : "bg-gray-100/50"
               }`}
               style={{ borderRadius: "0.25rem" }}
             >
@@ -124,7 +136,7 @@ export const CreateHandbookModal = ({ onClose }: CreateHandbookModalProps) => {
             </div>
             <button
               onClick={handleUpload}
-              className="w-full bg-slate-800 text-white py-2 px-4 rounded-md hover:bg-blue-600 focus:outline-none"
+              className="w-full bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700 focus:outline-none cursor-pointer"
               disabled={state.files.length === 0}
             >
               Upload
