@@ -38,12 +38,12 @@ export default function RecordTableContainer({
             <div className="w-full rounded-t-lg">
               <RecordHeader tableName={tableName} />
               <div className="flex flex-col mt-3">
-                <TabHeader
+                {/* <TabHeader
                   selectedTab={tab}
                   tabs={TABS}
                   setSelectedTab={setTab}
-                />
-                <div className="w-full rounded-lg bg-white pb-20 pt-6 pl-6 pr-6 border border-1 border-gray-300 h-fit overflow-x-hidden">
+                /> */}
+                <div className="w-full rounded-lg bg-white pb-6 pt-6 pl-6 pr-6 border border-1 border-gray-300 h-fit overflow-x-hidden">
                   {tab === "Table" ? (
                     <RecordTable
                       tableName={tableName}
