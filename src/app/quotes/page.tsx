@@ -88,10 +88,6 @@ export default function QuotingPage() {
     (val) => val.type == "jsonb",
   );
 
-  const handleNewClientClick = () => {
-    router.push("/");
-  };
-
   if (loading) {
     return <></>;
   }
