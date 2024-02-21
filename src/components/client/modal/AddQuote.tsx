@@ -50,6 +50,18 @@ export const AddQuote = ({ onClose, client, setOpenSnackbarShare, setModalOpen }
   };
 
   const handleUpload = async () => {
+    const pdfFiles = state.files.filter((file) => file.type === 'application/pdf');
+    const nonPDFs = state.files.filter((file) => file.type !== 'application/pdf');
+    if (pdfFiles.length === 0) {
+      setOpenSnackbarShare({
+        open: true,
+        message: "Please upload a PDF file!",
+        severity: "error",
+      });
+      return;
+    } else {
+      setState({ ...state, files: pdfFiles });
+    }
     if (state.files.length === 0) {
       setOpenSnackbarShare({
         open: true,
@@ -124,11 +136,19 @@ export const AddQuote = ({ onClose, client, setOpenSnackbarShare, setModalOpen }
 
         if (insertResults.every((result) => result.success)) {
           console.log("Rows inserted into Supabase successfully");
-          setOpenSnackbarShare({
-            open: true,
-            message: "Quotes Added",
-            severity: "success",
-          });
+          if (nonPDFs.length >= 0) {
+            setOpenSnackbarShare({
+              open: true,
+              message: "Only your PDF files were uploaded.",
+              severity: "info",
+            });
+          } else {
+            setOpenSnackbarShare({
+              open: true,
+              message: "Quotes Added",
+              severity: "success",
+            });
+          }
           setModalOpen("viewQuote");
         } else {
           console.error("Error inserting some rows into Supabase");
