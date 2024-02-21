@@ -26,7 +26,11 @@ type Props = {
 
 type QuoteTypeWithCheckbox = QuoteType & { isSelected: boolean };
 
-export const ViewQuoteModal = ({ client, onClose, setOpenSnackbarShare }: Props) => {
+export const ViewQuoteModal = ({
+  client,
+  onClose,
+  setOpenSnackbarShare,
+}: Props) => {
   const [quotes, setQuotes] = useState<QuoteTypeWithCheckbox[]>([]);
 
   const router = useRouter();
@@ -79,31 +83,30 @@ export const ViewQuoteModal = ({ client, onClose, setOpenSnackbarShare }: Props)
       quotes?.filter((quote) => quote.isSelected).map((quote) => quote.id) ||
       [];
     // setSelectedQuotes(selected);
-      const { data: insertData, error: insertError } = await supabase
-        .from('clients') // Replace with your actual Supabase table name
-        .upsert({ id: client.id, selected_quotes: selected});
-      
-      if (insertError) {
-        console.error('Error inserting row into Supabase table:', insertError);
-        return { success: false };
-      } else {
+    const { data: insertData, error: insertError } = await supabase
+      .from("clients") // Replace with your actual Supabase table name
+      .upsert({ id: client.id, selected_quotes: selected });
 
-        setOpenSnackbarShare({
-          open: true,
-          message: "Comparison Created",
-          severity: "success",
-        }); // Use prop to set state
+    if (insertError) {
+      console.error("Error inserting row into Supabase table:", insertError);
+      return { success: false };
+    } else {
+      setOpenSnackbarShare({
+        open: true,
+        message: "Comparison Created",
+        severity: "success",
+      }); // Use prop to set state
 
-        onClose();
+      onClose();
 
-        router.push(
-          `/quotes?clientId=${clientId}&quoteIds=${selectedQuoteIds.join(",")}`,
-        );
+      router.push(
+        `/quotes?clientId=${clientId}&quoteIds=${selectedQuoteIds.join(",")}`,
+      );
 
-        return { success: true};
-      }
+      return { success: true };
     }
-      
+  };
+
   // const handleNextClick = () => {
   //   const selectedQuoteIds =
   //     quotes?.filter((quote) => quote.isSelected).map((quote) => quote.id) ||
@@ -143,11 +146,11 @@ export const ViewQuoteModal = ({ client, onClose, setOpenSnackbarShare }: Props)
             <FaX />
           </button>
         </div>
-          {quotes && quotes.length > 0 ? (
-            <>
-              <div className="overflow-y-scroll h-56">
-                <h3 className="text-xl font-semibold mb-2">Choose Files</h3>
-                <ul>
+        {quotes && quotes.length > 0 ? (
+          <>
+            <div className="overflow-y-scroll h-56">
+              <h3 className="text-xl font-semibold mb-2">Choose Files</h3>
+              <ul>
                 {quotes.map((quote: QuoteTypeWithCheckbox) => (
                   <li key={quote.id} className="flex truncate gap-2">
                     <input

@@ -1,8 +1,8 @@
 type FilterFooterProps = {
   onClick: () => void;
   onSubmit: () => void;
-  onReset: () => void;
-  filterSetActive: boolean;
+  onReset?: () => void;
+  filterSetActive?: boolean;
 };
 
 export const FilterFooter = ({

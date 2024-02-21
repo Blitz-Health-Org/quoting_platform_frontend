@@ -28,8 +28,12 @@ type StateProps = {
   filesPaths: string[];
 };
 
-export const AddQuote = ({ onClose, client, setOpenSnackbarShare, setModalOpen }: AddQuoteProps) => {
-  
+export const AddQuote = ({
+  onClose,
+  client,
+  setOpenSnackbarShare,
+  setModalOpen,
+}: AddQuoteProps) => {
   const links: string[] = [];
 
   const handleOverlayClick = (e: React.MouseEvent<HTMLDivElement>) => {
@@ -50,8 +54,12 @@ export const AddQuote = ({ onClose, client, setOpenSnackbarShare, setModalOpen }
   };
 
   const handleUpload = async () => {
-    const pdfFiles = state.files.filter((file) => file.type === 'application/pdf');
-    const nonPDFs = state.files.filter((file) => file.type !== 'application/pdf');
+    const pdfFiles = state.files.filter(
+      (file) => file.type === "application/pdf",
+    );
+    const nonPDFs = state.files.filter(
+      (file) => file.type !== "application/pdf",
+    );
     if (pdfFiles.length === 0) {
       setOpenSnackbarShare({
         open: true,
@@ -68,7 +76,7 @@ export const AddQuote = ({ onClose, client, setOpenSnackbarShare, setModalOpen }
         message: "Please upload a file!",
         severity: "error",
       });
-    };
+    }
     if (state.files.length > 0) {
       const paths: string[] = [];
       const fileNames: string[] = [];
@@ -160,7 +168,7 @@ export const AddQuote = ({ onClose, client, setOpenSnackbarShare, setModalOpen }
         });
       }
     }
-  };  
+  };
 
   const { getRootProps, getInputProps, isDragActive } = useDropzone({
     onDrop,
