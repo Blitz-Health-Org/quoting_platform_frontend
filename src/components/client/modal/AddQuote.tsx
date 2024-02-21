@@ -10,6 +10,16 @@ import { FaX } from "react-icons/fa6";
 type AddQuoteProps = {
   onClose: () => void;
   client: any;
+  setModalOpen: any;
+  setOpenSnackbarShare: ({
+    open,
+    message,
+    severity,
+  }: {
+    open: boolean;
+    message: string;
+    severity: string;
+  }) => void;
 };
 
 type StateProps = {
@@ -18,7 +28,7 @@ type StateProps = {
   filesPaths: string[];
 };
 
-export const AddQuote = ({ onClose, client }: AddQuoteProps) => {
+export const AddQuote = ({ onClose, client, setOpenSnackbarShare, setModalOpen }: AddQuoteProps) => {
   
   const links: string[] = [];
   
@@ -40,6 +50,13 @@ export const AddQuote = ({ onClose, client }: AddQuoteProps) => {
   };
 
   const handleUpload = async () => {
+    if (state.files.length === 0) {
+      setOpenSnackbarShare({
+        open: true,
+        message: "Please upload a file!",
+        severity: "error",
+      });
+    };
     if (state.files.length > 0) {
       const paths: string[] = [];
       const fileNames: string[] = [];
@@ -100,6 +117,12 @@ export const AddQuote = ({ onClose, client }: AddQuoteProps) => {
   
         if (insertResults.every((result) => result.success)) {
           console.log("Rows inserted into Supabase successfully");
+          setOpenSnackbarShare({
+            open: true,
+            message: "Quotes Added",
+            severity: "success",
+          });
+          setModalOpen("viewQuote");
         } else {
           console.error("Error inserting some rows into Supabase");
         }
@@ -110,9 +133,6 @@ export const AddQuote = ({ onClose, client }: AddQuoteProps) => {
         });
       }
     }
-    setTimeout(() => {
-      onClose();
-    }, 3000);
   };  
 
   const { getRootProps, getInputProps, isDragActive } = useDropzone({
@@ -123,7 +143,7 @@ export const AddQuote = ({ onClose, client }: AddQuoteProps) => {
   return (
     <div
       onClick={handleOverlayClick}
-      className="fixed top-0 left-0 w-full h-full flex items-center justify-center modal-overlay z-50 bg-gray-400/50"
+      className="fixed top-0 left-0 w-full h-full flex items-center justify-center modal-overlay z-50 bg-gray-800 bg-opacity-50"
       style={{ backdropFilter: "blur(3px)" }}
     >
       <div className="bg-white p-8 rounded-md max-w-md w-full h-fit modal-content">
@@ -173,16 +193,10 @@ export const AddQuote = ({ onClose, client }: AddQuoteProps) => {
                   ))}
                 </div>
               )}
-              {state.uploadStatus && (
-                <div className="text-center mb-4 text-slate-600">
-                  {state.uploadStatus}
-                </div>
-              )}
             </div>
             <button
               onClick={handleUpload}
               className="w-full bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700 focus:outline-none cursor-pointer"
-              disabled={state.files.length === 0}
             >
               Upload
             </button>

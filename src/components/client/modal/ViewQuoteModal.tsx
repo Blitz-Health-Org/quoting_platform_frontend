@@ -82,13 +82,13 @@ export const ViewQuoteModal = ({ client, onClose, setOpenSnackbarShare }: Props)
 
         setOpenSnackbarShare({
           open: true,
-          message: "New Client Created!",
+          message: "Comparison Created",
           severity: "success",
         }); // Use prop to set state
 
         setTimeout(() => {
           onClose();
-        }, 3000);
+        }, 500);
 
         return { success: true};
       }
@@ -149,14 +149,14 @@ export const ViewQuoteModal = ({ client, onClose, setOpenSnackbarShare }: Props)
             type="button"
             onClick={onClose}
           >
-            Back
+            Exit
           </button>
           <button
             className="outline outline-1 px-4 py-1 bg-blue-600 text-gray-100 rounded-sm font-medium hover:bg-blue-700 outline-gray-700"
             type="submit"
             onClick={handleNextClick}
           >
-            Next
+            Generate
           </button>
         </div>
       </div>
