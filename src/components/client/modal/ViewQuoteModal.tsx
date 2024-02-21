@@ -76,19 +76,50 @@ export const ViewQuoteModal = ({
     );
   };
 
-  const handleNextClick = () => {
+  const handleNextClick = async () => {
+    const selected = quotes?.filter((quote) => quote.isSelected) || [];
+    const clientId = client.id;
     const selectedQuoteIds =
       quotes?.filter((quote) => quote.isSelected).map((quote) => quote.id) ||
       [];
+    // setSelectedQuotes(selected);
+    const { data: insertData, error: insertError } = await supabase
+      .from("clients") // Replace with your actual Supabase table name
+      .upsert({ id: client.id, selected_quotes: selected });
 
-    // Assuming client.id is the ID you want to pass
-    const clientId = client.id;
+    if (insertError) {
+      console.error("Error inserting row into Supabase table:", insertError);
+      return { success: false };
+    } else {
+      setOpenSnackbarShare({
+        open: true,
+        message: "Comparison Created",
+        severity: "success",
+      }); // Use prop to set state
 
-    // Push the new route with query parameters for IDs
-    router.push(
-      `/quotes?clientId=${clientId}&quoteIds=${selectedQuoteIds.join(",")}`,
-    );
+      onClose();
+
+      router.push(
+        `/quotes?clientId=${clientId}&quoteIds=${selectedQuoteIds.join(",")}`,
+      );
+
+      return { success: true };
+    }
   };
+
+  // const handleNextClick = () => {
+  //   const selectedQuoteIds =
+  //     quotes?.filter((quote) => quote.isSelected).map((quote) => quote.id) ||
+  //     [];
+
+  //   // Assuming client.id is the ID you want to pass
+  //   const clientId = client.id;
+
+  //   // Push the new route with query parameters for IDs
+  //   router.push(
+  //     `/quotes?clientId=${clientId}&quoteIds=${selectedQuoteIds.join(",")}`,
+  //   );
+  // };
 
   return (
     <div
