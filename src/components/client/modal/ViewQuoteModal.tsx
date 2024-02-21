@@ -26,7 +26,11 @@ type Props = {
 
 type QuoteTypeWithCheckbox = QuoteType & { isSelected: boolean };
 
-export const ViewQuoteModal = ({ client, onClose, setOpenSnackbarShare }: Props) => {
+export const ViewQuoteModal = ({
+  client,
+  onClose,
+  setOpenSnackbarShare,
+}: Props) => {
   const [quotes, setQuotes] = useState<QuoteTypeWithCheckbox[]>([]);
 
   const router = useRouter();
@@ -111,10 +115,11 @@ export const ViewQuoteModal = ({ client, onClose, setOpenSnackbarShare }: Props)
             <FaX />
           </button>
         </div>
-          {quotes && quotes.length > 0 ? (
-              <div className="overflow-y-scroll h-56">
-                <h3 className="text-xl font-semibold mb-2">Choose Files</h3>
-                <ul>
+        {quotes && quotes.length > 0 ? (
+          <>
+            <div className="overflow-y-scroll h-56">
+              <h3 className="text-xl font-semibold mb-2">Choose Files</h3>
+              <ul>
                 {quotes.map((quote: QuoteTypeWithCheckbox) => (
                   <li key={quote.id} className="flex truncate gap-2">
                     <input

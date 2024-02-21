@@ -32,8 +32,6 @@ export default function QuotingPage() {
     const clientId = searchParams.get("clientId");
     const quoteIds = searchParams.get("quoteIds");
 
-    console.log("client", clientId, quoteIds);
-
     if (clientId && quoteIds) {
       // Convert quoteIds back into an array of IDs
       const ids = quoteIds.split(",").map((id) => id.trim());
