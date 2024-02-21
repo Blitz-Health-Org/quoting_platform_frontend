@@ -1,6 +1,6 @@
 import { CommissionTablePage } from "@/src/components/commissions/CommissionTablePage";
 import "../globals.css";
-import { Navbar } from "@/src/components/quotes/Navbar";
+import { Navbar } from "@/src/components/comparison/Navbar";
 export default function Home() {
   return (
     <div className="w-full h-full flex flex-row bg-white">

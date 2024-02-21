@@ -1,3 +1,5 @@
+"use client";
+
 import React, { useEffect, useState } from "react";
 import { Modal } from "../../ui/Modal";
 import { ClientType } from "@/src/types/custom/Client";
@@ -6,7 +8,7 @@ import { supabase } from "@/src/supabase";
 import Image from "next/image";
 import BlumeLogo from "@/public/BlumeLogo.png";
 import { FaX } from "react-icons/fa6";
-import { FaFilePdf } from "react-icons/fa";
+import { useRouter } from "next/navigation";
 
 type Props = {
   client: ClientType;
@@ -25,9 +27,9 @@ type Props = {
 type QuoteTypeWithCheckbox = QuoteType & { isSelected: boolean };
 
 export const ViewQuoteModal = ({ client, onClose, setOpenSnackbarShare }: Props) => {
-  const [quotes, setQuotes] = useState<QuoteTypeWithCheckbox[] | undefined>();
-  const [selectedQuotes, setSelectedQuotes] = useState<QuoteTypeWithCheckbox[]>([]);
-  console.log('rerender');
+  const [quotes, setQuotes] = useState<QuoteTypeWithCheckbox[]>([]);
+
+  const router = useRouter();
 
   const handleOverlayClick = (event: React.MouseEvent<HTMLDivElement>) => {
     if (event.target === event.currentTarget) {
@@ -63,14 +65,20 @@ export const ViewQuoteModal = ({ client, onClose, setOpenSnackbarShare }: Props)
   const handleCheckboxChange = (quoteId: string) => {
     setQuotes((prevQuotes) =>
       prevQuotes?.map((quote) =>
-        quote.id === quoteId ? { ...quote, isSelected: !quote.isSelected } : quote
-      )
+        quote.id === quoteId
+          ? { ...quote, isSelected: !quote.isSelected }
+          : quote,
+      ),
     );
   };
 
   const handleNextClick = async () => {
     const selected = quotes?.filter((quote) => quote.isSelected) || [];
-    setSelectedQuotes(selected);
+    const clientId = client.id;
+    const selectedQuoteIds =
+      quotes?.filter((quote) => quote.isSelected).map((quote) => quote.id) ||
+      [];
+    // setSelectedQuotes(selected);
       const { data: insertData, error: insertError } = await supabase
         .from('clients') // Replace with your actual Supabase table name
         .upsert({ id: client.id, selected_quotes: selected});
@@ -86,14 +94,29 @@ export const ViewQuoteModal = ({ client, onClose, setOpenSnackbarShare }: Props)
           severity: "success",
         }); // Use prop to set state
 
-        setTimeout(() => {
-          onClose();
-        }, 500);
+        onClose();
+
+        router.push(
+          `/quotes?clientId=${clientId}&quoteIds=${selectedQuoteIds.join(",")}`,
+        );
 
         return { success: true};
       }
+    }
       
-  };
+  // const handleNextClick = () => {
+  //   const selectedQuoteIds =
+  //     quotes?.filter((quote) => quote.isSelected).map((quote) => quote.id) ||
+  //     [];
+
+  //   // Assuming client.id is the ID you want to pass
+  //   const clientId = client.id;
+
+  //   // Push the new route with query parameters for IDs
+  //   router.push(
+  //     `/quotes?clientId=${clientId}&quoteIds=${selectedQuoteIds.join(",")}`,
+  //   );
+  // };
 
   return (
     <div
@@ -121,44 +144,48 @@ export const ViewQuoteModal = ({ client, onClose, setOpenSnackbarShare }: Props)
           </button>
         </div>
           {quotes && quotes.length > 0 ? (
+            <>
               <div className="overflow-y-scroll h-56">
                 <h3 className="text-xl font-semibold mb-2">Choose Files</h3>
                 <ul>
                 {quotes.map((quote: QuoteTypeWithCheckbox) => (
-                <li key={quote.id} className="flex truncate gap-2">
-                  <input
-                    type="checkbox"
-                    checked={quote.isSelected}
-                    onChange={() => handleCheckboxChange(quote.id)}
-                  />
-                  <div>{quote.file_name}</div>
-                </li>
-              ))}
-                </ul>
-              </div>
-            ) : (
-              <h3 className="text-large font-semibold mb-2">No quotes available, please upload a quote to get started.</h3>
-            )}
-        <hr className="mb-4 mt-4"></hr>
-        <p className="text-xs text-right mb-4 text-gray-400">
-          Your data is encrypted with bank-level TLS encryption.
-        </p>
-        <div className="flex w-full justify-end">
-          <button
-            className="mr-2 outline outline-1 outline-gray-400 px-4 py-1 rounded-sm font-medium hover:outline-gray-500 hover:bg-gray-100"
-            type="button"
-            onClick={onClose}
-          >
-            Exit
-          </button>
-          <button
-            className="outline outline-1 px-4 py-1 bg-blue-600 text-gray-100 rounded-sm font-medium hover:bg-blue-700 outline-gray-700"
-            type="submit"
-            onClick={handleNextClick}
-          >
-            Generate
-          </button>
-        </div>
+                  <li key={quote.id} className="flex truncate gap-2">
+                    <input
+                      type="checkbox"
+                      checked={quote.isSelected}
+                      onChange={() => handleCheckboxChange(quote.id)}
+                    />
+                    <div>{quote.file_name}</div>
+                  </li>
+                ))}
+              </ul>
+            </div>
+            <hr className="mb-4 mt-4"></hr>
+            <p className="text-xs text-right mb-4 text-gray-400">
+              Your data is encrypted with bank-level TLS encryption.
+            </p>
+            <div className="flex w-full justify-end">
+              <button
+                className="mr-2 outline outline-1 outline-gray-400 px-4 py-1 rounded-sm font-medium hover:outline-gray-500 hover:bg-gray-100"
+                type="button"
+                onClick={onClose}
+              >
+                Back
+              </button>
+              <button
+                className="outline outline-1 px-4 py-1 bg-blue-600 text-gray-100 rounded-sm font-medium hover:bg-blue-700 outline-gray-700"
+                type="submit"
+                onClick={handleNextClick}
+              >
+                Next
+              </button>
+            </div>
+          </>
+        ) : (
+          <h3 className="text-large font-semibold mb-2">
+            No quotes available, please upload a quote to get started.
+          </h3>
+        )}
       </div>
     </div>
   );

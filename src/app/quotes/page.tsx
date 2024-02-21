@@ -3,63 +3,78 @@
 import React, { useEffect, useState } from "react";
 import Image from "next/image";
 import { IoMdArrowBack } from "react-icons/io";
-import { useRouter } from "next/navigation";
 import { IoHelpCircleSharp } from "react-icons/io5";
-import Subheader from "../../components/quotes/Subheader";
-import Fullheader from "../../components/quotes/Fullheader";
-import QuoteCard from "../../components/quotes/QuoteCard";
-import Left from "../../components/quotes/Left";
+import Subheader from "../../components/comparison/Subheader";
+import Fullheader from "../../components/comparison/Fullheader";
+import QuoteCard from "../../components/comparison/QuoteCard";
+import Left from "../../components/comparison/Left";
 import { ClientType } from "@/src/types/custom/Client";
 import { supabase } from "@/src/supabase";
 import { QuoteType } from "@/src/types/custom/Quote";
 import { NonSystemField, quoteMetadataObject } from "@/src/types/metadata";
 import { isFieldVisible } from "@/src/types/utils/isFieldVisible";
-import { AddNewQuoteModal } from "@/src/components/client/modal/AddNewQuoteModal";
-import { ViewQuoteModal } from "@/src/components/client/modal/ViewQuoteModal";
+import { useSearchParams, useRouter } from "next/navigation";
 
 type QuotingPageProps = {
   client: ClientType;
 };
 
 export default function QuotingPage() {
-  //TODO: fix
-  const client = {
-    created_at: "323",
-    icon: "",
-    num_lives: 3,
-    user_id: 1,
-    name: "",
-    id: 1,
-  };
-  const router = useRouter();
+  const [client, setClient] = useState(null);
   const [quotes, setQuotes] = useState<QuoteType[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
 
+  const router = useRouter();
+
+  const searchParams = useSearchParams();
+
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const { data, error } = await supabase
-          .from("quotes")
-          .select()
-          .eq("client_id", client.id);
-        if (error) {
-          console.error("Error retrieving data:", error);
-        } else {
-          const orderedByAlphaData = data.sort((rowA, rowB) => {
-            if (rowA.name < rowB.name) return -1;
-            if (rowA.name > rowB.name) return 1;
-            return 0;
-          });
-          setQuotes(orderedByAlphaData);
-          setLoading(false);
-          console.log("Data retrieved successfully:", data);
-        }
-      } catch (error) {
-        alert("Error connecting to database");
-      }
-    };
-    fetchData();
-  }, [client.id]);
+    const clientId = searchParams.get("clientId");
+    const quoteIds = searchParams.get("quoteIds");
+
+    console.log("client", clientId, quoteIds);
+
+    if (clientId && quoteIds) {
+      // Convert quoteIds back into an array of IDs
+      const ids = quoteIds.split(",").map((id) => id.trim());
+      fetchClientAndQuotes(clientId, ids);
+    }
+
+    setLoading(false);
+  }, [searchParams]);
+
+  const fetchClientAndQuotes = async (clientId: string, quoteIds: string[]) => {
+    try {
+      const { data: clientData, error: clientError } = await supabase
+        .from("clients")
+        .select("*")
+        .eq("id", clientId)
+        .single();
+
+      if (clientError) throw clientError;
+
+      setClient(clientData);
+
+      // Fetch quotes data by IDs, assuming 'id' is in quoteIds array
+      const { data: quotesData, error: quotesError } = await supabase
+        .from("quotes")
+        .select("*")
+        .in("id", quoteIds);
+
+      if (quotesError) throw quotesError;
+
+      const orderedByAlphaData = quotesData.sort((rowA, rowB) => {
+        if (rowA.name < rowB.name) return -1;
+        if (rowA.name > rowB.name) return 1;
+        return 0;
+      });
+
+      setQuotes(orderedByAlphaData);
+    } catch (error) {
+      console.error("Error fetching data:", error);
+      // Optionally handle errors, such as setting an error state or showing a notification
+    }
+  };
 
   const visibleQuoteFields = Object.values(quoteMetadataObject).filter((val) =>
     isFieldVisible(val),
@@ -72,10 +87,6 @@ export default function QuotingPage() {
   const objectVisibleQuoteFields = visibleQuoteFields.filter(
     (val) => val.type == "jsonb",
   );
-
-  const handleNewClientClick = () => {
-    router.push("/");
-  };
 
   if (loading) {
     return <></>;

@@ -2,7 +2,7 @@
 
 import React, { useContext, useEffect, useState } from "react";
 import "./globals.css";
-import { Navbar } from "../components/quotes/Navbar";
+import { Navbar } from "../components/comparison/Navbar";
 import { PiListBulletsBold } from "react-icons/pi";
 import { RiArrowDropDownLine } from "react-icons/ri";
 import Apple from "../../public/Apple.jpg";
