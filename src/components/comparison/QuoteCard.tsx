@@ -25,7 +25,7 @@ export default function QuoteCard({
   const ref2 = useRef();
   const ref3 = useRef();
 
-  const totalValue = "$8780"; //implement calculation
+  const totalValue = ""; //implement calculation
 
   function valueOrDefault(val: any, def: string = "N/A") {
     return val ?? def;
@@ -117,6 +117,7 @@ export default function QuoteCard({
             (field) => field.field !== "name" && field.field !== "website",
           )
           .map((field) => {
+            console.log("field", field.field, internalQuote);
             return (
               <>
                 <textarea

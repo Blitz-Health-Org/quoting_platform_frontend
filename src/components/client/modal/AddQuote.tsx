@@ -6,6 +6,8 @@ import React, { useState } from "react";
 import Image from "next/image";
 import BlumeLogo from "@/public/BlumeLogo.png";
 import { FaX } from "react-icons/fa6";
+import { drop } from "lodash";
+import { v4 as uuid } from "uuid";
 
 type AddQuoteProps = {
   onClose: () => void;
@@ -20,12 +22,6 @@ type AddQuoteProps = {
     message: string;
     severity: string;
   }) => void;
-};
-
-type StateProps = {
-  files: File[];
-  uploadStatus: string;
-  filesPaths: string[];
 };
 
 export const AddQuote = ({
@@ -43,136 +39,192 @@ export const AddQuote = ({
     }
   };
 
-  const [state, setState] = useState<StateProps>({
-    files: [],
-    uploadStatus: "",
-    filesPaths: [],
-  });
+  const [files, setFiles] = useState<File[]>([]);
 
   const onDrop = (acceptedFiles: File[]) => {
-    setState({ ...state, files: acceptedFiles });
+    setFiles((prevFiles) => {
+      return prevFiles.concat(acceptedFiles);
+    });
   };
 
   const handleUpload = async () => {
-    const pdfFiles = state.files.filter(
-      (file) => file.type === "application/pdf",
-    );
-    const nonPDFs = state.files.filter(
-      (file) => file.type !== "application/pdf",
-    );
-    if (pdfFiles.length === 0) {
+    if (files.length === 0) {
       setOpenSnackbarShare({
         open: true,
-        message: "Please upload a PDF file!",
+        message: "Please upload a file",
+        severity: "error",
+      });
+      return;
+    }
+
+    const errFiles = [];
+    const successfulFileUrls = [];
+    for (const file of files) {
+      try {
+        const fileName = uuid();
+        await supabase.storage.from("images").upload(fileName, file);
+        await supabase
+          .from("quotes") // Replace with your actual Supabase table name
+          .upsert({
+            client_id: client.id,
+            file_urls: fileName,
+            file_name: file.name,
+          });
+
+        successfulFileUrls.push(fileName);
+      } catch {
+        errFiles.push(file.name);
+      }
+    }
+    if (errFiles.length) {
+      setOpenSnackbarShare({
+        open: true,
+        message: `Error occurred for the following files: ${errFiles.join(", ")}`,
         severity: "error",
       });
       return;
     } else {
-      setState({ ...state, files: pdfFiles });
-    }
-    if (state.files.length === 0) {
       setOpenSnackbarShare({
         open: true,
-        message: "Please upload a file!",
-        severity: "error",
+        message: `Files uploaded!`,
+        severity: "success",
       });
     }
-    if (state.files.length > 0) {
-      const paths: string[] = [];
-      const fileNames: string[] = [];
 
-      const promises = state.files.map(async (file) => {
-        const randomDigit = Math.floor(Math.random() * 1024);
-        const newFileName = `${file.name}_${randomDigit}`;
+    fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL!}/parse`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ successfulFileUrls }),
+    });
 
-        const { data, error } = await supabase.storage
-          .from("images")
-          .upload(`path/${newFileName}`, file);
-
-        const path = data?.path;
-
-        if (error) {
-          console.error(`Error uploading file ${newFileName}:`, error);
-          return { success: false, fileName: newFileName };
-        } else {
-          console.log("Downloadable URL:", data);
-          // Append the path to the temporary array if it's not already in the list
-          if (path && !state.filesPaths.includes(path)) {
-            paths.push(path);
-          }
-          if (newFileName) {
-            fileNames.push(file.name);
-          }
-          return { success: true, fileName: newFileName, path };
-        }
-      });
-
-      const results = await Promise.all(promises);
-      const successUploads = results.filter((result) => result.success);
-
-      if (successUploads.length === state.files.length) {
-        // Combine old paths and new paths, avoiding duplicates
-
-        setState((prevState) => ({
-          ...prevState,
-          files: [],
-          uploadStatus: "Upload successful!",
-        }));
-
-        // Update Supabase table with the new file paths
-        const insertPromises = paths.map(async (path, index) => {
-          const { data: insertData, error: insertError } = await supabase
-            .from("quotes") // Replace with your actual Supabase table name
-            .upsert({
-              client_id: client.id,
-              file_urls: path,
-              file_name: fileNames[index],
-            });
-
-          if (insertError) {
-            console.error(
-              "Error inserting row into Supabase table:",
-              insertError,
-            );
-            return { success: false, fileName: path };
-          } else {
-            return { success: true, fileName: path };
-          }
-        });
-
-        const insertResults = await Promise.all(insertPromises);
-
-        if (insertResults.every((result) => result.success)) {
-          console.log("Rows inserted into Supabase successfully");
-          if (nonPDFs.length >= 0) {
-            setOpenSnackbarShare({
-              open: true,
-              message: "Only your PDF files were uploaded.",
-              severity: "info",
-            });
-          } else {
-            setOpenSnackbarShare({
-              open: true,
-              message: "Quotes Added",
-              severity: "success",
-            });
-          }
-          setModalOpen("viewQuote");
-        } else {
-          console.error("Error inserting some rows into Supabase");
-        }
-      } else {
-        setState({
-          ...state,
-          uploadStatus: "Upload failed for some files. Please try again.",
-        });
-      }
-    }
+    setModalOpen("viewQuote");
   };
+
+  // const handleUpload = async () => {
+  //   const pdfFiles = state.files.filter(
+  //     (file) => file.type === "application/pdf",
+  //   );
+  //   const nonPDFs = state.files.filter(
+  //     (file) => file.type !== "application/pdf",
+  //   );
+  //   if (pdfFiles.length === 0) {
+  //     setOpenSnackbarShare({
+  //       open: true,
+  //       message: "Please upload a PDF file!",
+  //       severity: "error",
+  //     });
+  //     return;
+  //   } else {
+  //     setState({ ...state, files: pdfFiles });
+  //   }
+  //   if (state.files.length === 0) {
+  //     setOpenSnackbarShare({
+  //       open: true,
+  //       message: "Please upload a file!",
+  //       severity: "error",
+  //     });
+  //   }
+  //   if (state.files.length > 0) {
+  //     const paths: string[] = [];
+  //     const fileNames: string[] = [];
+
+  //     const promises = state.files.map(async (file) => {
+  //       const randomDigit = Math.floor(Math.random() * 1024);
+  //       const newFileName = `${file.name}_${randomDigit}`;
+
+  //       const { data, error } = await supabase.storage
+  //         .from("images")
+  //         .upload(`path/${newFileName}`, file);
+
+  //       const path = data?.path;
+
+  //       if (error) {
+  //         console.error(`Error uploading file ${newFileName}:`, error);
+  //         return { success: false, fileName: newFileName };
+  //       } else {
+  //         console.log("Downloadable URL:", data);
+  //         // Append the path to the temporary array if it's not already in the list
+  //         if (path && !state.filesPaths.includes(path)) {
+  //           paths.push(path);
+  //         }
+  //         if (newFileName) {
+  //           fileNames.push(file.name);
+  //         }
+  //         return { success: true, fileName: newFileName, path };
+  //       }
+  //     });
+
+  //     const results = await Promise.all(promises);
+  //     const successUploads = results.filter((result) => result.success);
+
+  //     if (successUploads.length === state.files.length) {
+  //       // Combine old paths and new paths, avoiding duplicates
+
+  //       setState((prevState) => ({
+  //         ...prevState,
+  //         files: [],
+  //         uploadStatus: "Upload successful!",
+  //       }));
+
+  //       // Update Supabase table with the new file paths
+  //       const insertPromises = paths.map(async (path, index) => {
+  //         const { data: insertData, error: insertError } = await supabase
+  //           .from("quotes") // Replace with your actual Supabase table name
+  //           .upsert({
+  //             client_id: client.id,
+  //             file_urls: path,
+  //             file_name: fileNames[index],
+  //           });
+
+  //         if (insertError) {
+  //           console.error(
+  //             "Error inserting row into Supabase table:",
+  //             insertError,
+  //           );
+  //           return { success: false, fileName: path };
+  //         } else {
+  //           return { success: true, fileName: path };
+  //         }
+  //       });
+
+  //       const insertResults = await Promise.all(insertPromises);
+
+  //       if (insertResults.every((result) => result.success)) {
+  //         console.log("Rows inserted into Supabase successfully");
+  //         if (nonPDFs.length >= 0) {
+  //           setOpenSnackbarShare({
+  //             open: true,
+  //             message: "Only your PDF files were uploaded.",
+  //             severity: "info",
+  //           });
+  //         } else {
+  //           setOpenSnackbarShare({
+  //             open: true,
+  //             message: "Quotes Added",
+  //             severity: "success",
+  //           });
+  //         }
+  //         setModalOpen("viewQuote");
+  //       } else {
+  //         console.error("Error inserting some rows into Supabase");
+  //       }
+  //     } else {
+  //       setState({
+  //         ...state,
+  //         uploadStatus: "Upload failed for some files. Please try again.",
+  //       });
+  //     }
+  //   }
+  // };
 
   const { getRootProps, getInputProps, isDragActive } = useDropzone({
     onDrop,
     multiple: true, // Allow multiple file uploads
+    accept: {
+      "application/pdf": [".pdf"],
+    },
   });
 
   return (
@@ -219,9 +271,9 @@ export const AddQuote = ({
                   ? "Drop the files here"
                   : "Select or Drag-In Files"}
               </h1>
-              {state.files.length > 0 && (
+              {files.length > 0 && (
                 <div className="text-center mb-4">
-                  {state.files.map((file, index) => (
+                  {files.map((file, index) => (
                     <p className="truncate" key={index}>
                       {file.name}
                     </p>
