@@ -18,6 +18,8 @@ import { Snackbar, Alert } from "@mui/material";
 import { NewClientModal } from "@/src/components/client/modal/NewClientModal";
 import { MdUpload } from "react-icons/md";
 import { ClientCard } from "@/src/components/client/ClientCard";
+import SelectQuotes from "@/src/components/client/SelectQuotes";
+import Standard from "@/src/components/client/Standard";
 import { UserContext } from "@/src/context/UserContext";
 import { ClientType } from "@/src/types/custom/Client";
 import { useRouter } from "next/navigation";
@@ -37,105 +39,108 @@ export default function Home() {
     }
   }, [userId, router, loading]);
 
-  const [clients, setClients] = useState<ClientType[]>([]);
+  const [comparisonOpen, setComparisonOpen] = useState<boolean>(false);
+  const [selectedClient, setSelectedClient] = useState<ClientType>(undefined as unknown as ClientType);
 
-  const [isModalOpen, setIsModalOpen] = useState(false);
+  // const [clients, setClients] = useState<ClientType[]>([]);
 
-  const [snackbar, setSnackbar] = useState({
-    open: false,
-    message: "",
-    severity: "info", // default severity
-  });
+  // const [isModalOpen, setIsModalOpen] = useState(false);
 
-  useEffect(() => {
-    const fetchData = async () => {
-      const { data, error } = await supabase.from("clients").select();
-      // .eq("user_id", userId);
+  // const [snackbar, setSnackbar] = useState({
+  //   open: false,
+  //   message: "",
+  //   severity: "info", // default severity
+  // });
 
-      if (error) {
-        alert("Error updating data");
-      } else {
-        setClients(data); //TODO: make sure the data recieved matches client type
-      }
-    };
-    fetchData();
-  }, [userId]);
+  // useEffect(() => {
+  //   const fetchData = async () => {
+  //     const { data, error } = await supabase.from("clients").select();
+  //     // .eq("user_id", userId);
 
-  const copyUrlToClipboard = () => {
-    // Use window.location.href to get the current URL
-    const url = window.location.href;
+  //     if (error) {
+  //       alert("Error updating data");
+  //     } else {
+  //       setClients(data); //TODO: make sure the data recieved matches client type
+  //     }
+  //   };
+  //   fetchData();
+  // }, [userId]);
 
-    // Use the Clipboard API to write the text
-    navigator.clipboard
-      .writeText(url)
-      .then(() => {
-        // Optional: Display a message or call a function to indicate success
-        setSnackbar({
-          open: true,
-          message: "Copied to clipboard!",
-          severity: "success",
-        });
-      })
-      .catch((err) => {
-        // Optional: Handle any errors
-        console.error("Failed to copy URL to clipboard", err);
-      });
-  };
+  // const copyUrlToClipboard = () => {
+  //   // Use window.location.href to get the current URL
+  //   const url = window.location.href;
 
-  const handleNewClientClick = () => {
-    setIsModalOpen(!isModalOpen);
-  };
+  //   // Use the Clipboard API to write the text
+  //   navigator.clipboard
+  //     .writeText(url)
+  //     .then(() => {
+  //       // Optional: Display a message or call a function to indicate success
+  //       setSnackbar({
+  //         open: true,
+  //         message: "Copied to clipboard!",
+  //         severity: "success",
+  //       });
+  //     })
+  //     .catch((err) => {
+  //       // Optional: Handle any errors
+  //       console.error("Failed to copy URL to clipboard", err);
+  //     });
+  // };
 
-  async function handleClientDelete(client: ClientType) {
-    // SEND DATA
-    try {
-      const { error } = await supabase
-        .from("clients")
-        .delete()
-        .eq("id", client.id);
+  // const handleNewClientClick = () => {
+  //   setIsModalOpen(!isModalOpen);
+  // };
 
-      if (error) {
-        setSnackbar({
-          open: true,
-          message: "Delete failed",
-          severity: "error",
-        });
-        console.error("Error inserting data:", error);
-      } else {
-        //UPDATE DATA
-        try {
-          const { data, error } = await supabase.from("clients").select();
-          if (error) {
-            alert("Error retrieving data");
-          } else {
-            setClients(data);
-            console.log("Data retrieved successfully:", data);
-          }
-        } catch (error) {
-          setSnackbar({
-            open: true,
-            message: "Delete failed",
-            severity: "error",
-          });
-        }
-        setSnackbar({
-          open: true,
-          message: `${client.name} Deleted!`,
-          severity: "success",
-        });
-      }
-    } catch (error) {
-      setSnackbar({
-        open: true,
-        message: "Delete failed",
-        severity: "error",
-      });
-    }
-  }
+  // async function handleClientDelete(client: ClientType) {
+  //   // SEND DATA
+  //   try {
+  //     const { error } = await supabase
+  //       .from("clients")
+  //       .delete()
+  //       .eq("id", client.id);
 
-  const handleCloseModal = () => {
-    setIsModalOpen(!isModalOpen);
-  };
+  //     if (error) {
+  //       setSnackbar({
+  //         open: true,
+  //         message: "Delete failed",
+  //         severity: "error",
+  //       });
+  //       console.error("Error inserting data:", error);
+  //     } else {
+  //       //UPDATE DATA
+  //       try {
+  //         const { data, error } = await supabase.from("clients").select();
+  //         if (error) {
+  //           alert("Error retrieving data");
+  //         } else {
+  //           setClients(data);
+  //           console.log("Data retrieved successfully:", data);
+  //         }
+  //       } catch (error) {
+  //         setSnackbar({
+  //           open: true,
+  //           message: "Delete failed",
+  //           severity: "error",
+  //         });
+  //       }
+  //       setSnackbar({
+  //         open: true,
+  //         message: `${client.name} Deleted!`,
+  //         severity: "success",
+  //       });
+  //     }
+  //   } catch (error) {
+  //     setSnackbar({
+  //       open: true,
+  //       message: "Delete failed",
+  //       severity: "error",
+  //     });
+  //   }
+  // }
+
+  // const handleCloseModal = () => {
+  //   setIsModalOpen(!isModalOpen);
+  // };
 
   if (loading) {
     return <></>;
@@ -146,7 +151,7 @@ export default function Home() {
       <Navbar selected="Quotes" />
 
       <div className="w-full md:w-6/7">
-        <main className="h-screen overflow-hidden flex-col w-full bg-gray-100 bg-opacity-50 pl-2 pr-6 pt-5 pb-6 text-gray-700">
+        {/* <main className="h-screen overflow-hidden flex-col w-full bg-gray-100 bg-opacity-50 pl-2 pr-6 pt-5 pb-6 text-gray-700">
           <div className="flex w-full items-center mb-4 mt-1 justify-between">
             <div className="flex items-center text-sm md:text-base">
               <PiListBulletsBold className="mr-2" />
@@ -196,7 +201,20 @@ export default function Home() {
             setOpenSnackbarShare={setSnackbar}
             snackbar={snackbar}
           />
-        </main>
+        </main> */}
+
+          {comparisonOpen === false ? (
+            <Standard 
+              setComparisonOpen = {setComparisonOpen}
+              setSelectedClient = {setSelectedClient}
+            />
+          ) : (
+            <SelectQuotes 
+              selectedClient = {selectedClient}
+              setComparisonOpen = {setComparisonOpen}
+              setSelectedClient = {setSelectedClient}
+            />
+          )}
       </div>
     </div>
   );
