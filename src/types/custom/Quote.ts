@@ -10,4 +10,4 @@ import { Database } from "@/src/types/database/database.types";
 // export type Plan = {};
 // export type Quote = {};
 
-export type QuoteType = Database["public"]["Tables"]["clients"]["Row"];
+export type QuoteType = Database["public"]["Tables"]["quotes"]["Row"];
