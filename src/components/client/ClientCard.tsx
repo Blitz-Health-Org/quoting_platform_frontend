@@ -5,13 +5,15 @@ import Image from "next/image";
 import { AddNewQuoteModal } from "@/src/components/client/modal/AddNewQuoteModal";
 import { AddQuote } from "@/src/components/client/modal/AddQuote";
 import { ViewQuoteModal } from "@/src/components/client/modal/ViewQuoteModal";
-import { useState } from "react";
+import { Dispatch, SetStateAction, useState } from "react";
 import { IconBuilding } from "@tabler/icons-react";
 import { supabase } from "@/src/supabase";
 import error from "next/error";
 import { SnackbarAlert } from "../ui/SnackbarAlert";
 
 export type ClientCardProps = {
+  setComparisonOpen: Dispatch<SetStateAction<boolean>>;
+  setSelectedClient: Dispatch<SetStateAction<ClientType>>
   client: ClientType;
   handleClientDelete: (client: ClientType) => void;
   setOpenSnackbarShare: ({
@@ -27,8 +29,10 @@ export type ClientCardProps = {
 
 export const ClientCard = ({
   client,
+  setSelectedClient,
   setOpenSnackbarShare,
   handleClientDelete,
+  setComparisonOpen
 }: ClientCardProps) => {
   const [modalOpen, setModalOpen] = useState<string>("");
 
@@ -42,7 +46,8 @@ export const ClientCard = ({
   }
 
   function handleViewQuote() {
-    setModalOpen("viewQuote");
+    setComparisonOpen(true);
+    setSelectedClient(client)
     return;
   }
 

@@ -68,7 +68,7 @@ export const ViewQuoteModal = ({
     fetchData();
   }, [client.id]);
 
-  const handleCheckboxChange = (quoteId: string) => {
+  const handleCheckboxChange = (quoteId: number) => {
     setQuotes((prevQuotes) =>
       prevQuotes?.map((quote) =>
         quote.id === quoteId
