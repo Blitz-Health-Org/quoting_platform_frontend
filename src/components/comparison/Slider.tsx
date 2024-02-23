@@ -31,7 +31,6 @@ export default function InputSlider() {
 
   return (
     <Box sx={{ width: 400 }}>
-      <div className="text-center text-sm">Employer Contribution</div>
       <Grid container spacing={2} alignItems="center">
         <Grid item xs>
           <Slider

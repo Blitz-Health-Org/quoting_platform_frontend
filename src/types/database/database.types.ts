@@ -493,6 +493,7 @@ export type Database = {
           plan_name: string | null;
           plan_type: string | null;
           provider_network: string | null;
+          task_id: number | null;
           website: string | null;
         };
         Insert: {
@@ -509,6 +510,7 @@ export type Database = {
           plan_name?: string | null;
           plan_type?: string | null;
           provider_network?: string | null;
+          task_id?: number | null;
           website?: string | null;
         };
         Update: {
@@ -525,6 +527,7 @@ export type Database = {
           plan_name?: string | null;
           plan_type?: string | null;
           provider_network?: string | null;
+          task_id?: number | null;
           website?: string | null;
         };
         Relationships: [

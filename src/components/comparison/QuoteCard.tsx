@@ -124,7 +124,7 @@ export default function QuoteCard({
                   ref={ref1 as any}
                   onClick={() => setTextAreaSelected(true)}
                   onChange={handleQuoteChange(field.field)}
-                  value={valueOrDefault(internalQuote[field.field])}
+                  value={valueOrDefault((internalQuote as any)[field.field])}
                   className="text-center resize-none text-sm content-center h-7 w-full bg-transparent focus:outline-0 focus:border focus:border-1 focus:border-gray-200 cursor-pointer focus:cursor-auto rounded-md p-1"
                 />
                 <hr className="w-full border-t-1 border-gray-300"></hr>
@@ -174,7 +174,7 @@ export default function QuoteCard({
                           `${objectField.field}.in.${subFieldKey}`,
                         )}
                         value={valueOrDefault(
-                          internalQuote[objectField.field]?.in?.[subFieldKey],
+                          (internalQuote as any)[objectField.field]?.in?.[subFieldKey],
                         )}
                         className="text-center resize-none text-sm content-center h-7 w-1/2 border-r bg-transparent focus:outline-0 focus:border focus:border-1 focus:border-gray-200 cursor-pointer focus:cursor-auto p-1"
                       />
@@ -185,7 +185,7 @@ export default function QuoteCard({
                           `${objectField.field}.oon.${subFieldKey}`,
                         )}
                         value={valueOrDefault(
-                          internalQuote[objectField.field]?.oon?.[subFieldKey],
+                          (internalQuote as any)[objectField.field]?.oon?.[subFieldKey],
                         )}
                         className="text-center resize-none text-sm content-center h-7 w-1/2 bg-transparent focus:outline-0 focus:border focus:border-1 focus:border-gray-200 cursor-pointer focus:cursor-auto p-1"
                       />

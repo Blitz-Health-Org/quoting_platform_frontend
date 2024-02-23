@@ -1,5 +1,4 @@
-import * as React from "react";
-import InputSlider from "./Slider";
+import React, { useState } from "react";
 import InputLabel from "@mui/material/InputLabel";
 import MenuItem from "@mui/material/MenuItem";
 import FormControl from "@mui/material/FormControl";
@@ -7,12 +6,18 @@ import Select, { SelectChangeEvent } from "@mui/material/Select";
 import { FaMap } from "react-icons/fa";
 import { FaShareAlt } from "react-icons/fa";
 import { IoMdDownload } from "react-icons/io";
+import { IoIosSettings } from "react-icons/io";
 
-export default function Subheader() {
+type SubheaderProps = {
+  isPaneOpen: boolean;
+  onPaneToggle: (newState: boolean) => void;
+};
+
+export const Subheader: React.FC<SubheaderProps> = ({ isPaneOpen, onPaneToggle }) => {
   return (
-    <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
+    <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
       {/* Left-aligned form */}
-      <div className="flex gap-2 justify-center lg:justify-start">
+      <div className="flex gap-2 justify-center lg:justify-start items-center">
         <FormControl
           variant="standard"
           sx={{ m: 1, minWidth: 120 }}
@@ -57,25 +62,23 @@ export default function Subheader() {
         </FormControl>
       </div>
 
-      {/* Middle-aligned slider */}
-      <div className="flex items-center justify-center">
-        <InputSlider />
-      </div>
-
       {/* Right-aligned buttons */}
       <div className="flex items-center lg:justify-end font-light justify-center">
-        <div className="flex items-center gap-2 cursor-pointer outline outline-1 outline-neutral-600 mr-2 rounded-sm bg-neutral-700/80 text-sm text-gray-100 px-2 py-1">
-          <FaMap />
-          <p>Census Data</p>
-        </div>
-        <div className="flex items-center gap-2 cursor-pointer outline outline-1 outline-neutral-600 mr-2 rounded-sm bg-neutral-700/80 text-sm text-gray-100 px-2 py-1">
+        <button className="flex items-center gap-2 cursor-pointer outline outline-1 outline-neutral-600 mr-2 rounded-sm bg-neutral-700/80 text-sm text-gray-100 px-2 py-1">
           <FaShareAlt />
           <p>Share</p>
-        </div>
-        <div className="flex items-center gap-2 cursor-pointer outline outline-1 outline-neutral-600 rounded-sm bg-neutral-700/80 text-sm text-gray-100 px-2 py-1">
+        </button>
+        <button className="flex items-center gap-2 cursor-pointer outline outline-1 outline-neutral-600 mr-2 rounded-sm bg-neutral-700/80 text-sm text-gray-100 px-2 py-1">
           <IoMdDownload />
           <p>Download CSV</p>
-        </div>
+        </button>
+        <button
+          onClick={() => onPaneToggle(!isPaneOpen)}
+          className="flex items-center gap-2 cursor-pointer outline outline-1 outline-neutral-600 rounded-sm bg-neutral-700/80 text-sm text-gray-100 px-2 py-1"
+        >
+          <IoIosSettings />
+          <p>Settings</p>
+        </button>
       </div>
     </div>
   );
