@@ -65,7 +65,7 @@ export const AddQuote = ({
           .from("quotes") // Replace with your actual Supabase table name
           .upsert({
             client_id: client.id,
-            file_urls: fileName,
+            file_url: fileName,
             file_name: file.name,
           });
 

@@ -21,13 +21,26 @@ import { useRouter } from "next/navigation";
 import { SnackbarAlert } from "../ui/SnackbarAlert";
 import error from "next/error";
 import { supabase } from "../../supabase";
-import { Dispatch, SetStateAction, useContext, useEffect, useState } from "react";
+import {
+  Dispatch,
+  SetStateAction,
+  useContext,
+  useEffect,
+  useState,
+} from "react";
 import { IoMdArrowBack } from "react-icons/io";
 import { QuoteType } from "@/src/types/custom/Quote";
 import { IconBuilding } from "@tabler/icons-react";
 
-export default function SelectQuotes({ setComparisonOpen, setSelectedClient, selectedClient }: { setComparisonOpen: Dispatch<SetStateAction<boolean>>, setSelectedClient: Dispatch<SetStateAction<ClientType>>, selectedClient: ClientType}) {
- 
+export default function SelectQuotes({
+  setComparisonOpen,
+  setSelectedClient,
+  selectedClient,
+}: {
+  setComparisonOpen: Dispatch<SetStateAction<boolean>>;
+  setSelectedClient: Dispatch<SetStateAction<ClientType>>;
+  selectedClient: ClientType;
+}) {
   type QuoteTypeWithCheckbox = QuoteType & { isSelected: boolean };
 
   const [clients, setClients] = useState<ClientType[]>([]);
@@ -68,7 +81,6 @@ export default function SelectQuotes({ setComparisonOpen, setSelectedClient, sel
       console.error("Error inserting row into Supabase table:", insertError);
       return { success: false };
     } else {
-
       router.push(
         `/quotes?clientId=${clientId}&quoteIds=${selectedQuoteIds.join(",")}`,
       );
@@ -83,15 +95,15 @@ export default function SelectQuotes({ setComparisonOpen, setSelectedClient, sel
       const { data, error } = await supabase
         .from("quotes")
         .select()
-        .eq('client_id', selectedClient.id);
-  
+        .eq("client_id", selectedClient.id);
+
       if (error) {
         alert("Error updating data");
       } else {
         setQuotes(data);
       }
     };
-  
+
     fetchData();
   }, []);
 
@@ -177,51 +189,53 @@ export default function SelectQuotes({ setComparisonOpen, setSelectedClient, sel
 
   return (
     <>
-        <main className="h-screen overflow-hidden flex-col w-full bg-gray-100 bg-opacity-50 pl-2 pr-6 pt-5 pb-6 text-gray-700">
+      <main className="h-screen overflow-hidden flex-col w-full bg-gray-100 bg-opacity-50 pl-2 pr-6 pt-5 pb-6 text-gray-700">
         <div className="flex w-full items-center mb-4 mt-1 justify-between">
-        <div className="flex items-center text-sm md:text-base">
-            <button onClick={handleCloseComparison} className="mr-2"><IoMdArrowBack/></button>
+          <div className="flex items-center text-sm md:text-base">
+            <button onClick={handleCloseComparison} className="mr-2">
+              <IoMdArrowBack />
+            </button>
             <p className="mr-2">Clients / </p>
-            <IconBuilding className="h-5 w-5 mr-2"/>
+            <IconBuilding className="h-5 w-5 mr-2" />
             <p className="mr-2">{selectedClient.name}</p>
             <p className="mr-1">/ Quotes</p>
             <p className="mr-1 text-gray-400 text-xs">•</p>
             <p className="text-gray-400">({quotes.length})</p>
-        </div>
-        <div className="flex items-center">
+          </div>
+          <div className="flex items-center">
             <div className="text-sm md:text-base mr-1 outline outline-1 outline-gray-200 py-1 px-2 rounded-md flex items-center justify-center hover:bg-gray-100/80 cursor-pointer">
-            <BiPlus className="mr-2" />
-            <button onClick={handleNextClick}>Comparison</button>
+              <BiPlus className="mr-2" />
+              <button onClick={handleNextClick}>Comparison</button>
             </div>
-        </div>
+          </div>
         </div>
         <div className="rounded-md w-full flex-col h-full pb-12 overflow-y-scroll bg-white outline outline-1 outline-gray-200">
           <div className="p-4">
-          {quotes.map((quote) => (
+            {quotes.map((quote) => (
               <p key={quote.id}>
-                  <input
-                    type="checkbox"
-                    checked={quote.isSelected}
-                    onChange={() => handleCheckboxChange(quote.id)}
-                  />
-                  {quote.file_name}
+                <input
+                  type="checkbox"
+                  checked={quote.isSelected}
+                  onChange={() => handleCheckboxChange(quote.id)}
+                />
+                {quote.file_name}
               </p>
-          ))}
+            ))}
           </div>
         </div>
         {isModalOpen && (
-        <NewClientModal
+          <NewClientModal
             setOpenSnackbarShare={setSnackbar}
             onClose={handleCloseModal}
             setClients={setClients}
-        />
+          />
         )}
         <SnackbarAlert
-        openSnackbarShare={snackbar.open}
-        setOpenSnackbarShare={setSnackbar}
-        snackbar={snackbar}
+          openSnackbarShare={snackbar.open}
+          setOpenSnackbarShare={setSnackbar}
+          snackbar={snackbar}
         />
-        </main>
+      </main>
     </>
   );
-};
+}
