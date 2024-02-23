@@ -1,7 +1,5 @@
 "use client";
 
-//TODO: Increase view of checkboxes, currently limited
-
 import React, { useEffect, useState } from "react";
 import { Modal } from "../../ui/Modal";
 import { ClientType } from "@/src/types/custom/Client";

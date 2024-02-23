@@ -10,6 +10,7 @@ import { IconBuilding } from "@tabler/icons-react";
 import { supabase } from "@/src/supabase";
 import error from "next/error";
 import { SnackbarAlert } from "../ui/SnackbarAlert";
+import { useRouter } from "next/navigation";
 
 export type ClientCardProps = {
   setComparisonOpen: Dispatch<SetStateAction<boolean>>;
@@ -35,6 +36,7 @@ export const ClientCard = ({
   setComparisonOpen
 }: ClientCardProps) => {
   const [modalOpen, setModalOpen] = useState<string>("");
+  const router = useRouter();
 
   function handleCreateHandbook() {
     setOpenSnackbarShare({
@@ -45,9 +47,16 @@ export const ClientCard = ({
     return;
   }
 
-  function handleViewQuote() {
+  function handleNewComparison() {
     setComparisonOpen(true);
     setSelectedClient(client)
+    return;
+  }
+
+  function handleViewComparison() {
+    router.push(
+      `/quotes?clientId=${client.id}&quoteIds=${client.selected_quotes?.join(",")}`,
+    );
     return;
   }
 
@@ -87,15 +96,6 @@ export const ClientCard = ({
             )}
             <p>{client.name}</p>
           </div>
-          <div className="text-gray-500 text-sm font-light mb-1">
-            <p className="mt-3"> Plans - 9 </p>
-            {/*//TODO:client.plans.length*/}
-            <p className="mt-0.5"> Quotes - 72 </p>
-            {/*//TODO:client.quotes.length*/}
-            {client.num_lives !== null && (
-              <p className="mt-0.5"> Lives - {client.num_lives} </p>
-            )}
-          </div>
         </div>
 
         <div className="w-full">
@@ -105,11 +105,13 @@ export const ClientCard = ({
             <button onClick={handleCreateHandbook}>Create Handbook</button>
           </div>
           <div
-            onClick={handleViewQuote}
+            onClick={client.selected_quotes ? handleViewComparison : handleNewComparison}
             className="outline outline-1 hover:bg-gray-100/50 cursor-pointer font-light flex items-center justify-center outline-gray-200 p-0.5 rounded-sm mb-1 mt-1 text-sm"
           >
-            <IoEyeSharp className="mr-1" />
-            <button onClick={handleViewQuote}>New Comparison</button>
+            {client.selected_quotes ? <IoEyeSharp className="mr-1" /> : <FaPlus className="mr-1" />}
+            <button>
+              {client.selected_quotes ? "View Comparison" : "New Comparison"}
+            </button>
           </div>
           <div
             onClick={handleAddNewQuote}
@@ -137,6 +139,8 @@ export const ClientCard = ({
           setModalOpen={setModalOpen}
           client={client}
           setOpenSnackbarShare={setOpenSnackbarShare}
+          setComparisonOpen={setComparisonOpen}
+          setSelectedClient={setSelectedClient}
         />
       )}
     </>

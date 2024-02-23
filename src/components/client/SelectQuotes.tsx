@@ -2,7 +2,6 @@
 
 import { PiListBulletsBold } from "react-icons/pi";
 import { RiArrowDropDownLine } from "react-icons/ri";
-import Apple from "../../public/Apple.jpg";
 import Image from "next/image";
 import { FaBook } from "react-icons/fa";
 import { FaPlus } from "react-icons/fa";
@@ -31,6 +30,7 @@ import {
 import { IoMdArrowBack } from "react-icons/io";
 import { QuoteType } from "@/src/types/custom/Quote";
 import { IconBuilding } from "@tabler/icons-react";
+import Apple from "@/public/Screenshot.png";
 
 export default function SelectQuotes({
   setComparisonOpen,
@@ -75,7 +75,7 @@ export default function SelectQuotes({
     // setSelectedQuotes(selected);
     const { data: insertData, error: insertError } = await supabase
       .from("clients") // Replace with your actual Supabase table name
-      .upsert({ id: selectedClient.id, selected_quotes: selected });
+      .upsert({ id: selectedClient.id, selected_quotes: selectedQuoteIds });
 
     if (insertError) {
       console.error("Error inserting row into Supabase table:", insertError);
@@ -100,6 +100,7 @@ export default function SelectQuotes({
       if (error) {
         alert("Error updating data");
       } else {
+        console.log(data);
         setQuotes(data);
       }
     };
@@ -184,6 +185,7 @@ export default function SelectQuotes({
   };
 
   const handleCloseComparison = () => {
+    setSelectedClient(undefined as unknown as ClientType);
     setComparisonOpen(false);
   };
 
@@ -211,14 +213,72 @@ export default function SelectQuotes({
         </div>
         <div className="rounded-md w-full flex-col h-full pb-12 overflow-y-scroll bg-white outline outline-1 outline-gray-200">
           <div className="p-4">
+            <div className="flex">
+              <input className="mr-2" type="checkbox" disabled />
+              <div className="grid-cols-9 flex justify-left text-center w-full gap-1 h-20 font-bold items-center text-wrap text-sm">
+                {/* Carrier Name */}
+                <div className="w-full">Carrier</div>
+                {/* Plan Name */}
+                <p className="w-full">Plan</p>
+                {/* Funding () */}
+                <p className="w-full">Funding</p>
+                {/* Office Copay (PCP/Specialist) */}
+                <p className="w-full">Office Copay (PCP/Specialist)</p>
+                {/* Deductible (Individual) */}
+                <p className="w-full">Deductible (Individual)</p>
+                {/* Coinsurance (In-Network) */}
+                <p className="w-full">Coinsurance (In-Network)</p>
+                {/* Out of Pocket (Individual) */}
+                <p className="w-full">Out of Pocket (Individual)</p>
+                {/* Additional Copays Include (ER / Imaging / OP / IP) */}
+                <p className="w-full">
+                  Additional Copays (ER / Imaging / OP / IP)
+                </p>
+                {/* Total Monthly Premium */}
+                <p className="w-full">Total Monthly Premium</p>
+              </div>
+            </div>
             {quotes.map((quote) => (
               <p key={quote.id}>
-                <input
-                  type="checkbox"
-                  checked={quote.isSelected}
-                  onChange={() => handleCheckboxChange(quote.id)}
-                />
-                {quote.file_name}
+                <div className="flex items-center w-full mb-1 mt-1">
+                  <input
+                    className="mr-2"
+                    type="checkbox"
+                    checked={quote.isSelected}
+                    onChange={() => handleCheckboxChange(quote.id)}
+                  />
+                  <div className="grid-cols-9 flex justify-left text-center w-full gap-1 h-8 items-center overflow-hidden text-sm">
+                    {/* Carrier Name */}
+
+                    <div className="w-full flex items-center justify-center">
+                      <Image
+                        src={Apple} //TODO: provide defaultImage, make this default in the suapbase not case catching on the fe
+                        alt="Description of the image"
+                        width={15}
+                        height={15}
+                        className="mr-1 rounded-md"
+                      />
+                      <p>Aetna</p>
+                    </div>
+                    {/* Plan Name */}
+                    <p className="w-full">Aetna Gold Select</p>
+                    {/* Funding () */}
+                    <p className="w-full">Level Funded</p>
+                    {/* Office Copay (PCP/Specialist) */}
+                    <p className="w-full">$25 / $75</p>
+                    {/* Deductible (Individual) */}
+                    <p className="w-full">$5,000</p>
+                    {/* Coinsurance (In-Network) */}
+                    <p className="w-full">80%</p>
+                    {/* Out of Pocket (Individual) */}
+                    <p className="w-full">$7,900</p>
+                    {/* Additional Copays Include (ER / Imaging / OP / IP) */}
+                    <p className="w-full">$300 / N/A / N/A / N/A</p>
+                    {/* Total Monthly Premium */}
+                    <p className="w-full truncate">{quote.file_name}</p>
+                  </div>
+                </div>
+                <hr></hr>
               </p>
             ))}
           </div>

@@ -26,7 +26,9 @@ import { supabase } from "../../supabase";
 export default function Standard({ setComparisonOpen, setSelectedClient }: { setComparisonOpen: Dispatch<SetStateAction<boolean>>, setSelectedClient: Dispatch<SetStateAction<ClientType>>}) {
 
   const [clients, setClients] = useState<ClientType[]>([]);
-
+  const sortedClients = clients
+    .filter(client => client.created_at)
+    .sort((a, b) => b.created_at.localeCompare(a.created_at));
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   const [snackbar, setSnackbar] = useState({
@@ -152,7 +154,7 @@ export default function Standard({ setComparisonOpen, setSelectedClient }: { set
         </div>
         <div className="rounded-md w-full flex-col h-full pb-12 overflow-y-scroll">
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2 h-fit overflow-scroll p-0.5">
-            {clients.map((client) => {
+            {sortedClients.map((client) => {
             return (
                 <>
                 <ClientCard
