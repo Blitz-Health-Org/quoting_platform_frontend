@@ -42,6 +42,8 @@
     "react-sliding-pane": "^7.3.0",
     "recharts": "^2.11.0",
     "sharp": "^0.33.2",
+    "socket.io-client": "^4.7.4",
+    "supabase": "^1.142.2",
     "uuid": "^9.0.1"
   },
   "devDependencies": {
