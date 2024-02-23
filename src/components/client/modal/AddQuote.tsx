@@ -42,9 +42,7 @@ export const AddQuote = ({
   const [files, setFiles] = useState<File[]>([]);
 
   const onDrop = (acceptedFiles: File[]) => {
-    setFiles((prevFiles) => {
-      return prevFiles.concat(acceptedFiles);
-    });
+    setFiles(acceptedFiles);
   };
 
   const handleUpload = async () => {
@@ -58,7 +56,7 @@ export const AddQuote = ({
     }
 
     const errFiles = [];
-    const successfulFileUrls = [];
+    const successfulFileUrls: string[] = [];
     for (const file of files) {
       try {
         const fileName = uuid();
@@ -91,13 +89,34 @@ export const AddQuote = ({
       });
     }
 
-    fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL!}/parse`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ successfulFileUrls }),
-    });
+    try {
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_BACKEND_URL}/parse`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ successfulFileUrls }),
+        },
+      );
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      const data = await response.json(); // Parse the JSON from the response
+
+      // Now you can use 'data' in your application
+      console.log("respoinse", data); // For example, logging the data
+
+      // If you're using React state, for example:
+      // this.setState({ parsedData: data });
+      // Or using hooks:
+      // setParsedData(data);
+    } catch (error) {
+      console.error("Fetch error: ", error);
+    }
 
     setModalOpen("viewQuote");
   };
