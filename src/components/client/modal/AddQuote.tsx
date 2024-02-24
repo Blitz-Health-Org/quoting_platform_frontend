@@ -21,8 +21,8 @@ type AddQuoteProps = {
     message: string;
     severity: string;
   }) => void;
-  setComparisonOpen: Dispatch<SetStateAction<boolean>>
-  setSelectedClient: Dispatch<SetStateAction<ClientType>>
+  setComparisonOpen: Dispatch<SetStateAction<boolean>>;
+  setSelectedClient: Dispatch<SetStateAction<ClientType>>;
 };
 
 export const AddQuote = ({
@@ -31,7 +31,7 @@ export const AddQuote = ({
   setOpenSnackbarShare,
   setModalOpen,
   setComparisonOpen,
-  setSelectedClient
+  setSelectedClient,
 }: AddQuoteProps) => {
   const links: string[] = [];
 
@@ -43,6 +43,7 @@ export const AddQuote = ({
   };
 
   const [files, setFiles] = useState<File[]>([]);
+  const [selectedPlan, setSelectedPlan] = useState<string>("bcbs_tx_aca");
 
   const onDrop = (acceptedFiles: File[]) => {
     setFiles(acceptedFiles);
@@ -57,22 +58,31 @@ export const AddQuote = ({
       });
       return;
     }
-
-    const errFiles = [];
+    const errFiles = [] as string[];
     const successfulFileUrls: string[] = [];
+    const fileId = uuid();
     for (const file of files) {
       try {
-        const fileName = uuid();
+        const fileName = `${selectedPlan}/${fileId}/whole`;
         await supabase.storage.from("images").upload(fileName, file);
+
+        const { data } = supabase.storage.from("images").getPublicUrl(fileName);
+
+        if (!data?.publicUrl) {
+          throw new Error("No url found for file");
+        }
+
+        const fileUrl = data.publicUrl;
+
         await supabase
           .from("quotes") // Replace with your actual Supabase table name
           .upsert({
             client_id: client.id,
-            file_urls: fileName,
+            file_url: fileUrl,
             file_name: file.name,
           });
 
-        successfulFileUrls.push(fileName);
+        successfulFileUrls.push(fileUrl);
       } catch {
         errFiles.push(file.name);
       }
@@ -93,6 +103,7 @@ export const AddQuote = ({
     }
 
     try {
+      console.log("refetch");
       const response = await fetch(
         `${process.env.NEXT_PUBLIC_BACKEND_URL}/parse`,
         {
@@ -100,7 +111,7 @@ export const AddQuote = ({
           headers: {
             "Content-Type": "application/json",
           },
-          body: JSON.stringify({ successfulFileUrls }),
+          body: JSON.stringify({ successfulFileUrls, clientId: client.id }),
         },
       );
 
@@ -276,15 +287,20 @@ export const AddQuote = ({
           </button>
         </div>
         <label className="mr-2">Choose a plan:</label>
-          <select className="outline outline-1 outline-gray-300 rounded-sm" name="plan" id="plan">
-            <option value="bcbs_tx_aca">BCBS TX ACA</option>
-            <option value="aetna">Aetna</option>
-            <option value="chamber_smart">Chamber Smart</option>
-            <option value="anthem">Anthem</option>
-            <option value="uhc_aca">UHC ACA</option>
-            <option value="uhc_lf">UHC Level Funded</option>
-            <option value="other">Other</option>
-          </select>
+        <select
+          className="outline outline-1 outline-gray-300 rounded-sm"
+          name="plan"
+          id="plan"
+          onChange={(e) => setSelectedPlan(e.target.value)}
+        >
+          <option value="bcbs_tx_aca">BCBS TX ACA</option>
+          <option value="aetna">Aetna</option>
+          <option value="chamber_smart">Chamber Smart</option>
+          <option value="anthem">Anthem</option>
+          <option value="uhc_aca">UHC ACA</option>
+          <option value="uhc_lf">UHC Level Funded</option>
+          <option value="other">Other</option>
+        </select>
         <div className="modal-body">
           {/* File Upload Section */}
           <div className="flex flex-col items-center justify-center cursor-pointer">

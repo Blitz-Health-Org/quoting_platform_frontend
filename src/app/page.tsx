@@ -4,7 +4,7 @@ import React, { useContext, useEffect, useState } from "react";
 import "./globals.css";
 import { Navbar } from "../components/comparison/Navbar";
 import SelectQuotes from "@/src/components/client/SelectQuotes";
-import Standard from "@/src/components/client/Standard";
+import ClientTable from "@/src/components/client/ClientTable";
 import { UserContext } from "@/src/context/UserContext";
 import { ClientType } from "@/src/types/custom/Client";
 import { useRouter } from "next/navigation";
@@ -259,7 +259,7 @@ export default function Home() {
         </main> */}
 
         {comparisonOpen === false ? (
-          <Standard
+          <ClientTable
             setComparisonOpen={setComparisonOpen}
             setSelectedClient={setSelectedClient}
           />

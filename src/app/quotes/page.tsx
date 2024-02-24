@@ -2,8 +2,8 @@
 
 import React, { useEffect, useState } from "react";
 import { Subheader } from "../../components/comparison/Subheader";
-import Contributions from "../../components/comparison/Contributions";
-import '../../components/comparison/sum.css'; // import your custom styles
+import Contributions from "../../components/comparison/contributions";
+import "../../components/comparison/sum.css"; // import your custom styles
 import Fullheader from "../../components/comparison/Fullheader";
 import QuoteCard from "../../components/comparison/QuoteCard";
 import Left from "../../components/comparison/Left";
@@ -14,7 +14,7 @@ import { NonSystemField, quoteMetadataObject } from "@/src/types/metadata";
 import { isFieldVisible } from "@/src/types/utils/isFieldVisible";
 import { useSearchParams, useRouter } from "next/navigation";
 import SlidingPane from "react-sliding-pane";
-import 'react-sliding-pane/dist/react-sliding-pane.css';
+import "react-sliding-pane/dist/react-sliding-pane.css";
 import { FaTrash } from "react-icons/fa";
 import { SnackbarAlert } from "../../components/ui/SnackbarAlert";
 
@@ -28,9 +28,11 @@ export default function QuotingPage() {
   const [loading, setLoading] = useState<boolean>(true);
   const [customClasses, setCustomClasses] = useState<string[]>([]);
   const [newClass, setNewClass] = useState("");
-  const [showStandardContributions, setShowStandardContributions] = useState(true);
-  const [editStandardContributions, setEditStandardContributions] = useState(false);
-  
+  const [showStandardContributions, setShowStandardContributions] =
+    useState(true);
+  const [editStandardContributions, setEditStandardContributions] =
+    useState(false);
+
   const router = useRouter();
 
   const searchParams = useSearchParams();
@@ -62,19 +64,19 @@ export default function QuotingPage() {
 
   useEffect(() => {
     // Attach resize event listener for future adjustments (if needed)
-    if (typeof window !== 'undefined') {
-      window.addEventListener('resize', handleResize);
+    if (typeof window !== "undefined") {
+      window.addEventListener("resize", handleResize);
 
       // Remove event listener on component unmount
       return () => {
-        window.removeEventListener('resize', handleResize);
+        window.removeEventListener("resize", handleResize);
       };
     }
   }, []);
 
   const determineInitialWidth = () => {
-    if (typeof window !== 'undefined') {
-    // Set initial width based on screen size
+    if (typeof window !== "undefined") {
+      // Set initial width based on screen size
       if (window.innerWidth <= 368) {
         return "75%";
       } else if (window.innerWidth <= 624) {
@@ -95,11 +97,11 @@ export default function QuotingPage() {
     isPaneOpen: false,
     isPaneOpenLeft: false,
     initialPaneWidth: determineInitialWidth(), // Set initial width based on screen size
-    paneWidth: determineInitialWidth()
+    paneWidth: determineInitialWidth(),
   });
 
   const handleResize = () => {
-    if (typeof window !== 'undefined') {
+    if (typeof window !== "undefined") {
       let newWidth: any;
 
       if (window.innerWidth <= 368) {
@@ -116,9 +118,9 @@ export default function QuotingPage() {
         newWidth = "25%";
       }
 
-    setState((prevState) => ({ ...prevState, paneWidth: newWidth }));
-  }
-};
+      setState((prevState) => ({ ...prevState, paneWidth: newWidth }));
+    }
+  };
 
   const handlePaneToggle = (newState: any) => {
     setState((prevState) => ({ ...prevState, isPaneOpen: newState }));
@@ -148,19 +150,19 @@ export default function QuotingPage() {
   //   // Enable editing mode
   //   setEditStandardContributions(true);
   // };
-  
+
   // const handleSave = () => {
   //   // Disable editing mode
   //   setEditStandardContributions(false);
-  
+
   //   // Save the edited values to JSON
   //   const jsonResult = JSON.stringify(standardContributions);
   //   console.log(jsonResult);
-  
+
   //   // You can save the JSON data to your desired location or state.
   //   // For example, you can send it to the server or store it in another state.
   // };
-  
+
   const fetchClientAndQuotes = async (clientId: string, quoteIds: string[]) => {
     try {
       const { data: clientData, error: clientError } = await supabase
@@ -202,7 +204,7 @@ export default function QuotingPage() {
       setShowStandardContributions(false); // Hide Standard Contributions
     }
   };
-  
+
   const visibleQuoteFields = Object.values(quoteMetadataObject).filter((val) =>
     isFieldVisible(val),
   ) as NonSystemField[];
@@ -222,7 +224,7 @@ export default function QuotingPage() {
   const copyUrlToClipboard = () => {
     // Use window.location.href to get the current URL
     const url = window.location.href;
-  
+
     // Use the Clipboard API to write the text
     navigator.clipboard
       .writeText(url)
@@ -243,13 +245,18 @@ export default function QuotingPage() {
           severity: "error",
         });
       });
-  };  
+  };
 
   return (
     <div className="w-full h-fit bg-gray-100 pb-6">
-        <Fullheader clientName={client?.name || "N/A"} />
+      <Fullheader clientName={client?.name || "N/A"} />
       <div className="h-full bg-gray-100 border border-gray-200 border-b-0 px-6 py-2">
-      <Subheader isPaneOpen={state.isPaneOpen} onPaneToggle={handlePaneToggle} copyUrlToClipboard={copyUrlToClipboard} handleDownloadCSV={handleDownloadCSV} />
+        <Subheader
+          isPaneOpen={state.isPaneOpen}
+          onPaneToggle={handlePaneToggle}
+          copyUrlToClipboard={copyUrlToClipboard}
+          handleDownloadCSV={handleDownloadCSV}
+        />
 
         <div className="w-full overflow-x-auto">
           <div className="p-0.5 flex w-fit h-fit gap-2">
@@ -275,76 +282,78 @@ export default function QuotingPage() {
         </div>
       </div>
       <div>
-          <SlidingPane
-            className="slide-pane_overlay2"
-            overlayClassName="slide-pane_overlay2"
-            isOpen={state.isPaneOpen}
-            title="Settings"
-            subtitle="Set classes and contribution structures." 
-            width={state.paneWidth}
-            onRequestClose={() => {
-              // triggered on "<" on left top click or on outside click
-              setState((prevState) => ({ ...prevState, isPaneOpen: false }))
-            }}
-          >
-            {showStandardContributions && (
+        <SlidingPane
+          className="slide-pane_overlay2"
+          overlayClassName="slide-pane_overlay2"
+          isOpen={state.isPaneOpen}
+          title="Settings"
+          subtitle="Set classes and contribution structures."
+          width={state.paneWidth}
+          onRequestClose={() => {
+            // triggered on "<" on left top click or on outside click
+            setState((prevState) => ({ ...prevState, isPaneOpen: false }));
+          }}
+        >
+          {showStandardContributions && (
             <>
-            <h1 className="mb-2 font-bold">Standard Contributions</h1>
-            
-              <Contributions/>
+              <h1 className="mb-2 font-bold">Standard Contributions</h1>
+
+              <Contributions />
 
               <hr className="mt-4 mb-4"></hr>
-              </>
-              )}
-            <h1 className="mb-2 font-bold">Custom Classes</h1>
-            <form className="mt-2" onSubmit={(e) => handleNewClassSubmit(e)}>
-              <div className="flex">
-                <input
-                  placeholder="Class Name"
-                  className="py-0.5 px-2 outline outline-1 outline-gray-400 mr-2 h-10 rounded-sm w-4/5 hover:outline-gray-500 hover:cursor-pointer focus:cursor-auto"
-                  value={newClass}
-                  onChange={(e) => setNewClass(e.target.value)}
-                />
-                <button
-                  type="submit"
-                  className="py-1 bg-neutral-800 text-gray-100 shadow rounded-sm h-10 text-sm px-2 w-1/5 hover:bg-neutral-900"
-                >
-                  New
-                </button>
-              </div>
-            </form>
-            <div>
-
-
+            </>
+          )}
+          <h1 className="mb-2 font-bold">Custom Classes</h1>
+          <form className="mt-2" onSubmit={(e) => handleNewClassSubmit(e)}>
+            <div className="flex">
+              <input
+                placeholder="Class Name"
+                className="py-0.5 px-2 outline outline-1 outline-gray-400 mr-2 h-10 rounded-sm w-4/5 hover:outline-gray-500 hover:cursor-pointer focus:cursor-auto"
+                value={newClass}
+                onChange={(e) => setNewClass(e.target.value)}
+              />
+              <button
+                type="submit"
+                className="py-1 bg-neutral-800 text-gray-100 shadow rounded-sm h-10 text-sm px-2 w-1/5 hover:bg-neutral-900"
+              >
+                New
+              </button>
+            </div>
+          </form>
+          <div>
             {customClasses.map((className, index) => (
-              <div key={index} className="mb-1.5 flex-col items-center justify-left mt-6">
+              <div
+                key={index}
+                className="mb-1.5 flex-col items-center justify-left mt-6"
+              >
                 <div className="flex items-center gap-2 mb-4">
-                <button
-                  onClick={() => handleDeleteClass(index)}
-                  className="rounded-sm text-sm"
-                >
-                  <FaTrash/>
-                </button>
-                  <p className="mr-2 font-bold">Class #{index + 1} : {className}</p>
-                  </div>
-                  <Contributions/>
+                  <button
+                    onClick={() => handleDeleteClass(index)}
+                    className="rounded-sm text-sm"
+                  >
+                    <FaTrash />
+                  </button>
+                  <p className="mr-2 font-bold">
+                    Class #{index + 1} : {className}
+                  </p>
+                </div>
+                <Contributions />
               </div>
             ))}
-            </div>
-            <br />
-          </SlidingPane>
-        </div>
+          </div>
+          <br />
+        </SlidingPane>
+      </div>
 
-        <SnackbarAlert
-          openSnackbarShare={snackbar.open}
-          setOpenSnackbarShare={setSnackbar}
-          snackbar={{
-            open: snackbar.open,
-            message: snackbar.message,
-            severity: snackbar.severity,
-          }}
-        />
-
+      <SnackbarAlert
+        openSnackbarShare={snackbar.open}
+        setOpenSnackbarShare={setSnackbar}
+        snackbar={{
+          open: snackbar.open,
+          message: snackbar.message,
+          severity: snackbar.severity,
+        }}
+      />
     </div>
   );
-  }
+}

@@ -27,7 +27,6 @@ export default function Page() {
     const password = target.password.value; // typechecks!
 
     if (email === "email" && password === "password") {
-      setUserId(1);
       router.push("/");
     } else {
       alert("Wrong credentials");
@@ -45,10 +44,11 @@ export default function Page() {
           {/* Image component */}
           <div className="mb-2">
             <Image
+              className="height-auto"
               src="/NewBlumeLogo.jpg" // Assuming your public folder is served from the root
               alt="Bloom Flower"
               width={150} // Set the width as per your design
-              height={100} // Set the height as per your design
+              height={100}
             />
           </div>
 
