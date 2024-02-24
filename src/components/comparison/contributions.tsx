@@ -35,7 +35,7 @@ export default function Contributions() {
   };
 
   return (
-    <div className="w-full">
+    <div className="w-full outline outline-1 outline-gray-400 p-1 bg-slate-500 rounded-sm">
     <div className="mb-1.5 flex items-center justify-left">
         <p className="text-sm mr-2 font-bold">EE</p>
         <p className="mr-2">|</p>

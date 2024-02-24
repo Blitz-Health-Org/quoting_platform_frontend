@@ -11,10 +11,11 @@ import { IoIosSettings } from "react-icons/io";
 type SubheaderProps = {
   isPaneOpen: boolean;
   onPaneToggle: (newState: boolean) => void;
-  copyUrlToClipboard: any
+  copyUrlToClipboard: any;
+  handleDownloadCSV: any
 };
 
-export const Subheader: React.FC<SubheaderProps> = ({ isPaneOpen, onPaneToggle, copyUrlToClipboard }) => {
+export const Subheader: React.FC<SubheaderProps> = ({ isPaneOpen, onPaneToggle, copyUrlToClipboard, handleDownloadCSV }) => {
   return (
     <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
       {/* Left-aligned form */}
@@ -69,9 +70,11 @@ export const Subheader: React.FC<SubheaderProps> = ({ isPaneOpen, onPaneToggle, 
           <FaShareAlt />
           <p>Share</p>
         </button>
-        <button className="flex items-center gap-2 cursor-pointer outline outline-1 outline-neutral-600 mr-2 rounded-sm bg-neutral-700/80 text-sm text-gray-100 px-2 py-1">
-          <IoMdDownload />
-          <p>Download CSV</p>
+        <button 
+          onClick={handleDownloadCSV}
+          className="flex items-center gap-2 cursor-pointer outline outline-1 outline-neutral-600 mr-2 rounded-sm bg-neutral-700/80 text-sm text-gray-100 px-2 py-1">
+            <IoMdDownload />
+            <p>Download CSV</p>
         </button>
         <button
           onClick={() => onPaneToggle(!isPaneOpen)}

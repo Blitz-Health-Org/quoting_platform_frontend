@@ -5,7 +5,7 @@ import Image from "next/image";
 import { IoMdArrowBack } from "react-icons/io";
 import { IoHelpCircleSharp } from "react-icons/io5";
 import { Subheader } from "../../components/comparison/Subheader";
-import Contributions from "../../components/comparison/contributions";
+import Contributions from "../../components/comparison/Contributions";
 import '../../components/comparison/sum.css'; // import your custom styles
 import Fullheader from "../../components/comparison/Fullheader";
 import QuoteCard from "../../components/comparison/QuoteCard";
@@ -18,8 +18,7 @@ import { isFieldVisible } from "@/src/types/utils/isFieldVisible";
 import { useSearchParams, useRouter } from "next/navigation";
 import SlidingPane from "react-sliding-pane";
 import 'react-sliding-pane/dist/react-sliding-pane.css';
-import InputSlider from "../../components/comparison/Slider";
-import Input from "@mui/material/Input";
+import { FaTrash } from "react-icons/fa";
 import { SnackbarAlert } from "../../components/ui/SnackbarAlert";
 
 type QuotingPageProps = {
@@ -45,6 +44,25 @@ export default function QuotingPage() {
     severity: "success",
   });  
 
+  const handleDeleteClass = (index: any) => {
+    const updatedClasses = [...customClasses];
+    updatedClasses.splice(index, 1);
+    setCustomClasses(updatedClasses);
+
+    // Check if the length of customClasses is zero and update showStandardContributions
+    if (updatedClasses.length === 0) {
+      setShowStandardContributions(true);
+    }
+  };
+
+  const handleDownloadCSV = (index: any) => {
+    setSnackbar({
+      open: true,
+      message: "This feature is coming soon!",
+      severity: "info",
+    });
+  };
+
   useEffect(() => {
     // Attach resize event listener for future adjustments (if needed)
     if (typeof window !== 'undefined') {
@@ -63,7 +81,7 @@ export default function QuotingPage() {
       if (window.innerWidth <= 368) {
         return "75%";
       } else if (window.innerWidth <= 624) {
-        return "55%";
+        return "65%";
       } else if (window.innerWidth <= 904) {
         return "45%";
       } else if (window.innerWidth <= 1224) {
@@ -90,7 +108,7 @@ export default function QuotingPage() {
       if (window.innerWidth <= 368) {
         newWidth = "75%";
       } else if (window.innerWidth <= 624) {
-        newWidth = "55%";
+        newWidth = "65%";
       } else if (window.innerWidth <= 904) {
         newWidth = "45%";
       } else if (window.innerWidth <= 1224) {
@@ -129,22 +147,22 @@ export default function QuotingPage() {
     eeFamily: { percent: 100, employees: 50 },
   });
 
-  const handleEdit = () => {
-    // Enable editing mode
-    setEditStandardContributions(true);
-  };
+  // const handleEdit = () => {
+  //   // Enable editing mode
+  //   setEditStandardContributions(true);
+  // };
   
-  const handleSave = () => {
-    // Disable editing mode
-    setEditStandardContributions(false);
+  // const handleSave = () => {
+  //   // Disable editing mode
+  //   setEditStandardContributions(false);
   
-    // Save the edited values to JSON
-    const jsonResult = JSON.stringify(standardContributions);
-    console.log(jsonResult);
+  //   // Save the edited values to JSON
+  //   const jsonResult = JSON.stringify(standardContributions);
+  //   console.log(jsonResult);
   
-    // You can save the JSON data to your desired location or state.
-    // For example, you can send it to the server or store it in another state.
-  };
+  //   // You can save the JSON data to your desired location or state.
+  //   // For example, you can send it to the server or store it in another state.
+  // };
   
   const fetchClientAndQuotes = async (clientId: string, quoteIds: string[]) => {
     try {
@@ -233,13 +251,11 @@ export default function QuotingPage() {
   return (
     <div className="w-full h-fit bg-gray-100 pb-6">
       <Fullheader />
-
       <div className="h-full bg-gray-100 border border-gray-200 border-b-0 px-6 py-2">
-      <Subheader isPaneOpen={state.isPaneOpen} onPaneToggle={handlePaneToggle} copyUrlToClipboard={copyUrlToClipboard} />
+      <Subheader isPaneOpen={state.isPaneOpen} onPaneToggle={handlePaneToggle} copyUrlToClipboard={copyUrlToClipboard} handleDownloadCSV={handleDownloadCSV} />
 
         <div className="w-full overflow-x-auto">
           <div className="p-0.5 flex w-fit h-fit gap-2">
-            
             <Left
               nonObjectVisibleQuoteFields={nonObjectVisibleQuoteFields}
               objectVisibleQuoteFields={objectVisibleQuoteFields}
@@ -305,7 +321,15 @@ export default function QuotingPage() {
 
             {customClasses.map((className, index) => (
               <div key={index} className="mb-1.5 flex-col items-center justify-left mt-6">
-                <p className="mr-2 font-bold mb-2">Class #{index + 1} : {className}</p>
+                <div className="flex items-center gap-2 mb-2">
+                <button
+                  onClick={() => handleDeleteClass(index)}
+                  className="rounded-sm text-sm"
+                >
+                  <FaTrash/>
+                </button>
+                  <p className="mr-2 font-bold">Class #{index + 1} : {className}</p>
+                  </div>
                   <Contributions/>
               </div>
             ))}
