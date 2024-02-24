@@ -45,64 +45,65 @@ export default function QuotingPage() {
     severity: "success",
   });  
 
-  // useEffect(() => {
-  //   // Attach resize event listener for future adjustments (if needed)
-  //   if (typeof window !== 'undefined') {
-  //     window.addEventListener('resize', handleResize);
+  useEffect(() => {
+    // Attach resize event listener for future adjustments (if needed)
+    if (typeof window !== 'undefined') {
+      window.addEventListener('resize', handleResize);
 
-  //     // Remove event listener on component unmount
-  //     return () => {
-  //       window.removeEventListener('resize', handleResize);
-  //     };
-  //   }
-  // }, []);
+      // Remove event listener on component unmount
+      return () => {
+        window.removeEventListener('resize', handleResize);
+      };
+    }
+  }, []);
 
-  // const determineInitialWidth = () => {
-  //   if (typeof window !== 'undefined') {
-  //   // Set initial width based on screen size
-  //     if (window.innerWidth <= 368) {
-  //       return "100%";
-  //     } else if (window.innerWidth <= 624) {
-  //       return "80%";
-  //     } else if (window.innerWidth <= 904) {
-  //       return "60%";
-  //     } else if (window.innerWidth <= 1224) {
-  //       return "40%";
-  //     } else if (window.innerWidth <= 1424) {
-  //       return "32.5%";
-  //     } else {
-  //       return "25%";
-  //     }
-  //   }
-  // };
+  const determineInitialWidth = () => {
+    if (typeof window !== 'undefined') {
+    // Set initial width based on screen size
+      if (window.innerWidth <= 368) {
+        return "75%";
+      } else if (window.innerWidth <= 624) {
+        return "55%";
+      } else if (window.innerWidth <= 904) {
+        return "45%";
+      } else if (window.innerWidth <= 1224) {
+        return "35%";
+      } else if (window.innerWidth <= 1424) {
+        return "32.5%";
+      } else {
+        return "25%";
+      }
+    }
+  };
 
   const [state, setState] = useState({
     isPaneOpen: false,
     isPaneOpenLeft: false,
-    // initialPaneWidth: determineInitialWidth(), // Set initial width based on screen size
-    // paneWidth: determineInitialWidth()
+    initialPaneWidth: determineInitialWidth(), // Set initial width based on screen size
+    paneWidth: determineInitialWidth()
   });
 
-  // const handleResize = () => {
-  //   if (typeof window !== 'undefined') {
-  //     let newWidth: any;
+  const handleResize = () => {
+    if (typeof window !== 'undefined') {
+      let newWidth: any;
 
-  //     if (window.innerWidth <= 368) {
-  //       newWidth = "100%";
-  //     } else if (window.innerWidth <= 624) {
-  //       newWidth = "80%";
-  //     } else if (window.innerWidth <= 904) {
-  //       newWidth = "60%";
-  //     } else if (window.innerWidth <= 1224) {
-  //       newWidth = "40%";
-  //     } else if (window.innerWidth <= 1424) {
-  //       newWidth = "32.5%";
-  //     } else {
-  //       newWidth = "25%";
-  //     }
+      if (window.innerWidth <= 368) {
+        newWidth = "75%";
+      } else if (window.innerWidth <= 624) {
+        newWidth = "55%";
+      } else if (window.innerWidth <= 904) {
+        newWidth = "45%";
+      } else if (window.innerWidth <= 1224) {
+        newWidth = "35%";
+      } else if (window.innerWidth <= 1424) {
+        newWidth = "32.5%";
+      } else {
+        newWidth = "25%";
+      }
 
-  //   setState((prevState) => ({ ...prevState, paneWidth: newWidth }));
-  // };
+    setState((prevState) => ({ ...prevState, paneWidth: newWidth }));
+  }
+};
 
   const handlePaneToggle = (newState: any) => {
     setState((prevState) => ({ ...prevState, isPaneOpen: newState }));
@@ -267,7 +268,7 @@ export default function QuotingPage() {
             isOpen={state.isPaneOpen}
             title="Settings"
             subtitle="Set classes and contribution structures." 
-            width="25%"
+            width={state.paneWidth}
             onRequestClose={() => {
               // triggered on "<" on left top click or on outside click
               setState((prevState) => ({ ...prevState, isPaneOpen: false }))
