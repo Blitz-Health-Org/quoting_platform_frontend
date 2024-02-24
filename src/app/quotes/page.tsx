@@ -5,6 +5,7 @@ import Image from "next/image";
 import { IoMdArrowBack } from "react-icons/io";
 import { IoHelpCircleSharp } from "react-icons/io5";
 import { Subheader } from "../../components/comparison/Subheader";
+import Contributions from "../../components/comparison/contributions";
 import "../../components/comparison/sum.css"; // import your custom styles
 import Fullheader from "../../components/comparison/Fullheader";
 import QuoteCard from "../../components/comparison/QuoteCard";
@@ -19,6 +20,7 @@ import SlidingPane from "react-sliding-pane";
 import "react-sliding-pane/dist/react-sliding-pane.css";
 import InputSlider from "../../components/comparison/Slider";
 import Input from "@mui/material/Input";
+import { SnackbarAlert } from "../../components/ui/SnackbarAlert";
 
 type QuotingPageProps = {
   client: ClientType;
@@ -32,69 +34,78 @@ export default function QuotingPage() {
   const [newClass, setNewClass] = useState("");
   const [showStandardContributions, setShowStandardContributions] =
     useState(true);
+  const [editStandardContributions, setEditStandardContributions] =
+    useState(false);
 
   const router = useRouter();
 
   const searchParams = useSearchParams();
 
-  // useEffect(() => {
-  //   // Attach resize event listener for future adjustments (if needed)
-  //   if (typeof window !== 'undefined') {
-  //     window.addEventListener('resize', handleResize);
+  const [snackbar, setSnackbar] = useState({
+    open: false,
+    message: "",
+    severity: "success",
+  });
 
-  //     // Remove event listener on component unmount
-  //     return () => {
-  //       window.removeEventListener('resize', handleResize);
-  //     };
-  //   }
-  // }, []);
+  useEffect(() => {
+    // Attach resize event listener for future adjustments (if needed)
+    if (typeof window !== "undefined") {
+      window.addEventListener("resize", handleResize);
 
-  // const determineInitialWidth = () => {
-  //   if (typeof window !== 'undefined') {
-  //   // Set initial width based on screen size
-  //     if (window.innerWidth <= 368) {
-  //       return "100%";
-  //     } else if (window.innerWidth <= 624) {
-  //       return "80%";
-  //     } else if (window.innerWidth <= 904) {
-  //       return "60%";
-  //     } else if (window.innerWidth <= 1224) {
-  //       return "40%";
-  //     } else if (window.innerWidth <= 1424) {
-  //       return "32.5%";
-  //     } else {
-  //       return "25%";
-  //     }
-  //   }
-  // };
+      // Remove event listener on component unmount
+      return () => {
+        window.removeEventListener("resize", handleResize);
+      };
+    }
+  }, []);
+
+  const determineInitialWidth = () => {
+    if (typeof window !== "undefined") {
+      // Set initial width based on screen size
+      if (window.innerWidth <= 368) {
+        return "75%";
+      } else if (window.innerWidth <= 624) {
+        return "55%";
+      } else if (window.innerWidth <= 904) {
+        return "45%";
+      } else if (window.innerWidth <= 1224) {
+        return "35%";
+      } else if (window.innerWidth <= 1424) {
+        return "32.5%";
+      } else {
+        return "25%";
+      }
+    }
+  };
 
   const [state, setState] = useState({
     isPaneOpen: false,
     isPaneOpenLeft: false,
-    // initialPaneWidth: determineInitialWidth(), // Set initial width based on screen size
-    // paneWidth: determineInitialWidth()
+    initialPaneWidth: determineInitialWidth(), // Set initial width based on screen size
+    paneWidth: determineInitialWidth(),
   });
 
-  // const handleResize = () => {
-  //   if (typeof window !== 'undefined') {
-  //     let newWidth: any;
+  const handleResize = () => {
+    if (typeof window !== "undefined") {
+      let newWidth: any;
 
-  //     if (window.innerWidth <= 368) {
-  //       newWidth = "100%";
-  //     } else if (window.innerWidth <= 624) {
-  //       newWidth = "80%";
-  //     } else if (window.innerWidth <= 904) {
-  //       newWidth = "60%";
-  //     } else if (window.innerWidth <= 1224) {
-  //       newWidth = "40%";
-  //     } else if (window.innerWidth <= 1424) {
-  //       newWidth = "32.5%";
-  //     } else {
-  //       newWidth = "25%";
-  //     }
+      if (window.innerWidth <= 368) {
+        newWidth = "75%";
+      } else if (window.innerWidth <= 624) {
+        newWidth = "55%";
+      } else if (window.innerWidth <= 904) {
+        newWidth = "45%";
+      } else if (window.innerWidth <= 1224) {
+        newWidth = "35%";
+      } else if (window.innerWidth <= 1424) {
+        newWidth = "32.5%";
+      } else {
+        newWidth = "25%";
+      }
 
-  //   setState((prevState) => ({ ...prevState, paneWidth: newWidth }));
-  // };
+      setState((prevState) => ({ ...prevState, paneWidth: newWidth }));
+    }
+  };
 
   const handlePaneToggle = (newState: any) => {
     setState((prevState) => ({ ...prevState, isPaneOpen: newState }));
@@ -112,6 +123,30 @@ export default function QuotingPage() {
 
     setLoading(false);
   }, [searchParams]);
+
+  const [standardContributions, setStandardContributions] = useState({
+    ee: { percent: 100, employees: 50 },
+    eeSpouse: { percent: 100, employees: 50 },
+    eeChild: { percent: 100, employees: 50 },
+    eeFamily: { percent: 100, employees: 50 },
+  });
+
+  const handleEdit = () => {
+    // Enable editing mode
+    setEditStandardContributions(true);
+  };
+
+  const handleSave = () => {
+    // Disable editing mode
+    setEditStandardContributions(false);
+
+    // Save the edited values to JSON
+    const jsonResult = JSON.stringify(standardContributions);
+    console.log(jsonResult);
+
+    // You can save the JSON data to your desired location or state.
+    // For example, you can send it to the server or store it in another state.
+  };
 
   const fetchClientAndQuotes = async (clientId: string, quoteIds: string[]) => {
     try {
@@ -171,6 +206,32 @@ export default function QuotingPage() {
     return <></>;
   }
 
+  const copyUrlToClipboard = () => {
+    // Use window.location.href to get the current URL
+    const url = window.location.href;
+
+    // Use the Clipboard API to write the text
+    navigator.clipboard
+      .writeText(url)
+      .then(() => {
+        // Optional: Display a message or call a function to indicate success
+        setSnackbar({
+          open: true,
+          message: "Copied to clipboard!",
+          severity: "success",
+        });
+      })
+      .catch((err) => {
+        // Optional: Handle any errors
+        console.error("Failed to copy URL to clipboard", err);
+        setSnackbar({
+          open: true,
+          message: "Failed to copy URL to clipboard",
+          severity: "error",
+        });
+      });
+  };
+
   return (
     <div className="w-full h-fit bg-gray-100 pb-6">
       <Fullheader />
@@ -179,6 +240,7 @@ export default function QuotingPage() {
         <Subheader
           isPaneOpen={state.isPaneOpen}
           onPaneToggle={handlePaneToggle}
+          copyUrlToClipboard={copyUrlToClipboard}
         />
 
         <div className="w-full overflow-x-auto">
@@ -211,7 +273,7 @@ export default function QuotingPage() {
           isOpen={state.isPaneOpen}
           title="Settings"
           subtitle="Set classes and contribution structures."
-          width="25%"
+          width={state.paneWidth}
           onRequestClose={() => {
             // triggered on "<" on left top click or on outside click
             setState((prevState) => ({ ...prevState, isPaneOpen: false }));
@@ -220,139 +282,18 @@ export default function QuotingPage() {
           {showStandardContributions && (
             <>
               <h1 className="mb-2 font-bold">Standard Contributions</h1>
-              <div className="mb-1.5 flex items-center justify-left">
-                <p className="text-sm mr-2 font-bold">EE</p>
-                <p className="mr-2">|</p>
-                <Input
-                  className="w-11"
-                  defaultValue={100}
-                  size="small"
-                  inputProps={{
-                    step: 1,
-                    min: 0,
-                    max: 100,
-                    type: "number",
-                    "aria-labelledby": "input-slider",
-                  }}
-                />
-                <p className="text-sm text-gray-500 mr-2">%</p>
-                <p className="mr-2">|</p>
-                <Input
-                  className="w-12"
-                  defaultValue={50}
-                  size="small"
-                  inputProps={{
-                    step: 1,
-                    min: 0,
-                    max: 10000,
-                    type: "number",
-                    "aria-labelledby": "input-slider",
-                  }}
-                />
-                <p className="text-sm text-gray-800">Employees</p>
-              </div>
-              <div className="mb-1.5 flex items-center justify-left">
-                <p className="text-sm mr-2 font-bold">EE/Spouse</p>
-                <p className="mr-2">|</p>
-                <Input
-                  className="w-11"
-                  defaultValue={100}
-                  size="small"
-                  inputProps={{
-                    step: 1,
-                    min: 0,
-                    max: 100,
-                    type: "number",
-                    "aria-labelledby": "input-slider",
-                  }}
-                />
-                <p className="text-sm text-gray-500 mr-2">%</p>
-                <p className="mr-2">|</p>
-                <Input
-                  className="w-12"
-                  defaultValue={50}
-                  size="small"
-                  inputProps={{
-                    step: 1,
-                    min: 0,
-                    max: 10000,
-                    type: "number",
-                    "aria-labelledby": "input-slider",
-                  }}
-                />
-                <p className="text-sm text-gray-800">Employees</p>
-              </div>
-              <div className="mb-1.5 flex items-center justify-left">
-                <p className="text-sm mr-2 font-bold">EE/Child</p>
-                <p className="mr-2">|</p>
-                <Input
-                  className="w-11"
-                  defaultValue={100}
-                  size="small"
-                  inputProps={{
-                    step: 1,
-                    min: 0,
-                    max: 100,
-                    type: "number",
-                    "aria-labelledby": "input-slider",
-                  }}
-                />
-                <p className="text-sm text-gray-500 mr-2">%</p>
-                <p className="mr-2">|</p>
-                <Input
-                  className="w-12"
-                  defaultValue={50}
-                  size="small"
-                  inputProps={{
-                    step: 1,
-                    min: 0,
-                    max: 10000,
-                    type: "number",
-                    "aria-labelledby": "input-slider",
-                  }}
-                />
-                <p className="text-sm text-gray-800">Employees</p>
-              </div>
-              <div className="mb-1.5 flex items-center justify-left">
-                <p className="text-sm mr-2 font-bold">EE/Family</p>
-                <p className="mr-2">|</p>
-                <Input
-                  className="w-11"
-                  defaultValue={100}
-                  size="small"
-                  inputProps={{
-                    step: 1,
-                    min: 0,
-                    max: 100,
-                    type: "number",
-                    "aria-labelledby": "input-slider",
-                  }}
-                />
-                <p className="text-sm text-gray-500 mr-2">%</p>
-                <p className="mr-2">|</p>
-                <Input
-                  className="w-12"
-                  defaultValue={50}
-                  size="small"
-                  inputProps={{
-                    step: 1,
-                    min: 0,
-                    max: 10000,
-                    type: "number",
-                    "aria-labelledby": "input-slider",
-                  }}
-                />
-                <p className="text-sm text-gray-800">Employees</p>
-              </div>
-              <hr className="mt-4"></hr>
+
+              <Contributions />
+
+              <hr className="mt-4 mb-4"></hr>
             </>
           )}
-          <h1 className="mb-2 font-bold mt-4">Custom Classes</h1>
+          <h1 className="mb-2 font-bold">Custom Classes</h1>
           <form className="mt-4" onSubmit={(e) => handleNewClassSubmit(e)}>
             <div className="flex">
               <input
                 placeholder="Class Name"
-                className="p-1 outline outline-1 outline-gray-400 bg-gray-100 mr-2 h-10 rounded-sm"
+                className="py-0.5 px-2 outline outline-1 outline-gray-400 bg-gray-100 mr-2 h-10 rounded-sm"
                 value={newClass}
                 onChange={(e) => setNewClass(e.target.value)}
               />
@@ -368,139 +309,28 @@ export default function QuotingPage() {
             {customClasses.map((className, index) => (
               <div
                 key={index}
-                className="mb-1.5 flex-col items-center justify-left mt-4"
+                className="mb-1.5 flex-col items-center justify-left mt-6"
               >
-                <p className="text-sm mr-2 font-bold">{className}</p>
-                <div className="mb-1.5 flex items-center justify-left">
-                  <p className="text-sm mr-2 font-bold">EE</p>
-                  <p className="mr-2">|</p>
-                  <Input
-                    className="w-11"
-                    defaultValue={100}
-                    size="small"
-                    inputProps={{
-                      step: 1,
-                      min: 0,
-                      max: 100,
-                      type: "number",
-                      "aria-labelledby": "input-slider",
-                    }}
-                  />
-                  <p className="text-sm text-gray-500 mr-2">%</p>
-                  <p className="mr-2">|</p>
-                  <Input
-                    className="w-12"
-                    defaultValue={50}
-                    size="small"
-                    inputProps={{
-                      step: 1,
-                      min: 0,
-                      max: 10000,
-                      type: "number",
-                      "aria-labelledby": "input-slider",
-                    }}
-                  />
-                  <p className="text-sm text-gray-800">Employees</p>
-                </div>
-                <div className="mb-1.5 flex items-center justify-left">
-                  <p className="text-sm mr-2 font-bold">EE/Spouse</p>
-                  <p className="mr-2">|</p>
-                  <Input
-                    className="w-11"
-                    defaultValue={100}
-                    size="small"
-                    inputProps={{
-                      step: 1,
-                      min: 0,
-                      max: 100,
-                      type: "number",
-                      "aria-labelledby": "input-slider",
-                    }}
-                  />
-                  <p className="text-sm text-gray-500 mr-2">%</p>
-                  <p className="mr-2">|</p>
-                  <Input
-                    className="w-12"
-                    defaultValue={50}
-                    size="small"
-                    inputProps={{
-                      step: 1,
-                      min: 0,
-                      max: 10000,
-                      type: "number",
-                      "aria-labelledby": "input-slider",
-                    }}
-                  />
-                  <p className="text-sm text-gray-800">Employees</p>
-                </div>
-                <div className="mb-1.5 flex items-center justify-left">
-                  <p className="text-sm mr-2 font-bold">EE/Child</p>
-                  <p className="mr-2">|</p>
-                  <Input
-                    className="w-11"
-                    defaultValue={100}
-                    size="small"
-                    inputProps={{
-                      step: 1,
-                      min: 0,
-                      max: 100,
-                      type: "number",
-                      "aria-labelledby": "input-slider",
-                    }}
-                  />
-                  <p className="text-sm text-gray-500 mr-2">%</p>
-                  <p className="mr-2">|</p>
-                  <Input
-                    className="w-12"
-                    defaultValue={50}
-                    size="small"
-                    inputProps={{
-                      step: 1,
-                      min: 0,
-                      max: 10000,
-                      type: "number",
-                      "aria-labelledby": "input-slider",
-                    }}
-                  />
-                  <p className="text-sm text-gray-800">Employees</p>
-                </div>
-                <div className="mb-1.5 flex items-center justify-left">
-                  <p className="text-sm mr-2 font-bold">EE/Family</p>
-                  <p className="mr-2">|</p>
-                  <Input
-                    className="w-11"
-                    defaultValue={100}
-                    size="small"
-                    inputProps={{
-                      step: 1,
-                      min: 0,
-                      max: 100,
-                      type: "number",
-                      "aria-labelledby": "input-slider",
-                    }}
-                  />
-                  <p className="text-sm text-gray-500 mr-2">%</p>
-                  <p className="mr-2">|</p>
-                  <Input
-                    className="w-12"
-                    defaultValue={50}
-                    size="small"
-                    inputProps={{
-                      step: 1,
-                      min: 0,
-                      max: 10000,
-                      type: "number",
-                      "aria-labelledby": "input-slider",
-                    }}
-                  />
-                  <p className="text-sm text-gray-800">Employees</p>
-                </div>
+                <p className="mr-2 font-bold mb-2">
+                  Class #{index + 1} : {className}
+                </p>
+                <Contributions />
               </div>
             ))}
           </div>
           <br />
         </SlidingPane>
       </div>
+
+      <SnackbarAlert
+        openSnackbarShare={snackbar.open}
+        setOpenSnackbarShare={setSnackbar}
+        snackbar={{
+          open: snackbar.open,
+          message: snackbar.message,
+          severity: snackbar.severity,
+        }}
+      />
     </div>
   );
 }
