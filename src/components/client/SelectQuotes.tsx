@@ -1,23 +1,11 @@
 "use client";
 
-import { PiListBulletsBold } from "react-icons/pi";
-import { RiArrowDropDownLine } from "react-icons/ri";
 import Image from "next/image";
-import { FaPlus } from "react-icons/fa";
-import { IoEyeSharp } from "react-icons/io5";
-import { CiShare1 } from "react-icons/ci";
-import { CiCirclePlus } from "react-icons/ci";
 import { BiPlus } from "react-icons/bi";
-import { useDropzone } from "react-dropzone";
-import { Snackbar, Alert } from "@mui/material";
 import { NewClientModal } from "@/src/components/client/modal/NewClientModal";
-import { MdUpload } from "react-icons/md";
-import { ClientCard } from "@/src/components/client/ClientCard";
-import { UserContext } from "@/src/context/UserContext";
 import { ClientType } from "@/src/types/custom/Client";
 import { useRouter } from "next/navigation";
 import { SnackbarAlert } from "../ui/SnackbarAlert";
-import error from "next/error";
 import { supabase } from "../../supabase";
 import {
   Dispatch,
@@ -30,9 +18,7 @@ import { IoMdArrowBack } from "react-icons/io";
 import { QuoteType } from "@/src/types/custom/Quote";
 import { IconBuilding } from "@tabler/icons-react";
 import Apple from "@/public/Screenshot.png";
-import { FaChevronDown } from "react-icons/fa";
-import { IoDocumentTextOutline } from "react-icons/io5";
-import { FaSearch } from "react-icons/fa";
+import { SocketContext } from "@/src/context/SocketContext";
 
 export default function SelectQuotes({
   setComparisonOpen,
@@ -49,14 +35,37 @@ export default function SelectQuotes({
   const [quotes, setQuotes] = useState<QuoteTypeWithCheckbox[]>([]);
 
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const { socket } = useContext(SocketContext);
 
   const [snackbar, setSnackbar] = useState({
     open: false,
     message: "",
     severity: "info", // default severity
   });
-
   const router = useRouter();
+
+  useEffect(() => {
+    if (socket) {
+      // Connect to the Socket.IO server
+      // Listen for 'task_complete' events
+      socket.on("task_complete", (data) => {
+        console.log("Task Complete:", data);
+        fetchQuoteData();
+      });
+
+      // Listen for 'task_status' events
+      socket.on("task_status", (data) => {
+        console.log("Task Status:", data);
+      });
+
+      return () => {
+        console.log("rip");
+        socket.off("task_complete");
+        socket.off("task_status");
+        socket.close();
+      };
+    }
+  }, []);
 
   const handleCheckboxChange = (quoteId: number) => {
     setQuotes((prevQuotes) =>
@@ -91,23 +100,23 @@ export default function SelectQuotes({
     }
   };
 
+  const fetchQuoteData = async () => {
+    // Replace 'YOUR_CLIENT_ID' with the actual client ID you want to filter by
+    const { data, error } = await supabase
+      .from("quotes")
+      .select()
+      .eq("client_id", selectedClient.id);
+
+    if (error) {
+      alert("Error updating data");
+    } else {
+      console.log(data);
+      setQuotes(data);
+    }
+  };
+
   useEffect(() => {
-    const fetchData = async () => {
-      // Replace 'YOUR_CLIENT_ID' with the actual client ID you want to filter by
-      const { data, error } = await supabase
-        .from("quotes")
-        .select()
-        .eq("client_id", selectedClient.id);
-
-      if (error) {
-        alert("Error updating data");
-      } else {
-        console.log(data);
-        setQuotes(data);
-      }
-    };
-
-    fetchData();
+    fetchQuoteData();
   }, []);
 
   const copyUrlToClipboard = () => {

@@ -104,6 +104,7 @@ export const AddQuote = ({
     }
 
     try {
+      console.log("refetch");
       const response = await fetch(
         `${process.env.NEXT_PUBLIC_BACKEND_URL}/parse`,
         {
