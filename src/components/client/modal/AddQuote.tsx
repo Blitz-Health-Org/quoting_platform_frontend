@@ -1,12 +1,10 @@
 import { supabase } from "@/src/supabase";
 import { useDropzone } from "react-dropzone";
 import { MdUpload } from "react-icons/md";
-import { Modal } from "../../ui/Modal";
 import React, { useState, Dispatch, SetStateAction } from "react";
 import Image from "next/image";
 import BlumeLogo from "@/public/BlumeLogo.png";
 import { FaX } from "react-icons/fa6";
-import { drop } from "lodash";
 import { v4 as uuid } from "uuid";
 import { ClientType } from "@/src/types/custom/Client";
 
