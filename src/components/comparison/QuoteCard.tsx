@@ -122,7 +122,7 @@ export default function QuoteCard({
         />
         </div>
         <div className="flex flex-col w-fit justify-center items-start ml-1 mb-4">
-          <h1 className="font-bold text-xl">{internalQuote?.name}</h1>
+          <h1 className="font-bold text-xl">{internalQuote?.carrier}</h1>
           <p className="text-sm">{internalQuote?.website}</p>
         </div>
       </div>
