@@ -83,9 +83,9 @@ export default function QuotingPage() {
       } else if (window.innerWidth <= 624) {
         return "65%";
       } else if (window.innerWidth <= 904) {
-        return "45%";
+        return "55%";
       } else if (window.innerWidth <= 1224) {
-        return "35%";
+        return "40%";
       } else if (window.innerWidth <= 1424) {
         return "32.5%";
       } else {
@@ -110,9 +110,9 @@ export default function QuotingPage() {
       } else if (window.innerWidth <= 624) {
         newWidth = "65%";
       } else if (window.innerWidth <= 904) {
-        newWidth = "45%";
+        newWidth = "55%";
       } else if (window.innerWidth <= 1224) {
-        newWidth = "35%";
+        newWidth = "40%";
       } else if (window.innerWidth <= 1424) {
         newWidth = "32.5%";
       } else {
@@ -300,17 +300,17 @@ export default function QuotingPage() {
               </>
               )}
             <h1 className="mb-2 font-bold">Custom Classes</h1>
-            <form className="mt-4" onSubmit={(e) => handleNewClassSubmit(e)}>
+            <form className="mt-2" onSubmit={(e) => handleNewClassSubmit(e)}>
               <div className="flex">
                 <input
                   placeholder="Class Name"
-                  className="py-0.5 px-2 outline outline-1 outline-gray-400 bg-gray-100 mr-2 h-10 rounded-sm"
+                  className="py-0.5 px-2 outline outline-1 outline-gray-400 mr-2 h-10 rounded-sm w-4/5 hover:outline-gray-500 hover:cursor-pointer focus:cursor-auto"
                   value={newClass}
                   onChange={(e) => setNewClass(e.target.value)}
                 />
                 <button
                   type="submit"
-                  className="outline py-1 outline-1 outline-gray-400 bg-gray-100 rounded-sm h-10 text-sm px-2"
+                  className="py-1 bg-neutral-800 text-gray-100 shadow rounded-sm h-10 text-sm px-2 w-1/5 hover:bg-neutral-900"
                 >
                   New
                 </button>
@@ -321,7 +321,7 @@ export default function QuotingPage() {
 
             {customClasses.map((className, index) => (
               <div key={index} className="mb-1.5 flex-col items-center justify-left mt-6">
-                <div className="flex items-center gap-2 mb-2">
+                <div className="flex items-center gap-2 mb-4">
                 <button
                   onClick={() => handleDeleteClass(index)}
                   className="rounded-sm text-sm"
