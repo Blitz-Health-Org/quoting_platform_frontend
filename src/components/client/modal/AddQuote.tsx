@@ -287,6 +287,15 @@ export const AddQuote = ({
             <FaX />
           </button>
         </div>
+        <label>Choose a plan:</label>
+          <select name="plan" id="plan">
+            <option value="bcbs_tx_aca">BCBS TX ACA</option>
+            <option value="aetna">Aetna</option>
+            <option value="chamber_smart">Chamber Smart</option>
+            <option value="anthem">Anthem</option>
+            <option value="uhc_aca">UHC ACA</option>
+            <option value="uhc_lf">UHC Level Funded</option>
+          </select>
         <div className="modal-body">
           {/* File Upload Section */}
           <div className="flex flex-col items-center justify-center cursor-pointer">

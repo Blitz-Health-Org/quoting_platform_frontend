@@ -495,6 +495,7 @@ export type Database = {
           provider_network: string | null;
           task_id: number | null;
           website: string | null;
+          carrier: string | null;
         };
         Insert: {
           client_id?: number | null;
@@ -512,6 +513,7 @@ export type Database = {
           provider_network?: string | null;
           task_id?: number | null;
           website?: string | null;
+          carrier: string | null;
         };
         Update: {
           client_id?: number | null;
@@ -529,6 +531,7 @@ export type Database = {
           provider_network?: string | null;
           task_id?: number | null;
           website?: string | null;
+          carrier: string | null;
         };
         Relationships: [
           {

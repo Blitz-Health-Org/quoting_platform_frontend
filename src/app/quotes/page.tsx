@@ -5,7 +5,7 @@ import Image from "next/image";
 import { IoMdArrowBack } from "react-icons/io";
 import { IoHelpCircleSharp } from "react-icons/io5";
 import { Subheader } from "../../components/comparison/Subheader";
-import Contributions from "../../components/comparison/contributions";
+import Contributions from "../../components/comparison/Contributions";
 import "../../components/comparison/sum.css"; // import your custom styles
 import Fullheader from "../../components/comparison/Fullheader";
 import QuoteCard from "../../components/comparison/QuoteCard";
@@ -18,8 +18,7 @@ import { isFieldVisible } from "@/src/types/utils/isFieldVisible";
 import { useSearchParams, useRouter } from "next/navigation";
 import SlidingPane from "react-sliding-pane";
 import "react-sliding-pane/dist/react-sliding-pane.css";
-import InputSlider from "../../components/comparison/Slider";
-import Input from "@mui/material/Input";
+import { FaTrash } from "react-icons/fa";
 import { SnackbarAlert } from "../../components/ui/SnackbarAlert";
 
 type QuotingPageProps = {
@@ -27,7 +26,7 @@ type QuotingPageProps = {
 };
 
 export default function QuotingPage() {
-  const [client, setClient] = useState(null);
+  const [client, setClient] = useState<ClientType>();
   const [quotes, setQuotes] = useState<QuoteType[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [customClasses, setCustomClasses] = useState<string[]>([]);
@@ -47,6 +46,25 @@ export default function QuotingPage() {
     severity: "success",
   });
 
+  const handleDeleteClass = (index: any) => {
+    const updatedClasses = [...customClasses];
+    updatedClasses.splice(index, 1);
+    setCustomClasses(updatedClasses);
+
+    // Check if the length of customClasses is zero and update showStandardContributions
+    if (updatedClasses.length === 0) {
+      setShowStandardContributions(true);
+    }
+  };
+
+  const handleDownloadCSV = (index: any) => {
+    setSnackbar({
+      open: true,
+      message: "This feature is coming soon!",
+      severity: "info",
+    });
+  };
+
   useEffect(() => {
     // Attach resize event listener for future adjustments (if needed)
     if (typeof window !== "undefined") {
@@ -65,11 +83,11 @@ export default function QuotingPage() {
       if (window.innerWidth <= 368) {
         return "75%";
       } else if (window.innerWidth <= 624) {
-        return "55%";
+        return "65%";
       } else if (window.innerWidth <= 904) {
-        return "45%";
+        return "55%";
       } else if (window.innerWidth <= 1224) {
-        return "35%";
+        return "40%";
       } else if (window.innerWidth <= 1424) {
         return "32.5%";
       } else {
@@ -92,11 +110,11 @@ export default function QuotingPage() {
       if (window.innerWidth <= 368) {
         newWidth = "75%";
       } else if (window.innerWidth <= 624) {
-        newWidth = "55%";
+        newWidth = "65%";
       } else if (window.innerWidth <= 904) {
-        newWidth = "45%";
+        newWidth = "55%";
       } else if (window.innerWidth <= 1224) {
-        newWidth = "35%";
+        newWidth = "40%";
       } else if (window.innerWidth <= 1424) {
         newWidth = "32.5%";
       } else {
@@ -131,22 +149,22 @@ export default function QuotingPage() {
     eeFamily: { percent: 100, employees: 50 },
   });
 
-  const handleEdit = () => {
-    // Enable editing mode
-    setEditStandardContributions(true);
-  };
+  // const handleEdit = () => {
+  //   // Enable editing mode
+  //   setEditStandardContributions(true);
+  // };
 
-  const handleSave = () => {
-    // Disable editing mode
-    setEditStandardContributions(false);
+  // const handleSave = () => {
+  //   // Disable editing mode
+  //   setEditStandardContributions(false);
 
-    // Save the edited values to JSON
-    const jsonResult = JSON.stringify(standardContributions);
-    console.log(jsonResult);
+  //   // Save the edited values to JSON
+  //   const jsonResult = JSON.stringify(standardContributions);
+  //   console.log(jsonResult);
 
-    // You can save the JSON data to your desired location or state.
-    // For example, you can send it to the server or store it in another state.
-  };
+  //   // You can save the JSON data to your desired location or state.
+  //   // For example, you can send it to the server or store it in another state.
+  // };
 
   const fetchClientAndQuotes = async (clientId: string, quoteIds: string[]) => {
     try {
@@ -234,13 +252,13 @@ export default function QuotingPage() {
 
   return (
     <div className="w-full h-fit bg-gray-100 pb-6">
-      <Fullheader />
-
+      <Fullheader clientName={client?.name || "N/A"} />
       <div className="h-full bg-gray-100 border border-gray-200 border-b-0 px-6 py-2">
         <Subheader
           isPaneOpen={state.isPaneOpen}
           onPaneToggle={handlePaneToggle}
           copyUrlToClipboard={copyUrlToClipboard}
+          handleDownloadCSV={handleDownloadCSV}
         />
 
         <div className="w-full overflow-x-auto">
@@ -289,17 +307,17 @@ export default function QuotingPage() {
             </>
           )}
           <h1 className="mb-2 font-bold">Custom Classes</h1>
-          <form className="mt-4" onSubmit={(e) => handleNewClassSubmit(e)}>
+          <form className="mt-2" onSubmit={(e) => handleNewClassSubmit(e)}>
             <div className="flex">
               <input
                 placeholder="Class Name"
-                className="py-0.5 px-2 outline outline-1 outline-gray-400 bg-gray-100 mr-2 h-10 rounded-sm"
+                className="py-0.5 px-2 outline outline-1 outline-gray-400 mr-2 h-10 rounded-sm w-4/5 hover:outline-gray-500 hover:cursor-pointer focus:cursor-auto"
                 value={newClass}
                 onChange={(e) => setNewClass(e.target.value)}
               />
               <button
                 type="submit"
-                className="outline py-1 outline-1 outline-gray-400 bg-gray-100 rounded-sm h-10 text-sm px-2"
+                className="py-1 bg-neutral-800 text-gray-100 shadow rounded-sm h-10 text-sm px-2 w-1/5 hover:bg-neutral-900"
               >
                 New
               </button>
@@ -311,9 +329,17 @@ export default function QuotingPage() {
                 key={index}
                 className="mb-1.5 flex-col items-center justify-left mt-6"
               >
-                <p className="mr-2 font-bold mb-2">
-                  Class #{index + 1} : {className}
-                </p>
+                <div className="flex items-center gap-2 mb-4">
+                  <button
+                    onClick={() => handleDeleteClass(index)}
+                    className="rounded-sm text-sm"
+                  >
+                    <FaTrash />
+                  </button>
+                  <p className="mr-2 font-bold">
+                    Class #{index + 1} : {className}
+                  </p>
+                </div>
                 <Contributions />
               </div>
             ))}

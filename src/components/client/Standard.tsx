@@ -19,7 +19,7 @@ import { CiCirclePlus } from "react-icons/ci";
 import { BiPlus } from "react-icons/bi";
 import { useDropzone } from "react-dropzone";
 import { Snackbar, Alert } from "@mui/material";
-import { NewClientModal } from "@/src/components/client/modal/NewClientModal";
+import { NewClientModal } from "@/src/components/client/modal/NewClient";
 import { MdUpload } from "react-icons/md";
 import { ClientCard } from "@/src/components/client/ClientCard";
 import { UserContext } from "@/src/context/UserContext";

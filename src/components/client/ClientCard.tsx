@@ -60,6 +60,39 @@ export const ClientCard = ({
     return;
   }
 
+  const letterToColorMap: { [key: string]: string } = {
+    A: "#ff583315",
+    B: "#33FF5715",
+    C: "#5733FF15",
+    D: "#FF336615",
+    E: "#33FF3315",
+    F: "#3333FF15",
+    G: "#FF663315",
+    H: "#33FF9315",
+    I: "#3333CC15",
+    J: "#FF333615",
+    K: "#33FFAA15",
+    L: "#3333DD15",
+    M: "#FF339915",
+    N: "#33FFCC15",
+    O: "#3333FF15",
+    P: "#FF993315",
+    Q: "#33FFDD15",
+    R: "#3333FF15",
+    S: "#FFCC3315",
+    T: "#33FF9915",
+    U: "#3333FF15",
+    V: "#FF333315",
+    W: "#33FFBB15",
+    X: "#3333FF15",
+    Y: "#FF333315",
+    Z: "#33FFCC15",
+  };    
+
+  function getColorForLetter(letter: string) {
+    return letterToColorMap[letter.toUpperCase()] || "#999999"; // Default color if not found
+  }
+
   function handleAddNewQuote() {
     setModalOpen("addNewQuote");
     return;
@@ -92,9 +125,14 @@ export const ClientCard = ({
                 className="mr-2 rounded-md"
               />
             ) : (
-              <IconBuilding className="mr-2" />
+              <div
+              className="mr-2 w-8 h-8 rounded-full flex items-center justify-center outline outline-1 outline-gray-300"
+              style={{ backgroundColor: getColorForLetter(client.name?.[0] ?? "B") }}
+            >
+              <p className="font-bold">{(client.name?.[0] ?? "B").toUpperCase()}</p>
+            </div>
             )}
-            <p>{client.name}</p>
+            <p className="truncate max-h-32">{client.name}</p>
           </div>
         </div>
 

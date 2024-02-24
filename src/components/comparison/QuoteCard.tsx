@@ -7,6 +7,13 @@ import { supabase } from "@/src/supabase";
 import { useListenClickOutside } from "../ui/dropdown/utils/useListenClickOutside";
 import { valueOrDefault } from "chart.js/dist/helpers/helpers.core";
 
+import AetnaLogo from "@/public/Screenshot.png";
+import AnotherCarrierLogo from "@/public/Anthem.jpeg";
+import Cigna from "@/public/Cigna.png";
+import United from "@/public/United.png";
+import Chamber from "@/public/Chamber.png";
+import NewProject from "@/public/NewProject.jpg";
+
 type QuoteCardProps = {
   quote: QuoteType;
   nonObjectVisibleQuoteFields: NonSystemField[];
@@ -24,6 +31,15 @@ export default function QuoteCard({
   const ref1 = useRef();
   const ref2 = useRef();
   const ref3 = useRef();
+
+  const carrierLogos = {
+    Aetna: AetnaLogo,
+    Anthem: AnotherCarrierLogo,
+    Cigna: Cigna,
+    United: United,
+    Chamber: Chamber,
+    Other: NewProject
+  };
 
   const totalValue = ""; //implement calculation
 
@@ -97,13 +113,13 @@ export default function QuoteCard({
     <div className="bg-white h-full mb-4 min-w-80 mt-4 rounded-lg outline outline-1 outline-gray-300 py-6 mr-1 text-center overscroll-none">
       <div className="flex w-full justify-center h-16">
         <div className="w-fit">
-          <Image
-            src={Apple} //TODO: provide defaultImage, make this default in the suapbase not case catching on the fe
-            alt="Description of the image"
-            width={50}
-            height={40}
-            className="mr-2 rounded-md"
-          />
+        <Image
+          src={carrierLogos[quote.carrier as keyof typeof carrierLogos] || carrierLogos['Other']}
+          alt={`Logo for ${quote.carrier}`}
+          width={20}
+          height={20}
+          className="mr-2 rounded-md"
+        />
         </div>
         <div className="flex flex-col w-fit justify-center items-start ml-1 mb-4">
           <h1 className="font-bold text-xl">{internalQuote?.name}</h1>

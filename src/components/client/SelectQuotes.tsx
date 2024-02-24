@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import { BiPlus } from "react-icons/bi";
-import { NewClientModal } from "@/src/components/client/modal/NewClientModal";
+import { NewClientModal } from "@/src/components/client/modal/NewClient";
 import { ClientType } from "@/src/types/custom/Client";
 import { useRouter } from "next/navigation";
 import { SnackbarAlert } from "../ui/SnackbarAlert";
@@ -17,8 +17,13 @@ import {
 import { IoMdArrowBack } from "react-icons/io";
 import { QuoteType } from "@/src/types/custom/Quote";
 import { IconBuilding } from "@tabler/icons-react";
-import Apple from "@/public/Screenshot.png";
-import { SocketContext } from "@/src/context/SocketContext";
+
+import AetnaLogo from "@/public/Screenshot.png";
+import AnotherCarrierLogo from "@/public/Anthem.jpeg";
+import Cigna from "@/public/Cigna.png";
+import United from "@/public/United.png";
+import Chamber from "@/public/Chamber.png";
+import NewProject from "@/public/NewProject.jpg";
 
 export default function SelectQuotes({
   setComparisonOpen,
@@ -31,12 +36,18 @@ export default function SelectQuotes({
 }) {
   type QuoteTypeWithCheckbox = QuoteType & { isSelected: boolean };
 
+  const carrierLogos = {
+    Aetna: AetnaLogo,
+    Anthem: AnotherCarrierLogo,
+    Cigna: Cigna,
+    United: United,
+    Chamber: Chamber,
+    Other: NewProject,
+  };
+
   const [clients, setClients] = useState<ClientType[]>([]);
   const [quotes, setQuotes] = useState<QuoteTypeWithCheckbox[]>([]);
-
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const { socket } = useContext(SocketContext);
-
   const [snackbar, setSnackbar] = useState({
     open: false,
     message: "",
@@ -205,10 +216,13 @@ export default function SelectQuotes({
       <main className="h-screen overflow-hidden flex-col w-full bg-gray-100 bg-opacity-50 pl-2 pr-6 pt-5 pb-6 text-gray-700">
         <div className="flex w-full items-center mb-4 mt-1 justify-between">
           <div className="flex items-center text-sm md:text-base">
-            <button onClick={handleCloseComparison} className="mr-2">
+            <button
+              className="flex items-center"
+              onClick={handleCloseComparison}
+            >
               <IoMdArrowBack />
+              <p className="ml-2 mr-2">Clients / </p>
             </button>
-            <p className="mr-2">Clients / </p>
             <IconBuilding className="h-5 w-5 mr-2" />
             <p className="mr-2">{selectedClient.name}</p>
             <p className="mr-1">/ Quotes</p>
@@ -286,13 +300,17 @@ export default function SelectQuotes({
 
                     <div className="w-32 flex items-center justify-center">
                       <Image
-                        src={Apple} //TODO: provide defaultImage, make this default in the suapbase not case catching on the fe
-                        alt="Description of the image"
-                        width={15}
-                        height={15}
-                        className="mr-1 rounded-md"
+                        src={
+                          carrierLogos[
+                            quote.carrier as keyof typeof carrierLogos
+                          ] || carrierLogos["Other"]
+                        }
+                        alt={`Logo for ${quote.carrier}`}
+                        width={20}
+                        height={20}
+                        className="mr-2 rounded-md"
                       />
-                      <p>Aetna</p>
+                      <p>{quote.carrier || "Sup"}</p>
                     </div>
                     {/* Plan Name */}
                     <p className="w-32">Aetna Gold Select</p>
