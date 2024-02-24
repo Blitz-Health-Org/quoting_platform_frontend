@@ -227,7 +227,6 @@ export default function SelectQuotes({ setComparisonOpen, setSelectedClient, sel
           </div> */}
          <div className="flex px-2 w-fit border-b">
           <input
-            className="mr-2"
             type="checkbox"
             disabled
           />
@@ -256,7 +255,6 @@ export default function SelectQuotes({ setComparisonOpen, setSelectedClient, sel
               <p key={quote.id}>
                   <div className="flex items-center w-fit mb-1 mt-1 p-2 border-b">
                     <input
-                      className="mr-2"
                       type="checkbox"
                       checked={quote.isSelected}
                       onChange={() => handleCheckboxChange(quote.id)}
