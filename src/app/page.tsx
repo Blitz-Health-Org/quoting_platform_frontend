@@ -33,6 +33,7 @@ export default function Home() {
     userId: [userId, , loading],
   } = useContext(UserContext);
   const [taskStatus, setTaskStatus] = useState(null);
+  const [displayParsed, setDisplayParsed] = useState<any>(null);
 
   const router = useRouter();
 
@@ -45,7 +46,7 @@ export default function Home() {
   useEffect(() => {
     if (!loading) {
       // Connect to the Socket.IO server
-      const socket = io(process.env.NEXT_PUBLIC_SOCKET_SERVER_URL!, {
+      const socket = io(`${process.env.NEXT_PUBLIC_SOCKET_SERVER_URL!}/tasks`, {
         path: "/socket.io",
         transports: ["websocket"],
       });
@@ -54,6 +55,7 @@ export default function Home() {
       socket.on("task_complete", (data) => {
         console.log("Task Complete:", data);
         setTaskStatus(data);
+        setDisplayParsed(data.result);
       });
 
       // Listen for 'task_status' events
@@ -85,35 +87,6 @@ export default function Home() {
   //   message: "",
   //   severity: "info", // default severity
   // });
-
-  useEffect(() => {
-    if (!loading) {
-      // Connect to the Socket.IO server
-      const socket = io(process.env.NEXT_PUBLIC_SOCKET_SERVER_URL!, {
-        path: "/socket.io",
-        transports: ["websocket"],
-      });
-
-      // Listen for 'task_complete' events
-      socket.on("task_complete", (data) => {
-        console.log("Task Complete:", data);
-        setTaskStatus(data);
-      });
-
-      // Listen for 'task_status' events
-      socket.on("task_status", (data) => {
-        console.log("Task Status:", data);
-        setTaskStatus(data);
-      });
-
-      return () => {
-        console.log("rip");
-        socket.off("task_complete");
-        socket.off("task_status");
-        socket.close();
-      };
-    }
-  }, [loading]);
 
   // const [clients, setClients] = useState<ClientType[]>([]);
 
@@ -282,13 +255,16 @@ export default function Home() {
             setSelectedClient={setSelectedClient}
           />
         ) : (
-          <SelectQuotes
-            selectedClient={selectedClient}
-            setComparisonOpen={setComparisonOpen}
-            setSelectedClient={setSelectedClient}
-          />
+          <>
+            <SelectQuotes
+              selectedClient={selectedClient}
+              setComparisonOpen={setComparisonOpen}
+              setSelectedClient={setSelectedClient}
+            />
+          </>
         )}
       </div>
+      {`DISPLAY: ${displayParsed && JSON.stringify(displayParsed)} `}
     </div>
   );
 }

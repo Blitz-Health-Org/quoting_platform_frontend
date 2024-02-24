@@ -239,7 +239,7 @@ export default function SelectQuotes({
               </div>
             </div>
             {quotes.map((quote) => (
-              <p key={quote.id}>
+              <div key={quote.id}>
                 <div className="flex items-center w-full mb-1 mt-1">
                   <input
                     className="mr-2"
@@ -279,7 +279,7 @@ export default function SelectQuotes({
                   </div>
                 </div>
                 <hr></hr>
-              </p>
+              </div>
             ))}
           </div>
         </div>

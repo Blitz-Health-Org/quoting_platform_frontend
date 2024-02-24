@@ -23,8 +23,8 @@ type AddQuoteProps = {
     message: string;
     severity: string;
   }) => void;
-  setComparisonOpen: Dispatch<SetStateAction<boolean>>
-  setSelectedClient: Dispatch<SetStateAction<ClientType>>
+  setComparisonOpen: Dispatch<SetStateAction<boolean>>;
+  setSelectedClient: Dispatch<SetStateAction<ClientType>>;
 };
 
 export const AddQuote = ({
@@ -33,7 +33,7 @@ export const AddQuote = ({
   setOpenSnackbarShare,
   setModalOpen,
   setComparisonOpen,
-  setSelectedClient
+  setSelectedClient,
 }: AddQuoteProps) => {
   const links: string[] = [];
 
@@ -66,15 +66,24 @@ export const AddQuote = ({
       try {
         const fileName = uuid();
         await supabase.storage.from("images").upload(fileName, file);
+
+        const { data } = supabase.storage.from("images").getPublicUrl(fileName);
+
+        if (!data?.publicUrl) {
+          throw new Error("No url found for file");
+        }
+
+        const fileUrl = data.publicUrl;
+
         await supabase
           .from("quotes") // Replace with your actual Supabase table name
           .upsert({
             client_id: client.id,
-            file_url: fileName,
+            file_url: fileUrl,
             file_name: file.name,
           });
 
-        successfulFileUrls.push(fileName);
+        successfulFileUrls.push(fileUrl);
       } catch {
         errFiles.push(file.name);
       }
@@ -102,7 +111,7 @@ export const AddQuote = ({
           headers: {
             "Content-Type": "application/json",
           },
-          body: JSON.stringify({ successfulFileUrls }),
+          body: JSON.stringify({ successfulFileUrls, clientId: client.id }),
         },
       );
 
