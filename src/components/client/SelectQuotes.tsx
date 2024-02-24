@@ -3,7 +3,6 @@
 import { PiListBulletsBold } from "react-icons/pi";
 import { RiArrowDropDownLine } from "react-icons/ri";
 import Image from "next/image";
-import { FaBook } from "react-icons/fa";
 import { FaPlus } from "react-icons/fa";
 import { IoEyeSharp } from "react-icons/io5";
 import { CiShare1 } from "react-icons/ci";
@@ -25,6 +24,9 @@ import { IoMdArrowBack } from "react-icons/io";
 import { QuoteType } from "@/src/types/custom/Quote";
 import { IconBuilding } from "@tabler/icons-react";
 import Apple from "@/public/Screenshot.png";
+import { FaChevronDown } from "react-icons/fa";
+import { IoDocumentTextOutline } from "react-icons/io5";
+import { FaSearch } from "react-icons/fa";
 
 export default function SelectQuotes({ setComparisonOpen, setSelectedClient, selectedClient }: { setComparisonOpen: Dispatch<SetStateAction<boolean>>, setSelectedClient: Dispatch<SetStateAction<ClientType>>, selectedClient: ClientType}) {
  
@@ -186,9 +188,6 @@ export default function SelectQuotes({ setComparisonOpen, setSelectedClient, sel
             <p className="mr-2">Clients / </p>
             <IconBuilding className="h-5 w-5 mr-2"/>
             <p className="mr-2">{selectedClient.name}</p>
-            <p className="mr-1">/ Quotes</p>
-            <p className="mr-1 text-gray-400 text-xs">•</p>
-            <p className="text-gray-400">({quotes.length})</p>
         </div>
         <div className="flex items-center">
             <div className="text-sm md:text-base mr-1 outline outline-1 outline-gray-200 py-1 px-2 rounded-md flex items-center justify-center hover:bg-gray-100/80 cursor-pointer">
@@ -199,6 +198,31 @@ export default function SelectQuotes({ setComparisonOpen, setSelectedClient, sel
         </div>
         <div className="rounded-md w-full flex-col h-full pb-12 overflow-y-scroll bg-white outline outline-1 outline-gray-200">
           <div className="p-4">
+          <div className="w-full flex">
+            <div className="w-1/4 flex items-center gap-2"> 
+              <IoDocumentTextOutline className="h-5 w-5"/>
+              <p> Showing {quotes.length} Quotes </p>
+            </div>
+            <div className="w-1/2 relative">
+              <div className="absolute left-3 top-1/2 transform -translate-y-1/2 flex items-center">
+                {/* Add your search icon component or SVG here */}
+                <FaSearch className="h-4 w-4 text-gray-500" />
+              </div>
+              <input placeholder="Search" className="bg-gray-100/50 w-full px-10 py-1 rounded-sm outline outline-1 outline-gray-300"></input>
+            </div>
+            <div className="w-1/4"> 
+              <div className="flex items-center justify-end"> 
+                <button className="px-2 py-1 flex items-center gap-1">
+                  <p>Sort</p>
+                  <FaChevronDown className="h-3 w-3"/>
+                </button> 
+                <button className="px-2 py-1 flex items-center gap-1">
+                  <p>Filter</p>
+                  <FaChevronDown className="h-3 w-3"/>
+                </button> 
+              </div> 
+            </div>
+          </div>
          <div className="flex">
           <input
             className="mr-2"
@@ -226,6 +250,7 @@ export default function SelectQuotes({ setComparisonOpen, setSelectedClient, sel
               <p className="w-full">Total Monthly Premium</p>
             </div>
             </div>
+            <hr></hr>
           {quotes.map((quote) => (
               <p key={quote.id}>
                   <div className="flex items-center w-full mb-1 mt-1">
