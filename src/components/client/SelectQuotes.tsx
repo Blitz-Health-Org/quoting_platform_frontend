@@ -184,8 +184,10 @@ export default function SelectQuotes({ setComparisonOpen, setSelectedClient, sel
         <main className="h-screen overflow-hidden flex-col w-full bg-gray-100 bg-opacity-50 pl-2 pr-6 pt-5 pb-6 text-gray-700">
         <div className="flex w-full items-center mb-4 mt-1 justify-between">
         <div className="flex items-center text-sm md:text-base">
-            <button onClick={handleCloseComparison} className="mr-2"><IoMdArrowBack/></button>
-            <p className="mr-2">Clients / </p>
+            <button className="flex items-center" onClick={handleCloseComparison}>
+              <IoMdArrowBack/>
+              <p className="ml-2 mr-2">Clients / </p>
+            </button>
             <IconBuilding className="h-5 w-5 mr-2"/>
             <p className="mr-2">{selectedClient.name}</p>
             <p className="mr-1">/ Quotes</p>
