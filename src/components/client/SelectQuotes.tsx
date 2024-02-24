@@ -205,7 +205,6 @@ export default function SelectQuotes({ setComparisonOpen, setSelectedClient, sel
             </div>
             <div className="w-1/2 relative">
               <div className="absolute left-3 top-1/2 transform -translate-y-1/2 flex items-center">
-                {/* Add your search icon component or SVG here */}
                 <FaSearch className="h-4 w-4 text-gray-500" />
               </div>
               <input placeholder="Search" className="bg-gray-100/50 w-full px-10 py-1 rounded-sm outline outline-1 outline-gray-300"></input>

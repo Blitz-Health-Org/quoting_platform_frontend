@@ -20,6 +20,7 @@ import SlidingPane from "react-sliding-pane";
 import 'react-sliding-pane/dist/react-sliding-pane.css';
 import InputSlider from "../../components/comparison/Slider";
 import Input from "@mui/material/Input";
+import { SnackbarAlert } from "../../components/ui/SnackbarAlert";
 
 type QuotingPageProps = {
   client: ClientType;
@@ -37,6 +38,12 @@ export default function QuotingPage() {
   const router = useRouter();
 
   const searchParams = useSearchParams();
+
+  const [snackbar, setSnackbar] = useState({
+    open: false,
+    message: "",
+    severity: "success",
+  });  
 
   // useEffect(() => {
   //   // Attach resize event listener for future adjustments (if needed)
@@ -196,12 +203,38 @@ export default function QuotingPage() {
     return <></>;
   }
 
+  const copyUrlToClipboard = () => {
+    // Use window.location.href to get the current URL
+    const url = window.location.href;
+  
+    // Use the Clipboard API to write the text
+    navigator.clipboard
+      .writeText(url)
+      .then(() => {
+        // Optional: Display a message or call a function to indicate success
+        setSnackbar({
+          open: true,
+          message: "Copied to clipboard!",
+          severity: "success",
+        });
+      })
+      .catch((err) => {
+        // Optional: Handle any errors
+        console.error("Failed to copy URL to clipboard", err);
+        setSnackbar({
+          open: true,
+          message: "Failed to copy URL to clipboard",
+          severity: "error",
+        });
+      });
+  };  
+
   return (
     <div className="w-full h-fit bg-gray-100 pb-6">
       <Fullheader />
 
       <div className="h-full bg-gray-100 border border-gray-200 border-b-0 px-6 py-2">
-      <Subheader isPaneOpen={state.isPaneOpen} onPaneToggle={handlePaneToggle} />
+      <Subheader isPaneOpen={state.isPaneOpen} onPaneToggle={handlePaneToggle} copyUrlToClipboard={copyUrlToClipboard} />
 
         <div className="w-full overflow-x-auto">
           <div className="p-0.5 flex w-fit h-fit gap-2">
@@ -280,6 +313,17 @@ export default function QuotingPage() {
             <br />
           </SlidingPane>
         </div>
+
+        <SnackbarAlert
+          openSnackbarShare={snackbar.open}
+          setOpenSnackbarShare={setSnackbar}
+          snackbar={{
+            open: snackbar.open,
+            message: snackbar.message,
+            severity: snackbar.severity,
+          }}
+        />
+
     </div>
   );
   }

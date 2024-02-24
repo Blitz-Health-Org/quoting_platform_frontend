@@ -11,9 +11,10 @@ import { IoIosSettings } from "react-icons/io";
 type SubheaderProps = {
   isPaneOpen: boolean;
   onPaneToggle: (newState: boolean) => void;
+  copyUrlToClipboard: any
 };
 
-export const Subheader: React.FC<SubheaderProps> = ({ isPaneOpen, onPaneToggle }) => {
+export const Subheader: React.FC<SubheaderProps> = ({ isPaneOpen, onPaneToggle, copyUrlToClipboard }) => {
   return (
     <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
       {/* Left-aligned form */}
@@ -64,7 +65,7 @@ export const Subheader: React.FC<SubheaderProps> = ({ isPaneOpen, onPaneToggle }
 
       {/* Right-aligned buttons */}
       <div className="flex items-center lg:justify-end font-light justify-center">
-        <button className="flex items-center gap-2 cursor-pointer outline outline-1 outline-neutral-600 mr-2 rounded-sm bg-neutral-700/80 text-sm text-gray-100 px-2 py-1">
+        <button onClick={copyUrlToClipboard} className="flex items-center gap-2 cursor-pointer outline outline-1 outline-neutral-600 mr-2 rounded-sm bg-neutral-700/80 text-sm text-gray-100 px-2 py-1">
           <FaShareAlt />
           <p>Share</p>
         </button>
