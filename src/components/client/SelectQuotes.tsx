@@ -188,6 +188,9 @@ export default function SelectQuotes({ setComparisonOpen, setSelectedClient, sel
             <p className="mr-2">Clients / </p>
             <IconBuilding className="h-5 w-5 mr-2"/>
             <p className="mr-2">{selectedClient.name}</p>
+            <p className="mr-1">/ Quotes</p>
+            <p className="mr-1 text-gray-400 text-xs">•</p>
+            <p className="text-gray-400">({quotes.length})</p>
         </div>
         <div className="flex items-center">
             <div className="text-sm md:text-base mr-1 outline outline-1 outline-gray-200 py-1 px-2 rounded-md flex items-center justify-center hover:bg-gray-100/80 cursor-pointer">
@@ -197,8 +200,8 @@ export default function SelectQuotes({ setComparisonOpen, setSelectedClient, sel
         </div>
         </div>
         <div className="rounded-md w-full flex-col h-full pb-12 overflow-y-scroll bg-white outline outline-1 outline-gray-200">
-          <div className="p-4">
-          <div className="w-full flex">
+          <div className="py-2 px-4">
+          {/* <div className="w-full flex">
             <div className="w-1/4 flex items-center gap-2"> 
               <IoDocumentTextOutline className="h-5 w-5"/>
               <p> Showing {quotes.length} Quotes </p>
@@ -221,48 +224,47 @@ export default function SelectQuotes({ setComparisonOpen, setSelectedClient, sel
                 </button> 
               </div> 
             </div>
-          </div>
-         <div className="flex">
+          </div> */}
+         <div className="flex px-2 w-fit border-b">
           <input
             className="mr-2"
             type="checkbox"
             disabled
           />
-          <div className="grid-cols-9 flex justify-left text-center w-full gap-1 h-20 font-bold items-center text-wrap text-sm">
+          <div className="grid-cols-9 flex justify-left text-center w-fit gap-1 h-20 font-bold items-center text-wrap text-sm">
               {/* Carrier Name */}
-              <div className="w-full">Carrier</div>
+              <div className="w-32">Carrier</div>
               {/* Plan Name */}
-              <p className="w-full">Plan</p>
+              <p className="w-32">Plan</p>
               {/* Funding () */}
-              <p className="w-full">Funding</p>
+              <p className="w-32">Funding</p>
               {/* Office Copay (PCP/Specialist) */}
-              <p className="w-full">Office Copay (PCP/Specialist)</p>
+              <p className="w-32">Office Copay (PCP/Specialist)</p>
               {/* Deductible (Individual) */}
-              <p className="w-full">Deductible (Individual)</p>
+              <p className="w-32">Deductible (Individual)</p>
               {/* Coinsurance (In-Network) */}
-              <p className="w-full">Coinsurance (In-Network)</p>
+              <p className="w-32">Coinsurance (In-Network)</p>
               {/* Out of Pocket (Individual) */}
-              <p className="w-full">Out of Pocket (Individual)</p>
+              <p className="w-32">Out of Pocket (Individual)</p>
               {/* Additional Copays Include (ER / Imaging / OP / IP) */}
-              <p className="w-full">Additional Copays (ER / Imaging / OP / IP)</p>
+              <p className="w-32">Additional Copays (ER / Imaging / OP / IP)</p>
               {/* Total Monthly Premium */}
-              <p className="w-full">Total Monthly Premium</p>
+              <p className="w-32">Total Monthly Premium</p>
             </div>
             </div>
-            <hr></hr>
           {quotes.map((quote) => (
               <p key={quote.id}>
-                  <div className="flex items-center w-full mb-1 mt-1">
+                  <div className="flex items-center w-fit mb-1 mt-1 p-2 border-b">
                     <input
                       className="mr-2"
                       type="checkbox"
                       checked={quote.isSelected}
                       onChange={() => handleCheckboxChange(quote.id)}
                     />
-                    <div className="grid-cols-9 flex justify-left text-center w-full gap-1 h-8 items-center overflow-hidden text-sm">
+                    <div className="grid-cols-9 flex justify-left text-center w-fit gap-1 h-8 items-center overflow-hidden text-sm">
                       {/* Carrier Name */}
 
-                      <div className="w-full flex items-center justify-center">
+                      <div className="w-32 flex items-center justify-center">
                       <Image
                         src={Apple} //TODO: provide defaultImage, make this default in the suapbase not case catching on the fe
                         alt="Description of the image"
@@ -273,24 +275,23 @@ export default function SelectQuotes({ setComparisonOpen, setSelectedClient, sel
                       <p>Aetna</p>
                       </div>
                       {/* Plan Name */}
-                      <p className="w-full">Aetna Gold Select</p>
+                      <p className="w-32">Aetna Gold Select</p>
                       {/* Funding () */}
-                      <p className="w-full">Level Funded</p>
+                      <p className="w-32">Level Funded</p>
                       {/* Office Copay (PCP/Specialist) */}
-                      <p className="w-full">$25 / $75</p>
+                      <p className="w-32">$25 / $75</p>
                       {/* Deductible (Individual) */}
-                      <p className="w-full">$5,000</p>
+                      <p className="w-32">$5,000</p>
                       {/* Coinsurance (In-Network) */}
-                      <p className="w-full">80%</p>
+                      <p className="w-32">80%</p>
                       {/* Out of Pocket (Individual) */}
-                      <p className="w-full">$7,900</p>
+                      <p className="w-32">$7,900</p>
                       {/* Additional Copays Include (ER / Imaging / OP / IP) */}
-                      <p className="w-full">$300 / N/A / N/A / N/A</p>
+                      <p className="w-32">$300 / N/A / N/A / N/A</p>
                       {/* Total Monthly Premium */}
-                      <p className="w-full truncate">{quote.file_name}</p>
+                      <p className="w-32">{quote.file_name}</p>
                     </div>
                   </div>
-                  <hr></hr>
               </p>
           ))}
           </div>
