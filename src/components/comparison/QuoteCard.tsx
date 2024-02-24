@@ -4,10 +4,7 @@ import Apple from "@/public/Screenshot.png";
 import { QuoteType } from "@/src/types/custom/Quote";
 import { NonSystemField } from "@/src/types/metadata";
 import { supabase } from "@/src/supabase";
-import {
-  useListenClickOutside,
-  useListenClickOutside,
-} from "../ui/dropdown/utils/useListenClickOutside";
+import { useListenClickOutside } from "../ui/dropdown/utils/useListenClickOutside";
 import { valueOrDefault } from "chart.js/dist/helpers/helpers.core";
 
 import AetnaLogo from "@/public/Screenshot.png";
