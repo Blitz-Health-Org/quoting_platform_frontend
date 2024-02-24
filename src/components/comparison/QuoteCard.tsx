@@ -4,7 +4,10 @@ import Apple from "@/public/Screenshot.png";
 import { QuoteType } from "@/src/types/custom/Quote";
 import { NonSystemField } from "@/src/types/metadata";
 import { supabase } from "@/src/supabase";
-import { useListenClickOutside } from "../ui/dropdown/utils/useListenClickOutside";
+import {
+  useListenClickOutside,
+  useListenClickOutside,
+} from "../ui/dropdown/utils/useListenClickOutside";
 import { valueOrDefault } from "chart.js/dist/helpers/helpers.core";
 
 import AetnaLogo from "@/public/Screenshot.png";
@@ -25,7 +28,7 @@ export default function QuoteCard({
   nonObjectVisibleQuoteFields,
   objectVisibleQuoteFields,
 }: QuoteCardProps) {
-  const [internalQuote, setInternalQuote] = useState<QuoteType>(quote);
+  const [quoteData, setQuoteData] = useState<QuoteType>(quote.data);
 
   const [textAreaSelected, setTextAreaSelected] = useState<boolean>(false);
   const ref1 = useRef();
@@ -38,7 +41,7 @@ export default function QuoteCard({
     Cigna: Cigna,
     United: United,
     Chamber: Chamber,
-    Other: NewProject
+    Other: NewProject,
   };
 
   const totalValue = ""; //implement calculation
@@ -75,15 +78,11 @@ export default function QuoteCard({
         return updated;
       };
 
-      // Update the internalQuote using the recursive function
-      const updatedQuote = updateNestedObject(
-        internalQuote,
-        pathParts,
-        newValue,
-      );
+      // Update the quoteData using the recursive function
+      const updatedQuote = updateNestedObject(quoteData, pathParts, newValue);
 
       // Update the state with the new quote
-      setInternalQuote(updatedQuote);
+      setQuoteData(updatedQuote.data);
     };
   }
 
@@ -94,7 +93,7 @@ export default function QuoteCard({
       try {
         const { data, error } = await supabase
           .from("quotes") // Replace with your actual table name
-          .upsert(internalQuote);
+          .upsert(quoteData);
 
         if (error) {
           console.error("Error inserting data:", error);
@@ -113,17 +112,20 @@ export default function QuoteCard({
     <div className="bg-white h-full mb-4 min-w-80 mt-4 rounded-lg outline outline-1 outline-gray-300 py-6 mr-1 text-center overscroll-none">
       <div className="flex w-full justify-center h-16">
         <div className="w-fit">
-        <Image
-          src={carrierLogos[quote.carrier as keyof typeof carrierLogos] || carrierLogos['Other']}
-          alt={`Logo for ${quote.carrier}`}
-          width={20}
-          height={20}
-          className="mr-2 rounded-md"
-        />
+          <Image
+            src={
+              carrierLogos[quote.carrier as keyof typeof carrierLogos] ||
+              carrierLogos["Other"]
+            }
+            alt={`Logo for ${quote.carrier}`}
+            width={20}
+            height={20}
+            className="mr-2 rounded-md"
+          />
         </div>
         <div className="flex flex-col w-fit justify-center items-start ml-1 mb-4">
-          <h1 className="font-bold text-xl">{internalQuote?.name}</h1>
-          <p className="text-sm">{internalQuote?.website}</p>
+          <h1 className="font-bold text-xl">{quoteData?.name}</h1>
+          <p className="text-sm">{quoteData?.website}</p>
         </div>
       </div>
 
@@ -133,14 +135,14 @@ export default function QuoteCard({
             (field) => field.field !== "name" && field.field !== "website",
           )
           .map((field) => {
-            console.log("field", field.field, internalQuote);
+            console.log("field", field.field, quoteData);
             return (
               <>
                 <textarea
                   ref={ref1 as any}
                   onClick={() => setTextAreaSelected(true)}
                   onChange={handleQuoteChange(field.field)}
-                  value={valueOrDefault((internalQuote as any)[field.field])}
+                  value={valueOrDefault((quoteData as any)[field.field])}
                   className="text-center resize-none text-sm content-center h-7 w-full bg-transparent focus:outline-0 focus:border focus:border-1 focus:border-gray-200 cursor-pointer focus:cursor-auto rounded-md p-1"
                 />
                 <hr className="w-full border-t-1 border-gray-300"></hr>
@@ -151,7 +153,7 @@ export default function QuoteCard({
         <div className="flex w-full">
           <textarea
             disabled
-            value={valueOrDefault(internalQuote.plan_type)}
+            value={valueOrDefault(quoteData.plan_type)}
             className="text-center font-semibold resize-none text-sm content-center h-7 w-1/2 bg-transparent focus:outline-0 focus:border focus:border-1 focus:border-gray-200 cursor-pointer focus:cursor-auto p-1"
           />
           <textarea
@@ -190,7 +192,9 @@ export default function QuoteCard({
                           `${objectField.field}.in.${subFieldKey}`,
                         )}
                         value={valueOrDefault(
-                          (internalQuote as any)[objectField.field]?.in?.[subFieldKey],
+                          (quoteData as any)[objectField.field]?.in?.[
+                            subFieldKey
+                          ],
                         )}
                         className="text-center resize-none text-sm content-center h-7 w-1/2 border-r bg-transparent focus:outline-0 focus:border focus:border-1 focus:border-gray-200 cursor-pointer focus:cursor-auto p-1"
                       />
@@ -201,7 +205,9 @@ export default function QuoteCard({
                           `${objectField.field}.oon.${subFieldKey}`,
                         )}
                         value={valueOrDefault(
-                          (internalQuote as any)[objectField.field]?.oon?.[subFieldKey],
+                          (quoteData as any)[objectField.field]?.oon?.[
+                            subFieldKey
+                          ],
                         )}
                         className="text-center resize-none text-sm content-center h-7 w-1/2 bg-transparent focus:outline-0 focus:border focus:border-1 focus:border-gray-200 cursor-pointer focus:cursor-auto p-1"
                       />

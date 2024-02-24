@@ -24,6 +24,7 @@ import Cigna from "@/public/Cigna.png";
 import United from "@/public/United.png";
 import Chamber from "@/public/Chamber.png";
 import NewProject from "@/public/NewProject.jpg";
+import { SocketContext } from "@/src/context/SocketContext";
 
 export default function SelectQuotes({
   setComparisonOpen,
@@ -45,6 +46,7 @@ export default function SelectQuotes({
     Other: NewProject,
   };
 
+  const { socket } = useContext(SocketContext);
   const [clients, setClients] = useState<ClientType[]>([]);
   const [quotes, setQuotes] = useState<QuoteTypeWithCheckbox[]>([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
