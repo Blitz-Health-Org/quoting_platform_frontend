@@ -57,12 +57,14 @@ export const AddQuote = ({
       });
       return;
     }
-
+    const carrierName = "carrierName";
     const errFiles = [];
     const successfulFileUrls: string[] = [];
     for (const file of files) {
+      // Chunk the files into chunks of 1MB each
+
       try {
-        const fileName = uuid();
+        const fileName = `${carrierName}/${uuid()}`;
         await supabase.storage.from("images").upload(fileName, file);
         await supabase
           .from("quotes") // Replace with your actual Supabase table name
