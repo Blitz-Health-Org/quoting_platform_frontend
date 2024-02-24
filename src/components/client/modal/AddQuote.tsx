@@ -43,6 +43,7 @@ export const AddQuote = ({
   };
 
   const [files, setFiles] = useState<File[]>([]);
+  const [selectedPlan, setSelectedPlan] = useState<string>("bcbs_tx_aca");
 
   const onDrop = (acceptedFiles: File[]) => {
     setFiles(acceptedFiles);
@@ -57,12 +58,12 @@ export const AddQuote = ({
       });
       return;
     }
-
-    const errFiles = [];
+    const errFiles = [] as string[];
     const successfulFileUrls: string[] = [];
+    const fileId = uuid();
     for (const file of files) {
       try {
-        const fileName = uuid();
+        const fileName = `${selectedPlan}/${fileId}/whole`;
         await supabase.storage.from("images").upload(fileName, file);
 
         const { data } = supabase.storage.from("images").getPublicUrl(fileName);
@@ -286,15 +287,20 @@ export const AddQuote = ({
           </button>
         </div>
         <label className="mr-2">Choose a plan:</label>
-          <select className="outline outline-1 outline-gray-300 rounded-sm" name="plan" id="plan">
-            <option value="bcbs_tx_aca">BCBS TX ACA</option>
-            <option value="aetna">Aetna</option>
-            <option value="chamber_smart">Chamber Smart</option>
-            <option value="anthem">Anthem</option>
-            <option value="uhc_aca">UHC ACA</option>
-            <option value="uhc_lf">UHC Level Funded</option>
-            <option value="other">Other</option>
-          </select>
+        <select
+          className="outline outline-1 outline-gray-300 rounded-sm"
+          name="plan"
+          id="plan"
+          onChange={(e) => setSelectedPlan(e.target.value)}
+        >
+          <option value="bcbs_tx_aca">BCBS TX ACA</option>
+          <option value="aetna">Aetna</option>
+          <option value="chamber_smart">Chamber Smart</option>
+          <option value="anthem">Anthem</option>
+          <option value="uhc_aca">UHC ACA</option>
+          <option value="uhc_lf">UHC Level Funded</option>
+          <option value="other">Other</option>
+        </select>
         <div className="modal-body">
           {/* File Upload Section */}
           <div className="flex flex-col items-center justify-center cursor-pointer">
