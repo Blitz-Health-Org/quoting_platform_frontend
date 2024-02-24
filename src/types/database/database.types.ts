@@ -78,6 +78,7 @@ export type Database = {
       };
       clients: {
         Row: {
+          classes_contributions: Json[] | null;
           created_at: string;
           icon: string | null;
           id: number;
@@ -87,6 +88,7 @@ export type Database = {
           user_id: number | null;
         };
         Insert: {
+          classes_contributions?: Json[] | null;
           created_at?: string;
           icon?: string | null;
           id?: number;
@@ -96,6 +98,7 @@ export type Database = {
           user_id?: number | null;
         };
         Update: {
+          classes_contributions?: Json[] | null;
           created_at?: string;
           icon?: string | null;
           id?: number;
@@ -480,58 +483,58 @@ export type Database = {
       };
       quotes: {
         Row: {
+          carrier: string | null;
           client_id: number | null;
           created_at: string;
+          data: Json | null;
           deductibles: Json | null;
           effective_date: string | null;
           file_name: string | null;
-          file_urls: string | null;
+          file_url: string | null;
           id: number;
           metal_tier: string | null;
-          name: string | null;
           plan_category: string | null;
           plan_name: string | null;
           plan_type: string | null;
           provider_network: string | null;
           task_id: number | null;
           website: string | null;
-          carrier: string | null;
         };
         Insert: {
+          carrier?: string | null;
           client_id?: number | null;
           created_at?: string;
+          data?: Json | null;
           deductibles?: Json | null;
           effective_date?: string | null;
           file_name?: string | null;
-          file_urls?: string | null;
+          file_url?: string | null;
           id?: number;
           metal_tier?: string | null;
-          name?: string | null;
           plan_category?: string | null;
           plan_name?: string | null;
           plan_type?: string | null;
           provider_network?: string | null;
           task_id?: number | null;
           website?: string | null;
-          carrier: string | null;
         };
         Update: {
+          carrier?: string | null;
           client_id?: number | null;
           created_at?: string;
+          data?: Json | null;
           deductibles?: Json | null;
           effective_date?: string | null;
           file_name?: string | null;
-          file_urls?: string | null;
+          file_url?: string | null;
           id?: number;
           metal_tier?: string | null;
-          name?: string | null;
           plan_category?: string | null;
           plan_name?: string | null;
           plan_type?: string | null;
           provider_network?: string | null;
           task_id?: number | null;
           website?: string | null;
-          carrier: string | null;
         };
         Relationships: [
           {

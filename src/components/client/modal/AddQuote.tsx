@@ -283,6 +283,7 @@ export const AddQuote = ({
             <option value="anthem">Anthem</option>
             <option value="uhc_aca">UHC ACA</option>
             <option value="uhc_lf">UHC Level Funded</option>
+            <option value="other">Other</option>
           </select>
         <div className="modal-body">
           {/* File Upload Section */}
