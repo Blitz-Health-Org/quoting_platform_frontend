@@ -277,8 +277,8 @@ export const AddQuote = ({
             <FaX />
           </button>
         </div>
-        <label>Choose a plan:</label>
-          <select name="plan" id="plan">
+        <label className="mr-2">Choose a plan:</label>
+          <select className="outline outline-1 outline-gray-300 rounded-sm" name="plan" id="plan">
             <option value="bcbs_tx_aca">BCBS TX ACA</option>
             <option value="aetna">Aetna</option>
             <option value="chamber_smart">Chamber Smart</option>
@@ -303,7 +303,7 @@ export const AddQuote = ({
               <h1 className="text-lg mb-4 text-center">
                 {isDragActive
                   ? "Drop the files here"
-                  : "Select or Drag-In Files"}
+                  : "Select or Drag-In Quotes"}
               </h1>
               {files.length > 0 && (
                 <div className="text-center mb-4">

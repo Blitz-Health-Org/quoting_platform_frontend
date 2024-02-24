@@ -263,7 +263,7 @@ export default function SelectQuotes({ setComparisonOpen, setSelectedClient, sel
 
                       <div className="w-32 flex items-center justify-center">
                       <Image
-                        src={carrierLogos[quote.carrier as keyof typeof carrierLogos] || carrierLogos['Other']}
+                        src={carrierLogos[quote.carrier as keyof typeof carrierLogos] || carrierLogos['Chamber']}
                         alt={`Logo for ${quote.carrier}`}
                         width={20}
                         height={20}

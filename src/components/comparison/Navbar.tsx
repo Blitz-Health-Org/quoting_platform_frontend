@@ -8,8 +8,9 @@ import { MdOutlineSettings } from "react-icons/md";
 import { LuLogOut } from "react-icons/lu";
 import { FiHelpCircle } from "react-icons/fi";
 import { RiQuoteText } from "react-icons/ri";
-import { useState } from "react";
-import Link from "next/link";
+import { MdOutlineBook } from "react-icons/md";
+import React, { useState } from "react";
+import { SnackbarAlert } from "../ui/SnackbarAlert";
 
 const Tabs = [
   {
@@ -26,11 +27,23 @@ const Tabs = [
 ];
 
 export const Navbar = ({ selected }: { selected: string }) => {
-  const isPoliciesSelected = selected === "Policies";
-  const isCarriersSelected = selected === "Carriers";
-  const isCRMSelected = selected === "CRM";
-  const isIntegrationsSelected = selected === "Integrations";
+  const isQuotesSelected = selected === "Quotes";
+  const isHandbooksSelected = selected === "Handbooks";
   const isSettingsSelected = selected === "Settings";
+
+  const [snackbar, setSnackbar] = useState({
+    open: false,
+    message: "",
+    severity: "success",
+  });
+
+  const handleBusiness = (index: any) => {
+    setSnackbar({
+      open: true,
+      message: "This feature is coming soon!",
+      severity: "info",
+    });
+  };
 
   return (
     <div className="invisible w-0 md:visible md:w-1/7 bg-gray-100/50 pb-4 pl-4 pr-4 pt-7 flex flex-col">
@@ -44,62 +57,39 @@ export const Navbar = ({ selected }: { selected: string }) => {
             Workspace
           </div>
 
-          <div>
-            <a
-              href="/policies"
-              style={{ fontSize: "13px" }}
-              className={`flex items-center font-light text-gray-700 ml-1 mb-1 w-full p-1 ${
-                isPoliciesSelected ? "bg-gray-200" : ""
-              }`}
-            >
-              <GrDocumentPerformance className="h-4 w-4 mr-2 ml-1" /> Policies
-            </a>
-          </div>
-
-          <div>
-            <a
-              href="/"
-              style={{ fontSize: "13px" }}
-              className={`flex items-center font-light text-gray-700 ml-1 mb-1 w-full p-1 ${
-                isCarriersSelected ? "bg-gray-200" : ""
-              }`}
-            >
-              <LiaPeopleCarrySolid className="mr-2 ml-1" /> Clients
-            </a>
-          </div>
-
-          <div
-            style={{ fontSize: "13px" }}
-            className={`flex items-center font-light text-gray-700 ml-1 mb-1 w-full p-1 ${
-              isCRMSelected ? "bg-gray-200" : ""
-            }`}
-          >
-            <LuMails className="mr-2 ml-1" /> CRM
-          </div>
-
           <a
-            href="/quotes"
+            href="/"
             style={{ fontSize: "13px" }}
             className={`flex items-center font-light text-gray-700 ml-1 mb-1 w-full p-1 ${
-              isCRMSelected ? "bg-gray-200" : ""
+              isQuotesSelected ? "bg-gray-200" : ""
             }`}
           >
             <RiQuoteText className="mr-2 ml-1" /> Quotes
           </a>
 
+          <div
+            onClick={handleBusiness}
+            style={{ fontSize: "13px" }}
+            className={`flex items-center font-light text-gray-700 ml-1 mb-1 w-full p-1 hover:cursor-pointer ${
+              isHandbooksSelected ? "bg-gray-200" : ""
+            }`}
+          >
+            <MdOutlineBook className="mr-2 ml-1" /> Handbooks
+          </div>
+
           <div className="text-sm ml-1 mt-6 mb-1 text-gray-500 w-full p-1">
             Other
           </div>
           <div>
-            <a
-              href="/carriers"
+            <div
+              onClick={handleBusiness}
               style={{ fontSize: "13px" }}
-              className={`flex items-center font-light text-gray-700 ml-1 mb-1 w-full p-1 ${
-                isIntegrationsSelected ? "bg-gray-200" : ""
+              className={`flex items-center font-light text-gray-700 ml-1 mb-1 w-full p-1 hover:cursor-pointer ${
+                isSettingsSelected ? "bg-gray-200" : ""
               }`}
             >
               <FaLink className="w-4 h-4 mr-2 ml-1" /> Integrations
-            </a>
+            </div>
           </div>
           <div
             className={`flex items-center font-light text-sm text-gray-700 ml-1 mb-1 w-full p-1 ${
@@ -119,12 +109,23 @@ export const Navbar = ({ selected }: { selected: string }) => {
           </div>
           <div
             style={{ fontSize: "13px" }}
-            className="flex items-center font-light text-gray-700 ml-1 mb-1 w-full p-1"
+            className="hover:cursor-pointer flex items-center font-light text-gray-700 ml-1 mb-1 w-full p-1"
           >
             <LuLogOut className="mr-2 ml-1" /> Log Out
           </div>
         </div>
       </div>
+
+      <SnackbarAlert
+          openSnackbarShare={snackbar.open}
+          setOpenSnackbarShare={setSnackbar}
+          snackbar={{
+            open: snackbar.open,
+            message: snackbar.message,
+            severity: snackbar.severity,
+          }}
+        />
+
     </div>
   );
 };

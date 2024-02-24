@@ -108,12 +108,12 @@ export const ClientCard = ({
         onClick={handleClientCardClick}
         className="col-span-1 w-full relative flex flex-col justify-between bg-white shadow-sm outline outline-1 outline-gray-200 rounded-md p-3"
       >
-        <button
+        {/* <button
           className="absolute right-0 top-0 mt-2 mr-2"
           onClick={() => handleClientDelete(client)}
         >
           <FaTrash />
-        </button>
+        </button> */}
         <div className="w-full">
           <div className="flex items-center gap-1">
             {client.icon ? (
