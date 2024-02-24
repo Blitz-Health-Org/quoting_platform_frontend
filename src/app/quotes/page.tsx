@@ -5,6 +5,7 @@ import Image from "next/image";
 import { IoMdArrowBack } from "react-icons/io";
 import { IoHelpCircleSharp } from "react-icons/io5";
 import { Subheader } from "../../components/comparison/Subheader";
+import Contributions from "../../components/comparison/contributions";
 import '../../components/comparison/sum.css'; // import your custom styles
 import Fullheader from "../../components/comparison/Fullheader";
 import QuoteCard from "../../components/comparison/QuoteCard";
@@ -31,6 +32,7 @@ export default function QuotingPage() {
   const [customClasses, setCustomClasses] = useState<string[]>([]);
   const [newClass, setNewClass] = useState("");
   const [showStandardContributions, setShowStandardContributions] = useState(true);
+  const [editStandardContributions, setEditStandardContributions] = useState(false);
   
   const router = useRouter();
 
@@ -112,6 +114,30 @@ export default function QuotingPage() {
     setLoading(false);
   }, [searchParams]);
 
+  const [standardContributions, setStandardContributions] = useState({
+    ee: { percent: 100, employees: 50 },
+    eeSpouse: { percent: 100, employees: 50 },
+    eeChild: { percent: 100, employees: 50 },
+    eeFamily: { percent: 100, employees: 50 },
+  });
+
+  const handleEdit = () => {
+    // Enable editing mode
+    setEditStandardContributions(true);
+  };
+  
+  const handleSave = () => {
+    // Disable editing mode
+    setEditStandardContributions(false);
+  
+    // Save the edited values to JSON
+    const jsonResult = JSON.stringify(standardContributions);
+    console.log(jsonResult);
+  
+    // You can save the JSON data to your desired location or state.
+    // For example, you can send it to the server or store it in another state.
+  };
+  
   const fetchClientAndQuotes = async (clientId: string, quoteIds: string[]) => {
     try {
       const { data: clientData, error: clientError } = await supabase
@@ -217,139 +243,18 @@ export default function QuotingPage() {
             {showStandardContributions && (
             <>
             <h1 className="mb-2 font-bold">Standard Contributions</h1>
-            <div className="mb-1.5 flex items-center justify-left">
-              <p className="text-sm mr-2 font-bold">EE</p>
-              <p className="mr-2">|</p>
-              <Input
-                  className="w-11"
-                  defaultValue={100}
-                  size="small"
-                  inputProps={{
-                    step: 1,
-                    min: 0,
-                    max: 100,
-                    type: "number",
-                    "aria-labelledby": "input-slider",
-                  }}
-                />
-              <p className="text-sm text-gray-500 mr-2">%</p>
-              <p className="mr-2">|</p>
-              <Input
-                  className="w-12"
-                  defaultValue={50}
-                  size="small"
-                  inputProps={{
-                    step: 1,
-                    min: 0,
-                    max: 10000,
-                    type: "number",
-                    "aria-labelledby": "input-slider",
-                  }}
-                />
-              <p className="text-sm text-gray-800">Employees</p>
-            </div>
-            <div className="mb-1.5 flex items-center justify-left">
-              <p className="text-sm mr-2 font-bold">EE/Spouse</p>
-              <p className="mr-2">|</p>
-              <Input
-                  className="w-11"
-                  defaultValue={100}
-                  size="small"
-                  inputProps={{
-                    step: 1,
-                    min: 0,
-                    max: 100,
-                    type: "number",
-                    "aria-labelledby": "input-slider",
-                  }}
-                />
-              <p className="text-sm text-gray-500 mr-2">%</p>
-              <p className="mr-2">|</p>
-              <Input
-                  className="w-12"
-                  defaultValue={50}
-                  size="small"
-                  inputProps={{
-                    step: 1,
-                    min: 0,
-                    max: 10000,
-                    type: "number",
-                    "aria-labelledby": "input-slider",
-                  }}
-                />
-              <p className="text-sm text-gray-800">Employees</p>
-            </div>
-            <div className="mb-1.5 flex items-center justify-left">
-            <p className="text-sm mr-2 font-bold">EE/Child</p>
-              <p className="mr-2">|</p>
-              <Input
-                  className="w-11"
-                  defaultValue={100}
-                  size="small"
-                  inputProps={{
-                    step: 1,
-                    min: 0,
-                    max: 100,
-                    type: "number",
-                    "aria-labelledby": "input-slider",
-                  }}
-                />
-              <p className="text-sm text-gray-500 mr-2">%</p>
-              <p className="mr-2">|</p>
-              <Input
-                  className="w-12"
-                  defaultValue={50}
-                  size="small"
-                  inputProps={{
-                    step: 1,
-                    min: 0,
-                    max: 10000,
-                    type: "number",
-                    "aria-labelledby": "input-slider",
-                  }}
-                />
-              <p className="text-sm text-gray-800">Employees</p>
-            </div>
-            <div className="mb-1.5 flex items-center justify-left">
-            <p className="text-sm mr-2 font-bold">EE/Family</p>
-              <p className="mr-2">|</p>
-              <Input
-                  className="w-11"
-                  defaultValue={100}
-                  size="small"
-                  inputProps={{
-                    step: 1,
-                    min: 0,
-                    max: 100,
-                    type: "number",
-                    "aria-labelledby": "input-slider",
-                  }}
-                />
-              <p className="text-sm text-gray-500 mr-2">%</p>
-              <p className="mr-2">|</p>
-              <Input
-                  className="w-12"
-                  defaultValue={50}
-                  size="small"
-                  inputProps={{
-                    step: 1,
-                    min: 0,
-                    max: 10000,
-                    type: "number",
-                    "aria-labelledby": "input-slider",
-                  }}
-                />
-              <p className="text-sm text-gray-800">Employees</p>
-              </div>
-              <hr className="mt-4"></hr>
+            
+              <Contributions/>
+
+              <hr className="mt-4 mb-4"></hr>
               </>
               )}
-            <h1 className="mb-2 font-bold mt-4">Custom Classes</h1>
+            <h1 className="mb-2 font-bold">Custom Classes</h1>
             <form className="mt-4" onSubmit={(e) => handleNewClassSubmit(e)}>
               <div className="flex">
                 <input
                   placeholder="Class Name"
-                  className="p-1 outline outline-1 outline-gray-400 bg-gray-100 mr-2 h-10 rounded-sm"
+                  className="py-0.5 px-2 outline outline-1 outline-gray-400 bg-gray-100 mr-2 h-10 rounded-sm"
                   value={newClass}
                   onChange={(e) => setNewClass(e.target.value)}
                 />
@@ -365,132 +270,9 @@ export default function QuotingPage() {
 
 
             {customClasses.map((className, index) => (
-              <div key={index} className="mb-1.5 flex-col items-center justify-left mt-4">
-                <p className="text-sm mr-2 font-bold">{className}</p>
-                <div className="mb-1.5 flex items-center justify-left">
-                  <p className="text-sm mr-2 font-bold">EE</p>
-                  <p className="mr-2">|</p>
-                  <Input
-                      className="w-11"
-                      defaultValue={100}
-                      size="small"
-                      inputProps={{
-                        step: 1,
-                        min: 0,
-                        max: 100,
-                        type: "number",
-                        "aria-labelledby": "input-slider",
-                      }}
-                    />
-                  <p className="text-sm text-gray-500 mr-2">%</p>
-                  <p className="mr-2">|</p>
-                  <Input
-                      className="w-12"
-                      defaultValue={50}
-                      size="small"
-                      inputProps={{
-                        step: 1,
-                        min: 0,
-                        max: 10000,
-                        type: "number",
-                        "aria-labelledby": "input-slider",
-                      }}
-                    />
-                  <p className="text-sm text-gray-800">Employees</p>
-                </div>
-                <div className="mb-1.5 flex items-center justify-left">
-                  <p className="text-sm mr-2 font-bold">EE/Spouse</p>
-                  <p className="mr-2">|</p>
-                  <Input
-                      className="w-11"
-                      defaultValue={100}
-                      size="small"
-                      inputProps={{
-                        step: 1,
-                        min: 0,
-                        max: 100,
-                        type: "number",
-                        "aria-labelledby": "input-slider",
-                      }}
-                    />
-                  <p className="text-sm text-gray-500 mr-2">%</p>
-                  <p className="mr-2">|</p>
-                  <Input
-                      className="w-12"
-                      defaultValue={50}
-                      size="small"
-                      inputProps={{
-                        step: 1,
-                        min: 0,
-                        max: 10000,
-                        type: "number",
-                        "aria-labelledby": "input-slider",
-                      }}
-                    />
-                  <p className="text-sm text-gray-800">Employees</p>
-                </div>
-                <div className="mb-1.5 flex items-center justify-left">
-                <p className="text-sm mr-2 font-bold">EE/Child</p>
-                  <p className="mr-2">|</p>
-                  <Input
-                      className="w-11"
-                      defaultValue={100}
-                      size="small"
-                      inputProps={{
-                        step: 1,
-                        min: 0,
-                        max: 100,
-                        type: "number",
-                        "aria-labelledby": "input-slider",
-                      }}
-                    />
-                  <p className="text-sm text-gray-500 mr-2">%</p>
-                  <p className="mr-2">|</p>
-                  <Input
-                      className="w-12"
-                      defaultValue={50}
-                      size="small"
-                      inputProps={{
-                        step: 1,
-                        min: 0,
-                        max: 10000,
-                        type: "number",
-                        "aria-labelledby": "input-slider",
-                      }}
-                    />
-                  <p className="text-sm text-gray-800">Employees</p>
-                </div>
-                <div className="mb-1.5 flex items-center justify-left">
-                <p className="text-sm mr-2 font-bold">EE/Family</p>
-                  <p className="mr-2">|</p>
-                  <Input
-                      className="w-11"
-                      defaultValue={100}
-                      size="small"
-                      inputProps={{
-                        step: 1,
-                        min: 0,
-                        max: 100,
-                        type: "number",
-                        "aria-labelledby": "input-slider",
-                      }}
-                    />
-                  <p className="text-sm text-gray-500 mr-2">%</p>
-                  <p className="mr-2">|</p>
-                  <Input
-                      className="w-12"
-                      defaultValue={50}
-                      size="small"
-                      inputProps={{
-                        step: 1,
-                        min: 0,
-                        max: 10000,
-                        type: "number",
-                        "aria-labelledby": "input-slider",
-                      }}
-                    />
-                  <p className="text-sm text-gray-800">Employees</p>
-                </div>
+              <div key={index} className="mb-1.5 flex-col items-center justify-left mt-6">
+                <p className="mr-2 font-bold mb-2">Class #{index + 1} : {className}</p>
+                  <Contributions/>
               </div>
             ))}
 
