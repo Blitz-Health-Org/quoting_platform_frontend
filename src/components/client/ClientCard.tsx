@@ -2,14 +2,8 @@ import { ClientType } from "@/src/types/custom/Client";
 import { FaBook, FaPlus, FaTrash } from "react-icons/fa6";
 import { IoEyeSharp } from "react-icons/io5";
 import Image from "next/image";
-import { AddNewQuoteModal } from "@/src/components/client/modal/AddNewQuoteModal";
 import { AddQuote } from "@/src/components/client/modal/AddQuote";
-import { ViewQuoteModal } from "@/src/components/client/modal/ViewQuoteModal";
 import { Dispatch, SetStateAction, useState } from "react";
-import { IconBuilding } from "@tabler/icons-react";
-import { supabase } from "@/src/supabase";
-import error from "next/error";
-import { SnackbarAlert } from "../ui/SnackbarAlert";
 import { useRouter } from "next/navigation";
 
 export type ClientCardProps = {
@@ -108,12 +102,12 @@ export const ClientCard = ({
         onClick={handleClientCardClick}
         className="col-span-1 w-full relative flex flex-col justify-between bg-white shadow-sm outline outline-1 outline-gray-200 rounded-md p-3"
       >
-        <button
+        {/* <button
           className="absolute right-0 top-0 mt-2 mr-2"
           onClick={() => handleClientDelete(client)}
         >
           <FaTrash />
-        </button>
+        </button> */}
         <div className="w-full">
           <div className="flex items-center gap-1">
             {client.icon ? (
@@ -160,15 +154,6 @@ export const ClientCard = ({
           </div>
         </div>
       </div>
-      {modalOpen === "viewQuote" && (
-        <ViewQuoteModal
-          onClose={() => {
-            setModalOpen("");
-          }}
-          client={client}
-          setOpenSnackbarShare={setOpenSnackbarShare}
-        />
-      )}
       {modalOpen === "addNewQuote" && (
         <AddQuote
           onClose={() => {

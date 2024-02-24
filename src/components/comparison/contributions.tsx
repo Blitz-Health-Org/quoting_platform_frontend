@@ -89,7 +89,7 @@ export default function Contributions() {
         <p className="text-sm text-gray-800">Lives</p>
       </div>
       <div className="mb-1.5 flex items-center justify-left pl-2 pt-1">
-        <p className="text-sm mr-2 font-bold">EE/Spouse</p>
+        <p className="text-sm mr-2 font-bold">Spouse</p>
         <p className="mr-2">|</p>
         <Input
           className="w-11"
@@ -143,7 +143,7 @@ export default function Contributions() {
         <p className="text-sm text-gray-800 pl-2 pt-1">Lives</p>
       </div>
       <div className="mb-1.5 flex items-center justify-left pl-2 pt-1">
-        <p className="text-sm mr-2 font-bold">EE/Child</p>
+        <p className="text-sm mr-2 font-bold">Child</p>
         <p className="mr-2">|</p>
         <Input
           className="w-11"
@@ -194,7 +194,7 @@ export default function Contributions() {
         <p className="text-sm text-gray-800">Lives</p>
       </div>
       <div className="mb-1.5 flex items-center justify-left pl-2 pt-1">
-        <p className="text-sm mr-2 font-bold">EE/Family</p>
+        <p className="text-sm mr-2 font-bold">Family</p>
         <p className="mr-2">|</p>
         <Input
           className="w-11"

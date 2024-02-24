@@ -305,7 +305,7 @@ export default function SelectQuotes({
                         src={
                           carrierLogos[
                             quote.carrier as keyof typeof carrierLogos
-                          ] || carrierLogos["Other"]
+                          ] || carrierLogos["Chamber"]
                         }
                         alt={`Logo for ${quote.carrier}`}
                         width={20}

@@ -1,12 +1,10 @@
 import { supabase } from "@/src/supabase";
 import { useDropzone } from "react-dropzone";
 import { MdUpload } from "react-icons/md";
-import { Modal } from "../../ui/Modal";
 import React, { useState, Dispatch, SetStateAction } from "react";
 import Image from "next/image";
 import BlumeLogo from "@/public/BlumeLogo.png";
 import { FaX } from "react-icons/fa6";
-import { drop } from "lodash";
 import { v4 as uuid } from "uuid";
 import { ClientType } from "@/src/types/custom/Client";
 
@@ -287,14 +285,15 @@ export const AddQuote = ({
             <FaX />
           </button>
         </div>
-        <label>Choose a plan:</label>
-          <select name="plan" id="plan">
+        <label className="mr-2">Choose a plan:</label>
+          <select className="outline outline-1 outline-gray-300 rounded-sm" name="plan" id="plan">
             <option value="bcbs_tx_aca">BCBS TX ACA</option>
             <option value="aetna">Aetna</option>
             <option value="chamber_smart">Chamber Smart</option>
             <option value="anthem">Anthem</option>
             <option value="uhc_aca">UHC ACA</option>
             <option value="uhc_lf">UHC Level Funded</option>
+            <option value="other">Other</option>
           </select>
         <div className="modal-body">
           {/* File Upload Section */}
@@ -313,7 +312,7 @@ export const AddQuote = ({
               <h1 className="text-lg mb-4 text-center">
                 {isDragActive
                   ? "Drop the files here"
-                  : "Select or Drag-In Files"}
+                  : "Select or Drag-In Quotes"}
               </h1>
               {files.length > 0 && (
                 <div className="text-center mb-4">

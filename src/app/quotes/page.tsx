@@ -1,9 +1,6 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
-import Image from "next/image";
-import { IoMdArrowBack } from "react-icons/io";
-import { IoHelpCircleSharp } from "react-icons/io5";
 import { Subheader } from "../../components/comparison/Subheader";
 import Contributions from "../../components/comparison/Contributions";
 import "../../components/comparison/sum.css"; // import your custom styles
