@@ -26,7 +26,7 @@ type QuotingPageProps = {
 };
 
 export default function QuotingPage() {
-  const [client, setClient] = useState(null);
+  const [client, setClient] = useState<ClientType>();
   const [quotes, setQuotes] = useState<QuoteType[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [customClasses, setCustomClasses] = useState<string[]>([]);
@@ -250,7 +250,7 @@ export default function QuotingPage() {
 
   return (
     <div className="w-full h-fit bg-gray-100 pb-6">
-      <Fullheader />
+        <Fullheader clientName={client?.name || "N/A"} />
       <div className="h-full bg-gray-100 border border-gray-200 border-b-0 px-6 py-2">
       <Subheader isPaneOpen={state.isPaneOpen} onPaneToggle={handlePaneToggle} copyUrlToClipboard={copyUrlToClipboard} handleDownloadCSV={handleDownloadCSV} />
 
@@ -333,7 +333,6 @@ export default function QuotingPage() {
                   <Contributions/>
               </div>
             ))}
-
             </div>
             <br />
           </SlidingPane>

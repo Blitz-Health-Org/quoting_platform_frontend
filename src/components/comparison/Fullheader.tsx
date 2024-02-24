@@ -3,8 +3,9 @@ import Image from "next/image";
 import { IoMdArrowBack } from "react-icons/io";
 import { IoHelpCircleSharp } from "react-icons/io5";
 import { useRouter } from "next/navigation";
+import { IconBuilding } from "@tabler/icons-react";
 
-export default function Fullheader() {
+export default function Fullheader({ clientName }: { clientName: string }) {
   const router = useRouter();
   const handleNewClientClick = () => {
     router.push("/");
@@ -19,12 +20,12 @@ export default function Fullheader() {
         <IoMdArrowBack className="mr-2" />
         <p>Client Dashboard</p>
       </div>
-      <Image
-        src="/Acme-corp.png" // Assuming your public folder is served from the root
-        alt="Acme Corporation"
-        width={66} // Set the width as per your design
-        height={44} // Set the height as per your design
-      />
+      
+      <div className="flex items-center">
+        <IconBuilding className="mr-2"/>
+        <p>{clientName}</p>
+      </div>
+
       <div className="flex items-center">
         <div className="flex items-center gap-2 cursor-pointer outline outline-1 outline-gray-300 mr-4 rounded-sm bg-gray-100/80 text-sm text-gray-900 px-2 py-1">
           <IoHelpCircleSharp />
