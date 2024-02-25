@@ -25,6 +25,8 @@ import United from "@/public/United.png";
 import Chamber from "@/public/Chamber.png";
 import NewProject from "@/public/NewProject.jpg";
 import { SocketContext } from "@/src/context/SocketContext";
+import { String } from "lodash";
+import { Json } from "@/src/types/database/database.types";
 
 export default function SelectQuotes({
   setComparisonOpen,
@@ -299,7 +301,6 @@ export default function SelectQuotes({
                   />
                   <div className="grid-cols-9 flex justify-left text-center w-fit gap-1 h-8 items-center overflow-hidden text-sm">
                     {/* Carrier Name */}
-
                     <div className="w-32 flex items-center justify-center">
                       <Image
                         src={
@@ -315,21 +316,33 @@ export default function SelectQuotes({
                       <p>{quote.carrier || "Sup"}</p>
                     </div>
                     {/* Plan Name */}
-                    <p className="w-32">Aetna Gold Select</p>
+                    <p className="w-32">
+                      {(quote.data as any)?.["plan_name"] ?? "N/A"}
+                    </p>
                     {/* Funding () */}
-                    <p className="w-32">Level Funded</p>
+                    <p className="w-32">
+                      {(quote.data as any)?.["plan_type"] ?? "N/A"}
+                    </p>
                     {/* Office Copay (PCP/Specialist) */}
-                    <p className="w-32">$25 / $75</p>
+                    {(quote.data as any)?.["office_copay"] ?? "N/A"}
                     {/* Deductible (Individual) */}
-                    <p className="w-32">$5,000</p>
+                    <p className="w-32">
+                      {(quote.data as any)?.["deductible"] ?? "N/A"}
+                    </p>
                     {/* Coinsurance (In-Network) */}
-                    <p className="w-32">80%</p>
+                    {(quote.data as any)?.["coinsurance"] ?? "N/A"}
                     {/* Out of Pocket (Individual) */}
-                    <p className="w-32">$7,900</p>
+                    <p className="w-32">
+                      {(quote.data as any)?.["out_of_pocket_max"] ?? "N/A"}
+                    </p>
                     {/* Additional Copays Include (ER / Imaging / OP / IP) */}
-                    <p className="w-32">$300 / N/A / N/A / N/A</p>
-                    {/* Total Monthly Premium */}
-                    <p className="w-32">{quote.file_name}</p>
+                    <p className="w-32">
+                      {(quote.data as any)?.["additional_copay"] ?? "N/A"}
+                      {/* Total Monthly Premium  */}
+                    </p>
+                    <p className="w-32">
+                      {(quote.data as any)?.["total_cost"] ?? "N/A"}
+                    </p>
                   </div>
                 </div>
               </p>

@@ -25,7 +25,7 @@ export default function QuoteCard({
   nonObjectVisibleQuoteFields,
   objectVisibleQuoteFields,
 }: QuoteCardProps) {
-  const [quoteData, setQuoteData] = useState<QuoteType>(quote.data);
+  const [quoteData, setQuoteData] = useState<any>(quote.data);
 
   const [textAreaSelected, setTextAreaSelected] = useState<boolean>(false);
   const ref1 = useRef();

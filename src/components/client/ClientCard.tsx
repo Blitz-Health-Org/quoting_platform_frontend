@@ -8,7 +8,7 @@ import { useRouter } from "next/navigation";
 
 export type ClientCardProps = {
   setComparisonOpen: Dispatch<SetStateAction<boolean>>;
-  setSelectedClient: Dispatch<SetStateAction<ClientType>>
+  setSelectedClient: Dispatch<SetStateAction<ClientType>>;
   client: ClientType;
   handleClientDelete: (client: ClientType) => void;
   setOpenSnackbarShare: ({
@@ -27,7 +27,7 @@ export const ClientCard = ({
   setSelectedClient,
   setOpenSnackbarShare,
   handleClientDelete,
-  setComparisonOpen
+  setComparisonOpen,
 }: ClientCardProps) => {
   const [modalOpen, setModalOpen] = useState<string>("");
   const router = useRouter();
@@ -43,7 +43,7 @@ export const ClientCard = ({
 
   function handleNewComparison() {
     setComparisonOpen(true);
-    setSelectedClient(client)
+    setSelectedClient(client);
     return;
   }
 
@@ -81,7 +81,7 @@ export const ClientCard = ({
     X: "#3333FF15",
     Y: "#FF333315",
     Z: "#33FFCC15",
-  };    
+  };
 
   function getColorForLetter(letter: string) {
     return letterToColorMap[letter.toUpperCase()] || "#999999"; // Default color if not found
@@ -120,11 +120,15 @@ export const ClientCard = ({
               />
             ) : (
               <div
-              className="mr-2 w-8 h-8 rounded-full flex items-center justify-center outline outline-1 outline-gray-300"
-              style={{ backgroundColor: getColorForLetter(client.name?.[0] ?? "B") }}
-            >
-              <p className="font-bold">{(client.name?.[0] ?? "B").toUpperCase()}</p>
-            </div>
+                className="mr-2 w-8 h-8 rounded-full flex items-center justify-center outline outline-1 outline-gray-300"
+                style={{
+                  backgroundColor: getColorForLetter(client.name?.[0] ?? "B"),
+                }}
+              >
+                <p className="font-bold">
+                  {(client.name?.[0] ?? "B").toUpperCase()}
+                </p>
+              </div>
             )}
             <p className="truncate max-h-32">{client.name}</p>
           </div>
@@ -137,10 +141,18 @@ export const ClientCard = ({
             <button onClick={handleCreateHandbook}>Create Handbook</button>
           </div>
           <div
-            onClick={client.selected_quotes ? handleViewComparison : handleNewComparison}
+            onClick={
+              client.selected_quotes
+                ? handleViewComparison
+                : handleNewComparison
+            }
             className="outline outline-1 hover:bg-gray-100/50 cursor-pointer font-light flex items-center justify-center outline-gray-200 p-0.5 rounded-sm mb-1 mt-1 text-sm"
           >
-            {client.selected_quotes ? <IoEyeSharp className="mr-1" /> : <FaPlus className="mr-1" />}
+            {client.selected_quotes ? (
+              <IoEyeSharp className="mr-1" />
+            ) : (
+              <FaPlus className="mr-1" />
+            )}
             <button>
               {client.selected_quotes ? "View Comparison" : "New Comparison"}
             </button>

@@ -117,15 +117,14 @@ export const Navbar = ({ selected }: { selected: string }) => {
       </div>
 
       <SnackbarAlert
-          openSnackbarShare={snackbar.open}
-          setOpenSnackbarShare={setSnackbar}
-          snackbar={{
-            open: snackbar.open,
-            message: snackbar.message,
-            severity: snackbar.severity,
-          }}
-        />
-
+        openSnackbarShare={snackbar.open}
+        setOpenSnackbarShare={setSnackbar}
+        snackbar={{
+          open: snackbar.open,
+          message: snackbar.message,
+          severity: snackbar.severity,
+        }}
+      />
     </div>
   );
 };
