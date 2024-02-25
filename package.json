@@ -30,7 +30,7 @@
     "date-fns": "^3.3.1",
     "lodash": "^4.17.21",
     "mui": "^0.0.1",
-    "next": "14.0.4-canary.17",
+    "next": "14.0.5-canary.60",
     "pdf2json": "^3.0.5",
     "pdfjs": "^2.5.3",
     "pspdfkit": "^2024.1.3",
