@@ -103,8 +103,12 @@ export const Subheader: React.FC<SubheaderProps> = ({
 
       <div className="col-span-1 text-center flex items-center justify-center gap-1">
         <p>Showing {quotesLength} Quotes </p>
-        <p className="cursor-pointer" onClick={handleBusiness}>| Edit | </p>
-        <p className="cursor-pointer" onClick={handleBusiness}>Add Current Plan</p>
+        <p className="cursor-pointer" onClick={handleBusiness}>
+          | Edit |{" "}
+        </p>
+        <p className="cursor-pointer" onClick={handleBusiness}>
+          Add Current Plan
+        </p>
       </div>
 
       {/* Right-aligned buttons */}

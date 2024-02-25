@@ -296,27 +296,25 @@ export default function QuotingPage() {
           quotesLength={quotes.length}
         />
 
-        <div className="w-full overflow-x-auto">
-          <div className="p-0.5 flex w-fit h-fit gap-2">
-            <Left
-              nonObjectVisibleQuoteFields={nonObjectVisibleQuoteFields}
-              objectVisibleQuoteFields={objectVisibleQuoteFields}
-            />
-            {quotes.length > 0 ? (
-              quotes.map((quote) => {
-                return (
-                  <QuoteCard
-                    key={quote.id}
-                    quote={quote}
-                    nonObjectVisibleQuoteFields={nonObjectVisibleQuoteFields}
-                    objectVisibleQuoteFields={objectVisibleQuoteFields}
-                  />
-                );
-              })
-            ) : (
-              <div className="w-full mt-5 text-center">No Quotes Available</div>
-            )}
-          </div>
+        <div className="p-0.5 flex w-fit h-fit gap-2">
+          <Left
+            nonObjectVisibleQuoteFields={nonObjectVisibleQuoteFields}
+            objectVisibleQuoteFields={objectVisibleQuoteFields}
+          />
+          {quotes.length > 0 ? (
+            quotes.map((quote) => (
+              <QuoteCard
+                key={quote.id}
+                quote={quote}
+                nonObjectVisibleQuoteFields={nonObjectVisibleQuoteFields}
+                objectVisibleQuoteFields={objectVisibleQuoteFields}
+              />
+            ))
+          ) : (
+            <div className="flex items-center justify-center font-bold">
+              <div className="mt-5">No Quotes Available</div>
+            </div>
+          )}
         </div>
       </div>
       <div>

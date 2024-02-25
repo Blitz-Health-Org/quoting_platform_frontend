@@ -42,6 +42,7 @@ export const ClientCard = ({
   }
 
   function handleNewComparison() {
+    console.log("what");
     setComparisonOpen(true);
     setSelectedClient(client);
     return;

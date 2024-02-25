@@ -245,7 +245,9 @@ export default function SelectQuotes({
           </div>
           <div className="flex items-center">
             <div className="text-sm md:text-base mr-1 outline outline-1 outline-gray-200 py-1 px-2 rounded-md flex items-center justify-center hover:bg-gray-100/80 cursor-pointer">
-              <button className="mr-2" onClick={handleNextClick}>New Comparison</button>
+              <button className="mr-2" onClick={handleNextClick}>
+                New Comparison
+              </button>
               <FiArrowRight />
             </div>
           </div>
@@ -292,7 +294,9 @@ export default function SelectQuotes({
                 {/* Out of Pocket (Individual) */}
                 <p className="w-36">Out of Pocket (Individual)</p>
                 {/* Additional Copays Include (ER / Imaging / OP / IP) */}
-                <p className="w-36">Additional Copays (ER / Imaging / OP / IP)</p>
+                <p className="w-36">
+                  Additional Copays (ER / Imaging / OP / IP)
+                </p>
                 {/* Total Monthly Premium */}
                 <p className="w-36">Total Monthly Premium</p>
               </div>
