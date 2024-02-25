@@ -5,7 +5,7 @@ import { GrDocumentPerformance } from "react-icons/gr";
 import { LiaPeopleCarrySolid } from "react-icons/lia";
 import { MdOutlineAttachMoney } from "react-icons/md";
 import { LuMails } from "react-icons/lu";
-import { FaLink } from "react-icons/fa6";
+import { IoIosLink } from "react-icons/io";
 import { MdOutlineSettings } from "react-icons/md";
 import { LuLogOut } from "react-icons/lu";
 import { FiHelpCircle } from "react-icons/fi";
@@ -13,6 +13,8 @@ import { RiQuoteText } from "react-icons/ri";
 import { MdOutlineBook } from "react-icons/md";
 import React, { useState } from "react";
 import { SnackbarAlert } from "../ui/SnackbarAlert";
+import { MdOutlineCollectionsBookmark } from "react-icons/md";
+import { FaLink } from "react-icons/fa6";
 
 const Tabs = [
   {
@@ -76,7 +78,7 @@ export const Navbar = ({ selected }: { selected: string }) => {
               isHandbooksSelected ? "bg-gray-200" : ""
             }`}
           >
-            <MdOutlineBook className="mr-2 ml-1" /> Handbooks
+            <MdOutlineCollectionsBookmark className="mr-2 ml-1 truncate" /> <p className="truncate">Handbooks</p>
           </div>
 
           <div className="text-sm ml-1 mt-6 mb-1 text-gray-500 w-full p-1">
@@ -90,7 +92,7 @@ export const Navbar = ({ selected }: { selected: string }) => {
                 isSettingsSelected ? "bg-gray-200" : ""
               }`}
             >
-              <FaLink className="w-4 h-4 mr-2 ml-1" /> Integrations
+              <IoIosLink className="mr-2 ml-1" /> <p className="truncate">Integrations</p>
             </div>
           </div>
           <div
