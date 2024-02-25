@@ -158,10 +158,6 @@ export const NewClientModal = ({
                 !(clientField.field === "plan_category"),
             )
             .map((clientField) => {
-              console.log(
-                "clientFieldLabel",
-                (clientField as NonSystemField).label,
-              );
               return (
                 <>
                   <div className="flex items-end">

@@ -29,7 +29,6 @@ export default function Contributions() {
 
     // Save the edited values to JSON
     const jsonResult = JSON.stringify(standardContributions);
-    console.log(jsonResult);
 
     // You can save the JSON data to your desired location or state.
     // For example, you can send it to the server or store it in another state.

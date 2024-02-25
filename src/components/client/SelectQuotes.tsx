@@ -74,7 +74,6 @@ export default function SelectQuotes({
       });
 
       return () => {
-        console.log("rip");
         socket.off("task_complete");
         socket.off("task_status");
         socket.close();
@@ -125,7 +124,6 @@ export default function SelectQuotes({
     if (error) {
       alert("Error updating data");
     } else {
-      console.log(data);
       setQuotes(data);
     }
   };
@@ -292,7 +290,7 @@ export default function SelectQuotes({
               </div>
             </div>
             {quotes.map((quote) => (
-              <p key={quote.id}>
+              <div key={quote.id}>
                 <div className="flex items-center w-fit mb-1 mt-1 p-2 border-b">
                   <input
                     type="checkbox"
@@ -345,7 +343,7 @@ export default function SelectQuotes({
                     </p>
                   </div>
                 </div>
-              </p>
+              </div>
             ))}
           </div>
         </div>

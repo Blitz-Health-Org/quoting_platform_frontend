@@ -24,78 +24,38 @@ export default function Home() {
     }
   }, [userId, router, loading]);
 
-  useEffect(() => {
-    if (!loading) {
-      // Connect to the Socket.IO server
-      const socket = io(process.env.NEXT_PUBLIC_SOCKET_SERVER_URL!, {
-        path: "/socket.io",
-        transports: ["websocket"],
-      });
+  // useEffect(() => {
+  //   if (!loading) {
+  //     // Connect to the Socket.IO server
+  //     const socket = io(process.env.NEXT_PUBLIC_SOCKET_SERVER_URL!, {
+  //       path: "/socket.io",
+  //       transports: ["websocket"],
+  //     });
 
-      // Listen for 'task_complete' events
-      socket.on("task_complete", (data) => {
-        console.log("Task Complete:", data);
-        setTaskStatus(data);
-      });
+  //     // Listen for 'task_complete' events
+  //     socket.on("task_complete", (data) => {
+  //       console.log("Task Complete:", data);
+  //       setTaskStatus(data);
+  //     });
 
-      // Listen for 'task_status' events
-      socket.on("task_status", (data) => {
-        console.log("Task Status:", data);
-        setTaskStatus(data);
-      });
+  //     // Listen for 'task_status' events
+  //     socket.on("task_status", (data) => {
+  //       console.log("Task Status:", data);
+  //       setTaskStatus(data);
+  //     });
 
-      return () => {
-        console.log("rip");
-        socket.off("task_complete");
-        socket.off("task_status");
-        socket.close();
-      };
-    }
-  }, [loading]);
+  //     return () => {
+  //       socket.off("task_complete");
+  //       socket.off("task_status");
+  //       socket.close();
+  //     };
+  //   }
+  // }, [loading]);
 
   const [comparisonOpen, setComparisonOpen] = useState<boolean>(false);
   const [selectedClient, setSelectedClient] = useState<ClientType>(
     undefined as unknown as ClientType,
   );
-
-  // const [clients, setClients] = useState<ClientType[]>([]);
-
-  // const [isModalOpen, setIsModalOpen] = useState(false);
-
-  // const [snackbar, setSnackbar] = useState({
-  //   open: false,
-  //   message: "",
-  //   severity: "info", // default severity
-  // });
-
-  useEffect(() => {
-    if (!loading) {
-      // Connect to the Socket.IO server
-      const socket = io(process.env.NEXT_PUBLIC_SOCKET_SERVER_URL!, {
-        path: "/socket.io",
-        transports: ["websocket"],
-      });
-
-      // Listen for 'task_complete' events
-      socket.on("task_complete", (data) => {
-        console.log("Task Complete:", data);
-        setTaskStatus(data);
-      });
-
-      // Listen for 'task_status' events
-      socket.on("task_status", (data) => {
-        console.log("Task Status:", data);
-        setTaskStatus(data);
-      });
-
-      return () => {
-        console.log("rip");
-        socket.off("task_complete");
-        socket.off("task_status");
-        socket.close();
-      };
-    }
-  }, [loading]);
 
   // const [clients, setClients] = useState<ClientType[]>([]);
 

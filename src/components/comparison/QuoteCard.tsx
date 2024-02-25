@@ -132,7 +132,6 @@ export default function QuoteCard({
             (field) => field.field !== "name" && field.field !== "website",
           )
           .map((field) => {
-            console.log("field", field.field, quoteData);
             return (
               <>
                 <textarea

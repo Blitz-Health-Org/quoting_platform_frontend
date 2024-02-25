@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { Subheader } from "../../components/comparison/Subheader";
 import Contributions from "../../components/comparison/contributions";
 import "../../components/comparison/sum.css"; // import your custom styles
@@ -17,6 +17,7 @@ import SlidingPane from "react-sliding-pane";
 import "react-sliding-pane/dist/react-sliding-pane.css";
 import { FaTrash } from "react-icons/fa";
 import { SnackbarAlert } from "../../components/ui/SnackbarAlert";
+import { SocketContext } from "@/src/context/SocketContext";
 
 type QuotingPageProps = {
   client: ClientType;
@@ -32,8 +33,43 @@ export default function QuotingPage() {
     useState(true);
   const [editStandardContributions, setEditStandardContributions] =
     useState(false);
+  const { socket } = useContext(SocketContext);
 
   const router = useRouter();
+
+  useEffect(() => {
+    if (socket && client) {
+      // Connect to the Socket.IO server
+      // Listen for 'task_complete' events
+      socket.on("task_complete", async (data) => {
+        const { data: quotesData, error: quotesError } = await supabase
+          .from("quotes")
+          .select("*")
+          .eq("client_id", client.id);
+
+        if (quotesData) {
+          const orderedByAlphaData = quotesData.sort((rowA, rowB) => {
+            if (rowA.name < rowB.name) return -1;
+            if (rowA.name > rowB.name) return 1;
+            return 0;
+          });
+
+          setQuotes(orderedByAlphaData);
+        }
+      });
+
+      // Listen for 'task_status' events
+      socket.on("task_status", (data) => {
+        console.log("Task Status:", data);
+      });
+
+      return () => {
+        socket.off("task_complete");
+        socket.off("task_status");
+        socket.close();
+      };
+    }
+  }, []);
 
   const searchParams = useSearchParams();
 

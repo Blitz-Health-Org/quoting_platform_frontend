@@ -104,7 +104,6 @@ export const AddQuote = ({
     }
 
     try {
-      console.log("refetch");
       const response = await fetch(
         `${process.env.NEXT_PUBLIC_BACKEND_URL}/parse`,
         {
@@ -121,9 +120,6 @@ export const AddQuote = ({
       }
 
       const data = await response.json(); // Parse the JSON from the response
-
-      // Now you can use 'data' in your application
-      console.log("respoinse", data); // For example, logging the data
 
       // If you're using React state, for example:
       // this.setState({ parsedData: data });
