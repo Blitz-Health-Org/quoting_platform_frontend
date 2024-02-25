@@ -29,6 +29,7 @@ import { String } from "lodash";
 import { Json } from "@/src/types/database/database.types";
 import { io } from "socket.io-client";
 import router from "next/router";
+import { FiArrowRight } from "react-icons/fi";
 
 export default function SelectQuotes({
   setComparisonOpen,
@@ -244,8 +245,8 @@ export default function SelectQuotes({
           </div>
           <div className="flex items-center">
             <div className="text-sm md:text-base mr-1 outline outline-1 outline-gray-200 py-1 px-2 rounded-md flex items-center justify-center hover:bg-gray-100/80 cursor-pointer">
-              <BiPlus className="mr-2" />
-              <button onClick={handleNextClick}>Comparison</button>
+              <button className="mr-2" onClick={handleNextClick}>New Comparison</button>
+              <FiArrowRight />
             </div>
           </div>
         </div>
@@ -279,24 +280,21 @@ export default function SelectQuotes({
               <input type="checkbox" disabled />
               <div className="grid-cols-9 flex justify-left text-center w-fit gap-1 h-20 font-bold items-center text-wrap text-sm">
                 {/* Carrier Name */}
-                <div className="w-32">Carrier</div>
+                <div className="w-36">Carrier</div>
                 {/* Plan Name */}
-                <p className="w-32">Plan</p>
-
+                <p className="w-36">Plan</p>
                 {/* Office Copay (PCP/Specialist) */}
-                <p className="w-32">Office Copay (PCP/Specialist)</p>
+                <p className="w-36">Office Copay (PCP/Specialist)</p>
                 {/* Deductible (Individual) */}
-                <p className="w-32">Deductible (Individual)</p>
+                <p className="w-36">Deductible (Individual)</p>
                 {/* Coinsurance (In-Network) */}
-                <p className="w-32">Coinsurance (In-Network)</p>
+                <p className="w-36">Coinsurance (In-Network)</p>
                 {/* Out of Pocket (Individual) */}
-                <p className="w-32">Out of Pocket (Individual)</p>
+                <p className="w-36">Out of Pocket (Individual)</p>
                 {/* Additional Copays Include (ER / Imaging / OP / IP) */}
-                <p className="w-32">
-                  Additional Copays (ER / Imaging / OP / IP)
-                </p>
+                <p className="w-36">Additional Copays (ER / Imaging / OP / IP)</p>
                 {/* Total Monthly Premium */}
-                <p className="w-32">Total Monthly Premium</p>
+                <p className="w-36">Total Monthly Premium</p>
               </div>
             </div>
             {quotes.map((quote) => (
@@ -311,7 +309,7 @@ export default function SelectQuotes({
                 />
                 <div className="grid-cols-9 flex justify-left text-center w-fit gap-1 h-8 items-center text-sm">
                   {/* Carrier Name */}
-                  <div className="w-32 flex items-center justify-center">
+                  <div className="w-36 flex items-center justify-center">
                     <Image
                       src={
                         carrierLogos[
@@ -326,35 +324,35 @@ export default function SelectQuotes({
                     <p>{quote.carrier || "Sup"}</p>
                   </div>
                   {/* Plan Name */}
-                  <p className="w-32 max-h-10 overflow-y-auto">
+                  <p className="w-36 max-h-10 overflow-y-auto">
                     {(quote.data as any)?.["plan_name"] ?? "N/A"}
                   </p>
                   {/* Funding () */}
-                  <p className="w-32">
+                  <p className="w-36">
                     {(quote.data as any)?.["plan_type"] ?? "N/A"}
                   </p>
                   {/* Office Copay (PCP/Specialist) */}
-                  <p className="w-32">
+                  <p className="w-36">
                     {(quote.data as any)?.["office_copay"] ?? "N/A"}
                   </p>
                   {/* Deductible (Individual) */}
-                  <p className="w-32 max-h-10 overflow-y-auto">
+                  <p className="w-36 max-h-10 overflow-y-auto">
                     {(quote.data as any)?.["deductible"] ?? "N/A"}
                   </p>
                   {/* Coinsurance (In-Network) */}
-                  <p className="w-32">
+                  <p className="w-36">
                     {(quote.data as any)?.["coinsurance"] ?? "N/A"}
                   </p>
                   {/* Out of Pocket (Individual) */}
-                  <p className="w-32">
+                  <p className="w-36">
                     {(quote.data as any)?.["out_of_pocket_max"] ?? "N/A"}
                   </p>
                   {/* Additional Copays Include (ER / Imaging / OP / IP) */}
-                  <p className="w-32">
+                  <p className="w-36">
                     {(quote.data as any)?.["additional_copay"] ?? "N/A"}
                     {/* Total Monthly Premium  */}
                   </p>
-                  <p className="w-32">
+                  <p className="w-36">
                     {(quote.data as any)?.["total_cost"] ?? "N/A"}
                   </p>
                 </div>

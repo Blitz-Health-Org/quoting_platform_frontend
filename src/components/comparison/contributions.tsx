@@ -37,7 +37,7 @@ export function Contributions() {
   return (
     <div className="w-full outline outline-1 outline-gray-300 p-1 bg-slate-100/80 rounded-sm flex-col items-center justify-center shadow">
       <div className="mb-1.5 flex items-center justify-left pl-2 pt-2">
-        <p className="text-sm mr-2 font-bold">EE</p>
+        <p className="text-sm mr-2 font-bold">Employee</p>
         <p className="mr-2">|</p>
         <Input
           className="w-11"

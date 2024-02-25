@@ -101,8 +101,10 @@ export const Subheader: React.FC<SubheaderProps> = ({
         </FormControl> */}
       </div>
 
-      <div className="col-span-1 text-center">
-        Showing {quotesLength} Quotes | Edit
+      <div className="col-span-1 text-center flex items-center justify-center gap-1">
+        <p>Showing {quotesLength} Quotes </p>
+        <p className="cursor-pointer" onClick={handleBusiness}>| Edit | </p>
+        <p className="cursor-pointer" onClick={handleBusiness}>Add Current Plan</p>
       </div>
 
       {/* Right-aligned buttons */}
