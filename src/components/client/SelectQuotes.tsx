@@ -317,7 +317,7 @@ export default function SelectQuotes({
                       <p>{quote.carrier || "Sup"}</p>
                     </div>
                     {/* Plan Name */}
-                    <p className="w-32 max-h-8 overflow-y-auto">
+                    <p className="w-32 max-h-10 overflow-y-auto">
                       {(quote.data as any)?.["plan_name"] ?? "N/A"}
                     </p>
                     {/* Funding () */}
@@ -329,7 +329,7 @@ export default function SelectQuotes({
                       {(quote.data as any)?.["office_copay"] ?? "N/A"}
                     </p>
                     {/* Deductible (Individual) */}
-                    <p className="w-32 max-h-8 overflow-y-auto">
+                    <p className="w-32 max-h-10 overflow-y-auto">
                       {(quote.data as any)?.["deductible"] ?? "N/A"}
                     </p>
                     {/* Coinsurance (In-Network) */}
