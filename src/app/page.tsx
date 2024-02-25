@@ -4,52 +4,54 @@ import React, { useContext, useEffect, useState } from "react";
 import "./globals.css";
 import { Navbar } from "../components/comparison/Navbar";
 import SelectQuotes from "@/src/components/client/SelectQuotes";
-import Standard from "@/src/components/client/ClientTable";
+import ClientTable from "@/src/components/client/ClientTable";
 import { UserContext } from "@/src/context/UserContext";
 import { ClientType } from "@/src/types/custom/Client";
 import { useRouter } from "next/navigation";
 import io from "socket.io-client";
-import { SocketProvider } from "../context/SocketContext";
 
 export default function Home() {
   const {
     userId: [userId, , loading],
   } = useContext(UserContext);
   const [taskStatus, setTaskStatus] = useState(null);
-  const [displayParsed, setDisplayParsed] = useState<any>(null);
 
   const router = useRouter();
 
-  // useEffect(() => {
-  //   if (!loading && !userId) {
-  //     router.push("sign-in");
-  //   }
-  // }, [userId, router, loading]);
+  useEffect(() => {
+    if (!loading && !userId) {
+      router.push("sign-in");
+    }
+  }, [userId, router, loading]);
 
-  // useEffect(() => {
-  //   // Connect to the Socket.IO server
-  //   const socket = io(`${process.env.NEXT_PUBLIC_SOCKET_SERVER_URL!}/tasks`, {
-  //     path: "/socket.io",
-  //     transports: ["websocket"],
-  //   });
+  useEffect(() => {
+    if (!loading) {
+      // Connect to the Socket.IO server
+      const socket = io(process.env.NEXT_PUBLIC_SOCKET_SERVER_URL!, {
+        path: "/socket.io",
+        transports: ["websocket"],
+      });
 
-  //   // Listen for 'task_complete' events
-  //   socket.on("task_complete", (data) => {
-  //     console.log("Task Complete:", data);
-  //   });
+      // Listen for 'task_complete' events
+      socket.on("task_complete", (data) => {
+        console.log("Task Complete:", data);
+        setTaskStatus(data);
+      });
 
-  //   // Listen for 'task_status' events
-  //   socket.on("task_status", (data) => {
-  //     console.log("Task Status:", data);
-  //   });
+      // Listen for 'task_status' events
+      socket.on("task_status", (data) => {
+        console.log("Task Status:", data);
+        setTaskStatus(data);
+      });
 
-  //   return () => {
-  //     console.log("rip");
-  //     socket.off("task_complete");
-  //     socket.off("task_status");
-  //     socket.close();
-  //   };
-  // }, []);
+      return () => {
+        console.log("rip");
+        socket.off("task_complete");
+        socket.off("task_status");
+        socket.close();
+      };
+    }
+  }, [loading]);
 
   const [comparisonOpen, setComparisonOpen] = useState<boolean>(false);
   const [selectedClient, setSelectedClient] = useState<ClientType>(
@@ -65,6 +67,35 @@ export default function Home() {
   //   message: "",
   //   severity: "info", // default severity
   // });
+
+  useEffect(() => {
+    if (!loading) {
+      // Connect to the Socket.IO server
+      const socket = io(process.env.NEXT_PUBLIC_SOCKET_SERVER_URL!, {
+        path: "/socket.io",
+        transports: ["websocket"],
+      });
+
+      // Listen for 'task_complete' events
+      socket.on("task_complete", (data) => {
+        console.log("Task Complete:", data);
+        setTaskStatus(data);
+      });
+
+      // Listen for 'task_status' events
+      socket.on("task_status", (data) => {
+        console.log("Task Status:", data);
+        setTaskStatus(data);
+      });
+
+      return () => {
+        console.log("rip");
+        socket.off("task_complete");
+        socket.off("task_status");
+        socket.close();
+      };
+    }
+  }, [loading]);
 
   // const [clients, setClients] = useState<ClientType[]>([]);
 
@@ -166,17 +197,16 @@ export default function Home() {
   //   setIsModalOpen(!isModalOpen);
   // };
 
-  // if (loading) {
-  //   return <></>;
-  // }
+  if (loading) {
+    return <></>;
+  }
 
   return (
-    <SocketProvider>
-      <div className="w-full h-full flex flex-row bg-white">
-        <Navbar selected="Quotes" />
+    <div className="w-full h-full flex flex-row bg-white">
+      <Navbar selected="Quotes" />
 
-        <div className="w-full md:w-6/7">
-          {/* <main className="h-screen overflow-hidden flex-col w-full bg-gray-100 bg-opacity-50 pl-2 pr-6 pt-5 pb-6 text-gray-700">
+      <div className="w-full md:w-6/7">
+        {/* <main className="h-screen overflow-hidden flex-col w-full bg-gray-100 bg-opacity-50 pl-2 pr-6 pt-5 pb-6 text-gray-700">
           <div className="flex w-full items-center mb-4 mt-1 justify-between">
             <div className="flex items-center text-sm md:text-base">
               <PiListBulletsBold className="mr-2" />
@@ -228,23 +258,19 @@ export default function Home() {
           />
         </main> */}
 
-          {comparisonOpen === false ? (
-            <Standard
-              setComparisonOpen={setComparisonOpen}
-              setSelectedClient={setSelectedClient}
-            />
-          ) : (
-            <>
-              <SelectQuotes
-                selectedClient={selectedClient}
-                setComparisonOpen={setComparisonOpen}
-                setSelectedClient={setSelectedClient}
-              />
-            </>
-          )}
-        </div>
-        {`DISPLAY: ${displayParsed && JSON.stringify(displayParsed)} `}
+        {comparisonOpen === false ? (
+          <ClientTable
+            setComparisonOpen={setComparisonOpen}
+            setSelectedClient={setSelectedClient}
+          />
+        ) : (
+          <SelectQuotes
+            selectedClient={selectedClient}
+            setComparisonOpen={setComparisonOpen}
+            setSelectedClient={setSelectedClient}
+          />
+        )}
       </div>
-    </SocketProvider>
+    </div>
   );
 }

@@ -29,13 +29,8 @@ import { SnackbarAlert } from "../ui/SnackbarAlert";
 import error from "next/error";
 import { supabase } from "../../supabase";
 
-export default function Standard({
-  setComparisonOpen,
-  setSelectedClient,
-}: {
-  setComparisonOpen: Dispatch<SetStateAction<boolean>>;
-  setSelectedClient: Dispatch<SetStateAction<ClientType>>;
-}) {
+export default function ClientTable({ setComparisonOpen, setSelectedClient }: { setComparisonOpen: Dispatch<SetStateAction<boolean>>, setSelectedClient: Dispatch<SetStateAction<ClientType>>}) {
+
   const [clients, setClients] = useState<ClientType[]>([]);
   const sortedClients = clients
     .filter((client) => client.created_at)

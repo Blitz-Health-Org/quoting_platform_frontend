@@ -2,7 +2,7 @@
 
 import React, { useEffect, useState } from "react";
 import { Subheader } from "../../components/comparison/Subheader";
-import Contributions from "../../components/comparison/Contributions";
+import Contributions from "../../components/comparison/contributions";
 import "../../components/comparison/sum.css"; // import your custom styles
 import Fullheader from "../../components/comparison/Fullheader";
 import QuoteCard from "../../components/comparison/QuoteCard";
