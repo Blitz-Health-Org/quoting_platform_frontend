@@ -41,6 +41,15 @@ export default function QuoteCard({
     Other: NewProject,
   };
 
+  const carrierWebsites = {
+    Aetna: "aetna.com",
+    Anthem: "anthem.com",
+    Cigna: "cigna.com",
+    United: "unitedhealthcare.com",
+    Chamber: "chamberselect.com",
+    Other: "N/A",
+  };
+
   const totalValue = ""; //implement calculation
 
   function valueOrDefault(val: any, def: string = "N/A") {
@@ -107,22 +116,22 @@ export default function QuoteCard({
 
   return (
     <div className="bg-white h-full mb-4 min-w-80 mt-4 rounded-lg outline outline-1 outline-gray-300 py-6 mr-1 text-center overscroll-none">
-      <div className="flex w-full justify-center h-16">
-        <div className="w-fit">
+      <div className="flex w-full h-fit justify-center items-center">
+        <div className="w-fit h-fit mb-4 mr-1">
           <Image
             src={
               carrierLogos[quote.carrier as keyof typeof carrierLogos] ||
               carrierLogos["Other"]
             }
             alt={`Logo for ${quote.carrier}`}
-            width={20}
-            height={20}
+            width={30}
+            height={30}
             className="mr-2 rounded-md"
           />
         </div>
         <div className="flex flex-col w-fit justify-center items-start ml-1 mb-4">
           <h1 className="font-bold text-xl">{quote?.carrier}</h1>
-          <p className="text-sm">{quote?.website}</p>
+          <p className="text-sm">{carrierWebsites[quote.carrier as keyof typeof carrierLogos] || carrierWebsites["Other"]}</p>
         </div>
       </div>
 
