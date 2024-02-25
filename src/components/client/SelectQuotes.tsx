@@ -348,7 +348,7 @@ export default function SelectQuotes({
                     {(quote.data as any)?.["coinsurance"] ?? "N/A"}
                   </p>
                   {/* Out of Pocket (Individual) */}
-                  <p className="w-36">
+                  <p className="w-36 max-h-10 overflow-y-auto">
                     {(quote.data as any)?.["out_of_pocket_max"] ?? "N/A"}
                   </p>
                   {/* Additional Copays Include (ER / Imaging / OP / IP) */}
