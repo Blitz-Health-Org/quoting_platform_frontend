@@ -278,11 +278,12 @@ export default function SelectQuotes({
               </div> 
             </div>
           </div> */}
-            <div className="flex px-2 w-fit border-b">
-              <input type="checkbox" disabled />
+            <div className="flex py-2 w-fit border-b">
               <div className="grid-cols-9 flex justify-left text-center w-fit gap-1 h-20 font-bold items-center text-wrap text-sm">
                 {/* Carrier Name */}
-                <div className="w-36">Carrier</div>
+                <div className="w-36 flex justify-center gap-2">
+                  <p>Carrier</p>
+                </div>
                 {/* Plan Name */}
                 <p className="w-36">Plan</p>
                 {/* Office Copay (PCP/Specialist) */}
@@ -304,16 +305,17 @@ export default function SelectQuotes({
             {quotes.map((quote) => (
               <div
                 key={quote.id}
-                className="flex items-center w-fit mb-1 mt-1 p-2 border-b"
+                className="flex items-center w-fit mb-1 mt-1 py-2 border-b"
               >
-                <input
-                  type="checkbox"
-                  checked={quote.isSelected}
-                  onChange={() => handleCheckboxChange(quote.id)}
-                />
                 <div className="grid-cols-9 flex justify-left text-center w-fit gap-1 h-8 items-center text-sm">
                   {/* Carrier Name */}
                   <div className="w-36 flex items-center justify-center">
+                  <input
+                    type="checkbox"
+                    checked={quote.isSelected}
+                    onChange={() => handleCheckboxChange(quote.id)}
+                    className="mr-4"
+                  />
                     <Image
                       src={
                         carrierLogos[
@@ -332,11 +334,11 @@ export default function SelectQuotes({
                     {(quote.data as any)?.["plan_name"] ?? "N/A"}
                   </p>
                   {/* Funding () */}
-                  <p className="w-36">
+                  <p className="w-36 max-h-10 overflow-y-auto">
                     {(quote.data as any)?.["plan_type"] ?? "N/A"}
                   </p>
                   {/* Office Copay (PCP/Specialist) */}
-                  <p className="w-36">
+                  <p className="w-36 max-h-10 overflow-y-auto">
                     {(quote.data as any)?.["office_copay"] ?? "N/A"}
                   </p>
                   {/* Deductible (Individual) */}
@@ -344,7 +346,7 @@ export default function SelectQuotes({
                     {(quote.data as any)?.["deductible"] ?? "N/A"}
                   </p>
                   {/* Coinsurance (In-Network) */}
-                  <p className="w-36">
+                  <p className="w-36 max-h-10 overflow-y-auto">
                     {(quote.data as any)?.["coinsurance"] ?? "N/A"}
                   </p>
                   {/* Out of Pocket (Individual) */}
@@ -352,11 +354,11 @@ export default function SelectQuotes({
                     {(quote.data as any)?.["out_of_pocket_max"] ?? "N/A"}
                   </p>
                   {/* Additional Copays Include (ER / Imaging / OP / IP) */}
-                  <p className="w-36">
+                  <p className="w-36 max-h-10 overflow-y-auto">
                     {(quote.data as any)?.["additional_copay"] ?? "N/A"}
                     {/* Total Monthly Premium  */}
                   </p>
-                  <p className="w-36">
+                  <p className="w-36 max-h-10 overflow-y-auto">
                     {(quote.data as any)?.["total_cost"] ?? "N/A"}
                   </p>
                 </div>
