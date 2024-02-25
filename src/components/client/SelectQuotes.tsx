@@ -290,14 +290,13 @@ export default function SelectQuotes({
               </div>
             </div>
             {quotes.map((quote) => (
-              <div key={quote.id}>
-                <div className="flex items-center w-fit mb-1 mt-1 p-2 border-b">
-                  <input
-                    type="checkbox"
-                    checked={quote.isSelected}
-                    onChange={() => handleCheckboxChange(quote.id)}
-                  />
-                  <div className="grid-cols-9 flex justify-left text-center w-fit gap-1 h-8 items-center overflow-hidden text-sm">
+              <div key={quote.id} className="flex items-center w-fit mb-1 mt-1 p-2 border-b">
+                <input
+                  type="checkbox"
+                  checked={quote.isSelected}
+                  onChange={() => handleCheckboxChange(quote.id)}
+                />
+                <div className="grid-cols-9 flex justify-left text-center w-fit gap-1 h-8 items-center text-sm">
                     {/* Carrier Name */}
                     <div className="w-32 flex items-center justify-center">
                       <Image
@@ -322,13 +321,17 @@ export default function SelectQuotes({
                       {(quote.data as any)?.["plan_type"] ?? "N/A"}
                     </p>
                     {/* Office Copay (PCP/Specialist) */}
-                    {(quote.data as any)?.["office_copay"] ?? "N/A"}
+                    <p className="w-32">
+                      {(quote.data as any)?.["office_copay"] ?? "N/A"}
+                    </p>
                     {/* Deductible (Individual) */}
                     <p className="w-32">
                       {(quote.data as any)?.["deductible"] ?? "N/A"}
                     </p>
                     {/* Coinsurance (In-Network) */}
-                    {(quote.data as any)?.["coinsurance"] ?? "N/A"}
+                    <p className="w-32">
+                      {(quote.data as any)?.["coinsurance"] ?? "N/A"}
+                    </p>
                     {/* Out of Pocket (Individual) */}
                     <p className="w-32">
                       {(quote.data as any)?.["out_of_pocket_max"] ?? "N/A"}
@@ -342,7 +345,6 @@ export default function SelectQuotes({
                       {(quote.data as any)?.["total_cost"] ?? "N/A"}
                     </p>
                   </div>
-                </div>
               </div>
             ))}
           </div>
