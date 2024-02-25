@@ -25,7 +25,7 @@ export default function QuoteCard({
   nonObjectVisibleQuoteFields,
   objectVisibleQuoteFields,
 }: QuoteCardProps) {
-  const [quoteData, setQuoteData] = useState<any>(quote.data);
+  const [quoteData, setQuoteData] = useState<any>(quote);
 
   const [textAreaSelected, setTextAreaSelected] = useState<boolean>(false);
   const ref1 = useRef();
@@ -79,7 +79,7 @@ export default function QuoteCard({
       const updatedQuote = updateNestedObject(quoteData, pathParts, newValue);
 
       // Update the state with the new quote
-      setQuoteData(updatedQuote.data);
+      setQuoteData(updatedQuote);
     };
   }
 
@@ -146,75 +146,135 @@ export default function QuoteCard({
             );
           })}
 
-        <div className="flex w-full">
-          <textarea
-            disabled
-            value={valueOrDefault(quoteData.plan_type)}
-            className="text-center font-semibold resize-none text-sm content-center h-7 w-1/2 bg-transparent focus:outline-0 focus:border focus:border-1 focus:border-gray-200 cursor-pointer focus:cursor-auto p-1"
-          />
-          <textarea
-            disabled
-            defaultValue={"Out-of-Network"}
-            className="text-center font-semibold resize-none text-sm content-center h-7 w-1/2 bg-transparent focus:outline-0 focus:border focus:border-1 focus:border-gray-200 cursor-pointer focus:cursor-auto p-1"
-          />
-        </div>
-        <hr className="w-full border-t-1 border-gray-500"></hr>
+        {quoteData?.plan_type ? (
+          <>
+            <div className="flex w-full">
+              <textarea
+                disabled
+                value={valueOrDefault(quoteData.plan_type)}
+                className="text-center font-semibold resize-none text-sm content-center h-7 w-1/2 bg-transparent focus:outline-0 focus:border focus:border-1 focus:border-gray-200 cursor-pointer focus:cursor-auto p-1"
+              />
+              <textarea
+                disabled
+                defaultValue={"Out-of-Network"}
+                className="text-center font-semibold resize-none text-sm content-center h-7 w-1/2 bg-transparent focus:outline-0 focus:border focus:border-1 focus:border-gray-200 cursor-pointer focus:cursor-auto p-1"
+              />
+            </div>
+            <hr className="w-full border-t-1 border-gray-500"></hr>
 
-        {objectVisibleQuoteFields.map((objectField) => {
-          return (
-            <>
-              <div className="flex w-full">
-                <textarea
-                  disabled
-                  className="text-center resize-none text-sm content-center h-7 w-1/2 bg-transparent border-r focus:outline-0 focus:border focus:border-1 focus:border-gray-200 focus:cursor-auto p-1"
-                />
-                <textarea
-                  disabled
-                  className="text-center resize-none text-sm content-center h-7 w-1/2 bg-transparent focus:outline-0 focus:border focus:border-1 focus:border-gray-200 focus:cursor-auto p-1"
-                />
-              </div>
+            {objectVisibleQuoteFields.map((objectField) => {
+              return (
+                <>
+                  <div className="flex w-full">
+                    <textarea
+                      disabled
+                      className="text-center resize-none text-sm content-center h-7 w-1/2 bg-transparent border-r focus:outline-0 focus:border focus:border-1 focus:border-gray-200 focus:cursor-auto p-1"
+                    />
+                    <textarea
+                      disabled
+                      className="text-center resize-none text-sm content-center h-7 w-1/2 bg-transparent focus:outline-0 focus:border focus:border-1 focus:border-gray-200 focus:cursor-auto p-1"
+                    />
+                  </div>
 
-              {Object.entries(
-                JSON.parse(objectField.json_structure as string),
-              ).map(([subFieldKey, value]) => {
-                return (
-                  <>
-                    <hr className="w-full border-t-1 border-gray-300"></hr>
-                    <div className="flex w-full bg-white">
-                      <textarea
-                        ref={ref3 as any}
-                        onClick={() => setTextAreaSelected(true)}
-                        onChange={handleQuoteChange(
-                          `${objectField.field}.in.${subFieldKey}`,
-                        )}
-                        value={valueOrDefault(
-                          (quoteData as any)[objectField.field]?.in?.[
-                            subFieldKey
-                          ],
-                        )}
-                        className="text-center resize-none text-sm content-center h-7 w-1/2 border-r bg-transparent focus:outline-0 focus:border focus:border-1 focus:border-gray-200 cursor-pointer focus:cursor-auto p-1"
-                      />
-                      <textarea
-                        ref={ref2 as any}
-                        onClick={() => setTextAreaSelected(true)}
-                        onChange={handleQuoteChange(
-                          `${objectField.field}.oon.${subFieldKey}`,
-                        )}
-                        value={valueOrDefault(
-                          (quoteData as any)[objectField.field]?.oon?.[
-                            subFieldKey
-                          ],
-                        )}
-                        className="text-center resize-none text-sm content-center h-7 w-1/2 bg-transparent focus:outline-0 focus:border focus:border-1 focus:border-gray-200 cursor-pointer focus:cursor-auto p-1"
-                      />
-                    </div>
-                  </>
-                );
-              })}
-              <hr className="w-full border-t-1 border-gray-500"></hr>
-            </>
-          );
-        })}
+                  {Object.entries(
+                    JSON.parse(objectField.json_structure as string),
+                  ).map(([subFieldKey, value]) => {
+                    return (
+                      <>
+                        <hr className="w-full border-t-1 border-gray-300"></hr>
+                        <div className="flex w-full bg-white">
+                          <textarea
+                            ref={ref3 as any}
+                            onClick={() => setTextAreaSelected(true)}
+                            onChange={handleQuoteChange(
+                              `${objectField.field}.in.${subFieldKey}`,
+                            )}
+                            value={valueOrDefault(
+                              (quoteData as any)[objectField.field]?.in?.[
+                                subFieldKey
+                              ],
+                            )}
+                            className="text-center resize-none text-sm content-center h-7 w-1/2 border-r bg-transparent focus:outline-0 focus:border focus:border-1 focus:border-gray-200 cursor-pointer focus:cursor-auto p-1"
+                          />
+                          <textarea
+                            ref={ref2 as any}
+                            onClick={() => setTextAreaSelected(true)}
+                            onChange={handleQuoteChange(
+                              `${objectField.field}.oon.${subFieldKey}`,
+                            )}
+                            value={valueOrDefault(
+                              (quoteData as any)[objectField.field]?.oon?.[
+                                subFieldKey
+                              ],
+                            )}
+                            className="text-center resize-none text-sm content-center h-7 w-1/2 bg-transparent focus:outline-0 focus:border focus:border-1 focus:border-gray-200 cursor-pointer focus:cursor-auto p-1"
+                          />
+                        </div>
+                      </>
+                    );
+                  })}
+                  <hr className="w-full border-t-1 border-gray-500"></hr>
+                </>
+              );
+            })}
+          </>
+        ) : (
+          <>
+            <div className="flex w-full">
+              <textarea
+                disabled
+                // value={valueOrDefault(quoteData.plan_type)}
+                className="text-center font-semibold resize-none text-sm content-center h-7 w-1/2 bg-transparent focus:outline-0 focus:border focus:border-1 focus:border-gray-200 cursor-pointer focus:cursor-auto p-1"
+              />
+            </div>
+            <hr className="w-full border-t-1 border-gray-500"></hr>
+
+            {objectVisibleQuoteFields.map((objectField) => {
+              return (
+                <>
+                  <div className="flex w-full">
+                    <textarea
+                      disabled
+                      className="text-center resize-none text-sm content-center h-7 w-full bg-transparent border-r focus:outline-0 focus:border focus:border-1 focus:border-gray-200 focus:cursor-auto p-1"
+                    />
+                  </div>
+
+                  {Object.entries(
+                    JSON.parse(objectField.json_structure as string),
+                  ).map(([subFieldKey, value]) => {
+                    console.log(
+                      "check this stuff",
+                      quoteData,
+                      objectField,
+                      subFieldKey,
+                    );
+                    return (
+                      <>
+                        <hr className="w-full border-t-1 border-gray-300"></hr>
+                        <div className="flex w-full bg-white">
+                          <textarea
+                            ref={ref3 as any}
+                            onClick={() => setTextAreaSelected(true)}
+                            onChange={handleQuoteChange(
+                              `${objectField.field}.${subFieldKey}`,
+                            )}
+                            value={valueOrDefault(
+                              (quoteData as any)[objectField.field]?.[
+                                subFieldKey
+                              ],
+                            )}
+                            className="text-center resize-none text-sm content-center h-7 w-full border-r bg-transparent focus:outline-0 focus:border focus:border-1 focus:border-gray-200 cursor-pointer focus:cursor-auto p-1"
+                          />
+                        </div>
+                      </>
+                    );
+                  })}
+                  <hr className="w-full border-t-1 border-gray-500"></hr>
+                </>
+              );
+            })}
+          </>
+        )}
 
         <div className="flex w-full">
           <textarea

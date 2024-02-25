@@ -98,11 +98,16 @@ export default function SelectQuotes({
   };
 
   const handleNextClick = async () => {
-    const selected = quotes?.filter((quote) => quote.isSelected) || [];
     const clientId = selectedClient.id;
     const selectedQuoteIds =
       quotes?.filter((quote) => quote.isSelected).map((quote) => quote.id) ||
       [];
+    console.log("selectedQuotes", selectedQuoteIds);
+    if (!selectedQuoteIds.length) {
+      alert("No quotes selected");
+      return;
+    }
+
     // setSelectedQuotes(selected);
     const { data: insertData, error: insertError } = await supabase
       .from("clients") // Replace with your actual Supabase table name
