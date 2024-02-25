@@ -1,3 +1,5 @@
+"use client";
+
 import Image from "next/image";
 import { GrDocumentPerformance } from "react-icons/gr";
 import { LiaPeopleCarrySolid } from "react-icons/lia";

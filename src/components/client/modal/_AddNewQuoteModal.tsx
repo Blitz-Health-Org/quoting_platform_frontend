@@ -137,7 +137,7 @@
 //               <p className="text-sm mr-1">Logo</p>
 //               <p className="text-xs text-gray-500">(Optional)</p>
 //             </div>
-           
+
 //             <div className="mb-6 flex gap-2 items-center justify-start">
 //               <div
 //                 {...getRootProps()}

@@ -2,7 +2,7 @@
 
 import React, { useContext, useEffect, useState } from "react";
 import { Subheader } from "../../components/comparison/Subheader";
-import Contributions from "../../components/comparison/contributions";
+import { Contributions } from "@/src/components/comparison/Contributions";
 import "../../components/comparison/sum.css"; // import your custom styles
 import Fullheader from "../../components/comparison/Fullheader";
 import QuoteCard from "../../components/comparison/QuoteCard";
@@ -42,6 +42,7 @@ export default function QuotingPage() {
       // Connect to the Socket.IO server
       // Listen for 'task_complete' events
       socket.on("task_complete", async (data) => {
+        console.log("what the hell socket on");
         const { data: quotesData, error: quotesError } = await supabase
           .from("quotes")
           .select("*")

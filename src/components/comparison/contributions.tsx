@@ -7,7 +7,7 @@ import Input from "@mui/material/Input";
 import { MdEdit } from "react-icons/md";
 import { FaSave } from "react-icons/fa";
 
-export default function Contributions() {
+export function Contributions() {
   const [editStandardContributions, setEditStandardContributions] =
     useState(false);
 
