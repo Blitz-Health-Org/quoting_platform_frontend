@@ -61,6 +61,8 @@ export default function SelectQuotes({
   });
   const router = useRouter();
 
+  console.log("quotes here", quotes);
+
   useEffect(() => {
     const socket = io(`${process.env.NEXT_PUBLIC_SOCKET_SERVER_URL!}`, {
       path: "/socket.io",
@@ -322,10 +324,10 @@ export default function SelectQuotes({
                   <p className="w-32 max-h-8 overflow-y-auto">
                     {(quote.data as any)?.["plan_name"] ?? "N/A"}
                   </p>
-                  {/* Funding () */}
+                  {/* Funding ()
                   <p className="w-32">
                     {(quote.data as any)?.["plan_type"] ?? "N/A"}
-                  </p>
+                  </p> */}
                   {/* Office Copay (PCP/Specialist) */}
                   <p className="w-32">
                     {(quote.data as any)?.["office_copay"] ?? "N/A"}
