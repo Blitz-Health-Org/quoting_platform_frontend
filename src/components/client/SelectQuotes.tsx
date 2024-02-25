@@ -27,6 +27,8 @@ import NewProject from "@/public/NewProject.jpg";
 import { SocketContext } from "@/src/context/SocketContext";
 import { String } from "lodash";
 import { Json } from "@/src/types/database/database.types";
+import { io } from "socket.io-client";
+import router from "next/router";
 
 export default function SelectQuotes({
   setComparisonOpen,
@@ -60,25 +62,27 @@ export default function SelectQuotes({
   const router = useRouter();
 
   useEffect(() => {
-    if (socket) {
-      // Connect to the Socket.IO server
-      // Listen for 'task_complete' events
-      socket.on("task_complete", (data) => {
-        console.log("Task Complete:", data);
-        fetchQuoteData();
-      });
+    const socket = io(`${process.env.NEXT_PUBLIC_SOCKET_SERVER_URL!}`, {
+      path: "/socket.io",
+      transports: ["websocket"],
+    });
+    // Connect to the Socket.IO server
+    // Listen for 'task_complete' events
+    socket.on("task_complete", (data) => {
+      console.log("Task Complete:", data);
+      fetchQuoteData();
+    });
 
-      // Listen for 'task_status' events
-      socket.on("task_status", (data) => {
-        console.log("Task Status:", data);
-      });
+    // Listen for 'task_status' events
+    socket.on("task_status", (data) => {
+      console.log("Task Status:", data);
+    });
 
-      return () => {
-        socket.off("task_complete");
-        socket.off("task_status");
-        socket.close();
-      };
-    }
+    return () => {
+      socket.off("task_complete");
+      socket.off("task_status");
+      socket.close();
+    };
   }, []);
 
   const handleCheckboxChange = (quoteId: number) => {

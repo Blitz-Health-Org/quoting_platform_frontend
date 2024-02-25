@@ -163,12 +163,12 @@ export default function Home() {
   }
 
   return (
-    <SocketProvider>
-      <div className="w-full h-full flex flex-row bg-white">
-        <Navbar selected="Quotes" />
+    // <SocketProvider>
+    <div className="w-full h-full flex flex-row bg-white">
+      <Navbar selected="Quotes" />
 
-        <div className="w-full md:w-6/7">
-          {/* <main className="h-screen overflow-hidden flex-col w-full bg-gray-100 bg-opacity-50 pl-2 pr-6 pt-5 pb-6 text-gray-700">
+      <div className="w-full md:w-6/7">
+        {/* <main className="h-screen overflow-hidden flex-col w-full bg-gray-100 bg-opacity-50 pl-2 pr-6 pt-5 pb-6 text-gray-700">
           <div className="flex w-full items-center mb-4 mt-1 justify-between">
             <div className="flex items-center text-sm md:text-base">
               <PiListBulletsBold className="mr-2" />
@@ -220,20 +220,20 @@ export default function Home() {
           />
         </main> */}
 
-          {comparisonOpen === false ? (
-            <ClientTable
-              setComparisonOpen={setComparisonOpen}
-              setSelectedClient={setSelectedClient}
-            />
-          ) : (
-            <SelectQuotes
-              selectedClient={selectedClient}
-              setComparisonOpen={setComparisonOpen}
-              setSelectedClient={setSelectedClient}
-            />
-          )}
-        </div>
+        {comparisonOpen === false ? (
+          <ClientTable
+            setComparisonOpen={setComparisonOpen}
+            setSelectedClient={setSelectedClient}
+          />
+        ) : (
+          <SelectQuotes
+            selectedClient={selectedClient}
+            setComparisonOpen={setComparisonOpen}
+            setSelectedClient={setSelectedClient}
+          />
+        )}
       </div>
-    </SocketProvider>
+    </div>
+    // </SocketProvider>
   );
 }
