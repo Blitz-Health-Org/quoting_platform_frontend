@@ -310,12 +310,12 @@ export default function SelectQuotes({
                 <div className="grid-cols-9 flex justify-left text-center w-fit gap-1 h-8 items-center text-sm">
                   {/* Carrier Name */}
                   <div className="w-36 flex items-center justify-center">
-                  <input
-                    type="checkbox"
-                    checked={quote.isSelected}
-                    onChange={() => handleCheckboxChange(quote.id)}
-                    className="mr-4"
-                  />
+                    <input
+                      type="checkbox"
+                      checked={quote.isSelected}
+                      onChange={() => handleCheckboxChange(quote.id)}
+                      className="mr-4"
+                    />
                     <Image
                       src={
                         carrierLogos[

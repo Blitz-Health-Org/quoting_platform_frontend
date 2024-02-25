@@ -131,7 +131,10 @@ export default function QuoteCard({
         </div>
         <div className="flex flex-col w-fit justify-center items-start ml-1 mb-4">
           <h1 className="font-bold text-xl">{quote?.carrier}</h1>
-          <p className="text-sm">{carrierWebsites[quote.carrier as keyof typeof carrierLogos] || carrierWebsites["Other"]}</p>
+          <p className="text-sm">
+            {carrierWebsites[quote.carrier as keyof typeof carrierLogos] ||
+              carrierWebsites["Other"]}
+          </p>
         </div>
       </div>
 

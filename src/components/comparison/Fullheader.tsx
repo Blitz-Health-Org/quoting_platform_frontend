@@ -37,7 +37,7 @@ export default function Fullheader({ clientName }: { clientName: string }) {
         >
           <IoHelpCircleSharp />
           <p>Help</p>
-      </div>
+        </div>
         <div className="rounded-3xl bg-neutral-200 h-8 w-8 outline outline-1 outline-gray-400 overflow-hidden flex items-center justify-center">
           <Image
             src="/angus_logo.png" // Assuming your public folder is served from the root
