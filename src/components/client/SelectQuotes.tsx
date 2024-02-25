@@ -68,7 +68,7 @@ export default function SelectQuotes({
     });
     // Connect to the Socket.IO server
     // Listen for 'task_complete' events
-    socket.on("task_complete", (data) => {
+    socket.on("sub_task_complete", (data) => {
       console.log("Task Complete:", data);
       fetchQuoteData();
     });
@@ -79,7 +79,7 @@ export default function SelectQuotes({
     });
 
     return () => {
-      socket.off("task_complete");
+      socket.off("sub_task_complete");
       socket.off("task_status");
       socket.close();
     };
@@ -275,8 +275,7 @@ export default function SelectQuotes({
                 <div className="w-32">Carrier</div>
                 {/* Plan Name */}
                 <p className="w-32">Plan</p>
-                {/* Funding () */}
-                <p className="w-32">Funding</p>
+
                 {/* Office Copay (PCP/Specialist) */}
                 <p className="w-32">Office Copay (PCP/Specialist)</p>
                 {/* Deductible (Individual) */}
@@ -294,7 +293,10 @@ export default function SelectQuotes({
               </div>
             </div>
             {quotes.map((quote) => (
-              <div key={quote.id} className="flex items-center w-fit mb-1 mt-1 p-2 border-b">
+              <div
+                key={quote.id}
+                className="flex items-center w-fit mb-1 mt-1 p-2 border-b"
+              >
                 <input
                   type="checkbox"
                   checked={quote.isSelected}
