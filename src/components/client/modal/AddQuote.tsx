@@ -82,7 +82,8 @@ export const AddQuote = ({
             file_name: file.name,
           });
 
-        successfulFileUrls.push(fileUrl);
+        // Send the fileName instead of fileUrl to backend so we can parse out the carrier name
+        successfulFileUrls.push(fileName);
       } catch {
         errFiles.push(file.name);
       }
