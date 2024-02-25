@@ -285,7 +285,7 @@ export default function QuotingPage() {
   };
 
   return (
-    <div className="w-full h-screen bg-gray-100 pb-6">
+    <div className="w-full overflow-hidden h-screen bg-gray-100 pb-6">
       <Fullheader clientName={client?.name || "N/A"} />
       <div className="h-full bg-gray-100 border border-gray-200 border-b-0 px-6 py-2">
         <Subheader
@@ -296,7 +296,7 @@ export default function QuotingPage() {
           quotesLength={quotes.length}
         />
 
-        <div className="p-0.5 flex w-fit h-fit gap-2">
+        <div className="p-0.5 flex w-full h-fit overflow-x-scroll gap-2">
           <Left
             nonObjectVisibleQuoteFields={nonObjectVisibleQuoteFields}
             objectVisibleQuoteFields={objectVisibleQuoteFields}
