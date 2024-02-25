@@ -1,3 +1,5 @@
+"use client"
+
 import React, { useState } from "react";
 import InputLabel from "@mui/material/InputLabel";
 import MenuItem from "@mui/material/MenuItem";
@@ -7,12 +9,15 @@ import { FaMap } from "react-icons/fa";
 import { FaShareAlt } from "react-icons/fa";
 import { IoMdDownload } from "react-icons/io";
 import { IoIosSettings } from "react-icons/io";
+import { IoChevronDown } from "react-icons/io5";
+import { SnackbarAlert } from "../ui/SnackbarAlert";
 
 type SubheaderProps = {
   isPaneOpen: boolean;
   onPaneToggle: (newState: boolean) => void;
   copyUrlToClipboard: any;
   handleDownloadCSV: any;
+  quotesLength: any;
 };
 
 export const Subheader: React.FC<SubheaderProps> = ({
@@ -20,12 +25,40 @@ export const Subheader: React.FC<SubheaderProps> = ({
   onPaneToggle,
   copyUrlToClipboard,
   handleDownloadCSV,
+  quotesLength
 }) => {
+
+  const [snackbar, setSnackbar] = useState({
+    open: false,
+    message: "",
+    severity: "success",
+  });
+  
+  const handleBusiness = (index: any) => {
+    setSnackbar({
+      open: true,
+      message: "This feature is coming soon!",
+      severity: "info",
+    });
+  };
+
   return (
-    <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+    <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 mt-2">
       {/* Left-aligned form */}
       <div className="flex gap-2 justify-center lg:justify-start items-center">
-        <FormControl
+        <button onClick={handleBusiness} className="flex items-center mr-1">
+          <p className="mr-1">Rank by</p>
+          <IoChevronDown/>
+        </button>
+        <button onClick={handleBusiness} className="flex items-center mr-1">
+          <p className="mr-1">Filter</p>
+          <IoChevronDown/>
+        </button>
+        <button onClick={handleBusiness} className="flex items-center mr-1">
+          <p className="mr-1">Age banded rates</p>
+          <IoChevronDown/>
+        </button>
+        {/* <FormControl
           variant="standard"
           sx={{ m: 1, minWidth: 120 }}
           size="small"
@@ -66,7 +99,13 @@ export const Subheader: React.FC<SubheaderProps> = ({
             <MenuItem value={20}>Twenty</MenuItem>
             <MenuItem value={30}>Thirty</MenuItem>
           </Select>
-        </FormControl>
+        </FormControl> */}
+      </div>
+
+      <div className="col-span-1 text-center">
+
+        Showing {quotesLength} Quotes | Edit
+
       </div>
 
       {/* Right-aligned buttons */}
@@ -93,6 +132,15 @@ export const Subheader: React.FC<SubheaderProps> = ({
           <p>Settings</p>
         </button>
       </div>
+      <SnackbarAlert
+        openSnackbarShare={snackbar.open}
+        setOpenSnackbarShare={setSnackbar}
+        snackbar={{
+          open: snackbar.open,
+          message: snackbar.message,
+          severity: snackbar.severity,
+        }}
+      />
     </div>
   );
 };
