@@ -41,7 +41,7 @@ export default function QuotingPage() {
     if (socket && client) {
       // Connect to the Socket.IO server
       // Listen for 'task_complete' events
-      socket.on("task_complete", async (data) => {
+      socket.on("sub_task_complete", async (data) => {
         console.log("what the hell socket on");
         const { data: quotesData, error: quotesError } = await supabase
           .from("quotes")
@@ -65,7 +65,7 @@ export default function QuotingPage() {
       });
 
       return () => {
-        socket.off("task_complete");
+        socket.off("sub_task_complete");
         socket.off("task_status");
         socket.close();
       };
