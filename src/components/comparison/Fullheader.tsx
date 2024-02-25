@@ -15,7 +15,7 @@ export default function Fullheader({ clientName }: { clientName: string }) {
     <div className="grid grid-cols-3 items-center justify-between h-12 bg-white outline outline-1 outline-gray-200 px-6">
       <div className="flex items-center cursor-pointer" onClick={handleNewClientClick}>
         <IoMdArrowBack className="mr-2" />
-        <p>Client Dashboard</p>
+        <p className="truncate">Client Dashboard</p>
       </div>
 
       <div className="flex items-center justify-center">
