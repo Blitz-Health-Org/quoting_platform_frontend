@@ -78,7 +78,8 @@ export const Navbar = ({ selected }: { selected: string }) => {
               isHandbooksSelected ? "bg-gray-200" : ""
             }`}
           >
-            <MdOutlineCollectionsBookmark className="mr-2 ml-1 truncate" /> <p className="truncate">Handbooks</p>
+            <MdOutlineCollectionsBookmark className="mr-2 ml-1 truncate" />{" "}
+            <p className="truncate">Handbooks</p>
           </div>
 
           <div className="text-sm ml-1 mt-6 mb-1 text-gray-500 w-full p-1">
@@ -92,7 +93,8 @@ export const Navbar = ({ selected }: { selected: string }) => {
                 isSettingsSelected ? "bg-gray-200" : ""
               }`}
             >
-              <IoIosLink className="mr-2 ml-1" /> <p className="truncate">Integrations</p>
+              <IoIosLink className="mr-2 ml-1" />{" "}
+              <p className="truncate">Integrations</p>
             </div>
           </div>
           <div

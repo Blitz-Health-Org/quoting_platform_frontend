@@ -1,4 +1,4 @@
-"use client"
+"use client";
 
 import React, { useState } from "react";
 import InputLabel from "@mui/material/InputLabel";
@@ -25,15 +25,14 @@ export const Subheader: React.FC<SubheaderProps> = ({
   onPaneToggle,
   copyUrlToClipboard,
   handleDownloadCSV,
-  quotesLength
+  quotesLength,
 }) => {
-
   const [snackbar, setSnackbar] = useState({
     open: false,
     message: "",
     severity: "success",
   });
-  
+
   const handleBusiness = (index: any) => {
     setSnackbar({
       open: true,
@@ -48,15 +47,15 @@ export const Subheader: React.FC<SubheaderProps> = ({
       <div className="flex gap-2 justify-center lg:justify-start items-center">
         <button onClick={handleBusiness} className="flex items-center mr-1">
           <p className="mr-1">Rank by</p>
-          <IoChevronDown/>
+          <IoChevronDown />
         </button>
         <button onClick={handleBusiness} className="flex items-center mr-1">
           <p className="mr-1">Filter</p>
-          <IoChevronDown/>
+          <IoChevronDown />
         </button>
         <button onClick={handleBusiness} className="flex items-center mr-1">
           <p className="mr-1">Age banded rates</p>
-          <IoChevronDown/>
+          <IoChevronDown />
         </button>
         {/* <FormControl
           variant="standard"
@@ -103,9 +102,7 @@ export const Subheader: React.FC<SubheaderProps> = ({
       </div>
 
       <div className="col-span-1 text-center">
-
         Showing {quotesLength} Quotes | Edit
-
       </div>
 
       {/* Right-aligned buttons */}

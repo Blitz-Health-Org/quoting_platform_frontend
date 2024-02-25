@@ -305,54 +305,54 @@ export default function SelectQuotes({
                   onChange={() => handleCheckboxChange(quote.id)}
                 />
                 <div className="grid-cols-9 flex justify-left text-center w-fit gap-1 h-8 items-center text-sm">
-                    {/* Carrier Name */}
-                    <div className="w-32 flex items-center justify-center">
-                      <Image
-                        src={
-                          carrierLogos[
-                            quote.carrier as keyof typeof carrierLogos
-                          ] || carrierLogos["Chamber"]
-                        }
-                        alt={`Logo for ${quote.carrier}`}
-                        width={20}
-                        height={20}
-                        className="mr-2 rounded-md"
-                      />
-                      <p>{quote.carrier || "Sup"}</p>
-                    </div>
-                    {/* Plan Name */}
-                    <p className="w-32 max-h-10 overflow-y-auto">
-                      {(quote.data as any)?.["plan_name"] ?? "N/A"}
-                    </p>
-                    {/* Funding () */}
-                    <p className="w-32">
-                      {(quote.data as any)?.["plan_type"] ?? "N/A"}
-                    </p>
-                    {/* Office Copay (PCP/Specialist) */}
-                    <p className="w-32">
-                      {(quote.data as any)?.["office_copay"] ?? "N/A"}
-                    </p>
-                    {/* Deductible (Individual) */}
-                    <p className="w-32 max-h-10 overflow-y-auto">
-                      {(quote.data as any)?.["deductible"] ?? "N/A"}
-                    </p>
-                    {/* Coinsurance (In-Network) */}
-                    <p className="w-32">
-                      {(quote.data as any)?.["coinsurance"] ?? "N/A"}
-                    </p>
-                    {/* Out of Pocket (Individual) */}
-                    <p className="w-32">
-                      {(quote.data as any)?.["out_of_pocket_max"] ?? "N/A"}
-                    </p>
-                    {/* Additional Copays Include (ER / Imaging / OP / IP) */}
-                    <p className="w-32">
-                      {(quote.data as any)?.["additional_copay"] ?? "N/A"}
-                      {/* Total Monthly Premium  */}
-                    </p>
-                    <p className="w-32">
-                      {(quote.data as any)?.["total_cost"] ?? "N/A"}
-                    </p>
+                  {/* Carrier Name */}
+                  <div className="w-32 flex items-center justify-center">
+                    <Image
+                      src={
+                        carrierLogos[
+                          quote.carrier as keyof typeof carrierLogos
+                        ] || carrierLogos["Chamber"]
+                      }
+                      alt={`Logo for ${quote.carrier}`}
+                      width={20}
+                      height={20}
+                      className="mr-2 rounded-md"
+                    />
+                    <p>{quote.carrier || "Sup"}</p>
                   </div>
+                  {/* Plan Name */}
+                  <p className="w-32 max-h-10 overflow-y-auto">
+                    {(quote.data as any)?.["plan_name"] ?? "N/A"}
+                  </p>
+                  {/* Funding () */}
+                  <p className="w-32">
+                    {(quote.data as any)?.["plan_type"] ?? "N/A"}
+                  </p>
+                  {/* Office Copay (PCP/Specialist) */}
+                  <p className="w-32">
+                    {(quote.data as any)?.["office_copay"] ?? "N/A"}
+                  </p>
+                  {/* Deductible (Individual) */}
+                  <p className="w-32 max-h-10 overflow-y-auto">
+                    {(quote.data as any)?.["deductible"] ?? "N/A"}
+                  </p>
+                  {/* Coinsurance (In-Network) */}
+                  <p className="w-32">
+                    {(quote.data as any)?.["coinsurance"] ?? "N/A"}
+                  </p>
+                  {/* Out of Pocket (Individual) */}
+                  <p className="w-32">
+                    {(quote.data as any)?.["out_of_pocket_max"] ?? "N/A"}
+                  </p>
+                  {/* Additional Copays Include (ER / Imaging / OP / IP) */}
+                  <p className="w-32">
+                    {(quote.data as any)?.["additional_copay"] ?? "N/A"}
+                    {/* Total Monthly Premium  */}
+                  </p>
+                  <p className="w-32">
+                    {(quote.data as any)?.["total_cost"] ?? "N/A"}
+                  </p>
+                </div>
               </div>
             ))}
           </div>
