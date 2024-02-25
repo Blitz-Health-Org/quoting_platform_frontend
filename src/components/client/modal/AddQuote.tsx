@@ -72,15 +72,15 @@ export const AddQuote = ({
           throw new Error("No url found for file");
         }
 
-        const fileUrl = data.publicUrl;
+        // const fileUrl = data.publicUrl;
 
-        await supabase
-          .from("quotes") // Replace with your actual Supabase table name
-          .upsert({
-            client_id: client.id,
-            file_url: fileUrl,
-            file_name: file.name,
-          });
+        // await supabase
+        //   .from("quotes") // Replace with your actual Supabase table name
+        //   .upsert({
+        //     client_id: client.id,
+        //     file_url: fileUrl,
+        //     file_name: file.name,
+        //   });
 
         // Send the fileName instead of fileUrl to backend so we can parse out the carrier name
         successfulFileUrls.push(fileName);

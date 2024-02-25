@@ -12,21 +12,18 @@ export default function Fullheader({ clientName }: { clientName: string }) {
   };
 
   return (
-    <div className="flex items-center justify-between h-12 bg-white outline outline-1 outline-gray-200 px-6">
-      <div
-        className="flex items-center cursor-pointer"
-        onClick={handleNewClientClick}
-      >
+    <div className="grid grid-cols-3 items-center justify-between h-12 bg-white outline outline-1 outline-gray-200 px-6">
+      <div className="flex items-center cursor-pointer" onClick={handleNewClientClick}>
         <IoMdArrowBack className="mr-2" />
-        <p>Client Dashboard</p>
+        <p className="truncate">Client Dashboard</p>
       </div>
 
-      <div className="flex items-center">
+      <div className="flex items-center justify-center">
         <IconBuilding className="mr-2" />
         <p>{clientName}</p>
       </div>
 
-      <div className="flex items-center">
+      <div className="flex items-center justify-end">
         <div className="flex items-center gap-2 cursor-pointer outline outline-1 outline-gray-300 mr-4 rounded-sm bg-gray-100/80 text-sm text-gray-900 px-2 py-1">
           <IoHelpCircleSharp />
           <a href="mailto:founders@blumebenefits.com">
