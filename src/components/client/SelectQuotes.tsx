@@ -61,6 +61,8 @@ export default function SelectQuotes({
   });
   const router = useRouter();
 
+  console.log("quotes here", quotes);
+
   useEffect(() => {
     const socket = io(`${process.env.NEXT_PUBLIC_SOCKET_SERVER_URL!}`, {
       path: "/socket.io",

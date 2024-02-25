@@ -43,7 +43,7 @@ export const AddQuote = ({
   };
 
   const [files, setFiles] = useState<File[]>([]);
-  const [selectedPlan, setSelectedPlan] = useState<string>("");
+  const [selectedPlan, setSelectedPlan] = useState<string>("bcbs_tx_aca");
 
   const onDrop = (acceptedFiles: File[]) => {
     setFiles(acceptedFiles);
@@ -63,6 +63,7 @@ export const AddQuote = ({
     const fileId = uuid();
     for (const file of files) {
       try {
+        console.log("selectedPlan", selectedPlan);
         const fileName = `${selectedPlan}/${fileId}/whole`;
         await supabase.storage.from("images").upload(fileName, file);
 
@@ -288,7 +289,10 @@ export const AddQuote = ({
           className="outline outline-1 outline-gray-300 rounded-sm"
           name="plan"
           id="plan"
-          onChange={(e) => setSelectedPlan(e.target.value)}
+          onChange={(e) => {
+            console.log("e", e);
+            setSelectedPlan(e.target.value);
+          }}
         >
           <option value="bcbs_tx_aca">BCBS TX ACA</option>
           <option value="aetna">Aetna</option>
