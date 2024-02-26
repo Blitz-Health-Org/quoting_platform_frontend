@@ -1,36 +1,44 @@
-name: Lint and Auto-fix
+name: Lint with auto fix
 
-on: [push, pull_request]
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
 
 jobs:
-  lint-and-fix:
+  run-linters:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v2
+      - name: Checkout code repository
+        uses: actions/checkout@v3
         with:
+          # This ensures the action checks out the same commit that triggered the workflow
+          # for pull requests, it's particularly important to use the PR's head branch
           ref: ${{ github.head_ref }}
 
-      - name: Setup PNPM
-        uses: pnpm/action-setup@v2
-        with:
-          version: 6.32.9
-
       - name: Setup Node.js
-        uses: actions/setup-node@v2
+        uses: actions/setup-node@v3
         with:
           node-version: "18"
           cache: "pnpm"
+
+      - name: Install pnpm
+        run: npm install -g pnpm
 
       - name: Install dependencies
         run: pnpm install
 
       - name: Run lint with auto-fix
-        run: pnpm run lint:fix
+        run: pnpm run lint --fix
 
-      - name: Commit and push if there were changes
-        uses: stefanzweifel/git-auto-commit-action@v4
-        with:
-          commit_message: Automated lint fixes
-          branch: ${{ github.head_ref }}
-          file_pattern: src/**/*.ts src/**/*.tsx
+      - name: Commit and push lint fixes
+        run: |
+          git config --global user.name 'github-actions[bot]'
+          git config --global user.email 'github-actions[bot]@users.noreply.github.com'
+          git add .
+          git diff --staged --quiet || git commit -m "Apply auto lint fixes"
+          git push || true
