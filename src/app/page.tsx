@@ -55,12 +55,6 @@ export default function Home() {
 
   }, [searchParams]);
 
-  useEffect(() => {
-    if (!loading && !userId) {
-      router.push("sign-in");
-    }
-  }, [userId, router, loading]);
-
   // useEffect(() => {
   //   if (!loading) {
   //     // Connect to the Socket.IO server
@@ -188,10 +182,6 @@ export default function Home() {
   // const handleCloseModal = () => {
   //   setIsModalOpen(!isModalOpen);
   // };
-
-  if (loading) {
-    return <></>;
-  }
 
   return (
     // <SocketProvider>

@@ -37,6 +37,10 @@ export default function ClientTable({
   setSelectedClient: Dispatch<SetStateAction<ClientType>>;
 }) {
   const [clients, setClients] = useState<ClientType[]>([]);
+  const {
+    userId: [userId, , loading],
+  } = useContext(UserContext);
+
   const sortedClients = clients
     .filter((client) => client.created_at)
     .sort((a, b) => b.created_at.localeCompare(a.created_at));
@@ -50,17 +54,19 @@ export default function ClientTable({
 
   useEffect(() => {
     const fetchData = async () => {
-      const { data, error } = await supabase.from("clients").select();
-      // .eq("user_id", userId);
+      const { data, error } = await supabase
+        .from("clients")
+        .select()
+        .eq("user_id", userId);
 
       if (error) {
-        alert("Error updating data");
+        alert(error.message);
       } else {
         setClients(data); //TODO: make sure the data recieved matches client type
       }
     };
-    fetchData();
-  }, []);
+    if (!loading) fetchData();
+  }, [loading, userId]);
 
   const copyUrlToClipboard = () => {
     // Use window.location.href to get the current URL
@@ -105,7 +111,10 @@ export default function ClientTable({
       } else {
         //UPDATE DATA
         try {
-          const { data, error } = await supabase.from("clients").select();
+          const { data, error } = await supabase
+            .from("clients")
+            .select()
+            .eq("user_id", userId);
           if (error) {
             alert("Error retrieving data");
           } else {
