@@ -125,7 +125,7 @@ export default function QuoteCard({
   });
 
   return (
-    <div className="bg-white h-full mb-4 min-w-80 mt-4 rounded-lg outline outline-1 outline-gray-300 py-6 mr-1 text-center overscroll-none">
+    <div className="bg-white h-fit mb-4 min-w-80 mt-4 rounded-lg outline outline-1 outline-gray-300 pt-6 pb-1 mr-1 text-center overscroll-none">
       <div className="flex w-full h-fit justify-center items-center">
         <div className="w-fit h-fit mb-4 mr-1">
           <Image
