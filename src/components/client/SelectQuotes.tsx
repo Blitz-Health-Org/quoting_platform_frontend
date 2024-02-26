@@ -99,7 +99,8 @@ export default function SelectQuotes({
   const router = useRouter();
   const [search, setSearch] = useState<string>();
 
-  function handleAddNewQuote() {
+  function handleAddNewQuote(event: any) {
+    event?.stopPropagation();
     setModalOpen("addNewQuote");
     setSelectedClient(selectedClient);
     return;

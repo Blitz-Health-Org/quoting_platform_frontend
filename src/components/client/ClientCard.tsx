@@ -33,7 +33,8 @@ export const ClientCard = ({
 }: ClientCardProps) => {
   const router = useRouter();
 
-  function handleCreateHandbook() {
+  function handleCreateHandbook(event: any) {
+    event.stopPropagation();
     setOpenSnackbarShare({
       open: true,
       message: `This feature is coming soon!`,
@@ -89,7 +90,8 @@ export const ClientCard = ({
     return letterToColorMap[letter.toUpperCase()] || "#999999"; // Default color if not found
   }
 
-  function handleAddNewQuote() {
+  function handleAddNewQuote(event: any) {
+    event?.stopPropagation();
     setModalOpen("addNewQuote");
     setSelectedClient(client);
     return;
