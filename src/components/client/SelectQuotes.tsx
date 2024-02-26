@@ -1,6 +1,6 @@
 "use client";
 
-import Image from "next/image";
+import Image, { StaticImageData } from "next/image";
 import { BiPlus } from "react-icons/bi";
 import { NewClientModal } from "@/src/components/client/modal/NewClient";
 import { ClientType } from "@/src/types/custom/Client";
@@ -46,7 +46,7 @@ export default function SelectQuotes({
 }) {
   type QuoteTypeWithCheckbox = QuoteType & { isSelected: boolean };
 
-  const carrierLogos = {
+  const carrierLogos: Record<string, StaticImageData> = {
     Aetna: AetnaLogo,
     Anthem: AnotherCarrierLogo,
     Cigna: Cigna,
@@ -69,7 +69,19 @@ export default function SelectQuotes({
     });
   };
 
-  const [entryWidth, setEntryWidth] = useState(innerWidth / 9);
+  const planAttributesMapping: { key: keyof PlanAttributes; label: string }[] = [
+    { key: "carrier", label: "Carrier" },
+    { key: "plan_name", label: "Plan" },
+    { key: "plan_type", label: "Plan Type" },
+    { key: "office_copay", label: "Office Copay (PCP/Specialist)" },
+    { key: "deductible", label: "Deductible (Individual)" },
+    { key: "coinsurance", label: "Coinsurance (In-Network)" },
+    { key: "out_of_pocket_max", label: "Out of Pocket (Individual)" },
+    { key: "additional_copay", label: "Additional Copays (ER / Imaging / OP / IP)" },
+    { key: "total_cost", label: "Total Monthly Premium" },
+  ];
+
+  const [entryWidth, setEntryWidth] = useState(innerWidth / planAttributesMapping.length);
   const { socket } = useContext(SocketContext);
   const [clients, setClients] = useState<ClientType[]>([]);
   const [quotes, setQuotes] = useState<QuoteTypeWithCheckbox[]>([]);
@@ -91,8 +103,8 @@ export default function SelectQuotes({
     // Update entryWidth when the screen size changes
 
     const handleResize = () => {
-      setEntryWidth(innerWidth / 9);
-      console.log("yeah", entryWidth);
+      setEntryWidth(innerWidth / planAttributesMapping.length);
+      console.log("yeah", entryWidth)
     };
 
     // Attach event listener for window resize
@@ -103,6 +115,18 @@ export default function SelectQuotes({
       window.removeEventListener("resize", handleResize);
     };
   }, []);
+
+  interface PlanAttributes {
+    carrier: string;
+    plan_name: string;
+    plan_type: string;
+    office_copay: string;
+    deductible: string;
+    coinsurance: string;
+    out_of_pocket_max: string;
+    additional_copay: string;
+    total_cost: string;
+  }
 
   useEffect(() => {
     const socket = io(`${process.env.NEXT_PUBLIC_SOCKET_SERVER_URL!}`, {
@@ -281,46 +305,14 @@ export default function SelectQuotes({
             </div>
             <div className="w-full overflow-x-auto">
               <div className="flex py-2 w-fit border-b">
-                <div className="grid-cols-9 flex justify-left text-center w-fit gap-1 h-20 font-bold items-center text-wrap text-sm">
-                  {/* Carrier Name */}
-                  <div
-                    className="flex justify-center gap-2 min-w-32"
-                    style={{ width: `${entryWidth}px` }}
-                  >
-                    <p>Carrier</p>
-                  </div>
-                  {/* Plan Name */}
-                  <p style={{ width: `${entryWidth}px` }} className="min-w-32">
-                    Plan
-                  </p>
-                  {/* Plan Type */}
-                  <p style={{ width: `${entryWidth}px` }} className="min-w-32">
-                    Plan Type
-                  </p>
-                  {/* Office Copay (PCP/Specialist) */}
-                  <p style={{ width: `${entryWidth}px` }} className="min-w-32">
-                    Office Copay (PCP/Specialist)
-                  </p>
-                  {/* Deductible (Individual) */}
-                  <p style={{ width: `${entryWidth}px` }} className="min-w-32">
-                    Deductible (Individual)
-                  </p>
-                  {/* Coinsurance (In-Network) */}
-                  <p style={{ width: `${entryWidth}px` }} className="min-w-32">
-                    Coinsurance (In-Network)
-                  </p>
-                  {/* Out of Pocket (Individual) */}
-                  <p style={{ width: `${entryWidth}px` }} className="min-w-32">
-                    Out of Pocket (Individual)
-                  </p>
-                  {/* Additional Copays Include (ER / Imaging / OP / IP) */}
-                  <p style={{ width: `${entryWidth}px` }} className="min-w-32">
-                    Additional Copays (ER / Imaging / OP / IP)
-                  </p>
-                  {/* Total Monthly Premium */}
-                  <p style={{ width: `${entryWidth}px` }} className="min-w-32">
-                    Total Monthly Premium
-                  </p>
+                <div           
+                  className="grid-cols-9 flex justify-left text-center w-fit gap-1 h-20 font-bold items-center text-wrap text-sm"
+                >
+                  {planAttributesMapping.map((attribute) => (
+                    <div key={attribute.key} className="flex justify-center gap-2 min-w-32" style={{ width: `${entryWidth}px` }}>
+                      <p>{attribute.label}</p>
+                    </div>
+                  ))}
                 </div>
               </div>
               {quotes.length === 0 ? (
@@ -348,86 +340,38 @@ export default function SelectQuotes({
                       className="flex items-center w-fit mb-1 mt-1 py-2 border-b"
                     >
                       <div className="grid-cols-9 w-full flex justify-left text-center w-fit gap-1 h-8 items-center text-sm">
-                        {/* Carrier Name */}
-                        <div
-                          className="flex items-center justify-center min-w-32"
-                          style={{ width: `${entryWidth}px` }}
-                        >
-                          <input
-                            type="checkbox"
-                            checked={quote.isSelected}
-                            onChange={() => handleCheckboxChange(quote.id)}
-                            className="mr-4"
-                          />
-                          <Image
-                            src={
-                              carrierLogos[
-                                quote.carrier as keyof typeof carrierLogos
-                              ] || carrierLogos["Chamber"]
-                            }
-                            alt={`Logo for ${quote.carrier}`}
-                            width={20}
-                            height={20}
-                            className="mr-2 rounded-md"
-                          />
-                          <p>{quote.carrier || "Sup"}</p>
-                        </div>
-                        {/* Plan Name */}
-                        <p
-                          className="max-h-10 overflow-y-auto min-w-32"
-                          style={{ width: `${entryWidth}px` }}
-                        >
-                          {(quote.data as any)?.["plan_name"] ?? "N/A"}
-                        </p>
-                        {/* Funding () */}
-                        <p
-                          className="max-h-10 overflow-y-auto min-w-32"
-                          style={{ width: `${entryWidth}px` }}
-                        >
-                          {(quote.data as any)?.["plan_type"] ?? "N/A"}
-                        </p>
-                        {/* Office Copay (PCP/Specialist) */}
-                        <p
-                          className="max-h-10 overflow-y-auto min-w-32"
-                          style={{ width: `${entryWidth}px` }}
-                        >
-                          {(quote.data as any)?.["office_copay"] ?? "N/A"}
-                        </p>
-                        {/* Deductible (Individual) */}
-                        <p
-                          className="max-h-10 overflow-y-auto min-w-32"
-                          style={{ width: `${entryWidth}px` }}
-                        >
-                          {(quote.data as any)?.["deductible"] ?? "N/A"}
-                        </p>
-                        {/* Coinsurance (In-Network) */}
-                        <p
-                          className="max-h-10 overflow-y-auto min-w-32"
-                          style={{ width: `${entryWidth}px` }}
-                        >
-                          {(quote.data as any)?.["coinsurance"] ?? "N/A"}
-                        </p>
-                        {/* Out of Pocket (Individual) */}
-                        <p
-                          className="max-h-10 overflow-y-auto min-w-32"
-                          style={{ width: `${entryWidth}px` }}
-                        >
-                          {(quote.data as any)?.["out_of_pocket_max"] ?? "N/A"}
-                        </p>
-                        {/* Additional Copays Include (ER / Imaging / OP / IP) */}
-                        <p
-                          className="max-h-10 overflow-y-auto min-w-32"
-                          style={{ width: `${entryWidth}px` }}
-                        >
-                          {(quote.data as any)?.["additional_copay"] ?? "N/A"}
-                          {/* Total Monthly Premium  */}
-                        </p>
-                        <p
-                          className="max-h-10 overflow-y-auto min-w-32"
-                          style={{ width: `${entryWidth}px` }}
-                        >
-                          {(quote.data as any)?.["total_cost"] ?? "N/A"}
-                        </p>
+                        {/* Map through the plan attributes for each quote */}
+                        {planAttributesMapping.map((attribute) => (
+                          <div
+                            key={attribute.key}
+                            className="min-w-32 max-h-10 overflow-y-auto"
+                            style={{ width: `${entryWidth}px` }}
+                          >
+                            {attribute.key === "carrier" ? (
+                              <div className="flex items-center justify-center">
+                              <input
+                                type="checkbox"
+                                checked={quote.isSelected}
+                                onChange={() => handleCheckboxChange(quote.id)}
+                                className="mr-4"
+                              />
+                                <Image
+                                  src={
+                                    carrierLogos[quote[attribute.key] as keyof typeof carrierLogos] ||
+                                    carrierLogos["Chamber"]
+                                  }
+                                  alt={`Logo for ${quote[attribute.key]}`}
+                                  width={20}
+                                  height={20}
+                                  className="mr-2 rounded-md"
+                                />
+                                <p>{quote[attribute.key] || "Sup"}</p>
+                            </div>
+                            ) : (
+                              <p>{(quote.data as any)?.[attribute.key] ?? "N/A"}</p>
+                            )}
+                          </div>
+                        ))}
                       </div>
                     </div>
                   ))
