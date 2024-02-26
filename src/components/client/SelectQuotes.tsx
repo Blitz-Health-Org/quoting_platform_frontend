@@ -7,6 +7,10 @@ import { ClientType } from "@/src/types/custom/Client";
 import { useRouter } from "next/navigation";
 import { SnackbarAlert } from "../ui/SnackbarAlert";
 import { supabase } from "../../supabase";
+import { IoDocumentTextOutline } from "react-icons/io5";
+import { FaSearch } from "react-icons/fa";
+import { FaChevronDown } from "react-icons/fa";
+
 import {
   Dispatch,
   SetStateAction,
@@ -51,16 +55,26 @@ export default function SelectQuotes({
     Other: NewProject,
   };
 
+  const [snackbar, setSnackbar] = useState({
+    open: false,
+    message: "",
+    severity: "success",
+  });
+
+  const handleBusiness = (index: any) => {
+    setSnackbar({
+      open: true,
+      message: "This feature is coming soon!",
+      severity: "info",
+    });
+  };
+
   const { socket } = useContext(SocketContext);
   const [clients, setClients] = useState<ClientType[]>([]);
   const [quotes, setQuotes] = useState<QuoteTypeWithCheckbox[]>([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [snackbar, setSnackbar] = useState({
-    open: false,
-    message: "",
-    severity: "info", // default severity
-  });
   const router = useRouter();
+  const [search, setSearch] = useState<string>();
 
   console.log("quotes here", quotes);
 
@@ -239,9 +253,9 @@ export default function SelectQuotes({
             </button>
             <IconBuilding className="h-5 w-5 mr-2" />
             <p className="mr-2">{selectedClient.name}</p>
-            <p className="mr-1">/ Quotes</p>
+            {/* <p className="mr-1">/ Quotes</p>
             <p className="mr-1 text-gray-400 text-xs">•</p>
-            <p className="text-gray-400">({quotes.length})</p>
+            <p className="text-gray-400">({quotes.length})</p> */}
           </div>
           <div className="flex items-center">
             <div className="text-sm md:text-base mr-1 outline outline-1 outline-gray-200 py-1 px-2 rounded-md flex items-center justify-center hover:bg-gray-100/80 cursor-pointer">
@@ -252,9 +266,9 @@ export default function SelectQuotes({
             </div>
           </div>
         </div>
-        <div className="rounded-md w-full flex-col h-full pb-12 overflow-y-scroll bg-white outline outline-1 outline-gray-200">
+        <div className="rounded-md w-full flex-col overflow-x-hidden h-full pb-12 overflow-y-scroll bg-white outline outline-1 outline-gray-200">
           <div className="py-2 px-4">
-            {/* <div className="w-full flex">
+            <div className="w-full flex mt-4">
             <div className="w-1/4 flex items-center gap-2"> 
               <IoDocumentTextOutline className="h-5 w-5"/>
               <p> Showing {quotes.length} Quotes </p>
@@ -263,21 +277,26 @@ export default function SelectQuotes({
               <div className="absolute left-3 top-1/2 transform -translate-y-1/2 flex items-center">
                 <FaSearch className="h-4 w-4 text-gray-500" />
               </div>
-              <input placeholder="Search" className="bg-gray-100/50 w-full px-10 py-1 rounded-sm outline outline-1 outline-gray-300"></input>
+              <input           
+                value={search}
+                onChange={(e) => setSearch(e.target.value)}
+                placeholder="Search" 
+                className="bg-gray-100/50 w-full px-10 py-1 rounded-sm outline outline-1 outline-gray-300"></input>
             </div>
             <div className="w-1/4"> 
               <div className="flex items-center justify-end"> 
-                <button className="px-2 py-1 flex items-center gap-1">
+                <button className="px-2 py-1 flex items-center gap-1" onClick={handleBusiness}>
                   <p>Sort</p>
                   <FaChevronDown className="h-3 w-3"/>
                 </button> 
-                <button className="px-2 py-1 flex items-center gap-1">
+                <button className="px-2 py-1 flex items-center gap-1" onClick={handleBusiness}>
                   <p>Filter</p>
                   <FaChevronDown className="h-3 w-3"/>
                 </button> 
               </div> 
             </div>
-          </div> */}
+          </div>
+          <div className="w-full overflow-x-auto">
             <div className="flex py-2 w-fit border-b">
               <div className="grid-cols-9 flex justify-left text-center w-fit gap-1 h-20 font-bold items-center text-wrap text-sm">
                 {/* Carrier Name */}
@@ -304,7 +323,14 @@ export default function SelectQuotes({
                 <p className="w-36">Total Monthly Premium</p>
               </div>
             </div>
-            {quotes.map((quote) => (
+            {quotes
+            .filter((quote: any) =>
+              !search || // Only apply the filter if search is empty
+              ((quote.data as any)?.["plan_name"] + quote.carrier)
+                .toLowerCase()
+                .includes(search.toLowerCase())
+            )
+            .map((quote) => (
               <div
                 key={quote.id}
                 className="flex items-center w-fit mb-1 mt-1 py-2 border-b"
@@ -367,6 +393,7 @@ export default function SelectQuotes({
               </div>
             ))}
           </div>
+          </div>
         </div>
         {isModalOpen && (
           <NewClientModal
@@ -381,6 +408,15 @@ export default function SelectQuotes({
           snackbar={snackbar}
         />
       </main>
+      <SnackbarAlert
+        openSnackbarShare={snackbar.open}
+        setOpenSnackbarShare={setSnackbar}
+        snackbar={{
+          open: snackbar.open,
+          message: snackbar.message,
+          severity: snackbar.severity,
+        }}
+      />
     </>
   );
 }
