@@ -4,6 +4,7 @@ import { createContext, useEffect, useState } from "react";
 import { useLocalStorage } from "../utils/useLocalStorage";
 import { supabase } from "../supabase";
 import { useRouter } from "next/navigation";
+import { useSharingCheck } from "../utils/useSharingCheck";
 
 export type AuthContextProps = {
   accessToken: [
@@ -26,25 +27,42 @@ export const AuthContextProvider = ({
   const [accessToken, setAccessToken, loading] = useLocalStorage<
     string | undefined
   >("accessToken", undefined);
+
+  const [validShare, sharingLoading] = useSharingCheck();
+
   const [validationLoading, setValidationLoading] = useState(false);
   const [validationComplete, setValidationComplete] = useState(false);
 
-  if (loading) {
+  if (loading || sharingLoading || validationLoading) {
     console.log("Loading...");
     return <div>Loading...</div>;
   }
 
-  if (!accessToken && window.location.pathname !== "/sign-up") {
+  if (validShare) {
+    return <>{children}</>;
+  }
+
+  if (
+    !accessToken &&
+    window.location.pathname !== "/sign-up" &&
+    !sharingLoading
+  ) {
     console.log("No token");
     router.push("/sign-in");
   }
 
-  if (!loading && accessToken && !validationLoading && !validationComplete) {
+  if (
+    !loading &&
+    accessToken &&
+    !validationLoading &&
+    !validationComplete &&
+    !sharingLoading
+  ) {
     // Validate the token
     setValidationLoading(true);
     // If the token is invalid, remove it from local storage and redirect to sign-in
-    supabase.auth.getUser(accessToken).then((user) => {
-      if (!user) {
+    supabase.auth.getUser(accessToken).then((response) => {
+      if (!response.data.user) {
         console.log("Invalid token");
         alert("Your session has expired. Please sign in again.");
         setAccessToken(undefined);
@@ -53,11 +71,6 @@ export const AuthContextProvider = ({
       setValidationLoading(false);
       setValidationComplete(true);
     });
-  }
-
-  if (validationLoading) {
-    console.log("Validating...");
-    return <></>;
   }
 
   return (
