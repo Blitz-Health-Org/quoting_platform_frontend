@@ -271,7 +271,7 @@ export default function Home() {
           onClose={() => {
             setModalOpen("");
             if (!comparisonOpen) {
-              setSelectedClient(undefined as unknown as ClientType)
+              setSelectedClient(undefined as unknown as ClientType);
             }
           }}
           setModalOpen={setModalOpen}
@@ -283,11 +283,10 @@ export default function Home() {
       )}
 
       <SnackbarAlert
-          openSnackbarShare={snackbar.open}
-          setOpenSnackbarShare={setSnackbar}
-          snackbar={snackbar}
-        />
-
+        openSnackbarShare={snackbar.open}
+        setOpenSnackbarShare={setSnackbar}
+        snackbar={snackbar}
+      />
     </div>
     // </SocketProvider>
   );

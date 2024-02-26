@@ -7,25 +7,28 @@ import Input from "@mui/material/Input";
 import { MdEdit } from "react-icons/md";
 import { FaSave } from "react-icons/fa";
 import { parseInt } from "lodash";
+import { supabase } from "@/src/supabase";
 
 export function Contributions({
   standardContributions,
   setStandardContributions,
+  setShowStandardContributions,
 }: any) {
-  const [editStandardContributions, setEditStandardContributions] =
-    useState(false);
+  const [editedContributions, setEditedContributions] = useState(
+    standardContributions,
+  );
+  const [isEditing, setIsEditing] = useState<boolean>(false);
 
   const handleEdit = () => {
     // Enable editing mode
-    setEditStandardContributions(true);
+    setIsEditing(true);
   };
 
-  const handleSave = () => {
+  const handleSave = async () => {
     // Disable editing mode
-    setEditStandardContributions(false);
-
-    // Save the edited values to JSON
-    const jsonResult = JSON.stringify(standardContributions);
+    setStandardContributions(editedContributions);
+    setIsEditing(false);
+    setShowStandardContributions(false);
 
     // You can save the JSON data to your desired location or state.
     // For example, you can send it to the server or store it in another state.
@@ -40,21 +43,20 @@ export function Contributions({
           className="w-11"
           defaultValue={100}
           size="small"
-          value={standardContributions.employee.percent}
+          value={editedContributions.employee.percent}
           onChange={(e) => {
             let newValue = parseInt(e.target.value);
             // Check if the value exceeds 100 and reset it to 100
             newValue = newValue > 100 ? 100 : newValue;
 
-            setStandardContributions((prev: any) => {
-              console.log("huh", prev);
+            setEditedContributions((prev: any) => {
               return {
                 ...prev,
                 employee: { ...prev.employee, percent: newValue },
               };
             });
           }}
-          disabled={!editStandardContributions}
+          disabled={!isEditing}
           inputProps={{
             step: 1,
             min: 0,
@@ -66,11 +68,11 @@ export function Contributions({
         <p className="text-sm text-gray-500 mr-2">%</p>
         <p className="mr-2">|</p>
         <Input
-          disabled={!editStandardContributions}
+          disabled={!isEditing}
           className="w-12"
           defaultValue={50}
           size="small"
-          value={standardContributions.employee.employees}
+          value={editedContributions.employee.employees}
           onChange={(e) =>
             setStandardContributions((prev: any) => ({
               ...prev,
@@ -97,18 +99,18 @@ export function Contributions({
           className="w-11"
           defaultValue={100}
           size="small"
-          value={standardContributions.spouse.percent}
+          value={editedContributions.spouse.percent}
           onChange={(e) => {
             let newValue = parseInt(e.target.value);
             // Check if the value exceeds 100 and reset it to 100
             newValue = newValue > 100 ? 100 : newValue;
 
-            setStandardContributions((prev: any) => ({
+            setEditedContributions((prev: any) => ({
               ...prev,
               spouse: { ...prev.spouse, percent: newValue },
             }));
           }}
-          disabled={!editStandardContributions}
+          disabled={!isEditing}
           inputProps={{
             step: 1,
             min: 0,
@@ -120,11 +122,11 @@ export function Contributions({
         <p className="text-sm text-gray-500 mr-2">%</p>
         <p className="mr-2">|</p>
         <Input
-          disabled={!editStandardContributions}
+          disabled={!isEditing}
           className="w-12"
           defaultValue={50}
           size="small"
-          value={standardContributions.spouse.employees}
+          value={editedContributions.spouse.employees}
           onChange={(e) =>
             setStandardContributions((prev: any) => ({
               ...prev,
@@ -151,18 +153,18 @@ export function Contributions({
           className="w-11"
           defaultValue={100}
           size="small"
-          value={standardContributions.child.percent}
+          value={editedContributions.child.percent}
           onChange={(e) => {
             let newValue = parseInt(e.target.value);
             // Check if the value exceeds 100 and reset it to 100
             newValue = newValue > 100 ? 100 : newValue;
 
-            setStandardContributions((prev: any) => ({
+            setEditedContributions((prev: any) => ({
               ...prev,
               child: { ...prev.child, percent: newValue },
             }));
           }}
-          disabled={!editStandardContributions}
+          disabled={!isEditing}
           inputProps={{
             step: 1,
             min: 0,
@@ -174,11 +176,11 @@ export function Contributions({
         <p className="text-sm text-gray-500 mr-2">%</p>
         <p className="mr-2">|</p>
         <Input
-          disabled={!editStandardContributions}
+          disabled={!isEditing}
           className="w-12"
           defaultValue={50}
           size="small"
-          value={standardContributions.child.employees}
+          value={editedContributions.child.employees}
           onChange={(e) =>
             setStandardContributions((prev: any) => ({
               ...prev,
@@ -202,18 +204,18 @@ export function Contributions({
           className="w-11"
           defaultValue={100}
           size="small"
-          value={standardContributions.family.percent}
+          value={editedContributions.family.percent}
           onChange={(e) => {
             let newValue = parseInt(e.target.value);
             // Check if the value exceeds 100 and reset it to 100
             newValue = newValue > 100 ? 100 : newValue;
 
-            setStandardContributions((prev: any) => ({
+            setEditedContributions((prev: any) => ({
               ...prev,
               family: { ...prev.family, percent: newValue },
             }));
           }}
-          disabled={!editStandardContributions}
+          disabled={!isEditing}
           inputProps={{
             step: 1,
             min: 0,
@@ -225,13 +227,13 @@ export function Contributions({
         <p className="text-sm text-gray-500 mr-2">%</p>
         <p className="mr-2">|</p>
         <Input
-          disabled={!editStandardContributions}
+          disabled={!isEditing}
           className="w-12"
           defaultValue={50}
           size="small"
-          value={standardContributions.family.employees}
+          value={editedContributions.family.employees}
           onChange={(e) =>
-            setStandardContributions((prev: any) => ({
+            setEditedContributions((prev: any) => ({
               ...prev,
               family: {
                 ...prev.family,
@@ -251,7 +253,7 @@ export function Contributions({
       </div>
 
       <div className="mb-3 mt-3 flex items-center justify-center pl-2 w-full">
-        {!editStandardContributions && (
+        {!isEditing && (
           <button
             onClick={handleEdit}
             className="mr-2 outline outline-1 outline-gray-300 hover:outline-gray-400/80 shadow-sm px-2 py-0.5 rounded-sm mt-1 hover:bg-slate-200/50 hover:shadow w-full"
@@ -262,7 +264,7 @@ export function Contributions({
             </div>
           </button>
         )}
-        {editStandardContributions && (
+        {isEditing && (
           <button
             onClick={handleSave}
             className="mr-2 outline outline-1 outline-gray-300 hover:outline-gray-400/80 shadow-sm px-2 py-0.5 rounded-sm mt-1 hover:bg-slate-200/50 bg-gray-100 w-full"

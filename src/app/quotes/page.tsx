@@ -2,7 +2,7 @@
 
 import React, { useContext, useEffect, useState } from "react";
 import { Subheader } from "../../components/comparison/Subheader";
-import { Contributions } from "@/src/components/comparison/contributions";
+import { Contributions } from "@/src/components/comparison/Contributions";
 import "../../components/comparison/sum.css"; // import your custom styles
 import Fullheader from "../../components/comparison/Fullheader";
 import QuoteCard from "../../components/comparison/QuoteCard";
@@ -175,8 +175,6 @@ export default function QuotingPage() {
       const ids = quoteIds.split(",").map((id) => id.trim());
       fetchClientAndQuotes(clientId, ids);
     }
-
-    setLoading(false);
   }, [searchParams]);
 
   // const handleEdit = () => {
@@ -225,6 +223,7 @@ export default function QuotingPage() {
       });
 
       setQuotes(orderedByAlphaData);
+      setLoading(false);
     } catch (error) {
       console.error("Error fetching data:", error);
       // Optionally handle errors, such as setting an error state or showing a notification
@@ -251,6 +250,8 @@ export default function QuotingPage() {
   const objectVisibleQuoteFields = visibleQuoteFields.filter(
     (val) => val.type == "jsonb",
   );
+
+  console.log("quotes", quotes, loading);
 
   if (loading) {
     return <></>;

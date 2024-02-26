@@ -37,7 +37,7 @@ export default function SelectQuotes({
   setComparisonOpen,
   setSelectedClient,
   selectedClient,
-  setModalOpen
+  setModalOpen,
 }: {
   setComparisonOpen: Dispatch<SetStateAction<boolean>>;
   setSelectedClient: Dispatch<SetStateAction<ClientType>>;
@@ -291,9 +291,10 @@ export default function SelectQuotes({
               {quotes.length === 0 ? (
                 <div className="flex w-full mt-16 mb-2 h-fit items-center justify-center flex-col">
                   <p className="mb-2">No Quotes</p>
-                  <button 
-                  onClick={handleAddNewQuote}
-                  className="bg-gray-100 outline outline-1 outline-gray-300 rounded-md px-2 py-0.5">
+                  <button
+                    onClick={handleAddNewQuote}
+                    className="bg-gray-100 outline outline-1 outline-gray-300 rounded-md px-2 py-0.5"
+                  >
                     New Quote
                   </button>
                 </div>
