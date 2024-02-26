@@ -7,6 +7,10 @@ import { ClientType } from "@/src/types/custom/Client";
 import { useRouter } from "next/navigation";
 import { SnackbarAlert } from "../ui/SnackbarAlert";
 import { supabase } from "../../supabase";
+import { IoDocumentTextOutline } from "react-icons/io5";
+import { FaSearch } from "react-icons/fa";
+import { FaChevronDown } from "react-icons/fa";
+
 import {
   Dispatch,
   SetStateAction,
@@ -26,6 +30,9 @@ import Chamber from "@/public/Chamber.png";
 import NewProject from "@/public/NewProject.jpg";
 import { SocketContext } from "@/src/context/SocketContext";
 import { io } from "socket.io-client";
+import router from "next/router";
+import { FiArrowRight } from "react-icons/fi";
+import { UserContext } from "@/src/context/UserContext";
 
 export default function SelectQuotes({
   setComparisonOpen,
@@ -47,16 +54,30 @@ export default function SelectQuotes({
     Other: NewProject,
   };
 
+  const [snackbar, setSnackbar] = useState({
+    open: false,
+    message: "",
+    severity: "success",
+  });
+
+  const handleBusiness = (index: any) => {
+    setSnackbar({
+      open: true,
+      message: "This feature is coming soon!",
+      severity: "info",
+    });
+  };
+
   const { socket } = useContext(SocketContext);
   const [clients, setClients] = useState<ClientType[]>([]);
   const [quotes, setQuotes] = useState<QuoteTypeWithCheckbox[]>([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [snackbar, setSnackbar] = useState({
-    open: false,
-    message: "",
-    severity: "info", // default severity
-  });
+  const {
+    userId: [userId, , loading],
+  } = useContext(UserContext);
+
   const router = useRouter();
+  const [search, setSearch] = useState<string>();
 
   console.log("quotes here", quotes);
 
@@ -183,7 +204,10 @@ export default function SelectQuotes({
       } else {
         //UPDATE DATA
         try {
-          const { data, error } = await supabase.from("clients").select();
+          const { data, error } = await supabase
+            .from("clients")
+            .select()
+            .eq("user_id", userId);
           if (error) {
             alert("Error retrieving data");
           } else {
@@ -235,131 +259,155 @@ export default function SelectQuotes({
             </button>
             <IconBuilding className="h-5 w-5 mr-2" />
             <p className="mr-2">{selectedClient.name}</p>
-            <p className="mr-1">/ Quotes</p>
+            {/* <p className="mr-1">/ Quotes</p>
             <p className="mr-1 text-gray-400 text-xs">•</p>
-            <p className="text-gray-400">({quotes.length})</p>
+            <p className="text-gray-400">({quotes.length})</p> */}
           </div>
           <div className="flex items-center">
             <div
               onClick={handleNextClick}
               className="text-sm md:text-base mr-1 outline outline-1 outline-gray-200 py-1 px-2 rounded-md flex items-center justify-center hover:bg-gray-100/80 cursor-pointer"
             >
-              <BiPlus className="mr-2" />
-              <div>Comparison</div>
+              <div className="mr-2">New Comparison</div>
+              <FiArrowRight />
             </div>
           </div>
         </div>
-        <div className="rounded-md w-full flex-col h-full pb-12 overflow-y-scroll bg-white outline outline-1 outline-gray-200">
+        <div className="rounded-md w-full flex-col overflow-x-hidden h-full pb-12 overflow-y-scroll bg-white outline outline-1 outline-gray-200">
           <div className="py-2 px-4">
-            {/* <div className="w-full flex">
-            <div className="w-1/4 flex items-center gap-2"> 
-              <IoDocumentTextOutline className="h-5 w-5"/>
-              <p> Showing {quotes.length} Quotes </p>
-            </div>
-            <div className="w-1/2 relative">
-              <div className="absolute left-3 top-1/2 transform -translate-y-1/2 flex items-center">
-                <FaSearch className="h-4 w-4 text-gray-500" />
+            <div className="w-full flex mt-4">
+              <div className="w-1/4 flex items-center gap-2">
+                <IoDocumentTextOutline className="h-5 w-5" />
+                <p> Showing {quotes.length} Quotes </p>
               </div>
-              <input placeholder="Search" className="bg-gray-100/50 w-full px-10 py-1 rounded-sm outline outline-1 outline-gray-300"></input>
-            </div>
-            <div className="w-1/4"> 
-              <div className="flex items-center justify-end"> 
-                <button className="px-2 py-1 flex items-center gap-1">
-                  <p>Sort</p>
-                  <FaChevronDown className="h-3 w-3"/>
-                </button> 
-                <button className="px-2 py-1 flex items-center gap-1">
-                  <p>Filter</p>
-                  <FaChevronDown className="h-3 w-3"/>
-                </button> 
-              </div> 
-            </div>
-          </div> */}
-            <div className="flex px-2 w-fit border-b">
-              <input type="checkbox" disabled />
-              <div className="grid-cols-9 flex justify-left text-center w-fit gap-1 h-20 font-bold items-center text-wrap text-sm">
-                {/* Carrier Name */}
-                <div className="w-32">Carrier</div>
-                {/* Plan Name */}
-                <p className="w-32">Plan Name</p>
-
-                {/* Office Copay (PCP/Specialist) */}
-                <p className="w-32">Office Copay (PCP/Specialist)</p>
-                {/* Deductible (Individual) */}
-                <p className="w-32">Deductible (Individual)</p>
-                {/* Coinsurance (In-Network) */}
-                <p className="w-32">Coinsurance (In-Network)</p>
-                {/* Out of Pocket (Individual) */}
-                <p className="w-32">Out of Pocket (Individual)</p>
-                {/* Additional Copays Include (ER / Imaging / OP / IP) */}
-                <p className="w-32">
-                  Additional Copays (ER / Imaging / OP / IP)
-                </p>
-                {/* Total Monthly Premium */}
-                <p className="w-32">Total Monthly Premium</p>
-              </div>
-            </div>
-            {quotes.map((quote) => (
-              <div
-                key={quote.id}
-                className="flex items-center w-fit mb-1 mt-1 p-2 border-b"
-              >
+              <div className="w-1/2 relative">
+                <div className="absolute left-3 top-1/2 transform -translate-y-1/2 flex items-center">
+                  <FaSearch className="h-4 w-4 text-gray-500" />
+                </div>
                 <input
-                  type="checkbox"
-                  checked={quote.isSelected}
-                  onChange={() => handleCheckboxChange(quote.id)}
-                />
-                <div className="grid-cols-9 flex justify-left text-center w-fit gap-1 h-8 items-center text-sm">
-                  {/* Carrier Name */}
-                  <div className="w-32 flex items-center justify-center">
-                    <Image
-                      src={
-                        carrierLogos[
-                          quote.carrier as keyof typeof carrierLogos
-                        ] || carrierLogos["Chamber"]
-                      }
-                      alt={`Logo for ${quote.carrier}`}
-                      width={20}
-                      height={20}
-                      className="mr-2 rounded-md"
-                    />
-                    <p>{quote.carrier || "Sup"}</p>
-                  </div>
-                  {/* Plan Name */}
-                  <p className="w-32 max-h-10 overflow-y-auto">
-                    {(quote.data as any)?.["plan_name"] ?? "N/A"}
-                  </p>
-                  {/* Funding () */}
-                  <p className="w-32">
-                    {(quote.data as any)?.["plan_type"] ?? "N/A"}
-                  </p>
-                  {/* Office Copay (PCP/Specialist) */}
-                  <p className="w-32">
-                    {(quote.data as any)?.["office_copay"] ?? "N/A"}
-                  </p>
-                  {/* Deductible (Individual) */}
-                  <p className="w-32 max-h-10 overflow-y-auto">
-                    {(quote.data as any)?.["deductible"] ?? "N/A"}
-                  </p>
-                  {/* Coinsurance (In-Network) */}
-                  <p className="w-32">
-                    {(quote.data as any)?.["coinsurance"] ?? "N/A"}
-                  </p>
-                  {/* Out of Pocket (Individual) */}
-                  <p className="w-32">
-                    {(quote.data as any)?.["out_of_pocket_max"] ?? "N/A"}
-                  </p>
-                  {/* Additional Copays Include (ER / Imaging / OP / IP) */}
-                  <p className="w-32">
-                    {(quote.data as any)?.["additional_copay"] ?? "N/A"}
-                    {/* Total Monthly Premium  */}
-                  </p>
-                  <p className="w-32">
-                    {(quote.data as any)?.["total_cost"] ?? "N/A"}
-                  </p>
+                  value={search}
+                  onChange={(e) => setSearch(e.target.value)}
+                  placeholder="Search"
+                  className="bg-gray-100/50 w-full px-10 py-1 rounded-sm outline outline-1 outline-gray-300"
+                ></input>
+              </div>
+              <div className="w-1/4">
+                <div className="flex items-center justify-end">
+                  <button
+                    className="px-2 py-1 flex items-center gap-1"
+                    onClick={handleBusiness}
+                  >
+                    <p>Sort</p>
+                    <FaChevronDown className="h-3 w-3" />
+                  </button>
+                  <button
+                    className="px-2 py-1 flex items-center gap-1"
+                    onClick={handleBusiness}
+                  >
+                    <p>Filter</p>
+                    <FaChevronDown className="h-3 w-3" />
+                  </button>
                 </div>
               </div>
-            ))}
+            </div>
+            <div className="w-full overflow-x-auto">
+              <div className="flex py-2 w-fit border-b">
+                <div className="grid-cols-9 flex justify-left text-center w-fit gap-1 h-20 font-bold items-center text-wrap text-sm">
+                  {/* Carrier Name */}
+                  <div className="w-32 flex justify-center gap-2">
+                    <p>Carrier</p>
+                  </div>
+                  {/* Plan Name */}
+                  <p className="w-32">Plan</p>
+                  {/* Plan Type */}
+                  <p className="w-32">Plan Type</p>
+                  {/* Office Copay (PCP/Specialist) */}
+                  <p className="w-32">Office Copay (PCP/Specialist)</p>
+                  {/* Deductible (Individual) */}
+                  <p className="w-32">Deductible (Individual)</p>
+                  {/* Coinsurance (In-Network) */}
+                  <p className="w-32">Coinsurance (In-Network)</p>
+                  {/* Out of Pocket (Individual) */}
+                  <p className="w-32">Out of Pocket (Individual)</p>
+                  {/* Additional Copays Include (ER / Imaging / OP / IP) */}
+                  <p className="w-32">
+                    Additional Copays (ER / Imaging / OP / IP)
+                  </p>
+                  {/* Total Monthly Premium */}
+                  <p className="w-36">Total Monthly Premium</p>
+                </div>
+              </div>
+              {quotes
+                .filter(
+                  (quote: any) =>
+                    !search || // Only apply the filter if search is empty
+                    ((quote.data as any)?.["plan_name"] + quote.carrier)
+                      .toLowerCase()
+                      .includes(search.toLowerCase()),
+                )
+                .map((quote) => (
+                  <div
+                    key={quote.id}
+                    className="flex items-center w-fit mb-1 mt-1 py-2 border-b"
+                  >
+                    <div className="grid-cols-9 flex justify-left text-center w-fit gap-1 h-8 items-center text-sm">
+                      {/* Carrier Name */}
+                      <div className="w-32 flex items-center justify-center">
+                        <input
+                          type="checkbox"
+                          checked={quote.isSelected}
+                          onChange={() => handleCheckboxChange(quote.id)}
+                          className="mr-4"
+                        />
+                        <Image
+                          src={
+                            carrierLogos[
+                              quote.carrier as keyof typeof carrierLogos
+                            ] || carrierLogos["Chamber"]
+                          }
+                          alt={`Logo for ${quote.carrier}`}
+                          width={20}
+                          height={20}
+                          className="mr-2 rounded-md"
+                        />
+                        <p>{quote.carrier || "Sup"}</p>
+                      </div>
+                      {/* Plan Name */}
+                      <p className="w-32 max-h-10 overflow-y-auto">
+                        {(quote.data as any)?.["plan_name"] ?? "N/A"}
+                      </p>
+                      {/* Funding () */}
+                      <p className="w-32 max-h-10 overflow-y-auto">
+                        {(quote.data as any)?.["plan_type"] ?? "N/A"}
+                      </p>
+                      {/* Office Copay (PCP/Specialist) */}
+                      <p className="w-32 max-h-10 overflow-y-auto">
+                        {(quote.data as any)?.["office_copay"] ?? "N/A"}
+                      </p>
+                      {/* Deductible (Individual) */}
+                      <p className="w-32 max-h-10 overflow-y-auto">
+                        {(quote.data as any)?.["deductible"] ?? "N/A"}
+                      </p>
+                      {/* Coinsurance (In-Network) */}
+                      <p className="w-32 max-h-10 overflow-y-auto">
+                        {(quote.data as any)?.["coinsurance"] ?? "N/A"}
+                      </p>
+                      {/* Out of Pocket (Individual) */}
+                      <p className="w-32 max-h-10 overflow-y-auto">
+                        {(quote.data as any)?.["out_of_pocket_max"] ?? "N/A"}
+                      </p>
+                      {/* Additional Copays Include (ER / Imaging / OP / IP) */}
+                      <p className="w-32 max-h-10 overflow-y-auto">
+                        {(quote.data as any)?.["additional_copay"] ?? "N/A"}
+                        {/* Total Monthly Premium  */}
+                      </p>
+                      <p className="w-32 max-h-10 overflow-y-auto">
+                        {(quote.data as any)?.["total_cost"] ?? "N/A"}
+                      </p>
+                    </div>
+                  </div>
+                ))}
+            </div>
           </div>
         </div>
         {isModalOpen && (
@@ -375,6 +423,15 @@ export default function SelectQuotes({
           snackbar={snackbar}
         />
       </main>
+      <SnackbarAlert
+        openSnackbarShare={snackbar.open}
+        setOpenSnackbarShare={setSnackbar}
+        snackbar={{
+          open: snackbar.open,
+          message: snackbar.message,
+          severity: snackbar.severity,
+        }}
+      />
     </>
   );
 }

@@ -287,113 +287,113 @@ export default function QuotingPage() {
   };
 
   return (
-    <div className="w-full h-fit bg-gray-100 pb-6">
-      <Fullheader clientName={client?.name || "N/A"} />
-      <div className="h-full bg-gray-100 border border-gray-200 border-b-0 px-6 py-2">
-        <Subheader
-          isPaneOpen={state.isPaneOpen}
-          onPaneToggle={handlePaneToggle}
-          copyUrlToClipboard={copyUrlToClipboard}
-          handleDownloadCSV={handleDownloadCSV}
-          quotesLength={quotes.length}
-        />
+    <div className="bg-gray-100 w-full h-screen">
+      <div className="w-full overflow-x-hidden h-fit bg-gray-100">
+        <Fullheader clientName={client?.name || "N/A"} />
+        <div className="bg-gray-100 border border-gray-200 border-b-0 px-6 py-2">
+          <Subheader
+            isPaneOpen={state.isPaneOpen}
+            onPaneToggle={handlePaneToggle}
+            copyUrlToClipboard={copyUrlToClipboard}
+            handleDownloadCSV={handleDownloadCSV}
+            quotesLength={quotes.length}
+          />
 
-        <div className="w-full overflow-x-auto">
-          <div className="p-0.5 flex w-fit h-fit gap-2">
+          <div className="p-0.5 flex w-full h-full overflow-auto gap-2">
             <Left
               nonObjectVisibleQuoteFields={nonObjectVisibleQuoteFields}
               objectVisibleQuoteFields={objectVisibleQuoteFields}
             />
             {quotes.length > 0 ? (
-              quotes.map((quote) => {
-                return (
-                  <QuoteCard
-                    key={quote.id}
-                    quote={quote}
-                    nonObjectVisibleQuoteFields={nonObjectVisibleQuoteFields}
-                    objectVisibleQuoteFields={objectVisibleQuoteFields}
-                  />
-                );
-              })
+              quotes.map((quote) => (
+                <QuoteCard
+                  key={quote.id}
+                  quote={quote}
+                  nonObjectVisibleQuoteFields={nonObjectVisibleQuoteFields}
+                  objectVisibleQuoteFields={objectVisibleQuoteFields}
+                />
+              ))
             ) : (
-              <div className="w-full mt-5 text-center">No Quotes Available</div>
+              <div className="flex items-center justify-center font-bold">
+                <div className="mt-5">No Quotes Available</div>
+              </div>
             )}
           </div>
         </div>
-      </div>
-      <div>
-        <SlidingPane
-          className="slide-pane_overlay2"
-          overlayClassName="slide-pane_overlay2"
-          isOpen={state.isPaneOpen}
-          title="Settings"
-          subtitle="Set classes and contribution structures."
-          width={state.paneWidth}
-          onRequestClose={() => {
-            // triggered on "<" on left top click or on outside click
-            setState((prevState) => ({ ...prevState, isPaneOpen: false }));
-          }}
-        >
-          {showStandardContributions && (
-            <>
-              <h1 className="mb-2 font-bold">Standard Contributions</h1>
+        <div>
+          <SlidingPane
+            className="slide-pane_overlay2"
+            overlayClassName="slide-pane_overlay2"
+            isOpen={state.isPaneOpen}
+            title="Settings"
+            subtitle="Set classes and contribution structures."
+            width={state.paneWidth}
+            onRequestClose={() => {
+              // triggered on "<" on left top click or on outside click
+              setState((prevState) => ({ ...prevState, isPaneOpen: false }));
+            }}
+          >
+            {showStandardContributions && (
+              <>
+                <h1 className="mb-2 font-bold">Standard Contributions</h1>
 
-              <Contributions />
-
-              <hr className="mt-4 mb-4"></hr>
-            </>
-          )}
-          <h1 className="mb-2 font-bold">Custom Classes</h1>
-          <form className="mt-2" onSubmit={(e) => handleNewClassSubmit(e)}>
-            <div className="flex">
-              <input
-                placeholder="Class Name"
-                className="py-0.5 px-2 outline outline-1 outline-gray-400 mr-2 h-10 rounded-sm w-4/5 hover:outline-gray-500 hover:cursor-pointer focus:cursor-auto"
-                value={newClass}
-                onChange={(e) => setNewClass(e.target.value)}
-              />
-              <button
-                type="submit"
-                className="py-1 bg-neutral-800 text-gray-100 shadow rounded-sm h-10 text-sm px-2 w-1/5 hover:bg-neutral-900"
-              >
-                New
-              </button>
-            </div>
-          </form>
-          <div>
-            {customClasses.map((className, index) => (
-              <div
-                key={index}
-                className="mb-1.5 flex-col items-center justify-left mt-6"
-              >
-                <div className="flex items-center gap-2 mb-4">
-                  <button
-                    onClick={() => handleDeleteClass(index)}
-                    className="rounded-sm text-sm"
-                  >
-                    <FaTrash />
-                  </button>
-                  <p className="mr-2 font-bold">
-                    Class #{index + 1} : {className}
-                  </p>
-                </div>
                 <Contributions />
-              </div>
-            ))}
-          </div>
-          <br />
-        </SlidingPane>
-      </div>
 
-      <SnackbarAlert
-        openSnackbarShare={snackbar.open}
-        setOpenSnackbarShare={setSnackbar}
-        snackbar={{
-          open: snackbar.open,
-          message: snackbar.message,
-          severity: snackbar.severity,
-        }}
-      />
+                <hr className="mt-4 mb-4"></hr>
+              </>
+            )}
+            <h1 className="mb-2 font-bold">Custom Classes</h1>
+            <form className="mt-2" onSubmit={(e) => handleNewClassSubmit(e)}>
+              <div className="flex">
+                <input
+                  placeholder="Class Name"
+                  className="py-0.5 px-2 outline outline-1 outline-gray-400 mr-2 h-10 rounded-sm w-4/5 hover:outline-gray-500 hover:cursor-pointer focus:cursor-auto"
+                  value={newClass}
+                  onChange={(e) => setNewClass(e.target.value)}
+                />
+                <button
+                  type="submit"
+                  className="py-1 bg-neutral-800 text-gray-100 shadow rounded-sm h-10 text-sm px-2 w-1/5 hover:bg-neutral-900"
+                >
+                  New
+                </button>
+              </div>
+            </form>
+            <div>
+              {customClasses.map((className, index) => (
+                <div
+                  key={index}
+                  className="mb-1.5 flex-col items-center justify-left mt-6"
+                >
+                  <div className="flex items-center gap-2 mb-4">
+                    <button
+                      onClick={() => handleDeleteClass(index)}
+                      className="rounded-sm text-sm"
+                    >
+                      <FaTrash />
+                    </button>
+                    <p className="mr-2 font-bold">
+                      Class #{index + 1} : {className}
+                    </p>
+                  </div>
+                  <Contributions />
+                </div>
+              ))}
+            </div>
+            <br />
+          </SlidingPane>
+        </div>
+
+        <SnackbarAlert
+          openSnackbarShare={snackbar.open}
+          setOpenSnackbarShare={setSnackbar}
+          snackbar={{
+            open: snackbar.open,
+            message: snackbar.message,
+            severity: snackbar.severity,
+          }}
+        />
+      </div>
     </div>
   );
 }

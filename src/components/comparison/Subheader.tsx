@@ -46,15 +46,15 @@ export const Subheader: React.FC<SubheaderProps> = ({
       {/* Left-aligned form */}
       <div className="flex gap-2 justify-center lg:justify-start items-center">
         <button onClick={handleBusiness} className="flex items-center mr-1">
-          <p className="mr-1">Rank by</p>
+          <p className="mr-1 truncate">Rank by</p>
           <IoChevronDown />
         </button>
         <button onClick={handleBusiness} className="flex items-center mr-1">
-          <p className="mr-1">Filter</p>
+          <p className="mr-1 truncate">Filter</p>
           <IoChevronDown />
         </button>
         <button onClick={handleBusiness} className="flex items-center mr-1">
-          <p className="mr-1">Age banded rates</p>
+          <p className="mr-1 truncate">Age banded rates</p>
           <IoChevronDown />
         </button>
         {/* <FormControl
@@ -101,8 +101,14 @@ export const Subheader: React.FC<SubheaderProps> = ({
         </FormControl> */}
       </div>
 
-      <div className="col-span-1 text-center">
-        Showing {quotesLength} Quotes | Edit
+      <div className="col-span-1 text-center flex items-center justify-center gap-1">
+        <p className="truncate">Showing {quotesLength} Quotes </p>
+        <p className="cursor-pointer truncate" onClick={handleBusiness}>
+          | Edit |{" "}
+        </p>
+        <p className="cursor-pointer truncate" onClick={handleBusiness}>
+          Add Current Plan
+        </p>
       </div>
 
       {/* Right-aligned buttons */}
@@ -119,7 +125,7 @@ export const Subheader: React.FC<SubheaderProps> = ({
           className="flex items-center gap-2 cursor-pointer outline outline-1 outline-neutral-600 mr-2 rounded-sm bg-neutral-700/80 text-sm text-gray-100 px-2 py-1"
         >
           <IoMdDownload />
-          <p>Download CSV</p>
+          <p className="truncate">Download CSV</p>
         </button>
         <button
           onClick={() => onPaneToggle(!isPaneOpen)}

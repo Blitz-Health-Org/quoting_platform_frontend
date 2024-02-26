@@ -1,6 +1,6 @@
 //TODO: Type checking
 
-import { Dispatch, SetStateAction, useState } from "react";
+import { Dispatch, SetStateAction, useContext, useState } from "react";
 import { useDropzone } from "react-dropzone";
 import Image from "next/image";
 import BlumeLogo from "@/public/BlumeLogo.png";
@@ -12,6 +12,7 @@ import {
 } from "@/src/types/metadata";
 import { ClientType } from "@/src/types/custom/Client";
 import { FaX } from "react-icons/fa6";
+import { UserContext } from "@/src/context/UserContext";
 
 export type StateProps = {
   files: File[];
@@ -25,6 +26,9 @@ export const NewClientModal = ({
   setClients,
 }: any) => {
   const [fieldsValue, setFieldsValue] = useState<Record<string, any>>({});
+  const {
+    userId: [userId, , loading],
+  } = useContext(UserContext);
 
   const handleFieldChange = (field: string, value: any) => {
     setFieldsValue((prevFields) => ({
@@ -87,6 +91,7 @@ export const NewClientModal = ({
       return;
     }
     // SEND DATA
+    fieldsValue["user_id"] = userId;
     try {
       const { data, error } = await supabase
         .from("clients") // Replace with your actual table name
@@ -97,7 +102,10 @@ export const NewClientModal = ({
       } else {
         //UPDATE DATA
         try {
-          const { data, error } = await supabase.from("clients").select();
+          const { data, error } = await supabase
+            .from("clients")
+            .select()
+            .eq("user_id", userId);
           if (error) {
             console.error("Error retrieving data:", error);
           } else {
