@@ -1,14 +1,7 @@
-name: Lint Code
-
-on:
-  push:
-    branches:
-      - main # Triggers the workflow on pushes to the main branch
-      - develop # Add or remove branches as needed
-
 jobs:
-  lint:
+  build:
     runs-on: ubuntu-latest
+
     steps:
       - uses: actions/checkout@v2
 
@@ -18,8 +11,8 @@ jobs:
           node-version: "18"
           cache: "pnpm"
 
-      - name: Install PNPM
-        run: npm install -g pnpm
+      - name: Enable PNPM
+        run: corepack enable && corepack prepare pnpm@latest --activate
 
       - name: Install dependencies
         run: pnpm install
