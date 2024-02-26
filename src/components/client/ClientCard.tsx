@@ -96,7 +96,7 @@ export const ClientCard = ({
   }
 
   function handleClientCardClick() {
-    return;
+    router.push(`/client?client_id=${client.id}`);
   }
 
   return (
