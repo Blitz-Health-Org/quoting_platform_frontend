@@ -10,7 +10,6 @@ import { supabase } from "../../supabase";
 import { IoDocumentTextOutline } from "react-icons/io5";
 import { FaSearch } from "react-icons/fa";
 import { FaChevronDown } from "react-icons/fa";
-
 import {
   Dispatch,
   SetStateAction,
@@ -141,19 +140,37 @@ export default function SelectQuotes({
   };
 
   const fetchQuoteData = async () => {
-    // Replace 'YOUR_CLIENT_ID' with the actual client ID you want to filter by
     const { data, error } = await supabase
       .from("quotes")
       .select()
       .eq("client_id", selectedClient.id);
-
+  
     if (error) {
       alert("Error updating data");
     } else {
-      setQuotes(data);
-    }
-  };
+      // Check if selected_quotes is not null
+      if (selectedClient.selected_quotes !== null) {
+        // Update isSelected attribute based on selected_quotes
+        const updatedQuotes = data.map((quote) => {
+          const isSelected = selectedClient.selected_quotes?.includes(quote.id.toString());
+          return { ...quote, isSelected: isSelected || false };
+        });
+  
+        // Sort the quotes so that selected ones appear above the ones that aren't selected
+        const sortedQuotes = updatedQuotes.sort((a, b) => {
+          // Put selected quotes above the ones that aren't selected
+          return a.isSelected && !b.isSelected ? -1 : 1;
+        });
 
+        setQuotes(sortedQuotes);
+
+      } else {
+        // Handle the case where selected_quotes is null (if needed)
+        console.warn("selected_quotes is null");
+      }
+    }
+  };  
+  
   useEffect(() => {
     fetchQuoteData();
   }, []);
@@ -237,6 +254,9 @@ export default function SelectQuotes({
   const handleCloseComparison = () => {
     setSelectedClient(undefined as unknown as ClientType);
     setComparisonOpen(false);
+    router.push(
+      `/`,
+    );
   };
 
   return (
