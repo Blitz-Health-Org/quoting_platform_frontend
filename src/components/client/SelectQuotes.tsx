@@ -28,8 +28,6 @@ import United from "@/public/United.png";
 import Chamber from "@/public/Chamber.png";
 import NewProject from "@/public/NewProject.jpg";
 import { SocketContext } from "@/src/context/SocketContext";
-import { String } from "lodash";
-import { Json } from "@/src/types/database/database.types";
 import { io } from "socket.io-client";
 import router from "next/router";
 import { FiArrowRight } from "react-icons/fi";
@@ -211,10 +209,11 @@ export default function SelectQuotes({
             <p className="text-gray-400">({quotes.length})</p> */}
           </div>
           <div className="flex items-center">
-            <div className="text-sm md:text-base mr-1 outline outline-1 outline-gray-200 py-1 px-2 rounded-md flex items-center justify-center hover:bg-gray-100/80 cursor-pointer">
-              <button className="mr-2" onClick={handleNextClick}>
-                New Comparison
-              </button>
+            <div
+              onClick={handleNextClick}
+              className="text-sm md:text-base mr-1 outline outline-1 outline-gray-200 py-1 px-2 rounded-md flex items-center justify-center hover:bg-gray-100/80 cursor-pointer"
+            >
+              <div className="mr-2">New Comparison</div>
               <FiArrowRight />
             </div>
           </div>

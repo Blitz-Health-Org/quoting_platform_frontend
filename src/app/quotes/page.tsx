@@ -2,7 +2,7 @@
 
 import React, { useContext, useEffect, useState } from "react";
 import { Subheader } from "../../components/comparison/Subheader";
-import { Contributions } from "@/src/components/comparison/contributions";
+import { Contributions } from "@/src/components/comparison/Contributions";
 import "../../components/comparison/sum.css"; // import your custom styles
 import Fullheader from "../../components/comparison/Fullheader";
 import QuoteCard from "../../components/comparison/QuoteCard";
@@ -12,7 +12,7 @@ import { supabase } from "@/src/supabase";
 import { QuoteType } from "@/src/types/custom/Quote";
 import { NonSystemField, quoteMetadataObject } from "@/src/types/metadata";
 import { isFieldVisible } from "@/src/types/utils/isFieldVisible";
-import { useSearchParams } from "next/navigation";
+import { notFound, useSearchParams } from "next/navigation";
 import SlidingPane from "react-sliding-pane";
 import "react-sliding-pane/dist/react-sliding-pane.css";
 import { FaTrash } from "react-icons/fa";
@@ -217,7 +217,9 @@ export default function QuotingPage() {
         .select("*")
         .in("id", quoteIds);
 
-      if (quotesError) throw quotesError;
+      if (quotesError) {
+        return notFound();
+      }
 
       const orderedByAlphaData = quotesData.sort((rowA, rowB) => {
         if (rowA.name < rowB.name) return -1;

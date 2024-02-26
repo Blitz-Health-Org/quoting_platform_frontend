@@ -6,6 +6,7 @@ import { NonSystemField } from "@/src/types/metadata";
 import { supabase } from "@/src/supabase";
 import { useListenClickOutside } from "../ui/dropdown/utils/useListenClickOutside";
 import { valueOrDefault } from "chart.js/dist/helpers/helpers.core";
+import { calculateTotalCost } from "./utils/calculateTotalCost";
 
 import AetnaLogo from "@/public/Screenshot.png";
 import AnotherCarrierLogo from "@/public/Anthem.jpeg";
@@ -50,7 +51,7 @@ export default function QuoteCard({
     Other: "N/A",
   };
 
-  const totalValue = ""; //implement calculation
+  const totalValue = calculateTotalCost(classes);
 
   function valueOrDefault(val: any, def: string = "N/A") {
     return val ?? def;
