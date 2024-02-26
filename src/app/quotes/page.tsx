@@ -28,7 +28,8 @@ export default function QuotingPage() {
   const [client, setClient] = useState<ClientType>();
   const [quotes, setQuotes] = useState<QuoteType[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
-  const [customClasses, setCustomClasses] = useState<string[]>([]);
+  const [customClasses, setCustomClasses] = useState<any[]>([]);
+
   const [newClass, setNewClass] = useState("");
   const [showStandardContributions, setShowStandardContributions] =
     useState(true);
@@ -83,10 +84,18 @@ export default function QuotingPage() {
     severity: "success",
   });
 
-  const handleDeleteClass = (index: any) => {
+  const handleDeleteClass = async (index: any) => {
+    if (!client) {
+      return;
+    }
     const updatedClasses = [...customClasses];
     updatedClasses.splice(index, 1);
     setCustomClasses(updatedClasses);
+
+    await supabase
+      .from("clients")
+      .update({ classes_contributions: [...customClasses] })
+      .eq("id", client.id);
 
     // Check if the length of customClasses is zero and update showStandardContributions
     if (updatedClasses.length === 0) {
@@ -206,6 +215,10 @@ export default function QuotingPage() {
 
       setClient(clientData);
 
+      if (client?.classes_contributions) {
+        setCustomClasses(client?.classes_contributions as any);
+      }
+
       // Fetch quotes data by IDs, assuming 'id' is in quoteIds array
       const { data: quotesData, error: quotesError } = await supabase
         .from("quotes")
@@ -230,13 +243,24 @@ export default function QuotingPage() {
     }
   };
 
-  const handleNewClassSubmit = (e: React.FormEvent) => {
+  const handleNewClassSubmit = async (e: React.FormEvent) => {
+    if (!client) {
+      return;
+    }
     e.preventDefault();
     if (newClass.trim() !== "") {
+      console.log("here", [...customClasses, newClass.trim()]);
       setCustomClasses([...customClasses, newClass.trim()]);
       setNewClass("");
       setShowStandardContributions(false); // Hide Standard Contributions
     }
+
+    await supabase
+      .from("clients")
+      .update({
+        classes_contributions: [...customClasses, newClass.trim()],
+      })
+      .eq("id", client.id);
   };
 
   const visibleQuoteFields = Object.values(quoteMetadataObject).filter((val) =>
@@ -396,6 +420,7 @@ export default function QuotingPage() {
                     </p>
                   </div>
                   <Contributions
+                    setShowStandardContributions={setShowStandardContributions}
                     standardContributions={standardContributions}
                     setStandardContributions={setStandardContributions}
                   />
