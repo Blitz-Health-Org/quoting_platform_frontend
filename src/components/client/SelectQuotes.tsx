@@ -169,11 +169,11 @@ export default function SelectQuotes({
           return a.isSelected && !b.isSelected ? -1 : 1;
         });
 
-        console.log("sortedQuotes", sortedQuotes)
+        console.log("sortedQuotes", sortedQuotes);
         setQuotes(sortedQuotes);
       } else {
         // Handle the case where selected_quotes is null (if needed)
-        setQuotes(data)
+        setQuotes(data);
       }
     }
   };
