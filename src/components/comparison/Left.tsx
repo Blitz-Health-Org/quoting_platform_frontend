@@ -33,7 +33,6 @@ export default function Left({
           </div>
         </div>
         <hr className="w-full border-t-1 border-gray-500"></hr>
-
         {objectVisibleQuoteFields.map((field) => {
           return (
             <>
@@ -55,10 +54,10 @@ export default function Left({
             </>
           );
         })}
-
         <div className="flex items-center h-7 bg-violet-100/60 w-full">
           <p className="ml-4 my-1 break-all font-semibold">Calculated Fields</p>
-        </div>
+        </div>{" "}
+        <hr className="w-full border-t-1 border-gray-300"></hr>
         <div className="flex items-center bg-white w-full h-7">
           <p className="ml-4 break-all">Total Cost</p>
         </div>
