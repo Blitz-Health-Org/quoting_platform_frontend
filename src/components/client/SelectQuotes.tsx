@@ -69,19 +69,25 @@ export default function SelectQuotes({
     });
   };
 
-  const planAttributesMapping: { key: keyof PlanAttributes; label: string }[] = [
-    { key: "carrier", label: "Carrier" },
-    { key: "plan_name", label: "Plan" },
-    { key: "plan_type", label: "Plan Type" },
-    { key: "office_copay", label: "Office Copay (PCP/Specialist)" },
-    { key: "deductible", label: "Deductible (Individual)" },
-    { key: "coinsurance", label: "Coinsurance (In-Network)" },
-    { key: "out_of_pocket_max", label: "Out of Pocket (Individual)" },
-    { key: "additional_copay", label: "Additional Copays (ER / Imaging / OP / IP)" },
-    { key: "total_cost", label: "Total Monthly Premium" },
-  ];
+  const planAttributesMapping: { key: keyof PlanAttributes; label: string }[] =
+    [
+      { key: "carrier", label: "Carrier" },
+      { key: "plan_name", label: "Plan" },
+      { key: "plan_type", label: "Plan Type" },
+      { key: "office_copay", label: "Office Copay (PCP/Specialist)" },
+      { key: "deductible", label: "Deductible (Individual)" },
+      { key: "coinsurance", label: "Coinsurance (In-Network)" },
+      { key: "out_of_pocket_max", label: "Out of Pocket (Individual)" },
+      {
+        key: "additional_copay",
+        label: "Additional Copays (ER / Imaging / OP / IP)",
+      },
+      { key: "total_cost", label: "Total Monthly Premium" },
+    ];
 
-  const [entryWidth, setEntryWidth] = useState(innerWidth / planAttributesMapping.length);
+  const [entryWidth, setEntryWidth] = useState(
+    innerWidth / planAttributesMapping.length,
+  );
   const { socket } = useContext(SocketContext);
   const [clients, setClients] = useState<ClientType[]>([]);
   const [quotes, setQuotes] = useState<QuoteTypeWithCheckbox[]>([]);
@@ -104,7 +110,7 @@ export default function SelectQuotes({
 
     const handleResize = () => {
       setEntryWidth(innerWidth / planAttributesMapping.length);
-      console.log("yeah", entryWidth)
+      console.log("yeah", entryWidth);
     };
 
     // Attach event listener for window resize
@@ -305,11 +311,13 @@ export default function SelectQuotes({
             </div>
             <div className="w-full overflow-x-auto">
               <div className="flex py-2 w-fit border-b">
-                <div           
-                  className="grid-cols-9 flex justify-left text-center w-fit gap-1 h-20 font-bold items-center text-wrap text-sm"
-                >
+                <div className="grid-cols-9 flex justify-left text-center w-fit gap-1 h-20 font-bold items-center text-wrap text-sm">
                   {planAttributesMapping.map((attribute) => (
-                    <div key={attribute.key} className="flex justify-center gap-2 min-w-32" style={{ width: `${entryWidth}px` }}>
+                    <div
+                      key={attribute.key}
+                      className="flex justify-center gap-2 min-w-32"
+                      style={{ width: `${entryWidth}px` }}
+                    >
                       <p>{attribute.label}</p>
                     </div>
                   ))}
@@ -349,16 +357,21 @@ export default function SelectQuotes({
                           >
                             {attribute.key === "carrier" ? (
                               <div className="flex items-center justify-center">
-                              <input
-                                type="checkbox"
-                                checked={quote.isSelected}
-                                onChange={() => handleCheckboxChange(quote.id)}
-                                className="mr-4"
-                              />
+                                <input
+                                  type="checkbox"
+                                  checked={quote.isSelected}
+                                  onChange={() =>
+                                    handleCheckboxChange(quote.id)
+                                  }
+                                  className="mr-4"
+                                />
                                 <Image
                                   src={
-                                    carrierLogos[quote[attribute.key] as keyof typeof carrierLogos] ||
-                                    carrierLogos["Chamber"]
+                                    carrierLogos[
+                                      quote[
+                                        attribute.key
+                                      ] as keyof typeof carrierLogos
+                                    ] || carrierLogos["Chamber"]
                                   }
                                   alt={`Logo for ${quote[attribute.key]}`}
                                   width={20}
@@ -366,9 +379,11 @@ export default function SelectQuotes({
                                   className="mr-2 rounded-md"
                                 />
                                 <p>{quote[attribute.key] || "Sup"}</p>
-                            </div>
+                              </div>
                             ) : (
-                              <p>{(quote.data as any)?.[attribute.key] ?? "N/A"}</p>
+                              <p>
+                                {(quote.data as any)?.[attribute.key] ?? "N/A"}
+                              </p>
                             )}
                           </div>
                         ))}

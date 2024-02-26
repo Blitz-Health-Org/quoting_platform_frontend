@@ -11,7 +11,7 @@ export type ClientCardProps = {
   setSelectedClient: Dispatch<SetStateAction<ClientType>>;
   client: ClientType;
   handleClientDelete: (client: ClientType) => void;
-  setModalOpen: Dispatch<SetStateAction<string>>
+  setModalOpen: Dispatch<SetStateAction<string>>;
   setOpenSnackbarShare: ({
     open,
     message,
@@ -91,12 +91,12 @@ export const ClientCard = ({
 
   function handleAddNewQuote() {
     setModalOpen("addNewQuote");
-    setSelectedClient(client)
+    setSelectedClient(client);
     return;
   }
 
   function handleClientCardClick() {
-    return;
+    router.push(`/client?client_id=${client.id}`);
   }
 
   return (

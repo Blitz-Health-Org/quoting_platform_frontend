@@ -35,11 +35,11 @@ export default function ClientTable({
   setSelectedClient,
   selectedClient,
   setModalOpen,
-  modalOpen
+  modalOpen,
 }: {
   setComparisonOpen: Dispatch<SetStateAction<boolean>>;
   setSelectedClient: Dispatch<SetStateAction<ClientType>>;
-  selectedClient: ClientType
+  selectedClient: ClientType;
   setModalOpen: Dispatch<SetStateAction<string>>;
   modalOpen: string;
 }) {
@@ -52,7 +52,7 @@ export default function ClientTable({
     .filter((client) => client.created_at)
     .sort((a, b) => b.created_at.localeCompare(a.created_at));
   const [isModalOpen, setIsModalOpen] = useState(false);
-  
+
   const [snackbar, setSnackbar] = useState({
     open: false,
     message: "",
