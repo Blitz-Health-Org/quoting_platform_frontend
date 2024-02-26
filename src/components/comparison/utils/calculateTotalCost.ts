@@ -8,11 +8,15 @@ export function calculateTotalCost(
   } else {
     let totalSum = 0;
     for (const value of ["employee", "family", "spouse", "child"]) {
-      totalSum +=
-        standardContributions[value].percent *
-        standardContributions[value].employees *
-        rates[value];
+      totalSum += parseFloat(
+        (
+          parseFloat(standardContributions[value].percent) *
+          parseFloat(standardContributions[value].employees) *
+          parseFloat(rates[value].slice(1, -1))
+        ).toFixed(2),
+      );
     }
-    return totalSum;
+    // Format totalSum when returning
+    return totalSum.toFixed(2);
   }
 }
