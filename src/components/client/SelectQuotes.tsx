@@ -220,12 +220,12 @@ export default function SelectQuotes({
         </div>
         <div className="rounded-md w-full flex-col overflow-x-hidden h-full pb-12 overflow-y-scroll bg-white outline outline-1 outline-gray-200">
           <div className="py-2 px-4">
-            <div className="w-full flex mt-4">
+            <div className="w-full flex mt-4 justify-center">
               <div className="w-1/4 flex items-center gap-2">
                 <IoDocumentTextOutline className="h-5 w-5" />
                 <p className="truncate"> Showing {quotes.length} Quotes </p>
               </div>
-              <div className="w-1/2 relative">
+              <div className="w-1/3 ml-4 md:ml-0 md:w-1/2 relative">
                 <div className="absolute left-3 top-1/2 transform -translate-y-1/2 flex items-center">
                   <FaSearch className="h-4 w-4 text-gray-500" />
                 </div>
@@ -236,7 +236,7 @@ export default function SelectQuotes({
                   className="bg-gray-100/50 w-full px-10 py-1 rounded-sm outline outline-1 outline-gray-300"
                 ></input>
               </div>
-              <div className="w-1/4">
+              <div className="w-5/12 md:w-1/4">
                 <div className="flex items-center justify-end">
                   <button
                     className="px-2 py-1 flex items-center gap-1"
@@ -282,76 +282,85 @@ export default function SelectQuotes({
                   <p className="w-36">Total Monthly Premium</p>
                 </div>
               </div>
-              {quotes
-                .filter(
-                  (quote: any) =>
-                    !search || // Only apply the filter if search is empty
-                    ((quote.data as any)?.["plan_name"] + quote.carrier)
-                      .toLowerCase()
-                      .includes(search.toLowerCase()),
-                )
-                .map((quote) => (
-                  <div
-                    key={quote.id}
-                    className="flex items-center w-fit mb-1 mt-1 py-2 border-b"
-                  >
-                    <div className="grid-cols-9 flex justify-left text-center w-fit gap-1 h-8 items-center text-sm">
-                      {/* Carrier Name */}
-                      <div className="w-32 flex items-center justify-center">
-                        <input
-                          type="checkbox"
-                          checked={quote.isSelected}
-                          onChange={() => handleCheckboxChange(quote.id)}
-                          className="mr-4"
-                        />
-                        <Image
-                          src={
-                            carrierLogos[
-                              quote.carrier as keyof typeof carrierLogos
-                            ] || carrierLogos["Chamber"]
-                          }
-                          alt={`Logo for ${quote.carrier}`}
-                          width={20}
-                          height={20}
-                          className="mr-2 rounded-md"
-                        />
-                        <p>{quote.carrier || "Sup"}</p>
+              {quotes.length === 0 ? (
+                <div className="flex w-full mt-16 mb-2 h-fit items-center justify-center flex-col">
+                  <p className="mb-2">No Quotes</p>
+                  <button className="bg-gray-100 outline outline-1 outline-gray-300 rounded-md px-2 py-0.5">
+                    New Quote
+                  </button>
+                </div>
+              ) : (
+                quotes
+                  .filter(
+                    (quote: any) =>
+                      !search || // Only apply the filter if search is empty
+                      ((quote.data as any)?.["plan_name"] + quote.carrier)
+                        .toLowerCase()
+                        .includes(search.toLowerCase()),
+                  )
+                  .map((quote) => (
+                    <div
+                      key={quote.id}
+                      className="flex items-center w-fit mb-1 mt-1 py-2 border-b"
+                    >
+                      <div className="grid-cols-9 flex justify-left text-center w-fit gap-1 h-8 items-center text-sm">
+                        {/* Carrier Name */}
+                        <div className="w-32 flex items-center justify-center">
+                          <input
+                            type="checkbox"
+                            checked={quote.isSelected}
+                            onChange={() => handleCheckboxChange(quote.id)}
+                            className="mr-4"
+                          />
+                          <Image
+                            src={
+                              carrierLogos[
+                                quote.carrier as keyof typeof carrierLogos
+                              ] || carrierLogos["Chamber"]
+                            }
+                            alt={`Logo for ${quote.carrier}`}
+                            width={20}
+                            height={20}
+                            className="mr-2 rounded-md"
+                          />
+                          <p>{quote.carrier || "Sup"}</p>
+                        </div>
+                        {/* Plan Name */}
+                        <p className="w-32 max-h-10 overflow-y-auto">
+                          {(quote.data as any)?.["plan_name"] ?? "N/A"}
+                        </p>
+                        {/* Funding () */}
+                        <p className="w-32 max-h-10 overflow-y-auto">
+                          {(quote.data as any)?.["plan_type"] ?? "N/A"}
+                        </p>
+                        {/* Office Copay (PCP/Specialist) */}
+                        <p className="w-32 max-h-10 overflow-y-auto">
+                          {(quote.data as any)?.["office_copay"] ?? "N/A"}
+                        </p>
+                        {/* Deductible (Individual) */}
+                        <p className="w-32 max-h-10 overflow-y-auto">
+                          {(quote.data as any)?.["deductible"] ?? "N/A"}
+                        </p>
+                        {/* Coinsurance (In-Network) */}
+                        <p className="w-32 max-h-10 overflow-y-auto">
+                          {(quote.data as any)?.["coinsurance"] ?? "N/A"}
+                        </p>
+                        {/* Out of Pocket (Individual) */}
+                        <p className="w-32 max-h-10 overflow-y-auto">
+                          {(quote.data as any)?.["out_of_pocket_max"] ?? "N/A"}
+                        </p>
+                        {/* Additional Copays Include (ER / Imaging / OP / IP) */}
+                        <p className="w-32 max-h-10 overflow-y-auto">
+                          {(quote.data as any)?.["additional_copay"] ?? "N/A"}
+                          {/* Total Monthly Premium  */}
+                        </p>
+                        <p className="w-32 max-h-10 overflow-y-auto">
+                          {(quote.data as any)?.["total_cost"] ?? "N/A"}
+                        </p>
                       </div>
-                      {/* Plan Name */}
-                      <p className="w-32 max-h-10 overflow-y-auto">
-                        {(quote.data as any)?.["plan_name"] ?? "N/A"}
-                      </p>
-                      {/* Funding () */}
-                      <p className="w-32 max-h-10 overflow-y-auto">
-                        {(quote.data as any)?.["plan_type"] ?? "N/A"}
-                      </p>
-                      {/* Office Copay (PCP/Specialist) */}
-                      <p className="w-32 max-h-10 overflow-y-auto">
-                        {(quote.data as any)?.["office_copay"] ?? "N/A"}
-                      </p>
-                      {/* Deductible (Individual) */}
-                      <p className="w-32 max-h-10 overflow-y-auto">
-                        {(quote.data as any)?.["deductible"] ?? "N/A"}
-                      </p>
-                      {/* Coinsurance (In-Network) */}
-                      <p className="w-32 max-h-10 overflow-y-auto">
-                        {(quote.data as any)?.["coinsurance"] ?? "N/A"}
-                      </p>
-                      {/* Out of Pocket (Individual) */}
-                      <p className="w-32 max-h-10 overflow-y-auto">
-                        {(quote.data as any)?.["out_of_pocket_max"] ?? "N/A"}
-                      </p>
-                      {/* Additional Copays Include (ER / Imaging / OP / IP) */}
-                      <p className="w-32 max-h-10 overflow-y-auto">
-                        {(quote.data as any)?.["additional_copay"] ?? "N/A"}
-                        {/* Total Monthly Premium  */}
-                      </p>
-                      <p className="w-32 max-h-10 overflow-y-auto">
-                        {(quote.data as any)?.["total_cost"] ?? "N/A"}
-                      </p>
                     </div>
-                  </div>
-                ))}
+                  ))
+              )}
             </div>
           </div>
         </div>
