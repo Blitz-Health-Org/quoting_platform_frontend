@@ -281,21 +281,23 @@ export default function SelectQuotes({
             <div className="flex py-2 w-fit border-b">
               <div className="grid-cols-9 flex justify-left text-center w-fit gap-1 h-20 font-bold items-center text-wrap text-sm">
                 {/* Carrier Name */}
-                <div className="w-36 flex justify-center gap-2">
+                <div className="w-32 flex justify-center gap-2">
                   <p>Carrier</p>
                 </div>
                 {/* Plan Name */}
-                <p className="w-36">Plan</p>
+                <p className="w-32">Plan</p>
+                {/* Plan Type */}
+                <p className="w-32">Plan Type</p>
                 {/* Office Copay (PCP/Specialist) */}
-                <p className="w-36">Office Copay (PCP/Specialist)</p>
+                <p className="w-32">Office Copay (PCP/Specialist)</p>
                 {/* Deductible (Individual) */}
-                <p className="w-36">Deductible (Individual)</p>
+                <p className="w-32">Deductible (Individual)</p>
                 {/* Coinsurance (In-Network) */}
-                <p className="w-36">Coinsurance (In-Network)</p>
+                <p className="w-32">Coinsurance (In-Network)</p>
                 {/* Out of Pocket (Individual) */}
-                <p className="w-36">Out of Pocket (Individual)</p>
+                <p className="w-32">Out of Pocket (Individual)</p>
                 {/* Additional Copays Include (ER / Imaging / OP / IP) */}
-                <p className="w-36">
+                <p className="w-32">
                   Additional Copays (ER / Imaging / OP / IP)
                 </p>
                 {/* Total Monthly Premium */}
@@ -309,7 +311,7 @@ export default function SelectQuotes({
               >
                 <div className="grid-cols-9 flex justify-left text-center w-fit gap-1 h-8 items-center text-sm">
                   {/* Carrier Name */}
-                  <div className="w-36 flex items-center justify-center">
+                  <div className="w-32 flex items-center justify-center">
                     <input
                       type="checkbox"
                       checked={quote.isSelected}
@@ -330,35 +332,35 @@ export default function SelectQuotes({
                     <p>{quote.carrier || "Sup"}</p>
                   </div>
                   {/* Plan Name */}
-                  <p className="w-36 max-h-10 overflow-y-auto">
+                  <p className="w-32 max-h-10 overflow-y-auto">
                     {(quote.data as any)?.["plan_name"] ?? "N/A"}
                   </p>
                   {/* Funding () */}
-                  <p className="w-36 max-h-10 overflow-y-auto">
+                  <p className="w-32 max-h-10 overflow-y-auto">
                     {(quote.data as any)?.["plan_type"] ?? "N/A"}
                   </p>
                   {/* Office Copay (PCP/Specialist) */}
-                  <p className="w-36 max-h-10 overflow-y-auto">
+                  <p className="w-32 max-h-10 overflow-y-auto">
                     {(quote.data as any)?.["office_copay"] ?? "N/A"}
                   </p>
                   {/* Deductible (Individual) */}
-                  <p className="w-36 max-h-10 overflow-y-auto">
+                  <p className="w-32 max-h-10 overflow-y-auto">
                     {(quote.data as any)?.["deductible"] ?? "N/A"}
                   </p>
                   {/* Coinsurance (In-Network) */}
-                  <p className="w-36 max-h-10 overflow-y-auto">
+                  <p className="w-32 max-h-10 overflow-y-auto">
                     {(quote.data as any)?.["coinsurance"] ?? "N/A"}
                   </p>
                   {/* Out of Pocket (Individual) */}
-                  <p className="w-36 max-h-10 overflow-y-auto">
+                  <p className="w-32 max-h-10 overflow-y-auto">
                     {(quote.data as any)?.["out_of_pocket_max"] ?? "N/A"}
                   </p>
                   {/* Additional Copays Include (ER / Imaging / OP / IP) */}
-                  <p className="w-36 max-h-10 overflow-y-auto">
+                  <p className="w-32 max-h-10 overflow-y-auto">
                     {(quote.data as any)?.["additional_copay"] ?? "N/A"}
                     {/* Total Monthly Premium  */}
                   </p>
-                  <p className="w-36 max-h-10 overflow-y-auto">
+                  <p className="w-32 max-h-10 overflow-y-auto">
                     {(quote.data as any)?.["total_cost"] ?? "N/A"}
                   </p>
                 </div>

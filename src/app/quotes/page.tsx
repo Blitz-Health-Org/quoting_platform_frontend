@@ -285,9 +285,10 @@ export default function QuotingPage() {
   };
 
   return (
-    <div className="w-full overflow-hidden h-screen bg-gray-100 pb-6">
+    <div className="bg-gray-100 w-full h-screen">
+    <div className="w-full overflow-x-hidden h-fit bg-gray-100">
       <Fullheader clientName={client?.name || "N/A"} />
-      <div className="h-full bg-gray-100 border border-gray-200 border-b-0 px-6 py-2">
+      <div className="bg-gray-100 border border-gray-200 border-b-0 px-6 py-2">
         <Subheader
           isPaneOpen={state.isPaneOpen}
           onPaneToggle={handlePaneToggle}
@@ -296,7 +297,7 @@ export default function QuotingPage() {
           quotesLength={quotes.length}
         />
 
-        <div className="p-0.5 flex w-full h-fit overflow-x-scroll gap-2">
+        <div className="p-0.5 flex w-full h-full overflow-auto gap-2">
           <Left
             nonObjectVisibleQuoteFields={nonObjectVisibleQuoteFields}
             objectVisibleQuoteFields={objectVisibleQuoteFields}
@@ -390,6 +391,7 @@ export default function QuotingPage() {
           severity: snackbar.severity,
         }}
       />
+    </div>
     </div>
   );
 }
