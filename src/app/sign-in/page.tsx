@@ -82,17 +82,20 @@ export default function Page() {
               ></input>
             </div>
 
-            <input
-              type="submit"
-              value="Submit"
-              className="bg-gray-200 px-3 py-1 rounded-md cursor-pointer"
-            ></input>
-            {/* Add a link to the sign-up page */}
-            <div className="mt-2">
-              <a href="/sign-up" className="text-blue-500">
+            <div className="flex gap-2 items-center">
+              <button
+                type="submit"
+                value="Sign In"
+                className="bg-gray-200 px-3 py-1 rounded-md cursor-pointer"
+              >
+                Sign In
+              </button>
+              {/* Add a link to the sign-up page */}
+              <a href="/sign-up" className="bg-gray-200 px-3 py-1 rounded-md cursor-pointer">
                 Sign Up
               </a>
             </div>
+
           </form>
         </div>
       </div>

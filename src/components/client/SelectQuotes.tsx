@@ -330,7 +330,7 @@ export default function SelectQuotes({
                     onClick={handleAddNewQuote}
                     className="bg-gray-100 outline outline-1 outline-gray-300 rounded-md px-2 py-0.5"
                   >
-                    New Quote
+                    Add Quotes
                   </button>
                 </div>
               ) : (

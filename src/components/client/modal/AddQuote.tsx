@@ -101,7 +101,7 @@ export const AddQuote = ({
     } else {
       setOpenSnackbarShare({
         open: true,
-        message: `Files uploaded!`,
+        message: `Your files are uploading! They can take 2-5 minutes to populate based on size.`,
         severity: "success",
       });
     }
