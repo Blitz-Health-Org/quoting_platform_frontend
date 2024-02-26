@@ -149,7 +149,7 @@ export default function SelectQuotes({
       .from("quotes")
       .select()
       .eq("client_id", selectedClient.id);
-  
+
     if (error) {
       alert("Error updating data");
     } else {
@@ -157,10 +157,12 @@ export default function SelectQuotes({
       if (selectedClient.selected_quotes !== null) {
         // Update isSelected attribute based on selected_quotes
         const updatedQuotes = data.map((quote) => {
-          const isSelected = selectedClient.selected_quotes?.includes(quote.id.toString());
+          const isSelected = selectedClient.selected_quotes?.includes(
+            quote.id.toString(),
+          );
           return { ...quote, isSelected: isSelected || false };
         });
-  
+
         // Sort the quotes so that selected ones appear above the ones that aren't selected
         const sortedQuotes = updatedQuotes.sort((a, b) => {
           // Put selected quotes above the ones that aren't selected
@@ -168,14 +170,13 @@ export default function SelectQuotes({
         });
 
         setQuotes(sortedQuotes);
-
       } else {
         // Handle the case where selected_quotes is null (if needed)
         console.warn("selected_quotes is null");
       }
     }
-  };  
-  
+  };
+
   useEffect(() => {
     fetchQuoteData();
   }, []);
@@ -262,9 +263,7 @@ export default function SelectQuotes({
   const handleCloseComparison = () => {
     setSelectedClient(undefined as unknown as ClientType);
     setComparisonOpen(false);
-    router.push(
-      `/`,
-    );
+    router.push(`/`);
   };
 
   return (

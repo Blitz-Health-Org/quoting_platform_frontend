@@ -36,23 +36,21 @@ export default function Home() {
 
       setSelectedClient(clientData);
 
-      console.log("Client Data", clientData)
-
+      console.log("Client Data", clientData);
     } catch (error) {
       console.error("Error fetching data:", error);
       // Optionally handle errors, such as setting an error state or showing a notification
     }
-  }
+  };
 
   useEffect(() => {
     const clientId = searchParams.get("clientId");
-    console.log(clientId)
+    console.log(clientId);
 
     if (clientId) {
-      fetchClient(clientId)
-      setComparisonOpen(true)
+      fetchClient(clientId);
+      setComparisonOpen(true);
     }
-
   }, [searchParams]);
 
   // useEffect(() => {

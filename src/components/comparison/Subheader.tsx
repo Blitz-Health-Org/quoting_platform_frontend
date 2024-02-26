@@ -28,7 +28,7 @@ export const Subheader: React.FC<SubheaderProps> = ({
   copyUrlToClipboard,
   handleDownloadCSV,
   quotesLength,
-  clientId
+  clientId,
 }) => {
   const [snackbar, setSnackbar] = useState({
     open: false,
@@ -47,9 +47,7 @@ export const Subheader: React.FC<SubheaderProps> = ({
   const router = useRouter();
 
   const handleBusiness2 = (index: any) => {
-    router.push(
-      `/?clientId=${clientId}`,
-    );
+    router.push(`/?clientId=${clientId}`);
     return;
   };
 
