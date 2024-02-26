@@ -308,7 +308,7 @@ export default function QuoteCard({
         <hr className="w-full border-t-1 border-gray-300"></hr>
         <div className="flex w-full bg-white">
           <textarea
-            defaultValue={totalValue}
+            value={totalValue}
             className="text-center resize-none text-sm content-center h-7 w-full border-r bg-transparent focus:outline-0 focus:border focus:border-1 focus:border-gray-200 cursor-pointer focus:cursor-auto p-1"
           />
         </div>

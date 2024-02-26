@@ -45,7 +45,7 @@ export const AddQuote = ({
   const [files, setFiles] = useState<File[]>([]);
   const [selectedPlan, setSelectedPlan] = useState<string>("bcbs_tx_aca");
 
-  console.log(client)
+  console.log(client);
 
   const onDrop = (acceptedFiles: File[]) => {
     setFiles(acceptedFiles);
