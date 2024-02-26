@@ -34,6 +34,7 @@ import { Json } from "@/src/types/database/database.types";
 import { io } from "socket.io-client";
 import router from "next/router";
 import { FiArrowRight } from "react-icons/fi";
+import { UserContext } from "@/src/context/UserContext";
 
 export default function SelectQuotes({
   setComparisonOpen,
@@ -73,6 +74,14 @@ export default function SelectQuotes({
   const [clients, setClients] = useState<ClientType[]>([]);
   const [quotes, setQuotes] = useState<QuoteTypeWithCheckbox[]>([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const {
+    userId: [userId, , loading],
+  } = useContext(UserContext);
+  const [snackbar, setSnackbar] = useState({
+    open: false,
+    message: "",
+    severity: "info", // default severity
+  });
   const router = useRouter();
   const [search, setSearch] = useState<string>();
 
@@ -201,7 +210,10 @@ export default function SelectQuotes({
       } else {
         //UPDATE DATA
         try {
-          const { data, error } = await supabase.from("clients").select();
+          const { data, error } = await supabase
+            .from("clients")
+            .select()
+            .eq("user_id", userId);
           if (error) {
             alert("Error retrieving data");
           } else {

@@ -4,16 +4,18 @@ import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useContext } from "react";
 import { UserContext } from "@/src/context/UserContext";
+import { supabase } from "@/src/supabase";
+import { AuthContext } from "@/src/context/AuthContext";
 
 export default function Page() {
   const {
     userId: [userId, setUserId, loading],
   } = useContext(UserContext);
-  const router = useRouter();
+  const {
+    accessToken: [accessToken, setAccessToken],
+  } = useContext(AuthContext);
 
-  if (userId) {
-    router.push("/");
-  }
+  const router = useRouter();
 
   function handleSubmit(e: React.SyntheticEvent) {
     event?.preventDefault();
@@ -26,15 +28,20 @@ export default function Page() {
     const email = target.email.value; // typechecks!
     const password = target.password.value; // typechecks!
 
-    if (email === "email" && password === "password") {
-      router.push("/");
-    } else {
-      alert("Wrong credentials");
-    }
-  }
-
-  if (loading) {
-    return <></>;
+    // Use supabase.auth.signIn to sign in the user
+    supabase.auth
+      .signInWithPassword({ email, password })
+      .then(({ data, error }) => {
+        if (error) {
+          alert(error.message);
+          return;
+        }
+        if (data) {
+          setUserId(data.user.id);
+          setAccessToken(data.session.access_token);
+          router.push("/");
+        }
+      });
   }
 
   return (
@@ -80,6 +87,12 @@ export default function Page() {
               value="Submit"
               className="bg-gray-200 px-3 py-1 rounded-md cursor-pointer"
             ></input>
+            {/* Add a link to the sign-up page */}
+            <div className="mt-2">
+              <a href="/sign-up" className="text-blue-500">
+                Sign Up
+              </a>
+            </div>
           </form>
         </div>
       </div>

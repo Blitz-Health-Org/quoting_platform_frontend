@@ -1,10 +1,12 @@
 "use client";
 
-import { createContext } from "react";
+import { createContext, useEffect } from "react";
 import { useLocalStorage } from "../utils/useLocalStorage";
+import { supabase } from "../supabase";
+import { useState } from "react";
 
 export type UserContextProps = {
-  userId: [number | undefined, (value: number | undefined) => void, boolean];
+  userId: [string | undefined, (value: string | undefined) => void, boolean];
 };
 
 export const UserContext = createContext<UserContextProps>({
@@ -16,14 +18,18 @@ export const UserContextProvider = ({
 }: {
   children: React.ReactNode;
 }) => {
-  const [userId, setUserId, loading] = useLocalStorage<number | undefined>(
-    "blume_user_id",
+  const [userId, setUserId, loading] = useLocalStorage<string | undefined>(
+    "userId",
     undefined,
   );
 
   return (
     <>
-      <UserContext.Provider value={{ userId: [userId, setUserId, loading] }}>
+      <UserContext.Provider
+        value={{
+          userId: [userId, setUserId, loading],
+        }}
+      >
         {children}
       </UserContext.Provider>
     </>
