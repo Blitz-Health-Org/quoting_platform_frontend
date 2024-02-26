@@ -15,7 +15,7 @@ export default function Left({
     .map((field) => field.label);
 
   return (
-    <div className="bg-white h-fit min-w-56 mt-4 rounded-lg outline outline-1 outline-gray-300 py-6 text-center truncate">
+    <div className="bg-white h-fit min-w-56 mt-4 rounded-lg outline outline-1 outline-gray-300 pt-6 pb-1 text-center truncate">
       <div className="flex mb-16"></div>
       <div className="w-full text-sm">
         {topLevelItemList.map((item: any, index: any) => (
@@ -57,7 +57,10 @@ export default function Left({
         })}
 
         <div className="flex items-center h-7 bg-violet-100/60 w-full">
-          <p className="ml-4 my-1 break-all font-semibold">Total Cost</p>
+          <p className="ml-4 my-1 break-all font-semibold">Calculated Fields</p>
+        </div>
+        <div className="flex items-center bg-white w-full h-7">
+          <p className="ml-4 break-all">Total Cost</p>
         </div>
       </div>
     </div>

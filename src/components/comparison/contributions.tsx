@@ -7,16 +7,12 @@ import Input from "@mui/material/Input";
 import { MdEdit } from "react-icons/md";
 import { FaSave } from "react-icons/fa";
 
-export function Contributions() {
+export function Contributions({
+  standardContributions,
+  setStandardContributions,
+}: any) {
   const [editStandardContributions, setEditStandardContributions] =
     useState(false);
-
-  const [standardContributions, setStandardContributions] = useState({
-    ee: { percent: 100, employees: 50 },
-    eeSpouse: { percent: 100, employees: 50 },
-    eeChild: { percent: 100, employees: 50 },
-    eeFamily: { percent: 100, employees: 50 },
-  });
 
   const handleEdit = () => {
     // Enable editing mode
@@ -43,15 +39,15 @@ export function Contributions() {
           className="w-11"
           defaultValue={100}
           size="small"
-          value={standardContributions.ee.percent}
+          value={standardContributions.employee.percent}
           onChange={(e) => {
             let newValue = parseInt(e.target.value);
             // Check if the value exceeds 100 and reset it to 100
             newValue = newValue > 100 ? 100 : newValue;
 
-            setStandardContributions((prev) => ({
+            setStandardContributions((prev: any) => ({
               ...prev,
-              ee: { ...prev.ee, percent: newValue },
+              empoloyee: { ...prev.employee, percent: newValue },
             }));
           }}
           disabled={!editStandardContributions}
@@ -70,11 +66,14 @@ export function Contributions() {
           className="w-12"
           defaultValue={50}
           size="small"
-          value={standardContributions.ee.employees}
+          value={standardContributions.employee.employees}
           onChange={(e) =>
-            setStandardContributions((prev) => ({
+            setStandardContributions((prev: any) => ({
               ...prev,
-              ee: { ...prev.ee, employees: parseInt(e.target.value) },
+              employee: {
+                ...prev.employee,
+                employees: parseInt(e.target.value),
+              },
             }))
           }
           inputProps={{
@@ -94,15 +93,15 @@ export function Contributions() {
           className="w-11"
           defaultValue={100}
           size="small"
-          value={standardContributions.eeSpouse.percent}
+          value={standardContributions.spouse.percent}
           onChange={(e) => {
             let newValue = parseInt(e.target.value);
             // Check if the value exceeds 100 and reset it to 100
             newValue = newValue > 100 ? 100 : newValue;
 
-            setStandardContributions((prev) => ({
+            setStandardContributions((prev: any) => ({
               ...prev,
-              eeSpouse: { ...prev.eeSpouse, percent: newValue },
+              spouse: { ...prev.spouse, percent: newValue },
             }));
           }}
           disabled={!editStandardContributions}
@@ -121,12 +120,12 @@ export function Contributions() {
           className="w-12"
           defaultValue={50}
           size="small"
-          value={standardContributions.eeSpouse.employees}
+          value={standardContributions.spouse.employees}
           onChange={(e) =>
-            setStandardContributions((prev) => ({
+            setStandardContributions((prev: any) => ({
               ...prev,
-              eeSpouse: {
-                ...prev.eeSpouse,
+              spouse: {
+                ...prev.spouse,
                 employees: parseInt(e.target.value),
               },
             }))
@@ -148,15 +147,15 @@ export function Contributions() {
           className="w-11"
           defaultValue={100}
           size="small"
-          value={standardContributions.eeChild.percent}
+          value={standardContributions.child.percent}
           onChange={(e) => {
             let newValue = parseInt(e.target.value);
             // Check if the value exceeds 100 and reset it to 100
             newValue = newValue > 100 ? 100 : newValue;
 
-            setStandardContributions((prev) => ({
+            setStandardContributions((prev: any) => ({
               ...prev,
-              eeChild: { ...prev.eeChild, percent: newValue },
+              child: { ...prev.child, percent: newValue },
             }));
           }}
           disabled={!editStandardContributions}
@@ -175,11 +174,11 @@ export function Contributions() {
           className="w-12"
           defaultValue={50}
           size="small"
-          value={standardContributions.eeChild.employees}
+          value={standardContributions.child.employees}
           onChange={(e) =>
-            setStandardContributions((prev) => ({
+            setStandardContributions((prev: any) => ({
               ...prev,
-              eeChild: { ...prev.eeChild, employees: parseInt(e.target.value) },
+              child: { ...prev.child, employees: parseInt(e.target.value) },
             }))
           }
           inputProps={{
@@ -199,15 +198,15 @@ export function Contributions() {
           className="w-11"
           defaultValue={100}
           size="small"
-          value={standardContributions.eeFamily.percent}
+          value={standardContributions.family.percent}
           onChange={(e) => {
             let newValue = parseInt(e.target.value);
             // Check if the value exceeds 100 and reset it to 100
             newValue = newValue > 100 ? 100 : newValue;
 
-            setStandardContributions((prev) => ({
+            setStandardContributions((prev: any) => ({
               ...prev,
-              eeFamily: { ...prev.eeFamily, percent: newValue },
+              family: { ...prev.family, percent: newValue },
             }));
           }}
           disabled={!editStandardContributions}
@@ -226,12 +225,12 @@ export function Contributions() {
           className="w-12"
           defaultValue={50}
           size="small"
-          value={standardContributions.eeFamily.employees}
+          value={standardContributions.family.employees}
           onChange={(e) =>
-            setStandardContributions((prev) => ({
+            setStandardContributions((prev: any) => ({
               ...prev,
-              eeFamily: {
-                ...prev.eeFamily,
+              family: {
+                ...prev.family,
                 employees: parseInt(e.target.value),
               },
             }))

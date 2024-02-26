@@ -1,14 +1,53 @@
-export type Json =
-  | string
-  | number
-  | boolean
-  | null
-  | { [key: string]: Json | undefined }
-  | Json[];
+export type Json = { [key: string]: Json | undefined };
 
 export type Database = {
   public: {
     Tables: {
+      ACA_Quotes: {
+        Row: {
+          "Coinsurance. % In-Network": string | null;
+          created_at: string;
+          "Deductibe Individual": string | null;
+          "Facility Copays (ER/Imaging/OP/IP)": string | null;
+          Funding: string | null;
+          id: number;
+          Insurer: string | null;
+          "Medical Plan": string | null;
+          "Office Copay (PCP/Specialist)": string | null;
+          "Out of Pocket Individual": string | null;
+          "Pharmacy Copay": string | null;
+          "Plan Type": string | null;
+        };
+        Insert: {
+          "Coinsurance. % In-Network"?: string | null;
+          created_at?: string;
+          "Deductibe Individual"?: string | null;
+          "Facility Copays (ER/Imaging/OP/IP)"?: string | null;
+          Funding?: string | null;
+          id?: number;
+          Insurer?: string | null;
+          "Medical Plan"?: string | null;
+          "Office Copay (PCP/Specialist)"?: string | null;
+          "Out of Pocket Individual"?: string | null;
+          "Pharmacy Copay"?: string | null;
+          "Plan Type"?: string | null;
+        };
+        Update: {
+          "Coinsurance. % In-Network"?: string | null;
+          created_at?: string;
+          "Deductibe Individual"?: string | null;
+          "Facility Copays (ER/Imaging/OP/IP)"?: string | null;
+          Funding?: string | null;
+          id?: number;
+          Insurer?: string | null;
+          "Medical Plan"?: string | null;
+          "Office Copay (PCP/Specialist)"?: string | null;
+          "Out of Pocket Individual"?: string | null;
+          "Pharmacy Copay"?: string | null;
+          "Plan Type"?: string | null;
+        };
+        Relationships: [];
+      };
       carriers: {
         Row: {
           id: number;
@@ -31,7 +70,6 @@ export type Database = {
           created_at: string;
           id: number;
           password: string | null;
-          user_id: number | null;
           username: string | null;
         };
         Insert: {
@@ -40,7 +78,6 @@ export type Database = {
           created_at?: string;
           id?: number;
           password?: string | null;
-          user_id?: number | null;
           username?: string | null;
         };
         Update: {
@@ -49,7 +86,6 @@ export type Database = {
           created_at?: string;
           id?: number;
           password?: string | null;
-          user_id?: number | null;
           username?: string | null;
         };
         Relationships: [
@@ -58,20 +94,6 @@ export type Database = {
             columns: ["carrier_id"];
             isOneToOne: false;
             referencedRelation: "carriers";
-            referencedColumns: ["id"];
-          },
-          {
-            foreignKeyName: "carriers_users_user_id_fkey";
-            columns: ["user_id"];
-            isOneToOne: false;
-            referencedRelation: "all_data_view";
-            referencedColumns: ["user_id"];
-          },
-          {
-            foreignKeyName: "carriers_users_user_id_fkey";
-            columns: ["user_id"];
-            isOneToOne: false;
-            referencedRelation: "users";
             referencedColumns: ["id"];
           },
         ];
@@ -84,8 +106,9 @@ export type Database = {
           id: number;
           name: string | null;
           num_lives: number | null;
+          public_id: string | null;
           selected_quotes: string[] | null;
-          user_id: number | null;
+          user_id: string | null;
         };
         Insert: {
           classes_contributions?: Json[] | null;
@@ -94,8 +117,9 @@ export type Database = {
           id?: number;
           name?: string | null;
           num_lives?: number | null;
+          public_id?: string | null;
           selected_quotes?: string[] | null;
-          user_id?: number | null;
+          user_id?: string | null;
         };
         Update: {
           classes_contributions?: Json[] | null;
@@ -104,17 +128,11 @@ export type Database = {
           id?: number;
           name?: string | null;
           num_lives?: number | null;
+          public_id?: string | null;
           selected_quotes?: string[] | null;
-          user_id?: number | null;
+          user_id?: string | null;
         };
         Relationships: [
-          {
-            foreignKeyName: "public_clients_user_id_fkey";
-            columns: ["user_id"];
-            isOneToOne: false;
-            referencedRelation: "all_data_view";
-            referencedColumns: ["user_id"];
-          },
           {
             foreignKeyName: "public_clients_user_id_fkey";
             columns: ["user_id"];
@@ -124,38 +142,71 @@ export type Database = {
           },
         ];
       };
+      clients_erin: {
+        Row: {
+          classes_contributions: Json[] | null;
+          created_at: string;
+          icon: string | null;
+          id: number;
+          name: string | null;
+          num_lives: number | null;
+          selected_quotes: string[] | null;
+        };
+        Insert: {
+          classes_contributions?: Json[] | null;
+          created_at?: string;
+          icon?: string | null;
+          id?: number;
+          name?: string | null;
+          num_lives?: number | null;
+          selected_quotes?: string[] | null;
+        };
+        Update: {
+          classes_contributions?: Json[] | null;
+          created_at?: string;
+          icon?: string | null;
+          id?: number;
+          name?: string | null;
+          num_lives?: number | null;
+          selected_quotes?: string[] | null;
+        };
+        Relationships: [];
+      };
       graphs: {
         Row: {
           created_at: string;
           id: number;
-          user: number | null;
         };
         Insert: {
           created_at?: string;
           id?: number;
-          user?: number | null;
         };
         Update: {
           created_at?: string;
           id?: number;
-          user?: number | null;
         };
-        Relationships: [
-          {
-            foreignKeyName: "public_graphs_user_fkey";
-            columns: ["user"];
-            isOneToOne: false;
-            referencedRelation: "all_data_view";
-            referencedColumns: ["user_id"];
-          },
-          {
-            foreignKeyName: "public_graphs_user_fkey";
-            columns: ["user"];
-            isOneToOne: false;
-            referencedRelation: "users";
-            referencedColumns: ["id"];
-          },
-        ];
+        Relationships: [];
+      };
+      links: {
+        Row: {
+          created_at: string;
+          id: number;
+          query_id: string | null;
+          url: string | null;
+        };
+        Insert: {
+          created_at?: string;
+          id?: number;
+          query_id?: string | null;
+          url?: string | null;
+        };
+        Update: {
+          created_at?: string;
+          id?: number;
+          query_id?: string | null;
+          url?: string | null;
+        };
+        Relationships: [];
       };
       organizations: {
         Row: {
@@ -196,13 +247,6 @@ export type Database = {
             foreignKeyName: "public_plans_client_id_fkey";
             columns: ["client_id"];
             isOneToOne: false;
-            referencedRelation: "all_data_view";
-            referencedColumns: ["client_id"];
-          },
-          {
-            foreignKeyName: "public_plans_client_id_fkey";
-            columns: ["client_id"];
-            isOneToOne: false;
             referencedRelation: "clients";
             referencedColumns: ["id"];
           },
@@ -231,7 +275,6 @@ export type Database = {
           monthly_payments: Json | null;
           nov_payment: number | null;
           oct_payment: number | null;
-          owner_id: number | null;
           payments: number[] | null;
           plan_type: string | null;
           policy_id: string | null;
@@ -261,7 +304,6 @@ export type Database = {
           monthly_payments?: Json | null;
           nov_payment?: number | null;
           oct_payment?: number | null;
-          owner_id?: number | null;
           payments?: number[] | null;
           plan_type?: string | null;
           policy_id?: string | null;
@@ -291,7 +333,6 @@ export type Database = {
           monthly_payments?: Json | null;
           nov_payment?: number | null;
           oct_payment?: number | null;
-          owner_id?: number | null;
           payments?: number[] | null;
           plan_type?: string | null;
           policy_id?: string | null;
@@ -308,31 +349,10 @@ export type Database = {
             referencedColumns: ["id"];
           },
           {
-            foreignKeyName: "policies_client_id_fkey";
+            foreignKeyName: "public_policies_client_id_fkey";
             columns: ["client_id"];
             isOneToOne: false;
-            referencedRelation: "all_data_view";
-            referencedColumns: ["client_id"];
-          },
-          {
-            foreignKeyName: "policies_client_id_fkey";
-            columns: ["client_id"];
-            isOneToOne: false;
-            referencedRelation: "clients";
-            referencedColumns: ["id"];
-          },
-          {
-            foreignKeyName: "policies_owner_id_fkey";
-            columns: ["owner_id"];
-            isOneToOne: false;
-            referencedRelation: "all_data_view";
-            referencedColumns: ["user_id"];
-          },
-          {
-            foreignKeyName: "policies_owner_id_fkey";
-            columns: ["owner_id"];
-            isOneToOne: false;
-            referencedRelation: "users";
+            referencedRelation: "clients_erin";
             referencedColumns: ["id"];
           },
         ];
@@ -364,7 +384,6 @@ export type Database = {
           num_employees: string | null;
           num_enrolled: string | null;
           oct_payment: number | null;
-          owner_id: number | null;
           payments: number[] | null;
           plan_type: string | null;
           policy_id: string | null;
@@ -399,7 +418,6 @@ export type Database = {
           num_employees?: string | null;
           num_enrolled?: string | null;
           oct_payment?: number | null;
-          owner_id?: number | null;
           payments?: number[] | null;
           plan_type?: string | null;
           policy_id?: string | null;
@@ -434,7 +452,6 @@ export type Database = {
           num_employees?: string | null;
           num_enrolled?: string | null;
           oct_payment?: number | null;
-          owner_id?: number | null;
           payments?: number[] | null;
           plan_type?: string | null;
           policy_id?: string | null;
@@ -455,28 +472,7 @@ export type Database = {
             foreignKeyName: "public_policies_erin_client_id_fkey";
             columns: ["client_id"];
             isOneToOne: false;
-            referencedRelation: "all_data_view";
-            referencedColumns: ["client_id"];
-          },
-          {
-            foreignKeyName: "public_policies_erin_client_id_fkey";
-            columns: ["client_id"];
-            isOneToOne: false;
-            referencedRelation: "clients";
-            referencedColumns: ["id"];
-          },
-          {
-            foreignKeyName: "public_policies_erin_owner_id_fkey";
-            columns: ["owner_id"];
-            isOneToOne: false;
-            referencedRelation: "all_data_view";
-            referencedColumns: ["user_id"];
-          },
-          {
-            foreignKeyName: "public_policies_erin_owner_id_fkey";
-            columns: ["owner_id"];
-            isOneToOne: false;
-            referencedRelation: "users";
+            referencedRelation: "clients_erin";
             referencedColumns: ["id"];
           },
         ];
@@ -541,13 +537,6 @@ export type Database = {
             foreignKeyName: "public_quotes_client_id_fkey";
             columns: ["client_id"];
             isOneToOne: false;
-            referencedRelation: "all_data_view";
-            referencedColumns: ["client_id"];
-          },
-          {
-            foreignKeyName: "public_quotes_client_id_fkey";
-            columns: ["client_id"];
-            isOneToOne: false;
             referencedRelation: "clients";
             referencedColumns: ["id"];
           },
@@ -573,23 +562,7 @@ export type Database = {
       };
     };
     Views: {
-      all_data_view: {
-        Row: {
-          client_created_at: string | null;
-          client_id: number | null;
-          email: string | null;
-          icon: string | null;
-          name: string | null;
-          num_lives: number | null;
-          plan_created_at: string | null;
-          plan_id: number | null;
-          plan_type: string | null;
-          quote_created_at: string | null;
-          quote_id: number | null;
-          user_id: number | null;
-        };
-        Relationships: [];
-      };
+      [_ in never]: never;
     };
     Functions: {
       [_ in never]: never;

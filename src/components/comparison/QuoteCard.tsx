@@ -19,12 +19,16 @@ type QuoteCardProps = {
   quote: QuoteType;
   nonObjectVisibleQuoteFields: NonSystemField[];
   objectVisibleQuoteFields: NonSystemField[];
+  customClasses: any;
+  standardContributions: any;
 };
 
 export default function QuoteCard({
   quote,
   nonObjectVisibleQuoteFields,
   objectVisibleQuoteFields,
+  customClasses,
+  standardContributions,
 }: QuoteCardProps) {
   const [quoteData, setQuoteData] = useState<any>(quote);
 
@@ -51,7 +55,12 @@ export default function QuoteCard({
     Other: "N/A",
   };
 
-  const totalValue = calculateTotalCost(classes);
+  const totalValue = calculateTotalCost(standardContributions, customClasses, {
+    employee: quote.data?.["employee_only_rate"],
+    child: quote?.data?.["employee_child_rate"],
+    family: quote?.data?.["employee_family_rate"],
+    spouse: quote?.data?.["employee_spouse_rate"],
+  });
 
   function valueOrDefault(val: any, def: string = "N/A") {
     return val ?? def;
@@ -116,7 +125,7 @@ export default function QuoteCard({
   });
 
   return (
-    <div className="bg-white h-full mb-4 min-w-80 mt-4 rounded-lg outline outline-1 outline-gray-300 py-6 mr-1 text-center overscroll-none">
+    <div className="bg-white h-full min-w-80 mt-4 rounded-lg outline outline-1 outline-gray-300 pt-6 pb-1 mr-1 text-center overscroll-none">
       <div className="flex w-full h-fit justify-center items-center">
         <div className="w-fit h-fit mb-4 mr-1">
           <Image
@@ -291,11 +300,17 @@ export default function QuoteCard({
 
         <div className="flex w-full">
           <textarea
-            defaultValue={totalValue}
+            disabled
             className="font-semibold text-center resize-none text-sm content-center h-7 w-full border-r bg-transparent focus:outline-0 focus:border focus:border-1 focus:border-gray-200 cursor-pointer focus:cursor-auto p-1"
           />
         </div>
         <hr className="w-full border-t-1 border-gray-300"></hr>
+        <div className="flex w-full bg-white">
+          <textarea
+            defaultValue={totalValue}
+            className="text-center resize-none text-sm content-center h-7 w-full border-r bg-transparent focus:outline-0 focus:border focus:border-1 focus:border-gray-200 cursor-pointer focus:cursor-auto p-1"
+          />
+        </div>
       </div>
     </div>
   );
