@@ -221,12 +221,12 @@ export default function SelectQuotes({
         </div>
         <div className="rounded-md w-full flex-col overflow-x-hidden h-full pb-12 overflow-y-scroll bg-white outline outline-1 outline-gray-200">
           <div className="py-2 px-4">
-            <div className="w-full flex mt-4">
+            <div className="w-full flex mt-4 justify-center">
               <div className="w-1/4 flex items-center gap-2">
                 <IoDocumentTextOutline className="h-5 w-5" />
                 <p className="truncate"> Showing {quotes.length} Quotes </p>
               </div>
-              <div className="w-1/2 relative">
+              <div className="w-1/3 ml-4 md:ml-0 md:w-1/2 relative">
                 <div className="absolute left-3 top-1/2 transform -translate-y-1/2 flex items-center">
                   <FaSearch className="h-4 w-4 text-gray-500" />
                 </div>
@@ -237,7 +237,7 @@ export default function SelectQuotes({
                   className="bg-gray-100/50 w-full px-10 py-1 rounded-sm outline outline-1 outline-gray-300"
                 ></input>
               </div>
-              <div className="w-1/4">
+              <div className="w-5/12 md:w-1/4">
                 <div className="flex items-center justify-end">
                   <button
                     className="px-2 py-1 flex items-center gap-1"
@@ -283,7 +283,13 @@ export default function SelectQuotes({
                   <p className="w-36">Total Monthly Premium</p>
                 </div>
               </div>
-              {quotes
+              {quotes.length === 0 ? (
+                <div className="flex w-full mt-16 mb-2 h-fit items-center justify-center flex-col">
+                  <p className="mb-2">No Quotes</p>
+                  <button className="bg-gray-100 outline outline-1 outline-gray-300 rounded-md px-2 py-0.5">New Quote</button>
+                </div>
+              ) : (
+              quotes
                 .filter(
                   (quote: any) =>
                     !search || // Only apply the filter if search is empty
@@ -352,7 +358,8 @@ export default function SelectQuotes({
                       </p>
                     </div>
                   </div>
-                ))}
+                ))
+                )}
             </div>
           </div>
         </div>
