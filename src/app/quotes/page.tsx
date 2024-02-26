@@ -2,7 +2,7 @@
 
 import React, { useContext, useEffect, useState } from "react";
 import { Subheader } from "../../components/comparison/Subheader";
-import { Contributions } from "@/src/components/comparison/Contributions";
+import { Contributions } from "@/src/components/comparison/contributions";
 import "../../components/comparison/sum.css"; // import your custom styles
 import Fullheader from "../../components/comparison/Fullheader";
 import QuoteCard from "../../components/comparison/QuoteCard";
@@ -32,8 +32,12 @@ export default function QuotingPage() {
   const [newClass, setNewClass] = useState("");
   const [showStandardContributions, setShowStandardContributions] =
     useState(true);
-  const [editStandardContributions, setEditStandardContributions] =
-    useState(false);
+  const [standardContributions, setStandardContributions] = useState({
+    employee: { percent: 100, employees: 50 },
+    family: { percent: 100, employees: 50 },
+    child: { percent: 100, employees: 50 },
+    spouse: { percent: 100, employees: 50 },
+  });
   const { socket } = useContext(SocketContext);
 
   useEffect(() => {
@@ -174,13 +178,6 @@ export default function QuotingPage() {
 
     setLoading(false);
   }, [searchParams]);
-
-  const [standardContributions, setStandardContributions] = useState({
-    ee: { percent: 100, employees: 50 },
-    eeSpouse: { percent: 100, employees: 50 },
-    eeChild: { percent: 100, employees: 50 },
-    eeFamily: { percent: 100, employees: 50 },
-  });
 
   // const handleEdit = () => {
   //   // Enable editing mode
@@ -327,6 +324,8 @@ export default function QuotingPage() {
                   quote={quote}
                   nonObjectVisibleQuoteFields={nonObjectVisibleQuoteFields}
                   objectVisibleQuoteFields={objectVisibleQuoteFields}
+                  customClasses={customClasses}
+                  standardContributions={standardContributions}
                 />
               ))
             ) : (
@@ -353,7 +352,10 @@ export default function QuotingPage() {
               <>
                 <h1 className="mb-2 font-bold">Standard Contributions</h1>
 
-                <Contributions />
+                <Contributions
+                  standardContributions={standardContributions}
+                  setStandardContributions={setStandardContributions}
+                />
 
                 <hr className="mt-4 mb-4"></hr>
               </>
@@ -392,7 +394,10 @@ export default function QuotingPage() {
                       Class #{index + 1} : {className}
                     </p>
                   </div>
-                  <Contributions />
+                  <Contributions
+                    standardContributions={standardContributions}
+                    setStandardContributions={setStandardContributions}
+                  />
                 </div>
               ))}
             </div>

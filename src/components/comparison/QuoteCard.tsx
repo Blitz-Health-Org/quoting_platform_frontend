@@ -19,12 +19,16 @@ type QuoteCardProps = {
   quote: QuoteType;
   nonObjectVisibleQuoteFields: NonSystemField[];
   objectVisibleQuoteFields: NonSystemField[];
+  customClasses: any;
+  standardContributions: any;
 };
 
 export default function QuoteCard({
   quote,
   nonObjectVisibleQuoteFields,
   objectVisibleQuoteFields,
+  customClasses,
+  standardContributions,
 }: QuoteCardProps) {
   const [quoteData, setQuoteData] = useState<any>(quote);
 
@@ -51,7 +55,12 @@ export default function QuoteCard({
     Other: "N/A",
   };
 
-  const totalValue = calculateTotalCost(classes);
+  const totalValue = calculateTotalCost(standardContributions, customClasses, {
+    employee: quote.data?.["employee_only_rate"],
+    child: quote?.data?.["employee_child_rate"],
+    family: quote?.data?.["employee_family_rate"],
+    spouse: quote?.data?.["employee_spouse_rate"],
+  });
 
   function valueOrDefault(val: any, def: string = "N/A") {
     return val ?? def;
@@ -291,7 +300,7 @@ export default function QuoteCard({
 
         <div className="flex w-full">
           <textarea
-            defaultValue={totalValue}
+            defaultValue={totalValue as any}
             className="font-semibold text-center resize-none text-sm content-center h-7 w-full border-r bg-transparent focus:outline-0 focus:border focus:border-1 focus:border-gray-200 cursor-pointer focus:cursor-auto p-1"
           />
         </div>
