@@ -6,6 +6,7 @@ import "react-sliding-pane/dist/react-sliding-pane.css";
 import Input from "@mui/material/Input";
 import { MdEdit } from "react-icons/md";
 import { FaSave } from "react-icons/fa";
+import { parseInt } from "lodash";
 
 export function Contributions({
   standardContributions,
@@ -45,10 +46,13 @@ export function Contributions({
             // Check if the value exceeds 100 and reset it to 100
             newValue = newValue > 100 ? 100 : newValue;
 
-            setStandardContributions((prev: any) => ({
-              ...prev,
-              empoloyee: { ...prev.employee, percent: newValue },
-            }));
+            setStandardContributions((prev: any) => {
+              console.log("huh", prev);
+              return {
+                ...prev,
+                employee: { ...prev.employee, percent: newValue },
+              };
+            });
           }}
           disabled={!editStandardContributions}
           inputProps={{

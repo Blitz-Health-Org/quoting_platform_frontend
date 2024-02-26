@@ -147,6 +147,7 @@ export default function QuoteCard({
           </p>
         </div>
       </div>
+      <hr className="w-full border-t-1 border-gray-300"></hr>
 
       <div className="flex flex-col items-center bg-violet-100/60">
         {nonObjectVisibleQuoteFields
