@@ -74,7 +74,7 @@ export default function ClientTable({
 
     // Use the Clipboard API to write the text
     navigator.clipboard
-      .writeText(url)
+      .writeText(url + "?sharing=" + userId)
       .then(() => {
         // Optional: Display a message or call a function to indicate success
         setSnackbar({

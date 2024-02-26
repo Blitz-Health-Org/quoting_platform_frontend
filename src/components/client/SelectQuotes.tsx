@@ -10,7 +10,6 @@ import { supabase } from "../../supabase";
 import { IoDocumentTextOutline } from "react-icons/io5";
 import { FaSearch } from "react-icons/fa";
 import { FaChevronDown } from "react-icons/fa";
-
 import {
   Dispatch,
   SetStateAction,
@@ -144,7 +143,6 @@ export default function SelectQuotes({
   };
 
   const fetchQuoteData = async () => {
-    // Replace 'YOUR_CLIENT_ID' with the actual client ID you want to filter by
     const { data, error } = await supabase
       .from("quotes")
       .select()
@@ -153,94 +151,34 @@ export default function SelectQuotes({
     if (error) {
       alert("Error updating data");
     } else {
-      setQuotes((prevQuotes) =>
-        data.map((quote) =>
-          prevQuotes.map((prevQuote) => prevQuote.id).includes(quote.id)
-            ? prevQuotes.find((findQuote) => findQuote.id === quote.id)
-            : quote,
-        ),
-      );
+      // Check if selected_quotes is not null
+      if (selectedClient.selected_quotes !== null) {
+        // Update isSelected attribute based on selected_quotes
+        const updatedQuotes = data.map((quote) => {
+          const isSelected = selectedClient.selected_quotes?.includes(
+            quote.id.toString(),
+          );
+          return { ...quote, isSelected: isSelected || false };
+        });
+
+        // Sort the quotes so that selected ones appear above the ones that aren't selected
+        const sortedQuotes = updatedQuotes.sort((a, b) => {
+          // Put selected quotes above the ones that aren't selected
+          return a.isSelected && !b.isSelected ? -1 : 1;
+        });
+
+        console.log("sortedQuotes", sortedQuotes);
+        setQuotes(sortedQuotes);
+      } else {
+        // Handle the case where selected_quotes is null (if needed)
+        setQuotes(data);
+      }
     }
   };
 
   useEffect(() => {
     fetchQuoteData();
   }, []);
-
-  const copyUrlToClipboard = () => {
-    // Use window.location.href to get the current URL
-    const url = window.location.href;
-
-    // Use the Clipboard API to write the text
-    navigator.clipboard
-      .writeText(url)
-      .then(() => {
-        // Optional: Display a message or call a function to indicate success
-        setSnackbar({
-          open: true,
-          message: "This functionality is coming soon!",
-          severity: "info",
-        });
-      })
-      .catch((err) => {
-        // Optional: Handle any errors
-        console.error("Failed to copy URL to clipboard", err);
-      });
-  };
-
-  const handleNewClientClick = () => {
-    setIsModalOpen(!isModalOpen);
-  };
-
-  async function handleClientDelete(client: ClientType) {
-    // SEND DATA
-    try {
-      const { error } = await supabase
-        .from("clients")
-        .delete()
-        .eq("id", selectedClient.id);
-
-      if (error) {
-        setSnackbar({
-          open: true,
-          message: "Delete failed",
-          severity: "error",
-        });
-        console.error("Error inserting data:", error);
-      } else {
-        //UPDATE DATA
-        try {
-          const { data, error } = await supabase
-            .from("clients")
-            .select()
-            .eq("user_id", userId);
-          if (error) {
-            alert("Error retrieving data");
-          } else {
-            setClients(data);
-            console.log("Data retrieved successfully:", data);
-          }
-        } catch (error) {
-          setSnackbar({
-            open: true,
-            message: "Delete failed",
-            severity: "error",
-          });
-        }
-        setSnackbar({
-          open: true,
-          message: `${client.name} Deleted!`,
-          severity: "success",
-        });
-      }
-    } catch (error) {
-      setSnackbar({
-        open: true,
-        message: "Delete failed",
-        severity: "error",
-      });
-    }
-  }
 
   const handleCloseModal = () => {
     setIsModalOpen(!isModalOpen);
@@ -249,6 +187,7 @@ export default function SelectQuotes({
   const handleCloseComparison = () => {
     setSelectedClient(undefined as unknown as ClientType);
     setComparisonOpen(false);
+    router.push(`/`);
   };
 
   return (
@@ -284,7 +223,7 @@ export default function SelectQuotes({
             <div className="w-full flex mt-4">
               <div className="w-1/4 flex items-center gap-2">
                 <IoDocumentTextOutline className="h-5 w-5" />
-                <p> Showing {quotes.length} Quotes </p>
+                <p className="truncate"> Showing {quotes.length} Quotes </p>
               </div>
               <div className="w-1/2 relative">
                 <div className="absolute left-3 top-1/2 transform -translate-y-1/2 flex items-center">

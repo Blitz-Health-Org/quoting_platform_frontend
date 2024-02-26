@@ -15,6 +15,8 @@ import React, { useState } from "react";
 import { SnackbarAlert } from "../ui/SnackbarAlert";
 import { MdOutlineCollectionsBookmark } from "react-icons/md";
 import { FaLink } from "react-icons/fa6";
+import { supabase } from "@/src/supabase";
+import { useLocalStorage } from "@/src/utils/useLocalStorage";
 
 const Tabs = [
   {
@@ -34,6 +36,9 @@ export const Navbar = ({ selected }: { selected: string }) => {
   const isQuotesSelected = selected === "Quotes";
   const isHandbooksSelected = selected === "Handbooks";
   const isSettingsSelected = selected === "Settings";
+  const [accessToken, setAccessToken, loading] = useLocalStorage<
+    string | undefined
+  >("accessToken", undefined);
 
   const [snackbar, setSnackbar] = useState({
     open: false,
@@ -117,7 +122,14 @@ export const Navbar = ({ selected }: { selected: string }) => {
             style={{ fontSize: "13px" }}
             className="hover:cursor-pointer flex items-center font-light text-gray-700 ml-1 mb-1 w-full p-1"
           >
-            <LuLogOut className="mr-2 ml-1" /> Log Out
+            <LuLogOut
+              className="mr-2 ml-1"
+              onClick={() => {
+                setAccessToken(undefined);
+                window.location.href = "/sign-in";
+              }}
+            />{" "}
+            Log Out
           </div>
         </div>
       </div>

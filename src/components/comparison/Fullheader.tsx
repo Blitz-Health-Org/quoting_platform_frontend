@@ -8,7 +8,8 @@ import { IconBuilding } from "@tabler/icons-react";
 export default function Fullheader({ clientName }: { clientName: string }) {
   const router = useRouter();
   const handleNewClientClick = () => {
-    router.push("/");
+    // router.push("/");
+    window.location.href = "/";
   };
 
   const handleDivClick = () => {

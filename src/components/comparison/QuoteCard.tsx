@@ -255,12 +255,12 @@ export default function QuoteCard({
                   {Object.entries(
                     JSON.parse(objectField.json_structure as string),
                   ).map(([subFieldKey, value]) => {
-                    console.log(
-                      "check this stuff",
-                      quoteData,
-                      objectField,
-                      subFieldKey,
-                    );
+                    // console.log(
+                    //   "check this stuff",
+                    //   quoteData,
+                    //   objectField,
+                    //   subFieldKey,
+                    // );
                     return (
                       <>
                         <hr className="w-full border-t-1 border-gray-300"></hr>

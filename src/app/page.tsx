@@ -8,8 +8,8 @@ import ClientTable from "@/src/components/client/ClientTable";
 import { UserContext } from "@/src/context/UserContext";
 import { ClientType } from "@/src/types/custom/Client";
 import { useRouter } from "next/navigation";
-import io from "socket.io-client";
-import { SocketProvider } from "../context/SocketContext";
+import { useSearchParams } from "next/navigation";
+import { supabase } from "@/src/supabase";
 
 export default function Home() {
   const {
@@ -17,7 +17,41 @@ export default function Home() {
   } = useContext(UserContext);
   const [taskStatus, setTaskStatus] = useState(null);
 
+  const [comparisonOpen, setComparisonOpen] = useState<boolean>(false);
+  const [selectedClient, setSelectedClient] = useState<ClientType>(
+    undefined as unknown as ClientType,
+  );
+
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const fetchClient = async (clientId: any) => {
+    try {
+      const { data: clientData, error: clientError } = await supabase
+        .from("clients")
+        .select("*")
+        .eq("id", clientId)
+        .single();
+
+      if (clientError) throw clientError;
+
+      setSelectedClient(clientData);
+
+      console.log("Client Data", clientData);
+    } catch (error) {
+      console.error("Error fetching data:", error);
+      // Optionally handle errors, such as setting an error state or showing a notification
+    }
+  };
+
+  useEffect(() => {
+    const clientId = searchParams.get("clientId");
+    console.log(clientId);
+
+    if (clientId) {
+      fetchClient(clientId);
+      setComparisonOpen(true);
+    }
+  }, [searchParams]);
 
   // useEffect(() => {
   //   if (!loading) {
@@ -46,11 +80,6 @@ export default function Home() {
   //     };
   //   }
   // }, [loading]);
-
-  const [comparisonOpen, setComparisonOpen] = useState<boolean>(false);
-  const [selectedClient, setSelectedClient] = useState<ClientType>(
-    undefined as unknown as ClientType,
-  );
 
   // const [clients, setClients] = useState<ClientType[]>([]);
 
@@ -210,7 +239,7 @@ export default function Home() {
           />
         </main> */}
 
-        {comparisonOpen === false ? (
+        {comparisonOpen === false || selectedClient === undefined ? (
           <ClientTable
             setComparisonOpen={setComparisonOpen}
             setSelectedClient={setSelectedClient}

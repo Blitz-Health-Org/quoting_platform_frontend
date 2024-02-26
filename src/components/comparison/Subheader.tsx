@@ -11,6 +11,7 @@ import { IoMdDownload } from "react-icons/io";
 import { IoIosSettings } from "react-icons/io";
 import { IoChevronDown } from "react-icons/io5";
 import { SnackbarAlert } from "../ui/SnackbarAlert";
+import { useRouter } from "next/navigation";
 
 type SubheaderProps = {
   isPaneOpen: boolean;
@@ -18,6 +19,7 @@ type SubheaderProps = {
   copyUrlToClipboard: any;
   handleDownloadCSV: any;
   quotesLength: any;
+  clientId: any;
 };
 
 export const Subheader: React.FC<SubheaderProps> = ({
@@ -26,6 +28,7 @@ export const Subheader: React.FC<SubheaderProps> = ({
   copyUrlToClipboard,
   handleDownloadCSV,
   quotesLength,
+  clientId,
 }) => {
   const [snackbar, setSnackbar] = useState({
     open: false,
@@ -39,6 +42,14 @@ export const Subheader: React.FC<SubheaderProps> = ({
       message: "This feature is coming soon!",
       severity: "info",
     });
+  };
+
+  const router = useRouter();
+
+  const handleBusiness2 = (index: any) => {
+    // router.push(`/?clientId=${clientId}`);
+    window.location.href = `/?clientId=${clientId}`;
+    return;
   };
 
   return (
@@ -103,7 +114,7 @@ export const Subheader: React.FC<SubheaderProps> = ({
 
       <div className="col-span-1 text-center flex items-center justify-center gap-1">
         <p className="truncate">Showing {quotesLength} Quotes </p>
-        <p className="cursor-pointer truncate" onClick={handleBusiness}>
+        <p className="cursor-pointer truncate" onClick={handleBusiness2}>
           | Edit |{" "}
         </p>
         <p className="cursor-pointer truncate" onClick={handleBusiness}>

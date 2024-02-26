@@ -12,12 +12,13 @@ import { supabase } from "@/src/supabase";
 import { QuoteType } from "@/src/types/custom/Quote";
 import { NonSystemField, quoteMetadataObject } from "@/src/types/metadata";
 import { isFieldVisible } from "@/src/types/utils/isFieldVisible";
-import { useSearchParams, useRouter, notFound } from "next/navigation";
+import { notFound, useSearchParams } from "next/navigation";
 import SlidingPane from "react-sliding-pane";
 import "react-sliding-pane/dist/react-sliding-pane.css";
 import { FaTrash } from "react-icons/fa";
 import { SnackbarAlert } from "../../components/ui/SnackbarAlert";
 import { SocketContext } from "@/src/context/SocketContext";
+import { v4 as uuid } from "uuid";
 
 type QuotingPageProps = {
   client: ClientType;
@@ -34,8 +35,6 @@ export default function QuotingPage() {
   const [editStandardContributions, setEditStandardContributions] =
     useState(false);
   const { socket } = useContext(SocketContext);
-
-  const router = useRouter();
 
   useEffect(() => {
     if (socket && client) {
@@ -260,13 +259,29 @@ export default function QuotingPage() {
     return <></>;
   }
 
-  const copyUrlToClipboard = () => {
+  const copyUrlToClipboard = async () => {
     // Use window.location.href to get the current URL
     const url = window.location.href;
 
+    // Generate a query_id to store in supabase
+    const queryId = uuid();
+    const { error } = await supabase
+      .from("links")
+      .insert([{ query_id: queryId, url: url }])
+      .select();
+    console.log(queryId);
+    if (error) {
+      console.error("Failed to insert URL to supabase", error);
+      setSnackbar({
+        open: true,
+        message: "Failed to copy URL to clipboard",
+        severity: "error",
+      });
+    }
+
     // Use the Clipboard API to write the text
     navigator.clipboard
-      .writeText(url)
+      .writeText(url + "&sharing=" + queryId)
       .then(() => {
         // Optional: Display a message or call a function to indicate success
         setSnackbar({
@@ -292,6 +307,7 @@ export default function QuotingPage() {
         <Fullheader clientName={client?.name || "N/A"} />
         <div className="bg-gray-100 border border-gray-200 border-b-0 px-6 py-2">
           <Subheader
+            clientId={client?.id || 0}
             isPaneOpen={state.isPaneOpen}
             onPaneToggle={handlePaneToggle}
             copyUrlToClipboard={copyUrlToClipboard}
