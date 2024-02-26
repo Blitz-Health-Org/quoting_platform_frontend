@@ -144,11 +144,12 @@ export const ClientCard = ({
             <button onClick={handleCreateHandbook}>Create Handbook</button>
           </div>
           <div
-            onClick={
+            onClick={(event) => {
+              event.stopPropagation();
               client.selected_quotes
-                ? handleViewComparison
-                : handleNewComparison
-            }
+                ? handleViewComparison()
+                : handleNewComparison();
+            }}
             className="outline outline-1 hover:bg-gray-100/50 cursor-pointer font-light flex items-center justify-center outline-gray-200 p-0.5 rounded-sm mb-1 mt-1 text-sm"
           >
             {client.selected_quotes ? (
