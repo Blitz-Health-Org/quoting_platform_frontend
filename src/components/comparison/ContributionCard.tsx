@@ -9,14 +9,8 @@ import { FaSave } from "react-icons/fa";
 import { parseInt } from "lodash";
 import { supabase } from "@/src/supabase";
 
-export function Contributions({
-  standardContributions,
-  setStandardContributions,
-  setShowStandardContributions,
-}: any) {
-  const [editedContributions, setEditedContributions] = useState(
-    standardContributions,
-  );
+export function ContributionCard({ contribution, onSave, setShowPanel }: any) {
+  const [editedContribution, setEditedContribution] = useState(contribution);
   const [isEditing, setIsEditing] = useState<boolean>(false);
 
   const handleEdit = () => {
@@ -26,9 +20,8 @@ export function Contributions({
 
   const handleSave = async () => {
     // Disable editing mode
-    setStandardContributions(editedContributions);
+    onSave(editedContribution);
     setIsEditing(false);
-    setShowStandardContributions(false);
 
     // You can save the JSON data to your desired location or state.
     // For example, you can send it to the server or store it in another state.
@@ -43,16 +36,19 @@ export function Contributions({
           className="w-11"
           defaultValue={100}
           size="small"
-          value={editedContributions.employee.percent}
+          value={editedContribution.data.employee.percent}
           onChange={(e) => {
             let newValue = parseInt(e.target.value);
             // Check if the value exceeds 100 and reset it to 100
             newValue = newValue > 100 ? 100 : newValue;
 
-            setEditedContributions((prev: any) => {
+            setEditedContribution((prev: any) => {
               return {
                 ...prev,
-                employee: { ...prev.employee, percent: newValue },
+                data: {
+                  ...prev.data,
+                  employee: { ...prev.data.employee, percent: newValue },
+                },
               };
             });
           }}
@@ -72,13 +68,16 @@ export function Contributions({
           className="w-12"
           defaultValue={50}
           size="small"
-          value={editedContributions.employee.employees}
+          value={editedContribution.data.employee.employees}
           onChange={(e) =>
-            setStandardContributions((prev: any) => ({
+            setEditedContribution((prev: any) => ({
               ...prev,
-              employee: {
-                ...prev.employee,
-                employees: parseInt(e.target.value),
+              data: {
+                ...prev.data,
+                employee: {
+                  ...prev.data.employee,
+                  employees: parseInt(e.target.value),
+                },
               },
             }))
           }
@@ -99,15 +98,18 @@ export function Contributions({
           className="w-11"
           defaultValue={100}
           size="small"
-          value={editedContributions.spouse.percent}
+          value={editedContribution.data.spouse.percent}
           onChange={(e) => {
             let newValue = parseInt(e.target.value);
             // Check if the value exceeds 100 and reset it to 100
             newValue = newValue > 100 ? 100 : newValue;
 
-            setEditedContributions((prev: any) => ({
+            setEditedContribution((prev: any) => ({
               ...prev,
-              spouse: { ...prev.spouse, percent: newValue },
+              data: {
+                ...prev.data,
+                spouse: { ...prev.data.spouse, percent: newValue },
+              },
             }));
           }}
           disabled={!isEditing}
@@ -126,13 +128,16 @@ export function Contributions({
           className="w-12"
           defaultValue={50}
           size="small"
-          value={editedContributions.spouse.employees}
+          value={editedContribution.data.spouse.employees}
           onChange={(e) =>
-            setStandardContributions((prev: any) => ({
+            setEditedContribution((prev: any) => ({
               ...prev,
-              spouse: {
-                ...prev.spouse,
-                employees: parseInt(e.target.value),
+              data: {
+                ...prev.data,
+                spouse: {
+                  ...prev.data.spouse,
+                  employees: parseInt(e.target.value),
+                },
               },
             }))
           }
@@ -153,15 +158,18 @@ export function Contributions({
           className="w-11"
           defaultValue={100}
           size="small"
-          value={editedContributions.child.percent}
+          value={editedContribution.data.child.percent}
           onChange={(e) => {
             let newValue = parseInt(e.target.value);
             // Check if the value exceeds 100 and reset it to 100
             newValue = newValue > 100 ? 100 : newValue;
 
-            setEditedContributions((prev: any) => ({
+            setEditedContribution((prev: any) => ({
               ...prev,
-              child: { ...prev.child, percent: newValue },
+              data: {
+                ...prev.data,
+                child: { ...prev.data.child, percent: newValue },
+              },
             }));
           }}
           disabled={!isEditing}
@@ -180,11 +188,17 @@ export function Contributions({
           className="w-12"
           defaultValue={50}
           size="small"
-          value={editedContributions.child.employees}
+          value={editedContribution.data.child.employees}
           onChange={(e) =>
-            setStandardContributions((prev: any) => ({
+            setEditedContribution((prev: any) => ({
               ...prev,
-              child: { ...prev.child, employees: parseInt(e.target.value) },
+              data: {
+                ...prev.data,
+                child: {
+                  ...prev.data.child,
+                  employees: parseInt(e.target.value),
+                },
+              },
             }))
           }
           inputProps={{
@@ -204,15 +218,18 @@ export function Contributions({
           className="w-11"
           defaultValue={100}
           size="small"
-          value={editedContributions.family.percent}
+          value={editedContribution.data.family.percent}
           onChange={(e) => {
             let newValue = parseInt(e.target.value);
             // Check if the value exceeds 100 and reset it to 100
             newValue = newValue > 100 ? 100 : newValue;
 
-            setEditedContributions((prev: any) => ({
+            setEditedContribution((prev: any) => ({
               ...prev,
-              family: { ...prev.family, percent: newValue },
+              data: {
+                ...prev.data,
+                family: { ...prev.data.family, percent: newValue },
+              },
             }));
           }}
           disabled={!isEditing}
@@ -231,13 +248,16 @@ export function Contributions({
           className="w-12"
           defaultValue={50}
           size="small"
-          value={editedContributions.family.employees}
+          value={editedContribution.data.family.employees}
           onChange={(e) =>
-            setEditedContributions((prev: any) => ({
+            setEditedContribution((prev: any) => ({
               ...prev,
-              family: {
-                ...prev.family,
-                employees: parseInt(e.target.value),
+              data: {
+                ...prev.data,
+                family: {
+                  ...prev.data.family,
+                  employees: parseInt(e.target.value),
+                },
               },
             }))
           }

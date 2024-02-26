@@ -2,7 +2,7 @@
 
 import React, { useContext, useEffect, useState } from "react";
 import { Subheader } from "../../components/comparison/Subheader";
-import { Contributions } from "@/src/components/comparison/contributions";
+import { ContributionCard } from "@/src/components/comparison/ContributionCard";
 import "../../components/comparison/sum.css"; // import your custom styles
 import Fullheader from "../../components/comparison/Fullheader";
 import QuoteCard from "../../components/comparison/QuoteCard";
@@ -13,12 +13,17 @@ import { QuoteType } from "@/src/types/custom/Quote";
 import { NonSystemField, quoteMetadataObject } from "@/src/types/metadata";
 import { isFieldVisible } from "@/src/types/utils/isFieldVisible";
 import { notFound, useSearchParams } from "next/navigation";
-import SlidingPane from "react-sliding-pane";
 import "react-sliding-pane/dist/react-sliding-pane.css";
 import { FaTrash } from "react-icons/fa";
 import { SnackbarAlert } from "../../components/ui/SnackbarAlert";
 import { SocketContext } from "@/src/context/SocketContext";
 import { v4 as uuid } from "uuid";
+import ContributionPane from "@/src/components/comparison/ContributionPane";
+
+type ClassType = {
+  name: string;
+  data: Record<string, any>;
+};
 
 type QuotingPageProps = {
   client: ClientType;
@@ -28,17 +33,17 @@ export default function QuotingPage() {
   const [client, setClient] = useState<ClientType>();
   const [quotes, setQuotes] = useState<QuoteType[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
-  const [customClasses, setCustomClasses] = useState<any[]>([]);
-
-  const [newClass, setNewClass] = useState("");
-  const [showStandardContributions, setShowStandardContributions] =
-    useState(true);
-  const [standardContributions, setStandardContributions] = useState({
-    employee: { percent: 100, employees: 50 },
-    family: { percent: 100, employees: 50 },
-    child: { percent: 100, employees: 50 },
-    spouse: { percent: 100, employees: 50 },
+  const [classes, setClasses] = useState<ClassType[]>([]);
+  const [standardContribution, setStandardContribution] = useState<any>({
+    name: "Standard Contribution",
+    data: {
+      employee: { percent: 100, employees: 50 },
+      family: { percent: 100, employees: 50 },
+      child: { percent: 100, employees: 50 },
+      spouse: { percent: 100, employees: 50 },
+    },
   });
+
   const { socket } = useContext(SocketContext);
 
   useEffect(() => {
@@ -84,25 +89,6 @@ export default function QuotingPage() {
     severity: "success",
   });
 
-  const handleDeleteClass = async (index: any) => {
-    if (!client) {
-      return;
-    }
-    const updatedClasses = [...customClasses];
-    updatedClasses.splice(index, 1);
-    setCustomClasses(updatedClasses);
-
-    await supabase
-      .from("clients")
-      .update({ classes_contributions: [...customClasses] })
-      .eq("id", client.id);
-
-    // Check if the length of customClasses is zero and update showStandardContributions
-    if (updatedClasses.length === 0) {
-      setShowStandardContributions(true);
-    }
-  };
-
   const handleDownloadCSV = (index: any) => {
     setSnackbar({
       open: true,
@@ -142,7 +128,7 @@ export default function QuotingPage() {
     }
   };
 
-  const [state, setState] = useState({
+  const [paneState, setPaneState] = useState({
     isPaneOpen: false,
     isPaneOpenLeft: false,
     initialPaneWidth: determineInitialWidth(), // Set initial width based on screen size
@@ -167,12 +153,12 @@ export default function QuotingPage() {
         newWidth = "25%";
       }
 
-      setState((prevState) => ({ ...prevState, paneWidth: newWidth }));
+      setPaneState((prevState) => ({ ...prevState, paneWidth: newWidth }));
     }
   };
 
   const handlePaneToggle = (newState: any) => {
-    setState((prevState) => ({ ...prevState, isPaneOpen: newState }));
+    setPaneState((prevState) => ({ ...prevState, isPaneOpen: newState }));
   };
 
   useEffect(() => {
@@ -215,8 +201,9 @@ export default function QuotingPage() {
 
       setClient(clientData);
 
-      if (client?.classes_contributions) {
-        setCustomClasses(client?.classes_contributions as any);
+      if (clientData?.classes_contributions) {
+        console.log("helllo????");
+        setClasses(clientData.classes_contributions as any);
       }
 
       // Fetch quotes data by IDs, assuming 'id' is in quoteIds array
@@ -243,26 +230,6 @@ export default function QuotingPage() {
     }
   };
 
-  const handleNewClassSubmit = async (e: React.FormEvent) => {
-    if (!client) {
-      return;
-    }
-    e.preventDefault();
-    if (newClass.trim() !== "") {
-      console.log("here", [...customClasses, newClass.trim()]);
-      setCustomClasses([...customClasses, newClass.trim()]);
-      setNewClass("");
-      setShowStandardContributions(false); // Hide Standard Contributions
-    }
-
-    await supabase
-      .from("clients")
-      .update({
-        classes_contributions: [...customClasses, newClass.trim()],
-      })
-      .eq("id", client.id);
-  };
-
   const visibleQuoteFields = Object.values(quoteMetadataObject).filter((val) =>
     isFieldVisible(val),
   ) as NonSystemField[];
@@ -274,8 +241,6 @@ export default function QuotingPage() {
   const objectVisibleQuoteFields = visibleQuoteFields.filter(
     (val) => val.type == "jsonb",
   );
-
-  console.log("quotes", quotes, loading);
 
   if (loading) {
     return <></>;
@@ -330,7 +295,7 @@ export default function QuotingPage() {
         <div className="bg-gray-100 border border-gray-200 border-b-0 px-6 py-2">
           <Subheader
             clientId={client?.id || 0}
-            isPaneOpen={state.isPaneOpen}
+            isPaneOpen={paneState.isPaneOpen}
             onPaneToggle={handlePaneToggle}
             copyUrlToClipboard={copyUrlToClipboard}
             handleDownloadCSV={handleDownloadCSV}
@@ -349,8 +314,8 @@ export default function QuotingPage() {
                   quote={quote}
                   nonObjectVisibleQuoteFields={nonObjectVisibleQuoteFields}
                   objectVisibleQuoteFields={objectVisibleQuoteFields}
-                  customClasses={customClasses}
-                  standardContributions={standardContributions}
+                  classes={classes}
+                  standardContribution={standardContribution}
                 />
               ))
             ) : (
@@ -360,76 +325,16 @@ export default function QuotingPage() {
             )}
           </div>
         </div>
-        <div>
-          <SlidingPane
-            className="slide-pane_overlay2"
-            overlayClassName="slide-pane_overlay2"
-            isOpen={state.isPaneOpen}
-            title="Settings"
-            subtitle="Set classes and contribution structures."
-            width={state.paneWidth}
-            onRequestClose={() => {
-              // triggered on "<" on left top click or on outside click
-              setState((prevState) => ({ ...prevState, isPaneOpen: false }));
-            }}
-          >
-            {showStandardContributions && (
-              <>
-                <h1 className="mb-2 font-bold">Standard Contributions</h1>
 
-                <Contributions
-                  standardContributions={standardContributions}
-                  setStandardContributions={setStandardContributions}
-                />
-
-                <hr className="mt-4 mb-4"></hr>
-              </>
-            )}
-            <h1 className="mb-2 font-bold">Custom Classes</h1>
-            <form className="mt-2" onSubmit={(e) => handleNewClassSubmit(e)}>
-              <div className="flex">
-                <input
-                  placeholder="Class Name"
-                  className="py-0.5 px-2 outline outline-1 outline-gray-400 mr-2 h-10 rounded-sm w-4/5 hover:outline-gray-500 hover:cursor-pointer focus:cursor-auto"
-                  value={newClass}
-                  onChange={(e) => setNewClass(e.target.value)}
-                />
-                <button
-                  type="submit"
-                  className="py-1 bg-neutral-800 text-gray-100 shadow rounded-sm h-10 text-sm px-2 w-1/5 hover:bg-neutral-900"
-                >
-                  New
-                </button>
-              </div>
-            </form>
-            <div>
-              {customClasses.map((className, index) => (
-                <div
-                  key={index}
-                  className="mb-1.5 flex-col items-center justify-left mt-6"
-                >
-                  <div className="flex items-center gap-2 mb-4">
-                    <button
-                      onClick={() => handleDeleteClass(index)}
-                      className="rounded-sm text-sm"
-                    >
-                      <FaTrash />
-                    </button>
-                    <p className="mr-2 font-bold">
-                      Class #{index + 1} : {className}
-                    </p>
-                  </div>
-                  <Contributions
-                    setShowStandardContributions={setShowStandardContributions}
-                    standardContributions={standardContributions}
-                    setStandardContributions={setStandardContributions}
-                  />
-                </div>
-              ))}
-            </div>
-            <br />
-          </SlidingPane>
-        </div>
+        <ContributionPane
+          paneState={paneState}
+          setPaneState={setPaneState}
+          classes={classes}
+          setClasses={setClasses}
+          client={client}
+          standardContribution={standardContribution}
+          setStandardContribution={setStandardContribution}
+        />
 
         <SnackbarAlert
           openSnackbarShare={snackbar.open}

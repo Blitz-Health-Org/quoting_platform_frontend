@@ -34,7 +34,6 @@ export const AuthContextProvider = ({
   const [validationComplete, setValidationComplete] = useState(false);
 
   if (loading || sharingLoading || validationLoading) {
-    console.log("Loading...");
     return (
       <div
         className="w-screen h-screen flex items-center justify-center"

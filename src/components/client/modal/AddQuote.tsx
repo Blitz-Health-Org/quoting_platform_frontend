@@ -133,8 +133,8 @@ export const AddQuote = ({
     }
 
     setSelectedClient(client);
-    setComparisonOpen(true)
-    setModalOpen("")
+    setComparisonOpen(true);
+    setModalOpen("");
   };
 
   // const handleUpload = async () => {

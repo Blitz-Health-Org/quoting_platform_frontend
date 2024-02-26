@@ -19,16 +19,16 @@ type QuoteCardProps = {
   quote: QuoteType;
   nonObjectVisibleQuoteFields: NonSystemField[];
   objectVisibleQuoteFields: NonSystemField[];
-  customClasses: any;
-  standardContributions: any;
+  classes: any;
+  standardContribution: any;
 };
 
 export default function QuoteCard({
   quote,
   nonObjectVisibleQuoteFields,
   objectVisibleQuoteFields,
-  customClasses,
-  standardContributions,
+  classes,
+  standardContribution,
 }: QuoteCardProps) {
   const [quoteData, setQuoteData] = useState<any>(quote);
 
@@ -55,7 +55,7 @@ export default function QuoteCard({
     Other: "N/A",
   };
 
-  const totalValue = calculateTotalCost(standardContributions, customClasses, {
+  const totalValue = calculateTotalCost(standardContribution, classes, {
     employee: quote.data?.["employee_only_rate"],
     child: quote?.data?.["employee_child_rate"],
     family: quote?.data?.["employee_family_rate"],
