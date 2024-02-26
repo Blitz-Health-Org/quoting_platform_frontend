@@ -169,10 +169,11 @@ export default function SelectQuotes({
           return a.isSelected && !b.isSelected ? -1 : 1;
         });
 
+        console.log("sortedQuotes", sortedQuotes)
         setQuotes(sortedQuotes);
       } else {
         // Handle the case where selected_quotes is null (if needed)
-        console.warn("selected_quotes is null");
+        setQuotes(data)
       }
     }
   };
@@ -180,81 +181,6 @@ export default function SelectQuotes({
   useEffect(() => {
     fetchQuoteData();
   }, []);
-
-  const copyUrlToClipboard = () => {
-    // Use window.location.href to get the current URL
-    const url = window.location.href;
-
-    // Use the Clipboard API to write the text
-    navigator.clipboard
-      .writeText(url)
-      .then(() => {
-        // Optional: Display a message or call a function to indicate success
-        setSnackbar({
-          open: true,
-          message: "This functionality is coming soon!",
-          severity: "info",
-        });
-      })
-      .catch((err) => {
-        // Optional: Handle any errors
-        console.error("Failed to copy URL to clipboard", err);
-      });
-  };
-
-  const handleNewClientClick = () => {
-    setIsModalOpen(!isModalOpen);
-  };
-
-  async function handleClientDelete(client: ClientType) {
-    // SEND DATA
-    try {
-      const { error } = await supabase
-        .from("clients")
-        .delete()
-        .eq("id", selectedClient.id);
-
-      if (error) {
-        setSnackbar({
-          open: true,
-          message: "Delete failed",
-          severity: "error",
-        });
-        console.error("Error inserting data:", error);
-      } else {
-        //UPDATE DATA
-        try {
-          const { data, error } = await supabase
-            .from("clients")
-            .select()
-            .eq("user_id", userId);
-          if (error) {
-            alert("Error retrieving data");
-          } else {
-            setClients(data);
-            console.log("Data retrieved successfully:", data);
-          }
-        } catch (error) {
-          setSnackbar({
-            open: true,
-            message: "Delete failed",
-            severity: "error",
-          });
-        }
-        setSnackbar({
-          open: true,
-          message: `${client.name} Deleted!`,
-          severity: "success",
-        });
-      }
-    } catch (error) {
-      setSnackbar({
-        open: true,
-        message: "Delete failed",
-        severity: "error",
-      });
-    }
-  }
 
   const handleCloseModal = () => {
     setIsModalOpen(!isModalOpen);
