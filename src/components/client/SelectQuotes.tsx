@@ -69,6 +69,7 @@ export default function SelectQuotes({
     });
   };
 
+  const [entryWidth, setEntryWidth] = useState(innerWidth / 9);
   const { socket } = useContext(SocketContext);
   const [clients, setClients] = useState<ClientType[]>([]);
   const [quotes, setQuotes] = useState<QuoteTypeWithCheckbox[]>([]);
@@ -85,6 +86,23 @@ export default function SelectQuotes({
     setSelectedClient(selectedClient);
     return;
   }
+
+  useEffect(() => {
+    // Update entryWidth when the screen size changes
+
+    const handleResize = () => {
+      setEntryWidth(innerWidth / 9);
+      console.log("yeah", entryWidth)
+    };
+
+    // Attach event listener for window resize
+    window.addEventListener('resize', handleResize);
+
+    // Remove event listener on component unmount
+    return () => {
+      window.removeEventListener('resize', handleResize);
+    };
+  }, []);
 
   useEffect(() => {
     const socket = io(`${process.env.NEXT_PUBLIC_SOCKET_SERVER_URL!}`, {
@@ -263,29 +281,31 @@ export default function SelectQuotes({
             </div>
             <div className="w-full overflow-x-auto">
               <div className="flex py-2 w-fit border-b">
-                <div className="grid-cols-9 flex justify-left text-center w-fit gap-1 h-20 font-bold items-center text-wrap text-sm">
+                <div           
+                  className="grid-cols-9 flex justify-left text-center w-fit gap-1 h-20 font-bold items-center text-wrap text-sm"
+                >
                   {/* Carrier Name */}
-                  <div className="w-32 flex justify-center gap-2">
+                  <div className="flex justify-center gap-2 min-w-32" style={{ width: `${entryWidth}px` }}>
                     <p>Carrier</p>
                   </div>
                   {/* Plan Name */}
-                  <p className="w-32">Plan</p>
+                  <p style={{ width: `${entryWidth}px` }} className="min-w-32">Plan</p>
                   {/* Plan Type */}
-                  <p className="w-32">Plan Type</p>
+                  <p style={{ width: `${entryWidth}px` }} className="min-w-32">Plan Type</p>
                   {/* Office Copay (PCP/Specialist) */}
-                  <p className="w-32">Office Copay (PCP/Specialist)</p>
+                  <p style={{ width: `${entryWidth}px` }} className="min-w-32">Office Copay (PCP/Specialist)</p>
                   {/* Deductible (Individual) */}
-                  <p className="w-32">Deductible (Individual)</p>
+                  <p style={{ width: `${entryWidth}px` }} className="min-w-32">Deductible (Individual)</p>
                   {/* Coinsurance (In-Network) */}
-                  <p className="w-32">Coinsurance (In-Network)</p>
+                  <p style={{ width: `${entryWidth}px` }} className="min-w-32">Coinsurance (In-Network)</p>
                   {/* Out of Pocket (Individual) */}
-                  <p className="w-32">Out of Pocket (Individual)</p>
+                  <p style={{ width: `${entryWidth}px` }} className="min-w-32">Out of Pocket (Individual)</p>
                   {/* Additional Copays Include (ER / Imaging / OP / IP) */}
-                  <p className="w-32">
+                  <p style={{ width: `${entryWidth}px` }} className="min-w-32">
                     Additional Copays (ER / Imaging / OP / IP)
                   </p>
                   {/* Total Monthly Premium */}
-                  <p className="w-36">Total Monthly Premium</p>
+                  <p style={{ width: `${entryWidth}px` }} className="min-w-32">Total Monthly Premium</p>
                 </div>
               </div>
               {quotes.length === 0 ? (
@@ -312,9 +332,11 @@ export default function SelectQuotes({
                       key={quote.id}
                       className="flex items-center w-fit mb-1 mt-1 py-2 border-b"
                     >
-                      <div className="grid-cols-9 flex justify-left text-center w-fit gap-1 h-8 items-center text-sm">
+                      <div 
+                        className="grid-cols-9 w-full flex justify-left text-center w-fit gap-1 h-8 items-center text-sm"
+                      >
                         {/* Carrier Name */}
-                        <div className="w-32 flex items-center justify-center">
+                        <div className="flex items-center justify-center min-w-32" style={{ width: `${entryWidth}px` }}>
                           <input
                             type="checkbox"
                             checked={quote.isSelected}
@@ -335,35 +357,35 @@ export default function SelectQuotes({
                           <p>{quote.carrier || "Sup"}</p>
                         </div>
                         {/* Plan Name */}
-                        <p className="w-32 max-h-10 overflow-y-auto">
+                        <p className="max-h-10 overflow-y-auto min-w-32" style={{ width: `${entryWidth}px` }}>
                           {(quote.data as any)?.["plan_name"] ?? "N/A"}
                         </p>
                         {/* Funding () */}
-                        <p className="w-32 max-h-10 overflow-y-auto">
+                        <p className="max-h-10 overflow-y-auto min-w-32" style={{ width: `${entryWidth}px` }}>
                           {(quote.data as any)?.["plan_type"] ?? "N/A"}
                         </p>
                         {/* Office Copay (PCP/Specialist) */}
-                        <p className="w-32 max-h-10 overflow-y-auto">
+                        <p className="max-h-10 overflow-y-auto min-w-32" style={{ width: `${entryWidth}px` }}>
                           {(quote.data as any)?.["office_copay"] ?? "N/A"}
                         </p>
                         {/* Deductible (Individual) */}
-                        <p className="w-32 max-h-10 overflow-y-auto">
+                        <p className="max-h-10 overflow-y-auto min-w-32" style={{ width: `${entryWidth}px` }}>
                           {(quote.data as any)?.["deductible"] ?? "N/A"}
                         </p>
                         {/* Coinsurance (In-Network) */}
-                        <p className="w-32 max-h-10 overflow-y-auto">
+                        <p className="max-h-10 overflow-y-auto min-w-32" style={{ width: `${entryWidth}px` }}>
                           {(quote.data as any)?.["coinsurance"] ?? "N/A"}
                         </p>
                         {/* Out of Pocket (Individual) */}
-                        <p className="w-32 max-h-10 overflow-y-auto">
+                        <p className="max-h-10 overflow-y-auto min-w-32" style={{ width: `${entryWidth}px` }}>
                           {(quote.data as any)?.["out_of_pocket_max"] ?? "N/A"}
                         </p>
                         {/* Additional Copays Include (ER / Imaging / OP / IP) */}
-                        <p className="w-32 max-h-10 overflow-y-auto">
+                        <p className="max-h-10 overflow-y-auto min-w-32" style={{ width: `${entryWidth}px` }}>
                           {(quote.data as any)?.["additional_copay"] ?? "N/A"}
                           {/* Total Monthly Premium  */}
                         </p>
-                        <p className="w-32 max-h-10 overflow-y-auto">
+                        <p className="max-h-10 overflow-y-auto min-w-32" style={{ width: `${entryWidth}px` }}>
                           {(quote.data as any)?.["total_cost"] ?? "N/A"}
                         </p>
                       </div>
