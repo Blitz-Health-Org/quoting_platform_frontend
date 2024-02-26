@@ -290,38 +290,38 @@ export const quoteMetadataObject: Record<string, FieldType> = {
   //   }`,
   //   label: "Premiums/Enrollment",
   // },
-  effective_date: {
-    field: "effective_date",
-    type: "string", // Assuming this is a date string
-    isDefault: false,
-    isSystem: false,
-    isNullable: false,
-    label: "Effective Date",
-  },
-  metal_tier: {
-    field: "metal_tier",
-    type: "string", // This could be an enum if you have specific metal tiers
-    isDefault: false,
-    isSystem: false,
-    isNullable: false,
-    label: "Metal Tier",
-  },
-  plan_name: {
-    field: "plan_name",
-    type: "string",
-    isDefault: false,
-    isSystem: false,
-    isNullable: false,
-    label: "Plan Name",
-  },
-  provider_network: {
-    field: "provider_network",
-    type: "string",
-    isDefault: false,
-    isSystem: false,
-    isNullable: false,
-    label: "Provider Network",
-  },
+  // effective_date: {
+  //   field: "effective_date",
+  //   type: "string", // Assuming this is a date string
+  //   isDefault: false,
+  //   isSystem: false,
+  //   isNullable: false,
+  //   label: "Effective Date",
+  // },
+  // metal_tier: {
+  //   field: "metal_tier",
+  //   type: "string", // This could be an enum if you have specific metal tiers
+  //   isDefault: false,
+  //   isSystem: false,
+  //   isNullable: false,
+  //   label: "Metal Tier",
+  // },
+  // plan_name: {
+  //   field: "plan_name",
+  //   type: "string",
+  //   isDefault: false,
+  //   isSystem: false,
+  //   isNullable: false,
+  //   label: "Plan Name",
+  // },
+  // provider_network: {
+  //   field: "provider_network",
+  //   type: "string",
+  //   isDefault: false,
+  //   isSystem: false,
+  //   isNullable: false,
+  //   label: "Provider Network",
+  // },
   // network_status: {
   //   field: "network_status",
   //   type: "string", // This could also be an enum if there are specific statuses
@@ -330,14 +330,14 @@ export const quoteMetadataObject: Record<string, FieldType> = {
   //   isNullable: false,
   //   label: "Network Status",
   // },
-  plan_type: {
-    field: "plan_type",
-    type: "string",
-    isDefault: false,
-    isSystem: false,
-    isNullable: false,
-    label: "Plan Type",
-  },
+  // plan_type: {
+  //   field: "plan_type",
+  //   type: "string",
+  //   isDefault: false,
+  //   isSystem: false,
+  //   isNullable: false,
+  //   label: "Plan Type",
+  // },
 };
 
 export const clientMetadataObject: Record<string, FieldType> = {

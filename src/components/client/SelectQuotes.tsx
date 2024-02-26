@@ -25,10 +25,7 @@ import United from "@/public/United.png";
 import Chamber from "@/public/Chamber.png";
 import NewProject from "@/public/NewProject.jpg";
 import { SocketContext } from "@/src/context/SocketContext";
-import { String } from "lodash";
-import { Json } from "@/src/types/database/database.types";
 import { io } from "socket.io-client";
-import router from "next/router";
 
 export default function SelectQuotes({
   setComparisonOpen,
@@ -243,9 +240,12 @@ export default function SelectQuotes({
             <p className="text-gray-400">({quotes.length})</p>
           </div>
           <div className="flex items-center">
-            <div className="text-sm md:text-base mr-1 outline outline-1 outline-gray-200 py-1 px-2 rounded-md flex items-center justify-center hover:bg-gray-100/80 cursor-pointer">
+            <div
+              onClick={handleNextClick}
+              className="text-sm md:text-base mr-1 outline outline-1 outline-gray-200 py-1 px-2 rounded-md flex items-center justify-center hover:bg-gray-100/80 cursor-pointer"
+            >
               <BiPlus className="mr-2" />
-              <button onClick={handleNextClick}>Comparison</button>
+              <div>Comparison</div>
             </div>
           </div>
         </div>
@@ -281,7 +281,7 @@ export default function SelectQuotes({
                 {/* Carrier Name */}
                 <div className="w-32">Carrier</div>
                 {/* Plan Name */}
-                <p className="w-32">Plan</p>
+                <p className="w-32">Plan Name</p>
 
                 {/* Office Copay (PCP/Specialist) */}
                 <p className="w-32">Office Copay (PCP/Specialist)</p>
