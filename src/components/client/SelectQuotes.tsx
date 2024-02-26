@@ -37,10 +37,12 @@ export default function SelectQuotes({
   setComparisonOpen,
   setSelectedClient,
   selectedClient,
+  setModalOpen
 }: {
   setComparisonOpen: Dispatch<SetStateAction<boolean>>;
   setSelectedClient: Dispatch<SetStateAction<ClientType>>;
   selectedClient: ClientType;
+  setModalOpen: Dispatch<SetStateAction<string>>;
 }) {
   type QuoteTypeWithCheckbox = QuoteType & { isSelected: boolean };
 
@@ -78,7 +80,11 @@ export default function SelectQuotes({
   const router = useRouter();
   const [search, setSearch] = useState<string>();
 
-  console.log("quotes here", quotes);
+  function handleAddNewQuote() {
+    setModalOpen("addNewQuote");
+    setSelectedClient(selectedClient);
+    return;
+  }
 
   useEffect(() => {
     const socket = io(`${process.env.NEXT_PUBLIC_SOCKET_SERVER_URL!}`, {
@@ -285,7 +291,9 @@ export default function SelectQuotes({
               {quotes.length === 0 ? (
                 <div className="flex w-full mt-16 mb-2 h-fit items-center justify-center flex-col">
                   <p className="mb-2">No Quotes</p>
-                  <button className="bg-gray-100 outline outline-1 outline-gray-300 rounded-md px-2 py-0.5">
+                  <button 
+                  onClick={handleAddNewQuote}
+                  className="bg-gray-100 outline outline-1 outline-gray-300 rounded-md px-2 py-0.5">
                     New Quote
                   </button>
                 </div>

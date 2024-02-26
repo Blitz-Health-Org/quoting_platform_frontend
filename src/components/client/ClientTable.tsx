@@ -28,13 +28,20 @@ import { useRouter } from "next/navigation";
 import { SnackbarAlert } from "../ui/SnackbarAlert";
 import error from "next/error";
 import { supabase } from "../../supabase";
+import { AddQuote } from "@/src/components/client/modal/AddQuote";
 
 export default function ClientTable({
   setComparisonOpen,
   setSelectedClient,
+  selectedClient,
+  setModalOpen,
+  modalOpen
 }: {
   setComparisonOpen: Dispatch<SetStateAction<boolean>>;
   setSelectedClient: Dispatch<SetStateAction<ClientType>>;
+  selectedClient: ClientType
+  setModalOpen: Dispatch<SetStateAction<string>>;
+  modalOpen: string;
 }) {
   const [clients, setClients] = useState<ClientType[]>([]);
   const {
@@ -45,7 +52,7 @@ export default function ClientTable({
     .filter((client) => client.created_at)
     .sort((a, b) => b.created_at.localeCompare(a.created_at));
   const [isModalOpen, setIsModalOpen] = useState(false);
-
+  
   const [snackbar, setSnackbar] = useState({
     open: false,
     message: "",
@@ -182,6 +189,7 @@ export default function ClientTable({
                     handleClientDelete={handleClientDelete}
                     setComparisonOpen={setComparisonOpen}
                     setSelectedClient={setSelectedClient}
+                    setModalOpen={setModalOpen}
                   />
                 </div>
               );
@@ -195,6 +203,7 @@ export default function ClientTable({
             setClients={setClients}
           />
         )}
+
         <SnackbarAlert
           openSnackbarShare={snackbar.open}
           setOpenSnackbarShare={setSnackbar}

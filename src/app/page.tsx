@@ -10,6 +10,8 @@ import { ClientType } from "@/src/types/custom/Client";
 import { useRouter } from "next/navigation";
 import { useSearchParams } from "next/navigation";
 import { supabase } from "@/src/supabase";
+import { AddQuote } from "../components/client/modal/AddQuote";
+import { SnackbarAlert } from "../components/ui/SnackbarAlert";
 
 export default function Home() {
   const {
@@ -21,6 +23,7 @@ export default function Home() {
   const [selectedClient, setSelectedClient] = useState<ClientType>(
     undefined as unknown as ClientType,
   );
+  const [modalOpen, setModalOpen] = useState<string>("");
 
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -52,6 +55,12 @@ export default function Home() {
       setComparisonOpen(true);
     }
   }, [searchParams]);
+
+  const [snackbar, setSnackbar] = useState({
+    open: false,
+    message: "",
+    severity: "info", // default severity
+  });
 
   // useEffect(() => {
   //   if (!loading) {
@@ -243,15 +252,42 @@ export default function Home() {
           <ClientTable
             setComparisonOpen={setComparisonOpen}
             setSelectedClient={setSelectedClient}
+            selectedClient={selectedClient}
+            setModalOpen={setModalOpen}
+            modalOpen={modalOpen}
           />
         ) : (
           <SelectQuotes
             selectedClient={selectedClient}
             setComparisonOpen={setComparisonOpen}
             setSelectedClient={setSelectedClient}
+            setModalOpen={setModalOpen}
           />
         )}
       </div>
+
+      {modalOpen === "addNewQuote" && (
+        <AddQuote
+          onClose={() => {
+            setModalOpen("");
+            if (!comparisonOpen) {
+              setSelectedClient(undefined as unknown as ClientType)
+            }
+          }}
+          setModalOpen={setModalOpen}
+          client={selectedClient}
+          setOpenSnackbarShare={setSnackbar}
+          setComparisonOpen={setComparisonOpen}
+          setSelectedClient={setSelectedClient}
+        />
+      )}
+
+      <SnackbarAlert
+          openSnackbarShare={snackbar.open}
+          setOpenSnackbarShare={setSnackbar}
+          snackbar={snackbar}
+        />
+
     </div>
     // </SocketProvider>
   );
