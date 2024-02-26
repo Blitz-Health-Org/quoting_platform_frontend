@@ -26,7 +26,8 @@ export const AuthContextProvider = ({
   const [accessToken, setAccessToken, loading] = useLocalStorage<
     string | undefined
   >("accessToken", undefined);
-  // const [validationLoading, setValidationLoading] = useState(false);
+  const [validationLoading, setValidationLoading] = useState(false);
+  const [validationComplete, setValidationComplete] = useState(false);
 
   if (loading) {
     console.log("Loading...");
@@ -38,24 +39,26 @@ export const AuthContextProvider = ({
     router.push("/sign-in");
   }
 
-  //   if (accessToken) {
-  //     // Validate the token
-  //     setValidationLoading(true);
-  //     // If the token is invalid, remove it from local storage and redirect to sign-in
-  //     supabase.auth.getUser(accessToken).then((user) => {
-  //       if (!user) {
-  //         console.log("Invalid token");
-  //         setAccessToken(undefined);
-  //         router.push("/sign-in");
-  //       }
-  //       setValidationLoading(false);
-  //     });
-  //   }
+  if (!loading && accessToken && !validationLoading && !validationComplete) {
+    // Validate the token
+    setValidationLoading(true);
+    // If the token is invalid, remove it from local storage and redirect to sign-in
+    supabase.auth.getUser(accessToken).then((user) => {
+      if (!user) {
+        console.log("Invalid token");
+        alert("Your session has expired. Please sign in again.");
+        setAccessToken(undefined);
+        router.push("/sign-in");
+      }
+      setValidationLoading(false);
+      setValidationComplete(true);
+    });
+  }
 
-  //   if (validationLoading) {
-  //     console.log("Validating...");
-  //     return <div>Validating...</div>;
-  //   }
+  if (validationLoading) {
+    console.log("Validating...");
+    return <></>;
+  }
 
   return (
     <>
