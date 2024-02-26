@@ -153,7 +153,13 @@ export default function SelectQuotes({
     if (error) {
       alert("Error updating data");
     } else {
-      setQuotes(data);
+      setQuotes((prevQuotes) =>
+        data.map((quote) =>
+          prevQuotes.map((prevQuote) => prevQuote.id).includes(quote.id)
+            ? prevQuotes.find((findQuote) => findQuote.id === quote.id)
+            : quote,
+        ),
+      );
     }
   };
 
