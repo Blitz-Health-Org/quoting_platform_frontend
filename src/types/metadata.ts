@@ -79,6 +79,16 @@ export const quoteMetadataObject: Record<string, FieldType> = {
       "coinsurance": {
         "label": "Coinsurance"
       },
+      "out_of_pocket_max": {
+        "label": "Out of Pocket Max."
+      },
+      "pcp_copay": {"label": "PCP Copay"},
+      "specialist_copay": {"label": "Specialist Copay"},
+      "er_copay": {"label": "ER Copay"},
+      "pharmacy_copay": {"label": "Pharmacy Copay"},
+      "inpatient_copay": {"label": "Inpatient Copay"},
+      "urgent_care_copay": {"label": "Urgent Care Copay"}, 
+      "prescription_deductible": {"label": "Prescription Deductible"},
       "employee_only_rate": {
         "label": "Employee Only Rate"
       },
@@ -93,9 +103,6 @@ export const quoteMetadataObject: Record<string, FieldType> = {
       },
       "total_cost": {
         "label": "Total Cost"
-      },
-      "out_of_pocket_max": {
-        "label": "Out of Pocket Max."
       }
     }`,
     label: "Plan Data",

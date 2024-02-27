@@ -72,16 +72,16 @@ export default function SelectQuotes({
   const planAttributesMapping: { key: keyof PlanAttributes; label: string }[] =
     [
       { key: "carrier", label: "Carrier" },
-      { key: "plan_name", label: "Plan" },
-      { key: "plan_type", label: "Plan Type" },
-      { key: "office_copay", label: "Office Copay (PCP/Specialist)" },
+      { key: "plan_id", label: "Plan" },
+      // { key: "plan_type", label: "Plan Type" },
+      // { key: "office_copay", label: "Office Copay (PCP/Specialist)" },
       { key: "deductible", label: "Deductible (Individual)" },
       { key: "coinsurance", label: "Coinsurance (In-Network)" },
       { key: "out_of_pocket_max", label: "Out of Pocket (Individual)" },
-      {
-        key: "additional_copay",
-        label: "Additional Copays (ER / Imaging / OP / IP)",
-      },
+      // {
+      // key: "additional_copay",
+      // label: "Additional Copays (ER / Imaging / OP / IP)",
+      // },
       { key: "total_cost", label: "Total Monthly Premium" },
     ];
 
@@ -124,6 +124,7 @@ export default function SelectQuotes({
   }, []);
 
   interface PlanAttributes {
+    plan_id: string;
     carrier: string;
     plan_name: string;
     plan_type: string;
