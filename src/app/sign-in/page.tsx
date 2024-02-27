@@ -91,12 +91,12 @@ export default function Page() {
                 Sign In
               </button>
               {/* Add a link to the sign-up page */}
-              <a
+              {/* <a
                 href="/sign-up"
                 className="bg-gray-200 px-3 py-1 rounded-md cursor-pointer"
               >
                 Sign Up
-              </a>
+              </a> */}
             </div>
           </form>
         </div>
