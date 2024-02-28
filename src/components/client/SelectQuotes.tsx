@@ -171,15 +171,6 @@ export default function SelectQuotes({
       return;
     }
 
-    // Toggle the sorting order if the same option is selected
-    if (option === sortOption) {
-      setSortOrder(sortOrder === "asc" ? "desc" : "asc");
-    } else {
-      // If a different option is selected, reset the sorting order to ascending
-      setSortOption(option);
-      setSortOrder("asc");
-    }
-
     // Perform the sorting
     const sortedQuotes = quotes.slice().sort((a, b) => {
       const valueA = parseValue((a.data as any)?.[option]); // Remove extra parenthesis here
@@ -197,16 +188,19 @@ export default function SelectQuotes({
   };
 
   const parseValue = (value: string | undefined): number => {
-    if (value === undefined) return Number.POSITIVE_INFINITY;
-
+    if (value === undefined || value === "MISSING" || value === "" || value.includes("N/A") || value.includes("/") || value.includes("+")) return Number.POSITIVE_INFINITY;
+  
+    // Remove commas, dollar signs, and periods
+    const cleanedValue = value.replace(/[,$.]/g, '');
+  
     // If the value is a percentage (contains '%'), remove '%' and convert to a number
-    if (typeof value === "string" && value.includes("%")) {
-      return parseFloat(value.replace("%", "")) || 0;
+    if (cleanedValue.includes('%')) {
+      return parseFloat(cleanedValue.replace('%', '')) || 0;
     }
-
+  
     // If the value is a regular number or a numeric string, convert it to a number
-    return Number(value) || 0;
-  };
+    return Number(cleanedValue) || 0;
+  };  
 
   useEffect(() => {
     const socket = io(`${process.env.NEXT_PUBLIC_SOCKET_SERVER_URL!}`, {
