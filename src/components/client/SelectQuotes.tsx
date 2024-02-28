@@ -188,19 +188,27 @@ export default function SelectQuotes({
   };
 
   const parseValue = (value: string | undefined): number => {
-    if (value === undefined || value === "MISSING" || value === "" || value.includes("N/A") || value.includes("/") || value.includes("+")) return Number.POSITIVE_INFINITY;
-  
+    if (
+      value === undefined ||
+      value === "MISSING" ||
+      value === "" ||
+      value.includes("N/A") ||
+      value.includes("/") ||
+      value.includes("+")
+    )
+      return Number.POSITIVE_INFINITY;
+
     // Remove commas, dollar signs, and periods
-    const cleanedValue = value.replace(/[,$.]/g, '');
-  
+    const cleanedValue = value.replace(/[,$.]/g, "");
+
     // If the value is a percentage (contains '%'), remove '%' and convert to a number
-    if (cleanedValue.includes('%')) {
-      return parseFloat(cleanedValue.replace('%', '')) || 0;
+    if (cleanedValue.includes("%")) {
+      return parseFloat(cleanedValue.replace("%", "")) || 0;
     }
-  
+
     // If the value is a regular number or a numeric string, convert it to a number
     return Number(cleanedValue) || 0;
-  };  
+  };
 
   useEffect(() => {
     const socket = io(`${process.env.NEXT_PUBLIC_SOCKET_SERVER_URL!}`, {
