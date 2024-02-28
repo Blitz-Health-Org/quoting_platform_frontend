@@ -32,6 +32,7 @@ import { io } from "socket.io-client";
 import router from "next/router";
 import { FiArrowRight } from "react-icons/fi";
 import { UserContext } from "@/src/context/UserContext";
+import SelectQuotesHeader from "../comparison/SelectQuotesHeader";
 
 export default function SelectQuotes({
   setComparisonOpen,
@@ -352,7 +353,18 @@ export default function SelectQuotes({
         </div>
         <div className="rounded-md w-full flex-col overflow-x-hidden h-full pb-12 overflow-y-scroll bg-white outline outline-1 outline-gray-200">
           <div className="py-2 px-4">
-            <div className="w-full flex mt-4 justify-center">
+            {/* Sup */}
+            <SelectQuotesHeader
+              search={search}
+              setSearch={setSearch}
+              quotes={quotes}
+              showDropdown={showDropdown}
+              setShowDropdown={setShowDropdown} 
+              handleSortOptionSelect={handleSortOptionSelect}
+              handleBusiness={handleBusiness}
+              selectedFilter={selectedFilter}
+            />
+            {/* <div className="w-full flex mt-4 justify-center">
               <div className="w-1/4 flex items-center gap-2">
                 <IoDocumentTextOutline className="h-5 w-5" />
                 <p className="truncate"> Showing {quotes.length} Quotes </p>
@@ -402,7 +414,8 @@ export default function SelectQuotes({
                   </button>
                 </div>
               </div>
-            </div>
+            </div> */}
+            {/* Sup */}
             <div className="w-full overflow-x-auto">
               <div className="flex py-2 w-fit border-b">
                 <div className="grid-cols-9 flex justify-left text-center w-fit gap-1 h-20 font-bold items-center text-wrap text-sm">
@@ -432,7 +445,7 @@ export default function SelectQuotes({
                   .filter(
                     (quote: any) =>
                       !search || // Only apply the filter if search is empty
-                      ((quote.data as any)?.["plan_name"] + quote.carrier)
+                      ((quote.data as any)?.["plan_id"] + quote.carrier)
                         .toLowerCase()
                         .includes(search.toLowerCase()),
                   )
