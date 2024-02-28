@@ -5,93 +5,104 @@ import { FaSearch } from "react-icons/fa";
 import { FaChevronDown } from "react-icons/fa";
 import { QuoteType } from "@/src/types/custom/Quote";
 
-import {
-    Dispatch,
-    SetStateAction,
-  } from "react";
+import { Dispatch, SetStateAction } from "react";
 
 type QuoteTypeWithCheckbox = QuoteType & { isSelected: boolean };
 
 type SelectQuotesHeaderProps = {
-    search: string | undefined;
-    setSearch: Dispatch<SetStateAction<string | undefined>>;
-    quotes: QuoteTypeWithCheckbox[];
-    showDropdown: boolean;
-    setShowDropdown: Dispatch<SetStateAction<boolean>>;
-    handleSortOptionSelect: any;
-    handleBusiness: any;
-    selectedFilter: any;
+  search: string | undefined;
+  setSearch: Dispatch<SetStateAction<string | undefined>>;
+  quotes: QuoteTypeWithCheckbox[];
+  showDropdown: boolean;
+  setShowDropdown: Dispatch<SetStateAction<boolean>>;
+  handleBusiness: any;
+  selectedFilter: any;
+  handleSort: any;
+  setSelectedFilter: any;
 };
 
 export default function SelectQuotesHeader({
-    search,
-    setSearch,
-    quotes,
-    showDropdown,
-    setShowDropdown,
-    handleSortOptionSelect,
-    handleBusiness,
-    selectedFilter
-  }: SelectQuotesHeaderProps) {
-    
-    const sortingOptions = [
-        { label: "Deductible", value: "deductible" },
-        { label: "Coinsurance", value: "coinsurance" },
-        { label: "Out of Pocket", value: "out_of_pocket_max" },
-        // Add more sorting options as needed
-      ];
+  search,
+  setSearch,
+  quotes,
+  showDropdown,
+  setShowDropdown,
+  handleBusiness,
+  selectedFilter,
+  handleSort,
+  setSelectedFilter,
+}: SelectQuotesHeaderProps) {
+  const sortingOptions = [
+    { label: "Deductible", value: "deductible" },
+    { label: "Coinsurance", value: "coinsurance" },
+    { label: "Out of Pocket", value: "out_of_pocket_max" },
+    // Add more sorting options as needed
+  ];
 
-return (
+  const handleSortOptionSelect = (option: string) => {
+    if (selectedFilter === option) {
+      // If the same filter option is clicked again, clear the selection
+      handleSort(null);
+      setSelectedFilter(null);
+    } else {
+      // Otherwise, perform the sort and update the selected filter
+      handleSort(option);
+      setSelectedFilter(option);
+    }
+    setShowDropdown(false);
+  };
+
+  return (
     <div className="w-full flex mt-4 justify-center">
-        <div className="w-1/4 flex items-center gap-2">
+      <div className="w-1/4 flex items-center gap-2">
         <IoDocumentTextOutline className="h-5 w-5" />
         <p className="truncate"> Showing {quotes.length} Quotes </p>
-        </div>
-        <div className="w-1/3 ml-4 md:ml-0 md:w-1/2 relative">
+      </div>
+      <div className="w-1/3 ml-4 md:ml-0 md:w-1/2 relative">
         <div className="absolute left-3 top-1/2 transform -translate-y-1/2 flex items-center">
-            <FaSearch className="h-4 w-4 text-gray-500" />
+          <FaSearch className="h-4 w-4 text-gray-500" />
         </div>
         <input
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-            placeholder="Search"
-            className="bg-gray-100/50 w-full px-10 py-1 rounded-sm outline outline-1 outline-gray-300"
+          value={search}
+          onChange={(e) => setSearch(e.target.value)}
+          placeholder="Search"
+          className="bg-gray-100/50 w-full px-10 py-1 rounded-sm outline outline-1 outline-gray-300"
         ></input>
-        </div>
-        <div className="w-5/12 md:w-1/4">
+      </div>
+      <div className="w-5/12 md:w-1/4">
         <div className="flex items-center justify-end">
-            <button
+          <button
             type="button"
             className="px-2 py-1 flex items-center gap-1"
             onClick={() => setShowDropdown(!showDropdown)}
-            >
+          >
             <p>Sort</p>
             <FaChevronDown className="h-3 w-3" />
-            </button>
-            {showDropdown && (
+          </button>
+          {showDropdown && (
             <div className="absolute mt-36 bg-white border rounded-md shadow-lg">
-                {sortingOptions.map((option) => (
+              {sortingOptions.map((option) => (
                 <div
-                    key={option.value}
-                    className={`px-2 py-1.5 border border-b-1 border-gray-300 cursor-pointer hover:border-gray-400 ${
+                  key={option.value}
+                  className={`px-2 py-1.5 border border-b-1 border-gray-300 cursor-pointer hover:border-gray-400 ${
                     selectedFilter === option.value ? "bg-gray-100" : ""
-                    }`}
-                    onClick={() => handleSortOptionSelect(option.value)}
+                  }`}
+                  onClick={() => handleSortOptionSelect(option.value)}
                 >
-                    {option.label}
+                  {option.label}
                 </div>
-                ))}
+              ))}
             </div>
-            )}
-            <button
+          )}
+          <button
             className="px-2 py-1 flex items-center gap-1"
             onClick={handleBusiness}
-            >
+          >
             <p>Filter</p>
             <FaChevronDown className="h-3 w-3" />
-            </button>
+          </button>
         </div>
-        </div>
+      </div>
     </div>
-)
-};
+  );
+}
