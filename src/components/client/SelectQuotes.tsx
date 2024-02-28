@@ -136,6 +136,78 @@ export default function SelectQuotes({
     total_cost: string;
   }
 
+  const [sortOption, setSortOption] = useState("deductible"); // Initial sorting option
+  const [sortOrder, setSortOrder] = useState("asc"); // Initial sorting order
+  const [showDropdown, setShowDropdown] = useState(false);
+
+  const sortingOptions = [
+    { label: "Deductible", value: "deductible" },
+    { label: "Coinsurance", value: "coinsurance" },
+    { label: "Out of Pocket", value: "out_of_pocket_max" },
+    // Add more sorting options as needed
+  ];
+
+  const [selectedFilter, setSelectedFilter] = useState<string | null>(null);
+  const [originalQuotes, setOriginalQuotes] = useState<QuoteTypeWithCheckbox[]>(
+    [],
+  );
+
+  const handleSortOptionSelect = (option: string) => {
+    if (selectedFilter === option) {
+      // If the same filter option is clicked again, clear the selection
+      handleSort(null);
+      setSelectedFilter(null);
+    } else {
+      // Otherwise, perform the sort and update the selected filter
+      handleSort(option);
+      setSelectedFilter(option);
+    }
+    setShowDropdown(false);
+  };
+
+  const handleSort = (option: string | null) => {
+    if (option === null) {
+      setQuotes(originalQuotes);
+      return;
+    }
+
+    // Toggle the sorting order if the same option is selected
+    if (option === sortOption) {
+      setSortOrder(sortOrder === "asc" ? "desc" : "asc");
+    } else {
+      // If a different option is selected, reset the sorting order to ascending
+      setSortOption(option);
+      setSortOrder("asc");
+    }
+
+    // Perform the sorting
+    const sortedQuotes = quotes.slice().sort((a, b) => {
+      const valueA = parseValue((a.data as any)?.[option]); // Remove extra parenthesis here
+      const valueB = parseValue((b.data as any)?.[option]); // Remove extra parenthesis here
+
+      if (sortOrder === "asc") {
+        return valueA - valueB;
+      } else {
+        return valueB - valueA;
+      }
+    });
+
+    // Update the state with the sorted quotes
+    setQuotes(sortedQuotes);
+  };
+
+  const parseValue = (value: string | undefined): number => {
+    if (value === undefined) return Number.POSITIVE_INFINITY;
+
+    // If the value is a percentage (contains '%'), remove '%' and convert to a number
+    if (typeof value === "string" && value.includes("%")) {
+      return parseFloat(value.replace("%", "")) || 0;
+    }
+
+    // If the value is a regular number or a numeric string, convert it to a number
+    return Number(value) || 0;
+  };
+
   useEffect(() => {
     const socket = io(`${process.env.NEXT_PUBLIC_SOCKET_SERVER_URL!}`, {
       path: "/socket.io",
@@ -225,9 +297,11 @@ export default function SelectQuotes({
 
         console.log("sortedQuotes", sortedQuotes);
         setQuotes(sortedQuotes);
+        setOriginalQuotes(sortedQuotes);
       } else {
         // Handle the case where selected_quotes is null (if needed)
         setQuotes(data);
+        setOriginalQuotes(data);
       }
     }
   };
@@ -295,12 +369,28 @@ export default function SelectQuotes({
               <div className="w-5/12 md:w-1/4">
                 <div className="flex items-center justify-end">
                   <button
+                    type="button"
                     className="px-2 py-1 flex items-center gap-1"
-                    onClick={handleBusiness}
+                    onClick={() => setShowDropdown(!showDropdown)}
                   >
                     <p>Sort</p>
                     <FaChevronDown className="h-3 w-3" />
                   </button>
+                  {showDropdown && (
+                    <div className="absolute mt-36 bg-white border rounded-md shadow-lg">
+                      {sortingOptions.map((option) => (
+                        <div
+                          key={option.value}
+                          className={`px-2 py-1.5 border border-b-1 border-gray-300 cursor-pointer hover:border-gray-400 ${
+                            selectedFilter === option.value ? "bg-gray-100" : ""
+                          }`}
+                          onClick={() => handleSortOptionSelect(option.value)}
+                        >
+                          {option.label}
+                        </div>
+                      ))}
+                    </div>
+                  )}
                   <button
                     className="px-2 py-1 flex items-center gap-1"
                     onClick={handleBusiness}
