@@ -97,14 +97,14 @@ export const ClientCard = ({
     return;
   }
 
-  function handleClientCardClick() {
-    router.push(`/client?client_id=${client.id}`);
-  }
+  // function handleClientCardClick() {
+  //   router.push(`/client?client_id=${client.id}`);
+  // }
 
   return (
     <>
       <div
-        onClick={handleClientCardClick}
+        // onClick={handleClientCardClick}
         className="col-span-1 w-full relative flex flex-col justify-between bg-white shadow-sm outline outline-1 outline-gray-200 rounded-md p-3"
       >
         {/* <button
