@@ -403,7 +403,7 @@ export default function SelectQuotes({
                               style={{ width: `${entryWidth}px` }}
                             >
                               {attribute.key === "carrier" ? (
-                                <div className="flex items-center justify-center truncate">
+                                <div className="flex items-center justify-left ml-6">
                                   <input
                                     type="checkbox"
                                     checked={quote.isSelected}
