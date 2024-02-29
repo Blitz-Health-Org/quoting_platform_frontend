@@ -1,15 +1,14 @@
 "use client";
 
 import Image, { StaticImageData } from "next/image";
-import { BiPlus } from "react-icons/bi";
+import { Sidebar, Menu, MenuItem, SubMenu } from "react-pro-sidebar";
 import { NewClientModal } from "@/src/components/client/modal/NewClient";
+import { LuArrowRightToLine, LuArrowLeftToLine } from "react-icons/lu";
 import { ClientType } from "@/src/types/custom/Client";
 import { useRouter } from "next/navigation";
+import { MdFileUpload } from "react-icons/md";
 import { SnackbarAlert } from "../ui/SnackbarAlert";
 import { supabase } from "../../supabase";
-import { IoDocumentTextOutline } from "react-icons/io5";
-import { FaSearch } from "react-icons/fa";
-import { FaChevronDown } from "react-icons/fa";
 import {
   Dispatch,
   SetStateAction,
@@ -20,7 +19,6 @@ import {
 import { IoMdArrowBack } from "react-icons/io";
 import { QuoteType } from "@/src/types/custom/Quote";
 import { IconBuilding } from "@tabler/icons-react";
-
 import AetnaLogo from "@/public/Screenshot.png";
 import AnotherCarrierLogo from "@/public/Anthem.jpeg";
 import Cigna from "@/public/Cigna.png";
@@ -29,7 +27,6 @@ import Chamber from "@/public/Chamber.png";
 import NewProject from "@/public/NewProject.jpg";
 import { SocketContext } from "@/src/context/SocketContext";
 import { io } from "socket.io-client";
-import router from "next/router";
 import { FiArrowRight } from "react-icons/fi";
 import { UserContext } from "@/src/context/UserContext";
 import SelectQuotesHeader from "../comparison/SelectQuotesHeader";
@@ -61,6 +58,8 @@ export default function SelectQuotes({
     message: "",
     severity: "success",
   });
+
+  const [collapsed, setCollapsed] = useState(true);
 
   const handleBusiness = (index: any) => {
     setSnackbar({
@@ -96,6 +95,9 @@ export default function SelectQuotes({
   const {
     userId: [userId, , loading],
   } = useContext(UserContext);
+  const [selectedQuotes, setSelectedQuotes] = useState<QuoteTypeWithCheckbox[]>(
+    [],
+  );
 
   const router = useRouter();
   const [search, setSearch] = useState<string>();
@@ -106,23 +108,6 @@ export default function SelectQuotes({
     setSelectedClient(selectedClient);
     return;
   }
-
-  useEffect(() => {
-    // Update entryWidth when the screen size changes
-
-    const handleResize = () => {
-      setEntryWidth(innerWidth / planAttributesMapping.length);
-      console.log("yeah", entryWidth);
-    };
-
-    // Attach event listener for window resize
-    window.addEventListener("resize", handleResize);
-
-    // Remove event listener on component unmount
-    return () => {
-      window.removeEventListener("resize", handleResize);
-    };
-  }, []);
 
   interface PlanAttributes {
     plan_id: string;
@@ -140,13 +125,6 @@ export default function SelectQuotes({
   const [sortOption, setSortOption] = useState("deductible"); // Initial sorting option
   const [sortOrder, setSortOrder] = useState("asc"); // Initial sorting order
   const [showDropdown, setShowDropdown] = useState(false);
-
-  const sortingOptions = [
-    { label: "Deductible", value: "deductible" },
-    { label: "Coinsurance", value: "coinsurance" },
-    { label: "Out of Pocket", value: "out_of_pocket_max" },
-    // Add more sorting options as needed
-  ];
 
   const [selectedFilter, setSelectedFilter] = useState<string | null>(null);
   const [originalQuotes, setOriginalQuotes] = useState<QuoteTypeWithCheckbox[]>(
@@ -230,6 +208,23 @@ export default function SelectQuotes({
           : quote,
       ),
     );
+
+    // Update selectedQuotes state
+    setSelectedQuotes((prevSelectedQuotes) => {
+      const index = prevSelectedQuotes.findIndex(
+        (quote) => quote.id === quoteId,
+      );
+      if (index !== -1) {
+        // If quote is already selected, remove it
+        return prevSelectedQuotes.filter((quote) => quote.id !== quoteId);
+      } else {
+        // If quote is not selected, add it
+        return [
+          ...prevSelectedQuotes,
+          quotes.find((quote) => quote.id === quoteId)!,
+        ];
+      }
+    });
   };
 
   const handleNextClick = async () => {
@@ -312,143 +307,185 @@ export default function SelectQuotes({
 
   return (
     <>
-      <main className="h-screen overflow-hidden flex-col w-full bg-gray-100 bg-opacity-50 pl-2 pr-6 pt-5 pb-6 text-gray-700">
-        <div className="flex w-full items-center mb-4 mt-1 justify-between">
-          <div className="flex items-center text-sm md:text-base">
-            <button
-              className="flex items-center"
-              onClick={handleCloseComparison}
-            >
-              <IoMdArrowBack />
-              <p className="ml-2 mr-2">Clients / </p>
-            </button>
-            <IconBuilding className="h-5 w-5 mr-2" />
-            <p className="mr-2">{selectedClient.name}</p>
-            {/* <p className="mr-1">/ Quotes</p>
+      <main className="flex w-full h-fit">
+        <div className="h-screen overflow-hidden flex-col w-full bg-gray-100 bg-opacity-50 pl-2 pr-6 pt-5 pb-6 text-gray-700">
+          <div className="flex w-full items-center mb-4 mt-1 justify-between">
+            <div className="flex items-center text-sm md:text-base">
+              <button
+                className="flex items-center"
+                onClick={handleCloseComparison}
+              >
+                <IoMdArrowBack />
+                <p className="ml-2 mr-2">Clients / </p>
+              </button>
+              <IconBuilding className="h-5 w-5 mr-2" />
+              <p className="mr-2">{selectedClient.name}</p>
+              {/* <p className="mr-1">/ Quotes</p>
             <p className="mr-1 text-gray-400 text-xs">•</p>
             <p className="text-gray-400">({quotes.length})</p> */}
-          </div>
-          <div className="flex items-center">
-            <div
-              onClick={handleNextClick}
-              className="text-sm md:text-base mr-1 outline outline-1 outline-gray-200 py-1 px-2 rounded-md flex items-center justify-center hover:bg-gray-100/80 cursor-pointer"
-            >
-              <div className="mr-2">New Comparison</div>
-              <FiArrowRight />
+            </div>
+            <div className="flex items-center gap-2">
+              <button
+                onClick={handleAddNewQuote}
+                className="text-sm md:text-base mr-1 outline outline-1 outline-gray-200 py-1 px-2 rounded-md flex items-center justify-center hover:bg-gray-100/80 cursor-pointer"
+              >
+                <div className="mr-2">Add Quotes</div>
+                <MdFileUpload />
+              </button>
+              <button
+                onClick={handleNextClick}
+                className="text-sm md:text-base mr-1 outline outline-1 outline-gray-200 py-1 px-2 rounded-md flex items-center justify-center hover:bg-gray-100/80 cursor-pointer"
+              >
+                <div className="mr-2">New Comparison</div>
+                <FiArrowRight />
+              </button>
             </div>
           </div>
-        </div>
-        <div className="rounded-md w-full flex-col overflow-x-hidden h-full pb-12 overflow-y-scroll bg-white outline outline-1 outline-gray-200">
-          <div className="py-2 px-4">
-            <SelectQuotesHeader
-              search={search}
-              setSearch={setSearch}
-              quotes={quotes}
-              showDropdown={showDropdown}
-              setShowDropdown={setShowDropdown}
-              handleSort={handleSort}
-              setSelectedFilter={setSelectedFilter}
-              handleBusiness={handleBusiness}
-              selectedFilter={selectedFilter}
-            />
-            <div className="w-full overflow-x-auto">
-              <div className="flex py-2 w-fit border-b">
-                <div className="grid-cols-9 flex justify-left text-center w-fit gap-1 h-20 font-bold items-center text-wrap text-sm">
-                  {planAttributesMapping.map((attribute) => (
-                    <div
-                      key={attribute.key}
-                      className="flex justify-center gap-2 min-w-32"
-                      style={{ width: `${entryWidth}px` }}
-                    >
-                      <p>{attribute.label}</p>
-                    </div>
-                  ))}
-                </div>
-              </div>
-              {quotes.length === 0 ? (
-                <div className="flex w-full mt-16 mb-2 h-fit items-center justify-center flex-col">
-                  <p className="mb-2">No Quotes</p>
-                  <button
-                    onClick={handleAddNewQuote}
-                    className="bg-gray-100 outline outline-1 outline-gray-300 rounded-md px-2 py-0.5"
-                  >
-                    Add Quotes
-                  </button>
-                </div>
-              ) : (
-                quotes
-                  .filter(
-                    (quote: any) =>
-                      !search || // Only apply the filter if search is empty
-                      ((quote.data as any)?.["plan_id"] + quote.carrier)
-                        .toLowerCase()
-                        .includes(search.toLowerCase()),
-                  )
-                  .map((quote) => (
-                    <div
-                      key={quote.id}
-                      className="flex items-center w-fit mb-1 mt-1 py-2 border-b"
-                    >
-                      <div className="grid-cols-9 w-full flex justify-left text-center w-fit gap-1 h-8 items-center text-sm">
-                        {/* Map through the plan attributes for each quote */}
-                        {planAttributesMapping.map((attribute) => (
-                          <div
-                            key={attribute.key}
-                            className="min-w-32 max-h-10 overflow-y-auto"
-                            style={{ width: `${entryWidth}px` }}
-                          >
-                            {attribute.key === "carrier" ? (
-                              <div className="flex items-center justify-center">
-                                <input
-                                  type="checkbox"
-                                  checked={quote.isSelected}
-                                  onChange={() =>
-                                    handleCheckboxChange(quote.id)
-                                  }
-                                  className="mr-4"
-                                />
-                                <Image
-                                  src={
-                                    carrierLogos[
-                                      quote[
-                                        attribute.key
-                                      ] as keyof typeof carrierLogos
-                                    ] || carrierLogos["Chamber"]
-                                  }
-                                  alt={`Logo for ${quote[attribute.key]}`}
-                                  width={20}
-                                  height={20}
-                                  className="mr-2 rounded-md"
-                                />
-                                <p>{quote[attribute.key] || "Sup"}</p>
-                              </div>
-                            ) : (
-                              <p>
-                                {(quote.data as any)?.[attribute.key] ?? "N/A"}
-                              </p>
-                            )}
-                          </div>
-                        ))}
+          <div className="rounded-md w-full flex-col overflow-x-hidden h-full pb-12 overflow-y-scroll bg-white outline outline-1 outline-gray-200">
+            <div className="py-2 px-4">
+              <SelectQuotesHeader
+                search={search}
+                setSearch={setSearch}
+                quotes={quotes}
+                showDropdown={showDropdown}
+                setShowDropdown={setShowDropdown}
+                handleSort={handleSort}
+                setSelectedFilter={setSelectedFilter}
+                handleBusiness={handleBusiness}
+                selectedFilter={selectedFilter}
+              />
+              <div className="w-full overflow-x-auto">
+                <div className="flex py-2 w-fit border-b">
+                  <div className="grid-cols-9 flex justify-left text-center w-fit gap-1 h-20 font-bold items-center text-wrap text-sm">
+                    {planAttributesMapping.map((attribute) => (
+                      <div
+                        key={attribute.key}
+                        className="flex justify-center gap-2 min-w-32"
+                        style={{ width: `${entryWidth}px` }}
+                      >
+                        <p>{attribute.label}</p>
                       </div>
-                    </div>
-                  ))
-              )}
+                    ))}
+                  </div>
+                </div>
+                {quotes.length === 0 ? (
+                  <div className="flex w-full mt-16 mb-2 h-fit items-center justify-center flex-col">
+                    <p className="mb-2">No Quotes</p>
+                    <button
+                      onClick={handleAddNewQuote}
+                      className="bg-gray-100 outline outline-1 outline-gray-300 rounded-md px-2 py-0.5"
+                    >
+                      Add Quotes
+                    </button>
+                  </div>
+                ) : (
+                  quotes
+                    .filter(
+                      (quote: any) =>
+                        !search || // Only apply the filter if search is empty
+                        ((quote.data as any)?.["plan_id"] + quote.carrier)
+                          .toLowerCase()
+                          .includes(search.toLowerCase()),
+                    )
+                    .map((quote) => (
+                      <div
+                        key={quote.id}
+                        className="flex items-center w-fit mb-1 mt-1 py-2 border-b"
+                      >
+                        <div className="grid-cols-9 w-full flex justify-left text-center w-fit gap-1 h-8 items-center text-sm">
+                          {/* Map through the plan attributes for each quote */}
+                          {planAttributesMapping.map((attribute) => (
+                            <div
+                              key={attribute.key}
+                              className="min-w-32 max-h-10 overflow-y-auto"
+                              style={{ width: `${entryWidth}px` }}
+                            >
+                              {attribute.key === "carrier" ? (
+                                <div className="flex items-center justify-center">
+                                  <input
+                                    type="checkbox"
+                                    checked={quote.isSelected}
+                                    onChange={() =>
+                                      handleCheckboxChange(quote.id)
+                                    }
+                                    className="mr-4"
+                                  />
+                                  <Image
+                                    src={
+                                      carrierLogos[
+                                        quote[
+                                          attribute.key
+                                        ] as keyof typeof carrierLogos
+                                      ] || carrierLogos["Chamber"]
+                                    }
+                                    alt={`Logo for ${quote[attribute.key]}`}
+                                    width={20}
+                                    height={20}
+                                    className="mr-2 rounded-md"
+                                  />
+                                  <p>{quote[attribute.key] || "Sup"}</p>
+                                </div>
+                              ) : (
+                                <p>
+                                  {(quote.data as any)?.[attribute.key] ??
+                                    "N/A"}
+                                </p>
+                              )}
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    ))
+                )}
+              </div>
             </div>
           </div>
-        </div>
-        {isModalOpen && (
-          <NewClientModal
+          {isModalOpen && (
+            <NewClientModal
+              setOpenSnackbarShare={setSnackbar}
+              onClose={handleCloseModal}
+              setClients={setClients}
+            />
+          )}
+          <SnackbarAlert
+            openSnackbarShare={snackbar.open}
             setOpenSnackbarShare={setSnackbar}
-            onClose={handleCloseModal}
-            setClients={setClients}
+            snackbar={snackbar}
           />
-        )}
-        <SnackbarAlert
-          openSnackbarShare={snackbar.open}
-          setOpenSnackbarShare={setSnackbar}
-          snackbar={snackbar}
-        />
+        </div>
+
+        <Sidebar
+          backgroundColor="white"
+          collapsed={collapsed}
+          collapsedWidth="40px"
+        >
+          <div className="flex-col h-full w-full pt-3 justify-center">
+            {collapsed && (
+              <div className="flex-col h-full w-full p-2 text-center">
+                <button
+                  className="sb-button"
+                  onClick={() => setCollapsed(false)}
+                >
+                  <LuArrowLeftToLine className="w-6 h-6" />
+                </button>
+              </div>
+            )}
+
+            {!collapsed && (
+              <div className="flex gap-2 p-2">
+                <button
+                  className="sb-button"
+                  onClick={() => setCollapsed(true)}
+                >
+                  <LuArrowRightToLine className="h-6 w-6" />
+                </button>
+                <p className="font-semibold text-lg">Plan Builder</p>
+              </div>
+            )}
+          </div>
+        </Sidebar>
       </main>
+
       <SnackbarAlert
         openSnackbarShare={snackbar.open}
         setOpenSnackbarShare={setSnackbar}

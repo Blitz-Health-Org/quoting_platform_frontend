@@ -1,561 +1,528 @@
-export type Json = { [key: string]: Json | undefined };
+export type Json =
+  | string
+  | number
+  | boolean
+  | null
+  | { [key: string]: Json | undefined }
+  | Json[];
 
 export type Database = {
   public: {
     Tables: {
-      ACA_Quotes: {
+      notes: {
         Row: {
-          "Coinsurance. % In-Network": string | null;
+          combousername: string;
           created_at: string;
-          "Deductibe Individual": string | null;
-          "Facility Copays (ER/Imaging/OP/IP)": string | null;
-          Funding: string | null;
-          id: number;
-          Insurer: string | null;
-          "Medical Plan": string | null;
-          "Office Copay (PCP/Specialist)": string | null;
-          "Out of Pocket Individual": string | null;
-          "Pharmacy Copay": string | null;
-          "Plan Type": string | null;
+          email: string | null;
+          notes: string | null;
+          vendor: string | null;
         };
         Insert: {
-          "Coinsurance. % In-Network"?: string | null;
+          combousername: string;
           created_at?: string;
-          "Deductibe Individual"?: string | null;
-          "Facility Copays (ER/Imaging/OP/IP)"?: string | null;
-          Funding?: string | null;
-          id?: number;
-          Insurer?: string | null;
-          "Medical Plan"?: string | null;
-          "Office Copay (PCP/Specialist)"?: string | null;
-          "Out of Pocket Individual"?: string | null;
-          "Pharmacy Copay"?: string | null;
-          "Plan Type"?: string | null;
+          email?: string | null;
+          notes?: string | null;
+          vendor?: string | null;
         };
         Update: {
-          "Coinsurance. % In-Network"?: string | null;
+          combousername?: string;
           created_at?: string;
-          "Deductibe Individual"?: string | null;
-          "Facility Copays (ER/Imaging/OP/IP)"?: string | null;
-          Funding?: string | null;
-          id?: number;
-          Insurer?: string | null;
-          "Medical Plan"?: string | null;
-          "Office Copay (PCP/Specialist)"?: string | null;
-          "Out of Pocket Individual"?: string | null;
-          "Pharmacy Copay"?: string | null;
-          "Plan Type"?: string | null;
+          email?: string | null;
+          notes?: string | null;
+          vendor?: string | null;
         };
         Relationships: [];
       };
-      carriers: {
+      pageopens: {
         Row: {
+          company: string | null;
+          created_at: string;
+          email: string | null;
           id: number;
-          name: string | null;
+          Name: string | null;
         };
         Insert: {
+          company?: string | null;
+          created_at?: string;
+          email?: string | null;
           id?: number;
-          name?: string | null;
+          Name?: string | null;
         };
         Update: {
+          company?: string | null;
+          created_at?: string;
+          email?: string | null;
           id?: number;
-          name?: string | null;
+          Name?: string | null;
         };
         Relationships: [];
       };
-      carriers_users: {
+      pastsearches: {
         Row: {
-          carrier: string | null;
-          carrier_id: number | null;
+          benefitType: string | null;
+          companyRegion: string | null;
+          companySize: string | null;
           created_at: string;
+          email: string | null;
           id: number;
-          password: string | null;
-          username: string | null;
+          rfpDueDate: string | null;
         };
         Insert: {
-          carrier?: string | null;
-          carrier_id?: number | null;
+          benefitType?: string | null;
+          companyRegion?: string | null;
+          companySize?: string | null;
           created_at?: string;
+          email?: string | null;
           id?: number;
-          password?: string | null;
-          username?: string | null;
+          rfpDueDate?: string | null;
         };
         Update: {
-          carrier?: string | null;
-          carrier_id?: number | null;
+          benefitType?: string | null;
+          companyRegion?: string | null;
+          companySize?: string | null;
           created_at?: string;
+          email?: string | null;
           id?: number;
-          password?: string | null;
-          username?: string | null;
-        };
-        Relationships: [
-          {
-            foreignKeyName: "carriers_users_carrier_id_fkey";
-            columns: ["carrier_id"];
-            isOneToOne: false;
-            referencedRelation: "carriers";
-            referencedColumns: ["id"];
-          },
-        ];
-      };
-      clients: {
-        Row: {
-          classes_contributions: Json[] | null;
-          created_at: string;
-          icon: string | null;
-          id: number;
-          name: string | null;
-          num_lives: number | null;
-          public_id: string | null;
-          selected_quotes: string[] | null;
-          user_id: string | null;
-        };
-        Insert: {
-          classes_contributions?: Json[] | null;
-          created_at?: string;
-          icon?: string | null;
-          id?: number;
-          name?: string | null;
-          num_lives?: number | null;
-          public_id?: string | null;
-          selected_quotes?: string[] | null;
-          user_id?: string | null;
-        };
-        Update: {
-          classes_contributions?: Json[] | null;
-          created_at?: string;
-          icon?: string | null;
-          id?: number;
-          name?: string | null;
-          num_lives?: number | null;
-          public_id?: string | null;
-          selected_quotes?: string[] | null;
-          user_id?: string | null;
-        };
-        Relationships: [
-          {
-            foreignKeyName: "public_clients_user_id_fkey";
-            columns: ["user_id"];
-            isOneToOne: false;
-            referencedRelation: "users";
-            referencedColumns: ["id"];
-          },
-        ];
-      };
-      clients_erin: {
-        Row: {
-          classes_contributions: Json[] | null;
-          created_at: string;
-          icon: string | null;
-          id: number;
-          name: string | null;
-          num_lives: number | null;
-          selected_quotes: string[] | null;
-        };
-        Insert: {
-          classes_contributions?: Json[] | null;
-          created_at?: string;
-          icon?: string | null;
-          id?: number;
-          name?: string | null;
-          num_lives?: number | null;
-          selected_quotes?: string[] | null;
-        };
-        Update: {
-          classes_contributions?: Json[] | null;
-          created_at?: string;
-          icon?: string | null;
-          id?: number;
-          name?: string | null;
-          num_lives?: number | null;
-          selected_quotes?: string[] | null;
+          rfpDueDate?: string | null;
         };
         Relationships: [];
       };
-      graphs: {
-        Row: {
-          created_at: string;
-          id: number;
-        };
-        Insert: {
-          created_at?: string;
-          id?: number;
-        };
-        Update: {
-          created_at?: string;
-          id?: number;
-        };
-        Relationships: [];
-      };
-      links: {
-        Row: {
-          created_at: string;
-          id: number;
-          query_id: string | null;
-          url: string | null;
-        };
-        Insert: {
-          created_at?: string;
-          id?: number;
-          query_id?: string | null;
-          url?: string | null;
-        };
-        Update: {
-          created_at?: string;
-          id?: number;
-          query_id?: string | null;
-          url?: string | null;
-        };
-        Relationships: [];
-      };
-      organizations: {
-        Row: {
-          created_at: string;
-          id: number;
-        };
-        Insert: {
-          created_at?: string;
-          id?: number;
-        };
-        Update: {
-          created_at?: string;
-          id?: number;
-        };
-        Relationships: [];
-      };
-      plans: {
-        Row: {
-          client_id: number | null;
-          created_at: string;
-          id: number;
-          plan_type: string | null;
-        };
-        Insert: {
-          client_id?: number | null;
-          created_at?: string;
-          id?: number;
-          plan_type?: string | null;
-        };
-        Update: {
-          client_id?: number | null;
-          created_at?: string;
-          id?: number;
-          plan_type?: string | null;
-        };
-        Relationships: [
-          {
-            foreignKeyName: "public_plans_client_id_fkey";
-            columns: ["client_id"];
-            isOneToOne: false;
-            referencedRelation: "clients";
-            referencedColumns: ["id"];
-          },
-        ];
-      };
-      policies: {
-        Row: {
-          actual_ytd_revenue: number | null;
-          apr_payment: number | null;
-          aug_payment: number | null;
-          carrier: string | null;
-          carrier_id: number | null;
-          client: string | null;
-          client_id: number | null;
-          created_at: string;
-          dec_payment: number | null;
-          expected_annual_revenue: number | null;
-          expected_monthly_revenue: number | null;
-          feb_payment: number | null;
-          id: number;
-          jan_payment: number | null;
-          jul_payment: number | null;
-          jun_payment: number | null;
-          mar_payment: number | null;
-          may_payment: number | null;
-          monthly_payments: Json | null;
-          nov_payment: number | null;
-          oct_payment: number | null;
-          payments: number[] | null;
-          plan_type: string | null;
-          policy_id: string | null;
-          projected_yearly_revenue: number | null;
-          sep_payment: number | null;
-          status: Database["public"]["Enums"]["status"] | null;
-        };
-        Insert: {
-          actual_ytd_revenue?: number | null;
-          apr_payment?: number | null;
-          aug_payment?: number | null;
-          carrier?: string | null;
-          carrier_id?: number | null;
-          client?: string | null;
-          client_id?: number | null;
-          created_at?: string;
-          dec_payment?: number | null;
-          expected_annual_revenue?: number | null;
-          expected_monthly_revenue?: number | null;
-          feb_payment?: number | null;
-          id?: number;
-          jan_payment?: number | null;
-          jul_payment?: number | null;
-          jun_payment?: number | null;
-          mar_payment?: number | null;
-          may_payment?: number | null;
-          monthly_payments?: Json | null;
-          nov_payment?: number | null;
-          oct_payment?: number | null;
-          payments?: number[] | null;
-          plan_type?: string | null;
-          policy_id?: string | null;
-          projected_yearly_revenue?: number | null;
-          sep_payment?: number | null;
-          status?: Database["public"]["Enums"]["status"] | null;
-        };
-        Update: {
-          actual_ytd_revenue?: number | null;
-          apr_payment?: number | null;
-          aug_payment?: number | null;
-          carrier?: string | null;
-          carrier_id?: number | null;
-          client?: string | null;
-          client_id?: number | null;
-          created_at?: string;
-          dec_payment?: number | null;
-          expected_annual_revenue?: number | null;
-          expected_monthly_revenue?: number | null;
-          feb_payment?: number | null;
-          id?: number;
-          jan_payment?: number | null;
-          jul_payment?: number | null;
-          jun_payment?: number | null;
-          mar_payment?: number | null;
-          may_payment?: number | null;
-          monthly_payments?: Json | null;
-          nov_payment?: number | null;
-          oct_payment?: number | null;
-          payments?: number[] | null;
-          plan_type?: string | null;
-          policy_id?: string | null;
-          projected_yearly_revenue?: number | null;
-          sep_payment?: number | null;
-          status?: Database["public"]["Enums"]["status"] | null;
-        };
-        Relationships: [
-          {
-            foreignKeyName: "policies_carrier_id_fkey";
-            columns: ["carrier_id"];
-            isOneToOne: false;
-            referencedRelation: "carriers";
-            referencedColumns: ["id"];
-          },
-          {
-            foreignKeyName: "public_policies_client_id_fkey";
-            columns: ["client_id"];
-            isOneToOne: false;
-            referencedRelation: "clients_erin";
-            referencedColumns: ["id"];
-          },
-        ];
-      };
-      policies_erin: {
-        Row: {
-          actual_ytd_revenue: number | null;
-          aor_date: string | null;
-          apr_payment: number | null;
-          aug_payment: number | null;
-          carrier: string | null;
-          carrier_id: number | null;
-          client: string | null;
-          client_id: number | null;
-          commission_rate: string | null;
-          created_at: string;
-          dec_payment: number | null;
-          expected_annual_revenue: number | null;
-          expected_monthly_revenue: number | null;
-          feb_payment: number | null;
-          id: number;
-          jan_payment: number | null;
-          jul_payment: number | null;
-          jun_payment: number | null;
-          mar_payment: number | null;
-          may_payment: number | null;
-          monthly_payments: Json | null;
-          nov_payment: number | null;
-          num_employees: string | null;
-          num_enrolled: string | null;
-          oct_payment: number | null;
-          payments: number[] | null;
-          plan_type: string | null;
-          policy_id: string | null;
-          projected_yearly_revenue: number | null;
-          renewal_date: string | null;
-          sep_payment: number | null;
-          status: Database["public"]["Enums"]["status"] | null;
-        };
-        Insert: {
-          actual_ytd_revenue?: number | null;
-          aor_date?: string | null;
-          apr_payment?: number | null;
-          aug_payment?: number | null;
-          carrier?: string | null;
-          carrier_id?: number | null;
-          client?: string | null;
-          client_id?: number | null;
-          commission_rate?: string | null;
-          created_at?: string;
-          dec_payment?: number | null;
-          expected_annual_revenue?: number | null;
-          expected_monthly_revenue?: number | null;
-          feb_payment?: number | null;
-          id?: number;
-          jan_payment?: number | null;
-          jul_payment?: number | null;
-          jun_payment?: number | null;
-          mar_payment?: number | null;
-          may_payment?: number | null;
-          monthly_payments?: Json | null;
-          nov_payment?: number | null;
-          num_employees?: string | null;
-          num_enrolled?: string | null;
-          oct_payment?: number | null;
-          payments?: number[] | null;
-          plan_type?: string | null;
-          policy_id?: string | null;
-          projected_yearly_revenue?: number | null;
-          renewal_date?: string | null;
-          sep_payment?: number | null;
-          status?: Database["public"]["Enums"]["status"] | null;
-        };
-        Update: {
-          actual_ytd_revenue?: number | null;
-          aor_date?: string | null;
-          apr_payment?: number | null;
-          aug_payment?: number | null;
-          carrier?: string | null;
-          carrier_id?: number | null;
-          client?: string | null;
-          client_id?: number | null;
-          commission_rate?: string | null;
-          created_at?: string;
-          dec_payment?: number | null;
-          expected_annual_revenue?: number | null;
-          expected_monthly_revenue?: number | null;
-          feb_payment?: number | null;
-          id?: number;
-          jan_payment?: number | null;
-          jul_payment?: number | null;
-          jun_payment?: number | null;
-          mar_payment?: number | null;
-          may_payment?: number | null;
-          monthly_payments?: Json | null;
-          nov_payment?: number | null;
-          num_employees?: string | null;
-          num_enrolled?: string | null;
-          oct_payment?: number | null;
-          payments?: number[] | null;
-          plan_type?: string | null;
-          policy_id?: string | null;
-          projected_yearly_revenue?: number | null;
-          renewal_date?: string | null;
-          sep_payment?: number | null;
-          status?: Database["public"]["Enums"]["status"] | null;
-        };
-        Relationships: [
-          {
-            foreignKeyName: "public_policies_erin_carrier_id_fkey";
-            columns: ["carrier_id"];
-            isOneToOne: false;
-            referencedRelation: "carriers";
-            referencedColumns: ["id"];
-          },
-          {
-            foreignKeyName: "public_policies_erin_client_id_fkey";
-            columns: ["client_id"];
-            isOneToOne: false;
-            referencedRelation: "clients_erin";
-            referencedColumns: ["id"];
-          },
-        ];
-      };
-      quotes: {
-        Row: {
-          carrier: string | null;
-          client_id: number | null;
-          created_at: string;
-          data: Json | null;
-          deductibles: Json | null;
-          effective_date: string | null;
-          file_name: string | null;
-          file_url: string | null;
-          id: number;
-          metal_tier: string | null;
-          plan_category: string | null;
-          plan_name: string | null;
-          plan_type: string | null;
-          provider_network: string | null;
-          task_id: number | null;
-          website: string | null;
-        };
-        Insert: {
-          carrier?: string | null;
-          client_id?: number | null;
-          created_at?: string;
-          data?: Json | null;
-          deductibles?: Json | null;
-          effective_date?: string | null;
-          file_name?: string | null;
-          file_url?: string | null;
-          id?: number;
-          metal_tier?: string | null;
-          plan_category?: string | null;
-          plan_name?: string | null;
-          plan_type?: string | null;
-          provider_network?: string | null;
-          task_id?: number | null;
-          website?: string | null;
-        };
-        Update: {
-          carrier?: string | null;
-          client_id?: number | null;
-          created_at?: string;
-          data?: Json | null;
-          deductibles?: Json | null;
-          effective_date?: string | null;
-          file_name?: string | null;
-          file_url?: string | null;
-          id?: number;
-          metal_tier?: string | null;
-          plan_category?: string | null;
-          plan_name?: string | null;
-          plan_type?: string | null;
-          provider_network?: string | null;
-          task_id?: number | null;
-          website?: string | null;
-        };
-        Relationships: [
-          {
-            foreignKeyName: "public_quotes_client_id_fkey";
-            columns: ["client_id"];
-            isOneToOne: false;
-            referencedRelation: "clients";
-            referencedColumns: ["id"];
-          },
-        ];
-      };
-      users: {
+      requests: {
         Row: {
           created_at: string;
           email: string | null;
           id: number;
+          requesttype: string | null;
+          submit: string | null;
+          vendor: string | null;
         };
         Insert: {
           created_at?: string;
           email?: string | null;
           id?: number;
+          requesttype?: string | null;
+          submit?: string | null;
+          vendor?: string | null;
         };
         Update: {
           created_at?: string;
           email?: string | null;
+          id?: number;
+          requesttype?: string | null;
+          submit?: string | null;
+          vendor?: string | null;
+        };
+        Relationships: [];
+      };
+      rfp_data: {
+        Row: {
+          blog: string | null;
+          bookmarks: string[] | null;
+          Categories: string | null;
+          clicks: string | null;
+          ClinicalProofPoints: string | null;
+          confirmedemail: boolean | null;
+          Customers: string | null;
+          CustomerTestimonials: string | null;
+          Description: string | null;
+          Email: string | null;
+          Facebook: string | null;
+          fundingtype: string | null;
+          headquarterslocation: string | null;
+          LinkedIn: string | null;
+          logo: string | null;
+          LongSummary: string | null;
+          Name: string;
+          numofemployees: string | null;
+          PricingDetails: string | null;
+          Twitter: string | null;
+          video: string | null;
+          Website: string | null;
+          YearFounded: string | null;
+          YouTube: string | null;
+        };
+        Insert: {
+          blog?: string | null;
+          bookmarks?: string[] | null;
+          Categories?: string | null;
+          clicks?: string | null;
+          ClinicalProofPoints?: string | null;
+          confirmedemail?: boolean | null;
+          Customers?: string | null;
+          CustomerTestimonials?: string | null;
+          Description?: string | null;
+          Email?: string | null;
+          Facebook?: string | null;
+          fundingtype?: string | null;
+          headquarterslocation?: string | null;
+          LinkedIn?: string | null;
+          logo?: string | null;
+          LongSummary?: string | null;
+          Name: string;
+          numofemployees?: string | null;
+          PricingDetails?: string | null;
+          Twitter?: string | null;
+          video?: string | null;
+          Website?: string | null;
+          YearFounded?: string | null;
+          YouTube?: string | null;
+        };
+        Update: {
+          blog?: string | null;
+          bookmarks?: string[] | null;
+          Categories?: string | null;
+          clicks?: string | null;
+          ClinicalProofPoints?: string | null;
+          confirmedemail?: boolean | null;
+          Customers?: string | null;
+          CustomerTestimonials?: string | null;
+          Description?: string | null;
+          Email?: string | null;
+          Facebook?: string | null;
+          fundingtype?: string | null;
+          headquarterslocation?: string | null;
+          LinkedIn?: string | null;
+          logo?: string | null;
+          LongSummary?: string | null;
+          Name?: string;
+          numofemployees?: string | null;
+          PricingDetails?: string | null;
+          Twitter?: string | null;
+          video?: string | null;
+          Website?: string | null;
+          YearFounded?: string | null;
+          YouTube?: string | null;
+        };
+        Relationships: [];
+      };
+      "rfp_data_backup-jan-2": {
+        Row: {
+          Categories: string | null;
+          ClinicalProofPoints: string | null;
+          confirmedemail: string | null;
+          Customers: string | null;
+          CustomerTestimonials: string | null;
+          Description: string | null;
+          Email: string | null;
+          fundingtype: string | null;
+          headquarterslocation: string | null;
+          logo: string | null;
+          LongSummary: string | null;
+          Name: string;
+          PricingDetails: string | null;
+          SVG: string | null;
+          Website: string | null;
+          YearFounded: number | null;
+        };
+        Insert: {
+          Categories?: string | null;
+          ClinicalProofPoints?: string | null;
+          confirmedemail?: string | null;
+          Customers?: string | null;
+          CustomerTestimonials?: string | null;
+          Description?: string | null;
+          Email?: string | null;
+          fundingtype?: string | null;
+          headquarterslocation?: string | null;
+          logo?: string | null;
+          LongSummary?: string | null;
+          Name: string;
+          PricingDetails?: string | null;
+          SVG?: string | null;
+          Website?: string | null;
+          YearFounded?: number | null;
+        };
+        Update: {
+          Categories?: string | null;
+          ClinicalProofPoints?: string | null;
+          confirmedemail?: string | null;
+          Customers?: string | null;
+          CustomerTestimonials?: string | null;
+          Description?: string | null;
+          Email?: string | null;
+          fundingtype?: string | null;
+          headquarterslocation?: string | null;
+          logo?: string | null;
+          LongSummary?: string | null;
+          Name?: string;
+          PricingDetails?: string | null;
+          SVG?: string | null;
+          Website?: string | null;
+          YearFounded?: number | null;
+        };
+        Relationships: [];
+      };
+      rfp_data_duplicate: {
+        Row: {
+          blog: string | null;
+          bookmarks: string[] | null;
+          Categories: string | null;
+          ClinicalProofPoints: string | null;
+          confirmedemail: boolean | null;
+          Customers: string | null;
+          CustomerTestimonials: string | null;
+          Description: string | null;
+          Email: string | null;
+          Facebook: string | null;
+          fundingtype: string | null;
+          headquarterslocation: string | null;
+          LinkedIn: string | null;
+          logo: string | null;
+          LongSummary: string | null;
+          Name: string;
+          numofemployees: string | null;
+          PricingDetails: string | null;
+          Twitter: string | null;
+          video: string | null;
+          Website: string | null;
+          YearFounded: string | null;
+          YouTube: string | null;
+        };
+        Insert: {
+          blog?: string | null;
+          bookmarks?: string[] | null;
+          Categories?: string | null;
+          ClinicalProofPoints?: string | null;
+          confirmedemail?: boolean | null;
+          Customers?: string | null;
+          CustomerTestimonials?: string | null;
+          Description?: string | null;
+          Email?: string | null;
+          Facebook?: string | null;
+          fundingtype?: string | null;
+          headquarterslocation?: string | null;
+          LinkedIn?: string | null;
+          logo?: string | null;
+          LongSummary?: string | null;
+          Name: string;
+          numofemployees?: string | null;
+          PricingDetails?: string | null;
+          Twitter?: string | null;
+          video?: string | null;
+          Website?: string | null;
+          YearFounded?: string | null;
+          YouTube?: string | null;
+        };
+        Update: {
+          blog?: string | null;
+          bookmarks?: string[] | null;
+          Categories?: string | null;
+          ClinicalProofPoints?: string | null;
+          confirmedemail?: boolean | null;
+          Customers?: string | null;
+          CustomerTestimonials?: string | null;
+          Description?: string | null;
+          Email?: string | null;
+          Facebook?: string | null;
+          fundingtype?: string | null;
+          headquarterslocation?: string | null;
+          LinkedIn?: string | null;
+          logo?: string | null;
+          LongSummary?: string | null;
+          Name?: string;
+          numofemployees?: string | null;
+          PricingDetails?: string | null;
+          Twitter?: string | null;
+          video?: string | null;
+          Website?: string | null;
+          YearFounded?: string | null;
+          YouTube?: string | null;
+        };
+        Relationships: [];
+      };
+      rfpgenerate: {
+        Row: {
+          benefitType: string | null;
+          clientBusinessDescription: string | null;
+          clientSize: string | null;
+          created_at: string;
+          email: string | null;
+          fileURL: string | null;
+          id: number;
+          questionChanges: string | null;
+          rfpDueDate: string | null;
+          vendorName: string | null;
+        };
+        Insert: {
+          benefitType?: string | null;
+          clientBusinessDescription?: string | null;
+          clientSize?: string | null;
+          created_at?: string;
+          email?: string | null;
+          fileURL?: string | null;
+          id?: number;
+          questionChanges?: string | null;
+          rfpDueDate?: string | null;
+          vendorName?: string | null;
+        };
+        Update: {
+          benefitType?: string | null;
+          clientBusinessDescription?: string | null;
+          clientSize?: string | null;
+          created_at?: string;
+          email?: string | null;
+          fileURL?: string | null;
+          id?: number;
+          questionChanges?: string | null;
+          rfpDueDate?: string | null;
+          vendorName?: string | null;
+        };
+        Relationships: [];
+      };
+      rfps: {
+        Row: {
+          created_at: string;
+          id: string;
+          inferred_benefit_type: string | null;
+          link: string | null;
+          rfp_name: string | null;
+          url: string | null;
+          user: string | null;
+        };
+        Insert: {
+          created_at?: string;
+          id?: string;
+          inferred_benefit_type?: string | null;
+          link?: string | null;
+          rfp_name?: string | null;
+          url?: string | null;
+          user?: string | null;
+        };
+        Update: {
+          created_at?: string;
+          id?: string;
+          inferred_benefit_type?: string | null;
+          link?: string | null;
+          rfp_name?: string | null;
+          url?: string | null;
+          user?: string | null;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "rfps_user_fkey";
+            columns: ["user"];
+            isOneToOne: false;
+            referencedRelation: "users";
+            referencedColumns: ["email"];
+          },
+        ];
+      };
+      self_serve_documents: {
+        Row: {
+          content: string | null;
+          embedding: string | null;
+          id: number;
+          metadata: Json | null;
+        };
+        Insert: {
+          content?: string | null;
+          embedding?: string | null;
+          id?: number;
+          metadata?: Json | null;
+        };
+        Update: {
+          content?: string | null;
+          embedding?: string | null;
+          id?: number;
+          metadata?: Json | null;
+        };
+        Relationships: [];
+      };
+      users: {
+        Row: {
+          created_at: string;
+          email: string;
+          name: string | null;
+          password: string | null;
+        };
+        Insert: {
+          created_at?: string;
+          email: string;
+          name?: string | null;
+          password?: string | null;
+        };
+        Update: {
+          created_at?: string;
+          email?: string;
+          name?: string | null;
+          password?: string | null;
+        };
+        Relationships: [];
+      };
+      vendors: {
+        Row: {
+          bookmarked: boolean | null;
+          created_at: string;
+          id: number;
+        };
+        Insert: {
+          bookmarked?: boolean | null;
+          created_at?: string;
+          id?: number;
+        };
+        Update: {
+          bookmarked?: boolean | null;
+          created_at?: string;
+          id?: number;
+        };
+        Relationships: [];
+      };
+      "vendors-rfps": {
+        Row: {
+          created_at: string;
+          id: number;
+          link: string | null;
+          messages: string[] | null;
+          rfp: string | null;
+          vendor: number | null;
+        };
+        Insert: {
+          created_at?: string;
+          id?: number;
+          link?: string | null;
+          messages?: string[] | null;
+          rfp?: string | null;
+          vendor?: number | null;
+        };
+        Update: {
+          created_at?: string;
+          id?: number;
+          link?: string | null;
+          messages?: string[] | null;
+          rfp?: string | null;
+          vendor?: number | null;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "vendors-rfps_rfp_fkey";
+            columns: ["rfp"];
+            isOneToOne: false;
+            referencedRelation: "rfps";
+            referencedColumns: ["id"];
+          },
+          {
+            foreignKeyName: "vendors-rfps_vendor_fkey";
+            columns: ["vendor"];
+            isOneToOne: false;
+            referencedRelation: "vendors";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
+      waitlist: {
+        Row: {
+          created_at: string;
+          emailio: string | null;
+          id: number;
+        };
+        Insert: {
+          created_at?: string;
+          emailio?: string | null;
+          id?: number;
+        };
+        Update: {
+          created_at?: string;
+          emailio?: string | null;
           id?: number;
         };
         Relationships: [];
@@ -565,10 +532,71 @@ export type Database = {
       [_ in never]: never;
     };
     Functions: {
-      [_ in never]: never;
+      hnswhandler: {
+        Args: {
+          "": unknown;
+        };
+        Returns: unknown;
+      };
+      ivfflathandler: {
+        Args: {
+          "": unknown;
+        };
+        Returns: unknown;
+      };
+      match_documents: {
+        Args: {
+          query_embedding: string;
+          match_count?: number;
+          filter?: Json;
+        };
+        Returns: {
+          id: number;
+          content: string;
+          metadata: Json;
+          embedding: Json;
+          similarity: number;
+        }[];
+      };
+      vector_avg: {
+        Args: {
+          "": number[];
+        };
+        Returns: string;
+      };
+      vector_dims: {
+        Args: {
+          "": string;
+        };
+        Returns: number;
+      };
+      vector_norm: {
+        Args: {
+          "": string;
+        };
+        Returns: number;
+      };
+      vector_out: {
+        Args: {
+          "": string;
+        };
+        Returns: unknown;
+      };
+      vector_send: {
+        Args: {
+          "": string;
+        };
+        Returns: string;
+      };
+      vector_typmod_in: {
+        Args: {
+          "": unknown[];
+        };
+        Returns: number;
+      };
     };
     Enums: {
-      status: "Resolved" | "Unresolved";
+      [_ in never]: never;
     };
     CompositeTypes: {
       [_ in never]: never;
