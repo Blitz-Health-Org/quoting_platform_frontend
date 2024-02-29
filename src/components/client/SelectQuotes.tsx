@@ -468,7 +468,7 @@ export default function SelectQuotes({
                   className="sb-button"
                   onClick={() => setCollapsed(false)}
                 >
-                  <LuArrowLeftToLine className="w-6 h-6" />
+                  <LuArrowLeftToLine className="h-6 w-6 text-gray-700" />
                 </button>
               </div>
             )}
@@ -479,9 +479,9 @@ export default function SelectQuotes({
                   className="sb-button"
                   onClick={() => setCollapsed(true)}
                 >
-                  <LuArrowRightToLine className="h-6 w-6" />
+                  <LuArrowRightToLine className="h-6 w-6 text-gray-700" />
                 </button>
-                <p className="font-semibold text-lg">Plan Builder</p>
+                <p className="text-lg">Plan Builder</p>
               </div>
             )}
           </div>
