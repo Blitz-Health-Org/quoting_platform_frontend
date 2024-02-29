@@ -24,6 +24,7 @@ import AnotherCarrierLogo from "@/public/Anthem.jpeg";
 import Cigna from "@/public/Cigna.png";
 import United from "@/public/United.png";
 import Chamber from "@/public/Chamber.png";
+import BCBS from "@/public/BCBS.png";
 import NewProject from "@/public/NewProject.jpg";
 import { SocketContext } from "@/src/context/SocketContext";
 import { io } from "socket.io-client";
@@ -50,6 +51,7 @@ export default function SelectQuotes({
     Cigna: Cigna,
     United: United,
     Chamber: Chamber,
+    BCBS: BCBS,
     Other: NewProject,
   };
 
@@ -401,7 +403,7 @@ export default function SelectQuotes({
                               style={{ width: `${entryWidth}px` }}
                             >
                               {attribute.key === "carrier" ? (
-                                <div className="flex items-center justify-center">
+                                <div className="flex items-center justify-center truncate">
                                   <input
                                     type="checkbox"
                                     checked={quote.isSelected}

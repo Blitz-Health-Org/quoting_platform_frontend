@@ -14,6 +14,7 @@ import Cigna from "@/public/Cigna.png";
 import United from "@/public/United.png";
 import Chamber from "@/public/Chamber.png";
 import NewProject from "@/public/NewProject.jpg";
+import BCBS from "@/public/BCBS.png";
 
 type QuoteCardProps = {
   quote: QuoteType;
@@ -44,6 +45,7 @@ export default function QuoteCard({
     United: United,
     Chamber: Chamber,
     Other: NewProject,
+    BCBS: BCBS,
   };
 
   const carrierWebsites = {
@@ -52,6 +54,7 @@ export default function QuoteCard({
     Cigna: "cigna.com",
     United: "unitedhealthcare.com",
     Chamber: "chamberselect.com",
+    BCBS: "bcbs.com",
     Other: "N/A",
   };
 
