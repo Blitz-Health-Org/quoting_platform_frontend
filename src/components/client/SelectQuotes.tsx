@@ -69,26 +69,28 @@ export default function SelectQuotes({
     });
   };
 
-  const planAttributesMapping: { key: keyof PlanAttributes; label: string }[] =
-    [
-      { key: "carrier", label: "Carrier" },
-      { key: "plan_id", label: "Plan" },
-      { key: "plan_type", label: "Plan Type" },
-      { key: "office_copay", label: "Office Copay (PCP/Specialist)" },
-      { key: "deductible", label: "Deductible (Individual)" },
-      { key: "coinsurance", label: "Coinsurance (In-Network)" },
-      { key: "out_of_pocket_max", label: "Out of Pocket (Individual)" },
-      {
-        key: "additional_copay",
-        label: "Additional Copays (ER / Imaging / OP / IP)",
-      },
-      { key: "total_cost", label: "Total Monthly Premium" },
-    ];
+  const planAttributesMapping: {
+    key: keyof PlanAttributes;
+    label: string;
+    alternateKey?: string;
+  }[] = [
+    { key: "carrier", label: "Carrier" },
+    { key: "plan_id", alternateKey: "plan_name", label: "Plan" },
+    // { key: "plan_type", label: "Plan Type" },
+    // { key: "office_copay", label: "Office Copay (PCP/Specialist)" },
+    { key: "deductible", label: "Deductible (Individual)" },
+    { key: "coinsurance", label: "Coinsurance (In-Network)" },
+    { key: "out_of_pocket_max", label: "Out of Pocket (Individual)" },
+    {
+      key: "additional_copay",
+      label: "Additional Copays (ER / Imaging / OP / IP)",
+    },
+    { key: "total_cost", label: "Total Monthly Premium" },
+  ];
 
   const [entryWidth, setEntryWidth] = useState(
     innerWidth / planAttributesMapping.length,
   );
-  const { socket } = useContext(SocketContext);
   const [clients, setClients] = useState<ClientType[]>([]);
   const [quotes, setQuotes] = useState<QuoteTypeWithCheckbox[]>([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -151,6 +153,9 @@ export default function SelectQuotes({
     // Listen for 'task_status' events
     socket.on("task_status", (data) => {
       console.log("Task Status:", data);
+      if (data.status === "failed") {
+        alert("Failed to process pdfs. Please try again");
+      }
     });
 
     return () => {
@@ -384,7 +389,11 @@ export default function SelectQuotes({
                               </div>
                             ) : (
                               <p>
-                                {(quote.data as any)?.[attribute.key] ?? "N/A"}
+                                {(quote.data as any)?.[attribute.key] ??
+                                  (quote.data as any)?.[
+                                    attribute?.alternateKey ?? "N/A"
+                                  ] ??
+                                  "N/A"}
                               </p>
                             )}
                           </div>
