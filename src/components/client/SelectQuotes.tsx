@@ -9,6 +9,7 @@ import { useRouter } from "next/navigation";
 import { MdFileUpload } from "react-icons/md";
 import { SnackbarAlert } from "../ui/SnackbarAlert";
 import { supabase } from "../../supabase";
+import { IoIosAdd } from "react-icons/io";
 import {
   Dispatch,
   SetStateAction,
@@ -28,7 +29,7 @@ import BCBS from "@/public/BCBS.png";
 import NewProject from "@/public/NewProject.jpg";
 import { SocketContext } from "@/src/context/SocketContext";
 import { io } from "socket.io-client";
-import { FiArrowRight } from "react-icons/fi";
+import { FiArrowRight, FiTrash } from "react-icons/fi";
 import { UserContext } from "@/src/context/UserContext";
 import SelectQuotesHeader from "../comparison/SelectQuotesHeader";
 
@@ -132,6 +133,63 @@ export default function SelectQuotes({
   const [originalQuotes, setOriginalQuotes] = useState<QuoteTypeWithCheckbox[]>(
     [],
   );
+  const [plans, setPlans] = useState<
+    Array<{ id: number; name: string; selectedQuotes: QuoteTypeWithCheckbox[] }>
+  >([]);
+  const [newPlanName, setNewPlanName] = useState("");
+
+  const handleAddPlan = () => {
+    if (newPlanName.trim() !== "") {
+      const newPlan = {
+        id: Date.now(),
+        name: newPlanName.trim(),
+        selectedQuotes: [],
+      };
+      setPlans([...plans, newPlan]);
+      setNewPlanName("");
+    }
+  };
+
+  const handleDeletePlan = (planId: number) => {
+    setPlans(plans.filter((plan) => plan.id !== planId));
+  };
+
+  const handleAddQuotesToPlan = (planId: number) => {
+    const updatedPlans = plans.map((plan) => {
+      if (plan.id === planId) {
+        // Filter out duplicates before updating the currentQuotes array
+        const uniqueQuotesToAdd = selectedQuotes.filter(
+          (quote) => !plan.selectedQuotes.includes(quote),
+        );
+        return {
+          ...plan,
+          selectedQuotes: [...plan.selectedQuotes, ...uniqueQuotesToAdd],
+        };
+      }
+      return plan;
+    });
+
+    setPlans(updatedPlans);
+  };
+
+  const handleRemoveQuoteFromPlan = (
+    planId: number,
+    quote: QuoteTypeWithCheckbox,
+  ) => {
+    const updatedPlans = plans.map((plan) => {
+      if (plan.id === planId) {
+        return {
+          ...plan,
+          selectedQuotes: plan.selectedQuotes.filter(
+            (selectedQuote) => selectedQuote.id !== quote.id,
+          ),
+        };
+      }
+      return plan;
+    });
+
+    setPlans(updatedPlans);
+  };
 
   const handleSort = (option: string | null) => {
     if (option === null) {
@@ -309,7 +367,7 @@ export default function SelectQuotes({
 
   return (
     <>
-      <main className="flex w-full h-fit">
+      <main className="flex w-full h-full overflow-hidden">
         <div className="h-screen overflow-hidden flex-col w-full bg-gray-100 bg-opacity-50 pl-2 pr-6 pt-5 pb-6 text-gray-700">
           <div className="flex w-full items-center mb-4 mt-1 justify-between">
             <div className="flex items-center text-sm md:text-base">
@@ -334,13 +392,13 @@ export default function SelectQuotes({
                 <div className="mr-2">Add Quotes</div>
                 <MdFileUpload />
               </button>
-              <button
+              {/* <button
                 onClick={handleNextClick}
                 className="text-sm md:text-base mr-1 outline outline-1 outline-gray-200 py-1 px-2 rounded-md flex items-center justify-center hover:bg-gray-100/80 cursor-pointer"
               >
                 <div className="mr-2">New Comparison</div>
                 <FiArrowRight />
-              </button>
+              </button> */}
             </div>
           </div>
           <div className="rounded-md w-full flex-col overflow-x-hidden h-full pb-12 overflow-y-scroll bg-white outline outline-1 outline-gray-200">
@@ -457,13 +515,18 @@ export default function SelectQuotes({
         </div>
 
         <Sidebar
+          collapsedWidth="60px"
           backgroundColor="white"
           collapsed={collapsed}
-          collapsedWidth="40px"
+          rootStyles={{
+            height: "100vh",
+            overflowY: "auto",
+            borderLeft: "1px solid #d1d5db", // Set the left border only
+          }}
         >
-          <div className="flex-col h-full w-full pt-3 justify-center">
+          <div className="flex-col h-fit w-full pt-3 justify-center overflow-y-scroll">
             {collapsed && (
-              <div className="flex-col h-full w-full p-2 text-center">
+              <div className="flex-col h-full w-full text-center">
                 <button
                   className="sb-button"
                   onClick={() => setCollapsed(false)}
@@ -474,14 +537,107 @@ export default function SelectQuotes({
             )}
 
             {!collapsed && (
-              <div className="flex gap-2 p-2">
+              <div className="flex gap-2 p-3">
                 <button
                   className="sb-button"
                   onClick={() => setCollapsed(true)}
                 >
                   <LuArrowRightToLine className="h-6 w-6 text-gray-700" />
                 </button>
-                <p className="text-lg">Plan Builder</p>
+                <p className="font-normal text-lg">Plan Builder</p>
+              </div>
+            )}
+
+            {/* Add Plan input and button */}
+            {!collapsed && (
+              <div className="flex-col items-center justify-center w-full gap-2 py-2 px-4">
+                <div
+                  onClick={handleNextClick}
+                  className="w-full text-gray-600 mb-2 text-sm md:text-base mr-1 outline outline-1 outline-gray-300 py-1 px-2 rounded-md flex items-center justify-center hover:outline-gray-400 cursor-pointer"
+                >
+                  <div className="mr-2 text-sm">Create Comparison</div>
+                  <FiArrowRight />
+                </div>
+                <div className="flex gap-1">
+                  <input
+                    type="text"
+                    placeholder="Enter New Plan Name"
+                    value={newPlanName}
+                    onChange={(e) => setNewPlanName(e.target.value)}
+                    className="py-1 px-4 text-sm outline outline-1 outline-gray-300 rounded-md w-7/8 hover:cursor-pointer focus:cursor-auto hover:outline-gray-400"
+                  />
+                  <button
+                    onClick={handleAddPlan}
+                    className="sb-button outline outline-1 outline-gray-300 rounded-md px-0.5 hover:outline-gray-400 w-1/8"
+                  >
+                    <IoIosAdd className="h-6 w-6 text-gray-700" />
+                  </button>
+                </div>
+              </div>
+            )}
+
+            {/* Display plans */}
+            {!collapsed && (
+              <div className="flex-col gap-2 py-2 px-4">
+                {plans.map((plan) => (
+                  <div key={plan.id} className="flex flex-col gap-1">
+                    <hr className="mt-1 mb-1"></hr>
+                    <div className="flex items-center justify-between">
+                      <p className="font-semibold mt-1">{plan.name}</p>
+                      <div className="flex">
+                        <button onClick={() => handleAddQuotesToPlan(plan.id)}>
+                          <IoIosAdd className="h-6 w-6" />
+                        </button>
+                        <button
+                          onClick={() => handleDeletePlan(plan.id)}
+                          className="text-red-500"
+                        >
+                          <FiTrash />
+                        </button>
+                      </div>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      {/* Display current quotes in the plan */}
+                      {plan.selectedQuotes.length > 0 && (
+                        <div className="w-full">
+                          <ul className="w-full">
+                            {plan.selectedQuotes.map((quote) => (
+                              <li key={quote.id} className="mt-2 w-full">
+                                <div className="flex justify-between w-full gap-1">
+                                  <div className="flex gap-1 items-center">
+                                    <Image
+                                      src={
+                                        carrierLogos[
+                                          quote.carrier as keyof typeof carrierLogos
+                                        ] || carrierLogos["Chamber"]
+                                      }
+                                      alt={`Logo for ${(quote.data as any)?.["plan_id"]}`}
+                                      width={25}
+                                      height={25}
+                                      className="mr-2"
+                                    />
+                                    <p className="text-sm">
+                                      {(quote.data as any)?.["plan_id"]}
+                                    </p>
+                                  </div>
+                                  <button
+                                    className="text-red-500"
+                                    onClick={() =>
+                                      handleRemoveQuoteFromPlan(plan.id, quote)
+                                    }
+                                  >
+                                    <FiTrash />
+                                  </button>
+                                </div>
+                              </li>
+                            ))}
+                          </ul>
+                        </div>
+                      )}
+                    </div>
+                    {/* Button to add selected quotes to the plan */}
+                  </div>
+                ))}
               </div>
             )}
           </div>
