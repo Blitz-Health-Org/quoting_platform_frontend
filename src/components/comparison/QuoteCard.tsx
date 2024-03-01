@@ -45,7 +45,7 @@ export default function QuoteCard({
     United: United,
     Chamber: Chamber,
     Other: NewProject,
-    BCBS: BCBS,
+    BCBS: BCBS
   };
 
   const carrierWebsites = {
@@ -61,7 +61,7 @@ export default function QuoteCard({
   const totalValue = calculateTotalCost(standardContribution, classes, {
     employee: (quote.data as any)?.["employee_only_rate"],
     child: (quote.data as any)?.["employee_child_rate"],
-    family: (quote.data as any)?.["employee_family_rate"] as any,
+    family: (quote.data as any)?.["employee_family_rate"],
     spouse: (quote.data as any)?.["employee_spouse_rate"],
   });
 

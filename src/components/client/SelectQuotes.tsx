@@ -343,6 +343,11 @@ export default function SelectQuotes({
         console.log("sortedQuotes", sortedQuotes);
         setQuotes(sortedQuotes);
         setOriginalQuotes(sortedQuotes);
+
+        // Set selectedQuotes to be all quotes where isSelected is true
+        const selectedQuotes = sortedQuotes.filter((quote) => quote.isSelected);
+        setSelectedQuotes(selectedQuotes);
+
       } else {
         // Handle the case where selected_quotes is null (if needed)
         setQuotes(data);
