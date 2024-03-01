@@ -1,4 +1,10 @@
-export type Json = { [key: string]: Json | undefined };
+export type Json =
+  | string
+  | number
+  | boolean
+  | null
+  | { [key: string]: Json | undefined }
+  | Json[];
 
 export type Database = {
   public: {

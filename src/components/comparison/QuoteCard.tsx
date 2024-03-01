@@ -14,6 +14,7 @@ import Cigna from "@/public/Cigna.png";
 import United from "@/public/United.png";
 import Chamber from "@/public/Chamber.png";
 import NewProject from "@/public/NewProject.jpg";
+import BCBS from "@/public/BCBS.png";
 
 type QuoteCardProps = {
   quote: QuoteType;
@@ -21,6 +22,7 @@ type QuoteCardProps = {
   objectVisibleQuoteFields: NonSystemField[];
   classes: any;
   standardContribution: any;
+  plan: any
 };
 
 export default function QuoteCard({
@@ -29,6 +31,7 @@ export default function QuoteCard({
   objectVisibleQuoteFields,
   classes,
   standardContribution,
+  plan
 }: QuoteCardProps) {
   const [quoteData, setQuoteData] = useState<any>(quote);
 
@@ -37,6 +40,8 @@ export default function QuoteCard({
   const ref2 = useRef();
   const ref3 = useRef();
 
+  console.log(plan)
+
   const carrierLogos = {
     Aetna: AetnaLogo,
     Anthem: AnotherCarrierLogo,
@@ -44,6 +49,7 @@ export default function QuoteCard({
     United: United,
     Chamber: Chamber,
     Other: NewProject,
+    BCBS: BCBS,
   };
 
   const carrierWebsites = {
@@ -52,14 +58,15 @@ export default function QuoteCard({
     Cigna: "cigna.com",
     United: "unitedhealthcare.com",
     Chamber: "chamberselect.com",
+    BCBS: "bcbs.com",
     Other: "N/A",
   };
 
   const totalValue = calculateTotalCost(standardContribution, classes, {
-    employee: quote.data?.["employee_only_rate"],
-    child: quote?.data?.["employee_child_rate"],
-    family: quote?.data?.["employee_family_rate"],
-    spouse: quote?.data?.["employee_spouse_rate"],
+    employee: (quote.data as any)?.["employee_only_rate"],
+    child: (quote.data as any)?.["employee_child_rate"],
+    family: (quote.data as any)?.["employee_family_rate"],
+    spouse: (quote.data as any)?.["employee_spouse_rate"],
   });
 
   function valueOrDefault(val: any, def: string = "N/A") {
