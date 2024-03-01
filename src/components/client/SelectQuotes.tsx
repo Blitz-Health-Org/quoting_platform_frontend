@@ -55,14 +55,15 @@ export default function SelectQuotes({
     BCBS: BCBS,
     Other: NewProject,
   };
-
   const [snackbar, setSnackbar] = useState({
     open: false,
     message: "",
     severity: "success",
   });
-
-  const [collapsed, setCollapsed] = useState(true);
+  const [selectedQuotes, setSelectedQuotes] = useState<QuoteTypeWithCheckbox[]>(
+    [],
+  );
+  const [collapsed, setCollapsed] = useState(selectedQuotes.length !> 0);
 
   const handleBusiness = (index: any) => {
     setSnackbar({
@@ -98,9 +99,6 @@ export default function SelectQuotes({
   const {
     userId: [userId, , loading],
   } = useContext(UserContext);
-  const [selectedQuotes, setSelectedQuotes] = useState<QuoteTypeWithCheckbox[]>(
-    [],
-  );
 
   const router = useRouter();
   const [search, setSearch] = useState<string>();
@@ -151,7 +149,9 @@ export default function SelectQuotes({
   };
 
   const handleDeletePlan = (planId: number) => {
-    setPlans(plans.filter((plan) => plan.id !== planId));
+    const updatedPlans = plans.filter((plan) => plan.id !== planId)
+    setPlans(updatedPlans);
+    updateConnectedPlans(updatedPlans);
   };
 
   const handleAddQuotesToPlan = (planId: number) => {
@@ -170,6 +170,7 @@ export default function SelectQuotes({
     });
 
     setPlans(updatedPlans);
+    updateConnectedPlans(updatedPlans);
   };
 
   const handleRemoveQuoteFromPlan = (
@@ -187,8 +188,8 @@ export default function SelectQuotes({
       }
       return plan;
     });
-
     setPlans(updatedPlans);
+    updateConnectedPlans(updatedPlans);
   };
 
   const handleSort = (option: string | null) => {
@@ -297,7 +298,7 @@ export default function SelectQuotes({
       alert("No quotes selected");
       return;
     }
-
+    
     // setSelectedQuotes(selected);
     const { data: insertData, error: insertError } = await supabase
       .from("clients") // Replace with your actual Supabase table name
@@ -320,6 +321,12 @@ export default function SelectQuotes({
       .from("quotes")
       .select()
       .eq("client_id", selectedClient.id);
+
+    const clientRes = await supabase
+      .from("clients")
+      .select("connected_plans")
+      .eq("id", selectedClient.id)
+      .single(); // Add this to fetch 'connected_plans' for the current client
 
     if (error) {
       alert("Error updating data");
@@ -347,11 +354,14 @@ export default function SelectQuotes({
         // Set selectedQuotes to be all quotes where isSelected is true
         const selectedQuotes = sortedQuotes.filter((quote) => quote.isSelected);
         setSelectedQuotes(selectedQuotes);
-
       } else {
         // Handle the case where selected_quotes is null (if needed)
         setQuotes(data);
         setOriginalQuotes(data);
+      }
+
+      if (clientRes.data) { // Check if there is data for connected_plans
+        setPlans(clientRes.data.connected_plans || []); // Update plans state
       }
     }
   };
@@ -369,6 +379,21 @@ export default function SelectQuotes({
     setComparisonOpen(false);
     router.push(`/`);
   };
+
+  const updateConnectedPlans = async (updatedPlans: any) => {
+    const { data, error } = await supabase
+      .from('clients') // Replace 'your_table_name' with your actual table name
+      .update({ connected_plans: updatedPlans }) // 'plans' is the array to insert into the 'connected_plans' column
+      .match({ id: selectedClient.id }); // Assuming 'selectedClient.id' is the primary key of the row you want to update
+    
+    if (error) {
+      console.error('Error updating connected plans in Supabase:', error);
+      return { success: false, error };
+    }
+  
+    console.log('Connected plans updated successfully:', data);
+    return { success: true, data };
+  };  
 
   return (
     <>
@@ -621,7 +646,7 @@ export default function SelectQuotes({
                                       height={25}
                                       className="mr-2"
                                     />
-                                    <p className="text-sm">
+                                    <p className="text-sm truncate">
                                       {(quote.data as any)?.["plan_id"]}
                                     </p>
                                   </div>

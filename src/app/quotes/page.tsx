@@ -34,6 +34,7 @@ export default function QuotingPage() {
   const [quotes, setQuotes] = useState<QuoteType[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [classes, setClasses] = useState<ClassType[]>([]);
+  const [plan, setPlan] = useState<any>(null);
   const [standardContribution, setStandardContribution] = useState<any>({
     name: "Standard Contribution",
     data: {
@@ -191,44 +192,51 @@ export default function QuotingPage() {
 
   const fetchClientAndQuotes = async (clientId: string, quoteIds: string[]) => {
     try {
-      const { data: clientData, error: clientError } = await supabase
-        .from("clients")
-        .select("*")
-        .eq("id", clientId)
-        .single();
+        const { data: clientData, error: clientError } = await supabase
+            .from("clients")
+            .select("*")
+            .eq("id", clientId)
+            .single();
 
-      if (clientError) throw clientError;
+        if (clientError) throw clientError;
 
-      setClient(clientData);
+        setClient(clientData);
 
-      if (clientData?.classes_contributions) {
-        console.log("helllo????");
-        setClasses(clientData.classes_contributions as any);
-      }
+        // Fetch connected plan for the specific client
+        const { data: planData, error: planError } = await supabase
+            .from("clients")
+            .select("connected_plans")
+            .eq("id", clientId)
+            .single();
 
-      // Fetch quotes data by IDs, assuming 'id' is in quoteIds array
-      const { data: quotesData, error: quotesError } = await supabase
-        .from("quotes")
-        .select("*")
-        .in("id", quoteIds);
+        if (planError) throw planError;
+        setPlan(planData?.connected_plans);
 
-      if (quotesError) {
-        return notFound();
-      }
+        if (clientData?.classes_contributions) {
+            console.log("helllo????");
+            setClasses(clientData.classes_contributions as any);
+        }
 
-      const orderedByAlphaData = quotesData.sort((rowA, rowB) => {
-        if (rowA.name < rowB.name) return -1;
-        if (rowA.name > rowB.name) return 1;
-        return 0;
-      });
+        const { data: quotesData, error: quotesError } = await supabase
+            .from("quotes")
+            .select("*")
+            .in("id", quoteIds);
 
-      setQuotes(orderedByAlphaData);
-      setLoading(false);
+        if (quotesError) throw quotesError;
+
+        const orderedByAlphaData = quotesData.sort((rowA, rowB) => {
+            if (rowA.name < rowB.name) return -1;
+            if (rowA.name > rowB.name) return 1;
+            return 0;
+        });
+
+        setQuotes(orderedByAlphaData);
+        setLoading(false);
     } catch (error) {
-      console.error("Error fetching data:", error);
-      // Optionally handle errors, such as setting an error state or showing a notification
+        console.error("Error fetching data:", error);
+        // Optionally handle errors, such as setting an error state or showing a notification
     }
-  };
+};
 
   const visibleQuoteFields = Object.values(quoteMetadataObject).filter((val) =>
     isFieldVisible(val),
@@ -312,6 +320,7 @@ export default function QuotingPage() {
                 <QuoteCard
                   key={quote.id}
                   quote={quote}
+                  plan={plan}
                   nonObjectVisibleQuoteFields={nonObjectVisibleQuoteFields}
                   objectVisibleQuoteFields={objectVisibleQuoteFields}
                   classes={classes}
