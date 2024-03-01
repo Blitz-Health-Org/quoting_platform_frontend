@@ -52,7 +52,7 @@ export const ClientCard = ({
 
   function handleViewComparison() {
     router.push(
-      `/quotes?clientId=${client.id}&quoteIds=${client.selected_quotes?.join(",")}`,
+      `/quotes?clientId=${client.id}`,
     );
     return;
   }
@@ -148,19 +148,19 @@ export const ClientCard = ({
           <div
             onClick={(event) => {
               event.stopPropagation();
-              client.selected_quotes
+              (client.connected_plans && client.connected_plans.length > 0)
                 ? handleViewComparison()
                 : handleNewComparison();
             }}
             className="outline outline-1 hover:bg-gray-100/50 cursor-pointer font-light flex items-center justify-center outline-gray-200 p-0.5 rounded-sm mb-1 mt-1 text-sm"
           >
-            {client.selected_quotes ? (
+            {client.connected_plans && client.connected_plans.length > 0 ? (
               <IoEyeSharp className="mr-1" />
             ) : (
               <FaPlus className="mr-1" />
             )}
             <button>
-              {client.selected_quotes ? "View Comparison" : "New Comparison"}
+              {(client.connected_plans && client.connected_plans.length > 0) ? "View Comparison" : "New Comparison"}
             </button>
           </div>
           <div

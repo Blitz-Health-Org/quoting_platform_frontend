@@ -64,6 +64,14 @@ export default function SelectQuotes({
     });
   };
 
+  const createAPlan = () => {
+    setSnackbar({
+      open: true,
+      message: "Please create a plan before a comparison!",
+      severity: "error",
+    });
+  };
+
   const planAttributesMapping: {
     key: keyof PlanAttributes;
     label: string;
@@ -130,7 +138,7 @@ export default function SelectQuotes({
       return { success: false };
     } else {
       router.push(
-        `/quotes?clientId=${clientId}&quoteIds=${selectedQuoteIds.join(",")}`,
+        `/quotes?clientId=${clientId}`,
       );
 
       return { success: true };
@@ -169,7 +177,6 @@ export default function SelectQuotes({
 
   const [sortOption, setSortOption] = useState("deductible"); // Initial sorting option
   const [sortOrder, setSortOrder] = useState("asc"); // Initial sorting order
-  const [showDropdown, setShowDropdown] = useState(false);
 
   const [selectedFilter, setSelectedFilter] = useState<string | null>(null);
   const [originalQuotes, setOriginalQuotes] = useState<QuoteTypeWithCheckbox[]>(
@@ -342,8 +349,8 @@ export default function SelectQuotes({
       quotes?.filter((quote) => quote.isSelected).map((quote) => quote.id) ||
       [];
     console.log("selectedQuotes", selectedQuoteIds);
-    if (!selectedQuoteIds.length) {
-      alert("No quotes selected");
+    if (!plans.length) {
+      createAPlan();
       return;
     }
 
@@ -357,7 +364,7 @@ export default function SelectQuotes({
       return { success: false };
     } else {
       router.push(
-        `/quotes?clientId=${clientId}&quoteIds=${selectedQuoteIds.join(",")}`,
+        `/quotes?clientId=${clientId}`,
       );
 
       return { success: true };
@@ -486,8 +493,6 @@ export default function SelectQuotes({
                 search={search}
                 setSearch={setSearch}
                 quotes={quotes}
-                showDropdown={showDropdown}
-                setShowDropdown={setShowDropdown}
                 handleSort={handleSort}
                 setSelectedFilter={setSelectedFilter}
                 handleBusiness={handleBusiness}
@@ -690,7 +695,7 @@ export default function SelectQuotes({
                                       />
                                     )}
                                     <p className="text-sm truncate">
-                                      {(quote.data as any)?.["plan_id"]}
+                                      {(quote.data as any)?.["plan_id"] || "N/A"}
                                     </p>
                                   </div>
                                   <button

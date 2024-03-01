@@ -19,7 +19,7 @@ type SubheaderProps = {
   onPaneToggle: (newState: boolean) => void;
   copyUrlToClipboard: any;
   handleDownloadCSV: any;
-  quotesLength: any;
+  plansLength: number;
   clientId: any;
 };
 
@@ -28,7 +28,7 @@ export const Subheader: React.FC<SubheaderProps> = ({
   onPaneToggle,
   copyUrlToClipboard,
   handleDownloadCSV,
-  quotesLength,
+  plansLength,
   clientId,
 }) => {
   const [snackbar, setSnackbar] = useState({
@@ -117,7 +117,7 @@ export const Subheader: React.FC<SubheaderProps> = ({
       </div>
 
       <div className="col-span-1 text-center flex items-center justify-center gap-1">
-        <p className="truncate">Showing {quotesLength} Quotes </p>
+        <p className="truncate">Showing {plansLength} Plans </p>
         <p className="cursor-pointer truncate" onClick={handleBusiness2}>
           | Edit |{" "}
         </p>

@@ -19,6 +19,7 @@ import { SnackbarAlert } from "../../components/ui/SnackbarAlert";
 import { SocketContext } from "@/src/context/SocketContext";
 import { v4 as uuid } from "uuid";
 import ContributionPane from "@/src/components/comparison/ContributionPane";
+import PlanCard from "@/src/components/comparison/PlanCard";
 
 type ClassType = {
   name: string;
@@ -34,7 +35,7 @@ export default function QuotingPage() {
   const [quotes, setQuotes] = useState<QuoteType[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [classes, setClasses] = useState<ClassType[]>([]);
-  const [plan, setPlan] = useState<any>(null);
+  const [plans, setPlans] = useState<any>(null);
   const [standardContribution, setStandardContribution] = useState<any>({
     name: "Standard Contribution",
     data: {
@@ -164,12 +165,8 @@ export default function QuotingPage() {
 
   useEffect(() => {
     const clientId = searchParams.get("clientId");
-    const quoteIds = searchParams.get("quoteIds");
-
-    if (clientId && quoteIds) {
-      // Convert quoteIds back into an array of IDs
-      const ids = quoteIds.split(",").map((id) => id.trim());
-      fetchClientAndQuotes(clientId, ids);
+    if (clientId) {
+      fetchClientAndQuotes(clientId);
     }
   }, [searchParams]);
 
@@ -190,7 +187,7 @@ export default function QuotingPage() {
   //   // For example, you can send it to the server or store it in another state.
   // };
 
-  const fetchClientAndQuotes = async (clientId: string, quoteIds: string[]) => {
+  const fetchClientAndQuotes = async (clientId: string) => {
     try {
       const { data: clientData, error: clientError } = await supabase
         .from("clients")
@@ -210,27 +207,13 @@ export default function QuotingPage() {
         .single();
 
       if (planError) throw planError;
-      setPlan(planData?.connected_plans);
+      setPlans(planData?.connected_plans);
 
       if (clientData?.classes_contributions) {
         console.log("helllo????");
         setClasses(clientData.classes_contributions as any);
       }
 
-      const { data: quotesData, error: quotesError } = await supabase
-        .from("quotes")
-        .select("*")
-        .in("id", quoteIds);
-
-      if (quotesError) throw quotesError;
-
-      const orderedByAlphaData = quotesData.sort((rowA, rowB) => {
-        if (rowA.name < rowB.name) return -1;
-        if (rowA.name > rowB.name) return 1;
-        return 0;
-      });
-
-      setQuotes(orderedByAlphaData);
       setLoading(false);
     } catch (error) {
       console.error("Error fetching data:", error);
@@ -307,7 +290,7 @@ export default function QuotingPage() {
             onPaneToggle={handlePaneToggle}
             copyUrlToClipboard={copyUrlToClipboard}
             handleDownloadCSV={handleDownloadCSV}
-            quotesLength={quotes.length}
+            plansLength={plans.length}
           />
 
           <div className="p-0.5 flex w-full h-full overflow-auto gap-2">
@@ -315,11 +298,9 @@ export default function QuotingPage() {
               nonObjectVisibleQuoteFields={nonObjectVisibleQuoteFields}
               objectVisibleQuoteFields={objectVisibleQuoteFields}
             />
-            {quotes.length > 0 ? (
-              quotes.map((quote) => (
-                <QuoteCard
-                  key={quote.id}
-                  quote={quote}
+            {plans.length > 0 ? (
+              plans.map((plan: any) => (
+                <PlanCard
                   plan={plan}
                   nonObjectVisibleQuoteFields={nonObjectVisibleQuoteFields}
                   objectVisibleQuoteFields={objectVisibleQuoteFields}

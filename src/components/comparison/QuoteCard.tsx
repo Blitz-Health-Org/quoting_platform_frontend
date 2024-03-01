@@ -22,7 +22,6 @@ type QuoteCardProps = {
   objectVisibleQuoteFields: NonSystemField[];
   classes: any;
   standardContribution: any;
-  plan: any
 };
 
 export default function QuoteCard({
@@ -31,7 +30,6 @@ export default function QuoteCard({
   objectVisibleQuoteFields,
   classes,
   standardContribution,
-  plan
 }: QuoteCardProps) {
   const [quoteData, setQuoteData] = useState<any>(quote);
 
@@ -39,8 +37,6 @@ export default function QuoteCard({
   const ref1 = useRef();
   const ref2 = useRef();
   const ref3 = useRef();
-
-  console.log(plan)
 
   const carrierLogos = {
     Aetna: AetnaLogo,
@@ -132,7 +128,7 @@ export default function QuoteCard({
   });
 
   return (
-    <div className="bg-white h-fit mb-4 min-w-80 mt-4 rounded-lg outline outline-1 outline-gray-300 pt-6 pb-1 mr-1 text-center overscroll-none">
+    <div>
       <div className="flex w-full h-fit justify-center items-center">
         <div className="w-fit h-fit mb-4 mr-1">
           <Image
