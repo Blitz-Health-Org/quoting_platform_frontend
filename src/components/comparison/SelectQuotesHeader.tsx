@@ -16,6 +16,7 @@ type SelectQuotesHeaderProps = {
   selectedFilter: any;
   handleSort: any;
   setSelectedFilter: any;
+  handleBusiness: any;
 };
 
 export default function SelectQuotesHeader({
@@ -25,6 +26,7 @@ export default function SelectQuotesHeader({
   selectedFilter,
   handleSort,
   setSelectedFilter,
+  handleBusiness
 }: SelectQuotesHeaderProps) {
   const [showSortDropdown, setShowSortDropdown] = useState(false);
   const [showFilterDropdown, setShowFilterDropdown] = useState(false);
@@ -93,12 +95,13 @@ export default function SelectQuotesHeader({
           )}
           <button
             className="px-2 py-1 flex items-center gap-1"
-            onClick={() => setShowFilterDropdown(!showFilterDropdown)}
+            // onClick={() => setShowFilterDropdown(!showFilterDropdown)}
+            onClick={() => handleBusiness()}
           >
             <p>Filter</p>
             <FaChevronDown className="h-3 w-3" />
           </button>
-          {showFilterDropdown && (
+          {/* {showFilterDropdown && (
             <div className="absolute mt-36 bg-white border rounded-md shadow-lg">
               {sortingOptions.map((option) => (
                 <div
@@ -112,7 +115,7 @@ export default function SelectQuotesHeader({
                 </div>
               ))}
             </div>
-          )}
+          )} */}
         </div>
       </div>
     </div>

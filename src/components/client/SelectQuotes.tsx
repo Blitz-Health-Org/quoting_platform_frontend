@@ -186,7 +186,6 @@ export default function SelectQuotes({
 
   const [sortOption, setSortOption] = useState("deductible"); // Initial sorting option
   const [sortOrder, setSortOrder] = useState("asc"); // Initial sorting order
-  const [showDropdown, setShowDropdown] = useState(false);
 
   const [selectedFilter, setSelectedFilter] = useState<string | null>(null);
   const [originalQuotes, setOriginalQuotes] = useState<QuoteTypeWithCheckbox[]>(
@@ -502,8 +501,6 @@ export default function SelectQuotes({
                 search={search}
                 setSearch={setSearch}
                 quotes={quotes}
-                showDropdown={showDropdown}
-                setShowDropdown={setShowDropdown}
                 handleSort={handleSort}
                 setSelectedFilter={setSelectedFilter}
                 handleBusiness={handleBusiness}
