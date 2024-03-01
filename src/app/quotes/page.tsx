@@ -19,6 +19,7 @@ import { SnackbarAlert } from "../../components/ui/SnackbarAlert";
 import { SocketContext } from "@/src/context/SocketContext";
 import { v4 as uuid } from "uuid";
 import ContributionPane from "@/src/components/comparison/ContributionPane";
+import PlanCard from "@/src/components/comparison/PlanCard";
 
 type ClassType = {
   name: string;
@@ -34,7 +35,7 @@ export default function QuotingPage() {
   const [quotes, setQuotes] = useState<QuoteType[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [classes, setClasses] = useState<ClassType[]>([]);
-  const [plan, setPlan] = useState<any>(null);
+  const [plans, setPlans] = useState<any>(null);
   const [standardContribution, setStandardContribution] = useState<any>({
     name: "Standard Contribution",
     data: {
@@ -210,7 +211,7 @@ export default function QuotingPage() {
             .single();
 
         if (planError) throw planError;
-        setPlan(planData?.connected_plans);
+        setPlans(planData?.connected_plans);
 
         if (clientData?.classes_contributions) {
             console.log("helllo????");
@@ -315,11 +316,9 @@ export default function QuotingPage() {
               nonObjectVisibleQuoteFields={nonObjectVisibleQuoteFields}
               objectVisibleQuoteFields={objectVisibleQuoteFields}
             />
-            {quotes.length > 0 ? (
-              quotes.map((quote) => (
-                <QuoteCard
-                  key={quote.id}
-                  quote={quote}
+            {plans.length > 0 ? (
+              plans.map((plan: any) => (
+                <PlanCard
                   plan={plan}
                   nonObjectVisibleQuoteFields={nonObjectVisibleQuoteFields}
                   objectVisibleQuoteFields={objectVisibleQuoteFields}

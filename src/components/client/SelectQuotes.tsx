@@ -73,6 +73,14 @@ export default function SelectQuotes({
     });
   };
 
+  const createAPlan = () => {
+    setSnackbar({
+      open: true,
+      message: "Please create a plan before a comparison!",
+      severity: "error",
+    });
+  };
+
   const planAttributesMapping: { key: keyof PlanAttributes; label: string }[] =
     [
       { key: "carrier", label: "Carrier" },
@@ -294,8 +302,8 @@ export default function SelectQuotes({
       quotes?.filter((quote) => quote.isSelected).map((quote) => quote.id) ||
       [];
     console.log("selectedQuotes", selectedQuoteIds);
-    if (!selectedQuoteIds.length) {
-      alert("No quotes selected");
+    if (!plans.length) {
+      createAPlan();
       return;
     }
     
@@ -647,7 +655,7 @@ export default function SelectQuotes({
                                       className="mr-2"
                                     />
                                     <p className="text-sm truncate">
-                                      {(quote.data as any)?.["plan_id"]}
+                                      {(quote.data as any)?.["plan_id"] || "N/A"}
                                     </p>
                                   </div>
                                   <button
