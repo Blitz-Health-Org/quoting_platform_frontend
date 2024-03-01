@@ -192,51 +192,51 @@ export default function QuotingPage() {
 
   const fetchClientAndQuotes = async (clientId: string, quoteIds: string[]) => {
     try {
-        const { data: clientData, error: clientError } = await supabase
-            .from("clients")
-            .select("*")
-            .eq("id", clientId)
-            .single();
+      const { data: clientData, error: clientError } = await supabase
+        .from("clients")
+        .select("*")
+        .eq("id", clientId)
+        .single();
 
-        if (clientError) throw clientError;
+      if (clientError) throw clientError;
 
-        setClient(clientData);
+      setClient(clientData);
 
-        // Fetch connected plan for the specific client
-        const { data: planData, error: planError } = await supabase
-            .from("clients")
-            .select("connected_plans")
-            .eq("id", clientId)
-            .single();
+      // Fetch connected plan for the specific client
+      const { data: planData, error: planError } = await supabase
+        .from("clients")
+        .select("connected_plans")
+        .eq("id", clientId)
+        .single();
 
-        if (planError) throw planError;
-        setPlan(planData?.connected_plans);
+      if (planError) throw planError;
+      setPlan(planData?.connected_plans);
 
-        if (clientData?.classes_contributions) {
-            console.log("helllo????");
-            setClasses(clientData.classes_contributions as any);
-        }
+      if (clientData?.classes_contributions) {
+        console.log("helllo????");
+        setClasses(clientData.classes_contributions as any);
+      }
 
-        const { data: quotesData, error: quotesError } = await supabase
-            .from("quotes")
-            .select("*")
-            .in("id", quoteIds);
+      const { data: quotesData, error: quotesError } = await supabase
+        .from("quotes")
+        .select("*")
+        .in("id", quoteIds);
 
-        if (quotesError) throw quotesError;
+      if (quotesError) throw quotesError;
 
-        const orderedByAlphaData = quotesData.sort((rowA, rowB) => {
-            if (rowA.name < rowB.name) return -1;
-            if (rowA.name > rowB.name) return 1;
-            return 0;
-        });
+      const orderedByAlphaData = quotesData.sort((rowA, rowB) => {
+        if (rowA.name < rowB.name) return -1;
+        if (rowA.name > rowB.name) return 1;
+        return 0;
+      });
 
-        setQuotes(orderedByAlphaData);
-        setLoading(false);
+      setQuotes(orderedByAlphaData);
+      setLoading(false);
     } catch (error) {
-        console.error("Error fetching data:", error);
-        // Optionally handle errors, such as setting an error state or showing a notification
+      console.error("Error fetching data:", error);
+      // Optionally handle errors, such as setting an error state or showing a notification
     }
-};
+  };
 
   const visibleQuoteFields = Object.values(quoteMetadataObject).filter((val) =>
     isFieldVisible(val),
