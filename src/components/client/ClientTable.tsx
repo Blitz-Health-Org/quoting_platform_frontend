@@ -69,6 +69,7 @@ export default function ClientTable({
       if (error) {
         alert(error.message);
       } else {
+        console.log("data retrieved", data);
         setClients(data); //TODO: make sure the data recieved matches client type
       }
     };

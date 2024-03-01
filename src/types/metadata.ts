@@ -397,6 +397,14 @@ export const clientMetadataObject: Record<string, FieldType> = {
     isNullable: true,
     label: "Plan Type",
   },
+  zip_code: {
+    field: "zip_code",
+    type: "string",
+    isDefault: false,
+    isSystem: false,
+    isNullable: true,
+    label: "Zip Code",
+  },
 };
 
 //COMMISSIONS

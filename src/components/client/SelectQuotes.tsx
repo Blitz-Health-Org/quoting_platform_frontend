@@ -63,7 +63,7 @@ export default function SelectQuotes({
   const [selectedQuotes, setSelectedQuotes] = useState<QuoteTypeWithCheckbox[]>(
     [],
   );
-  const [collapsed, setCollapsed] = useState(selectedQuotes.length !> 0);
+  const [collapsed, setCollapsed] = useState(selectedQuotes.length! > 0);
 
   const handleBusiness = (index: any) => {
     setSnackbar({
@@ -81,26 +81,28 @@ export default function SelectQuotes({
     });
   };
 
-  const planAttributesMapping: { key: keyof PlanAttributes; label: string }[] =
-    [
-      { key: "carrier", label: "Carrier" },
-      { key: "plan_id", label: "Plan" },
-      { key: "plan_type", label: "Plan Type" },
-      { key: "office_copay", label: "Office Copay (PCP/Specialist)" },
-      { key: "deductible", label: "Deductible (Individual)" },
-      { key: "coinsurance", label: "Coinsurance (In-Network)" },
-      { key: "out_of_pocket_max", label: "Out of Pocket (Individual)" },
-      {
-        key: "additional_copay",
-        label: "Additional Copays (ER / Imaging / OP / IP)",
-      },
-      { key: "total_cost", label: "Total Monthly Premium" },
-    ];
+  const planAttributesMapping: {
+    key: keyof PlanAttributes;
+    label: string;
+    alternateKey?: string;
+  }[] = [
+    { key: "carrier", label: "Carrier" },
+    { key: "plan_id", alternateKey: "plan_name", label: "Plan" },
+    // { key: "plan_type", label: "Plan Type" },
+    // { key: "office_copay", label: "Office Copay (PCP/Specialist)" },
+    { key: "deductible", label: "Deductible (Individual)" },
+    { key: "coinsurance", label: "Coinsurance (In-Network)" },
+    { key: "out_of_pocket_max", label: "Out of Pocket (Individual)" },
+    {
+      key: "additional_copay",
+      label: "Additional Copays (ER / Imaging / OP / IP)",
+    },
+    { key: "total_cost", label: "Total Monthly Premium" },
+  ];
 
   const [entryWidth, setEntryWidth] = useState(
     innerWidth / planAttributesMapping.length,
   );
-  const { socket } = useContext(SocketContext);
   const [clients, setClients] = useState<ClientType[]>([]);
   const [quotes, setQuotes] = useState<QuoteTypeWithCheckbox[]>([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -117,6 +119,57 @@ export default function SelectQuotes({
     setSelectedClient(selectedClient);
     return;
   }
+
+  async function handleDeleteQuote() {
+    const selectedQuoteIds =
+      quotes?.filter((quote) => quote.isSelected).map((quote) => quote.id) ||
+      [];
+
+    const { error } = await supabase
+      .from("quotes")
+      .delete()
+      .in("id", selectedQuoteIds);
+    if (error) {
+      alert("Failed to delete quotes");
+      return;
+    }
+
+    // setQuotes()
+
+    const clientId = selectedClient.id;
+
+    const { data: insertData, error: insertError } = await supabase
+      .from("clients") // Replace with your actual Supabase table name
+      .upsert({ id: selectedClient.id, selected_quotes: selectedQuoteIds });
+
+    if (insertError) {
+      console.error("Error inserting row into Supabase table:", insertError);
+      return { success: false };
+    } else {
+      router.push(
+        `/quotes?clientId=${clientId}`,
+      );
+
+      return { success: true };
+    }
+  }
+
+  useEffect(() => {
+    // Update entryWidth when the screen size changes
+
+    const handleResize = () => {
+      setEntryWidth(innerWidth / planAttributesMapping.length);
+      console.log("yeah", entryWidth);
+    };
+
+    // Attach event listener for window resize
+    window.addEventListener("resize", handleResize);
+
+    // Remove event listener on component unmount
+    return () => {
+      window.removeEventListener("resize", handleResize);
+    };
+  }, []);
 
   interface PlanAttributes {
     plan_id: string;
@@ -157,7 +210,7 @@ export default function SelectQuotes({
   };
 
   const handleDeletePlan = (planId: number) => {
-    const updatedPlans = plans.filter((plan) => plan.id !== planId)
+    const updatedPlans = plans.filter((plan) => plan.id !== planId);
     setPlans(updatedPlans);
     updateConnectedPlans(updatedPlans);
   };
@@ -260,6 +313,9 @@ export default function SelectQuotes({
     // Listen for 'task_status' events
     socket.on("task_status", (data) => {
       console.log("Task Status:", data);
+      if (data.status === "failed") {
+        alert("Failed to process pdfs. Please try again");
+      }
     });
 
     return () => {
@@ -306,7 +362,7 @@ export default function SelectQuotes({
       createAPlan();
       return;
     }
-    
+
     // setSelectedQuotes(selected);
     const { data: insertData, error: insertError } = await supabase
       .from("clients") // Replace with your actual Supabase table name
@@ -317,7 +373,7 @@ export default function SelectQuotes({
       return { success: false };
     } else {
       router.push(
-        `/quotes?clientId=${clientId}&quoteIds=${selectedQuoteIds.join(",")}`,
+        `/quotes?clientId=${clientId}`,
       );
 
       return { success: true };
@@ -368,7 +424,8 @@ export default function SelectQuotes({
         setOriginalQuotes(data);
       }
 
-      if (clientRes.data) { // Check if there is data for connected_plans
+      if (clientRes.data) {
+        // Check if there is data for connected_plans
         setPlans(clientRes.data.connected_plans || []); // Update plans state
       }
     }
@@ -390,18 +447,18 @@ export default function SelectQuotes({
 
   const updateConnectedPlans = async (updatedPlans: any) => {
     const { data, error } = await supabase
-      .from('clients') // Replace 'your_table_name' with your actual table name
+      .from("clients") // Replace 'your_table_name' with your actual table name
       .update({ connected_plans: updatedPlans }) // 'plans' is the array to insert into the 'connected_plans' column
       .match({ id: selectedClient.id }); // Assuming 'selectedClient.id' is the primary key of the row you want to update
-    
+
     if (error) {
-      console.error('Error updating connected plans in Supabase:', error);
+      console.error("Error updating connected plans in Supabase:", error);
       return { success: false, error };
     }
-  
-    console.log('Connected plans updated successfully:', data);
+
+    console.log("Connected plans updated successfully:", data);
     return { success: true, data };
-  };  
+  };
 
   return (
     <>

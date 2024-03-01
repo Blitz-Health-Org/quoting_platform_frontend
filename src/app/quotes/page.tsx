@@ -165,12 +165,8 @@ export default function QuotingPage() {
 
   useEffect(() => {
     const clientId = searchParams.get("clientId");
-    const quoteIds = searchParams.get("quoteIds");
-
-    if (clientId && quoteIds) {
-      // Convert quoteIds back into an array of IDs
-      const ids = quoteIds.split(",").map((id) => id.trim());
-      fetchClientAndQuotes(clientId, ids);
+    if (clientId) {
+      fetchClientAndQuotes(clientId);
     }
   }, [searchParams]);
 
@@ -191,7 +187,7 @@ export default function QuotingPage() {
   //   // For example, you can send it to the server or store it in another state.
   // };
 
-  const fetchClientAndQuotes = async (clientId: string, quoteIds: string[]) => {
+  const fetchClientAndQuotes = async (clientId: string) => {
     try {
         const { data: clientData, error: clientError } = await supabase
             .from("clients")
@@ -218,20 +214,6 @@ export default function QuotingPage() {
             setClasses(clientData.classes_contributions as any);
         }
 
-        const { data: quotesData, error: quotesError } = await supabase
-            .from("quotes")
-            .select("*")
-            .in("id", quoteIds);
-
-        if (quotesError) throw quotesError;
-
-        const orderedByAlphaData = quotesData.sort((rowA, rowB) => {
-            if (rowA.name < rowB.name) return -1;
-            if (rowA.name > rowB.name) return 1;
-            return 0;
-        });
-
-        setQuotes(orderedByAlphaData);
         setLoading(false);
     } catch (error) {
         console.error("Error fetching data:", error);
@@ -308,7 +290,7 @@ export default function QuotingPage() {
             onPaneToggle={handlePaneToggle}
             copyUrlToClipboard={copyUrlToClipboard}
             handleDownloadCSV={handleDownloadCSV}
-            quotesLength={quotes.length}
+            plansLength={plans.length}
           />
 
           <div className="p-0.5 flex w-full h-full overflow-auto gap-2">

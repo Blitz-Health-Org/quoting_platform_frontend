@@ -293,7 +293,7 @@ export const AddQuote = ({
           name="plan"
           id="plan"
           onChange={(e) => {
-            console.log("e", e);
+            console.log("e", e.target.value);
             setSelectedPlan(e.target.value);
           }}
         >
