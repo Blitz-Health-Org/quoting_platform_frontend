@@ -4,7 +4,6 @@ import { Dispatch, SetStateAction, useContext, useState } from "react";
 import { useDropzone } from "react-dropzone";
 import Image from "next/image";
 import BlumeLogo from "@/public/BlumeLogo.png";
-import { supabase } from "@/src/supabase";
 import {
   clientMetadataObject,
   FieldType,
@@ -13,6 +12,7 @@ import {
 import { ClientType } from "@/src/types/custom/Client";
 import { FaX } from "react-icons/fa6";
 import { UserContext } from "@/src/context/UserContext";
+import { supabase } from "@/src/supabase";
 
 export type StateProps = {
   files: File[];
@@ -90,43 +90,60 @@ export const NewClientModal = ({
     if (Object.values(fieldsValue).every((fieldValue) => !fieldValue)) {
       return;
     }
-    // SEND DATA
+
     fieldsValue["user_id"] = userId;
-    try {
-      const { data, error } = await supabase
-        .from("clients") // Replace with your actual table name
-        .upsert(fieldsValue);
+    const { data: newClient, error } = await supabase
+      .from("clients")
+      .upsert(fieldsValue)
+      .select()
+      .single();
 
-      if (error) {
-        console.error("Error inserting data:", error);
-      } else {
-        //UPDATE DATA
-        try {
-          const { data, error } = await supabase
-            .from("clients")
-            .select()
-            .eq("user_id", userId);
-          if (error) {
-            console.error("Error retrieving data:", error);
-          } else {
-            setClients(data);
-            console.log("Data retrieved successfully:", data);
-            onClose(); // Close the modal after successful submission
-          }
-        } catch (error) {
-          console.error("Error connecting to Supabase:", error);
-        }
-        console.log("Data inserted successfully:", data);
+    if (error || !newClient) {
+      alert("Error passing to supabase");
+      return;
+    } else {
+      console.log("data", newClient);
+
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_BACKEND_URL}/create_new_client`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            client: {
+              zip_code: fieldsValue["zip_code"],
+              id: newClient.id,
+            },
+          }),
+        },
+      );
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
       }
-    } catch (error) {
-      console.error("Error connecting to Supabase:", error);
-    }
 
-    setOpenSnackbarShare({
-      open: true,
-      message: "New Client Created!",
-      severity: "success",
-    }); // Use prop to set state
+      const { data, error } = await supabase
+        .from("clients")
+        .select()
+        .eq("user_id", userId);
+      if (error) {
+        alert("error fetching from supabase");
+        return;
+      } else {
+        console.log("should set data", data);
+        setClients(data);
+      }
+
+      onClose();
+
+      setOpenSnackbarShare({
+        open: true,
+        message: "New Client Created!",
+        severity: "success",
+      }); // Use prop to set state
+    }
   };
 
   return (

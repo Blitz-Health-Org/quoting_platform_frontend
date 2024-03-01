@@ -5,7 +5,7 @@ import { FaSearch } from "react-icons/fa";
 import { FaChevronDown } from "react-icons/fa";
 import { QuoteType } from "@/src/types/custom/Quote";
 
-import { Dispatch, SetStateAction } from "react";
+import { Dispatch, SetStateAction, useState } from "react";
 
 type QuoteTypeWithCheckbox = QuoteType & { isSelected: boolean };
 
@@ -13,9 +13,6 @@ type SelectQuotesHeaderProps = {
   search: string | undefined;
   setSearch: Dispatch<SetStateAction<string | undefined>>;
   quotes: QuoteTypeWithCheckbox[];
-  showDropdown: boolean;
-  setShowDropdown: Dispatch<SetStateAction<boolean>>;
-  handleBusiness: any;
   selectedFilter: any;
   handleSort: any;
   setSelectedFilter: any;
@@ -25,13 +22,13 @@ export default function SelectQuotesHeader({
   search,
   setSearch,
   quotes,
-  showDropdown,
-  setShowDropdown,
-  handleBusiness,
   selectedFilter,
   handleSort,
   setSelectedFilter,
 }: SelectQuotesHeaderProps) {
+  const [showSortDropdown, setShowSortDropdown] = useState(false);
+  const [showFilterDropdown, setShowFilterDropdown] = useState(false);
+
   const sortingOptions = [
     { label: "Deductible", value: "deductible" },
     { label: "Coinsurance", value: "coinsurance" },
@@ -49,7 +46,7 @@ export default function SelectQuotesHeader({
       handleSort(option);
       setSelectedFilter(option);
     }
-    setShowDropdown(false);
+    setShowSortDropdown(false);
   };
 
   return (
@@ -74,12 +71,12 @@ export default function SelectQuotesHeader({
           <button
             type="button"
             className="px-2 py-1 flex items-center gap-1"
-            onClick={() => setShowDropdown(!showDropdown)}
+            onClick={() => setShowSortDropdown(!showSortDropdown)}
           >
             <p>Sort</p>
             <FaChevronDown className="h-3 w-3" />
           </button>
-          {showDropdown && (
+          {showSortDropdown && (
             <div className="absolute mt-36 bg-white border rounded-md shadow-lg">
               {sortingOptions.map((option) => (
                 <div
@@ -96,11 +93,26 @@ export default function SelectQuotesHeader({
           )}
           <button
             className="px-2 py-1 flex items-center gap-1"
-            onClick={handleBusiness}
+            onClick={() => setShowFilterDropdown(!showFilterDropdown)}
           >
             <p>Filter</p>
             <FaChevronDown className="h-3 w-3" />
           </button>
+          {showFilterDropdown && (
+            <div className="absolute mt-36 bg-white border rounded-md shadow-lg">
+              {sortingOptions.map((option) => (
+                <div
+                  key={option.value}
+                  className={`px-2 py-1.5 border border-b-1 border-gray-300 cursor-pointer hover:border-gray-400 ${
+                    selectedFilter === option.value ? "bg-gray-100" : ""
+                  }`}
+                  onClick={() => handleSortOptionSelect(option.value)}
+                >
+                  {option.label}
+                </div>
+              ))}
+            </div>
+          )}
         </div>
       </div>
     </div>

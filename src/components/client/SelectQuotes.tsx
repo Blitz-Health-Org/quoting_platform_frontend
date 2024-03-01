@@ -109,6 +109,40 @@ export default function SelectQuotes({
     return;
   }
 
+  async function handleDeleteQuote() {
+    const selectedQuoteIds =
+      quotes?.filter((quote) => quote.isSelected).map((quote) => quote.id) ||
+      [];
+
+    const { error } = await supabase
+      .from("quotes")
+      .delete()
+      .in("id", selectedQuoteIds);
+    if (error) {
+      alert("Failed to delete quotes");
+      return;
+    }
+
+    // setQuotes()
+
+    const clientId = selectedClient.id;
+
+    const { data: insertData, error: insertError } = await supabase
+      .from("clients") // Replace with your actual Supabase table name
+      .upsert({ id: selectedClient.id, selected_quotes: selectedQuoteIds });
+
+    if (insertError) {
+      console.error("Error inserting row into Supabase table:", insertError);
+      return { success: false };
+    } else {
+      router.push(
+        `/quotes?clientId=${clientId}&quoteIds=${selectedQuoteIds.join(",")}`,
+      );
+
+      return { success: true };
+    }
+  }
+
   useEffect(() => {
     // Update entryWidth when the screen size changes
 
@@ -141,7 +175,6 @@ export default function SelectQuotes({
 
   const [sortOption, setSortOption] = useState("deductible"); // Initial sorting option
   const [sortOrder, setSortOrder] = useState("asc"); // Initial sorting order
-  const [showDropdown, setShowDropdown] = useState(false);
 
   const sortingOptions = [
     { label: "Deductible", value: "deductible" },
@@ -349,11 +382,8 @@ export default function SelectQuotes({
               search={search}
               setSearch={setSearch}
               quotes={quotes}
-              showDropdown={showDropdown}
-              setShowDropdown={setShowDropdown}
               handleSort={handleSort}
               setSelectedFilter={setSelectedFilter}
-              handleBusiness={handleBusiness}
               selectedFilter={selectedFilter}
             />
             <div className="w-full overflow-x-auto">

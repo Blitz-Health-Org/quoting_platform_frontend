@@ -12,6 +12,7 @@ import { IoIosSettings } from "react-icons/io";
 import { IoChevronDown } from "react-icons/io5";
 import { SnackbarAlert } from "../ui/SnackbarAlert";
 import { useRouter } from "next/navigation";
+import AddCurrentPlanModal from "./AddCurrentPlanModal";
 
 type SubheaderProps = {
   isPaneOpen: boolean;
@@ -43,6 +44,9 @@ export const Subheader: React.FC<SubheaderProps> = ({
       severity: "info",
     });
   };
+
+  const [currentPlanModalOpen, setCurrentPlanModalOpen] =
+    useState<boolean>(false);
 
   const router = useRouter();
 
@@ -117,9 +121,9 @@ export const Subheader: React.FC<SubheaderProps> = ({
         <p className="cursor-pointer truncate" onClick={handleBusiness2}>
           | Edit |{" "}
         </p>
-        <p className="cursor-pointer truncate" onClick={handleBusiness}>
-          Add Current Plan
-        </p>
+        <div onClick={() => setCurrentPlanModalOpen(true)}>
+          <p className="cursor-pointer truncate">Add Current Plan</p>
+        </div>
       </div>
 
       {/* Right-aligned buttons */}
@@ -155,6 +159,9 @@ export const Subheader: React.FC<SubheaderProps> = ({
           severity: snackbar.severity,
         }}
       />
+      {currentPlanModalOpen && (
+        <AddCurrentPlanModal setModalOpen={setCurrentPlanModalOpen} />
+      )}
     </div>
   );
 };

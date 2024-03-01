@@ -67,12 +67,17 @@ export const AuthContextProvider = ({
     // Validate the token
     setValidationLoading(true);
     // If the token is invalid, remove it from local storage and redirect to sign-in
-    supabase.auth.getUser(accessToken).then((response) => {
+    supabase.auth.getUser(accessToken).then(async (response) => {
       if (!response.data.user) {
-        console.log("Invalid token");
-        alert("Your session has expired. Please sign in again.");
-        setAccessToken(undefined);
-        router.push("/sign-in");
+        const { data, error } = await supabase.auth.refreshSession();
+        if (error || !data.user || !data.session) {
+          console.log("Invalid token");
+          alert("Your session has expired. Please sign in again.");
+          setAccessToken(undefined);
+          router.push("/sign-in");
+        } else {
+          setAccessToken(data.session.access_token);
+        }
       }
       setValidationLoading(false);
       setValidationComplete(true);

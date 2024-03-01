@@ -7,7 +7,6 @@ import BlumeLogo from "@/public/BlumeLogo.png";
 import { FaX } from "react-icons/fa6";
 import { v4 as uuid } from "uuid";
 import { ClientType } from "@/src/types/custom/Client";
-import { PDFDocument } from "pdf-lib";
 
 type AddQuoteProps = {
   onClose: () => void;
