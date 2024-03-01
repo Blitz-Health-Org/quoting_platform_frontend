@@ -9,6 +9,7 @@ import { useRouter } from "next/navigation";
 import { MdFileUpload } from "react-icons/md";
 import { SnackbarAlert } from "../ui/SnackbarAlert";
 import { supabase } from "../../supabase";
+import { FaRegSave } from "react-icons/fa";
 import { IoIosAdd } from "react-icons/io";
 import {
   Dispatch,
@@ -65,11 +66,51 @@ export default function SelectQuotes({
   );
   const [collapsed, setCollapsed] = useState(selectedQuotes.length! > 0);
 
-  const handleBusiness = (index: any) => {
+  const handleBusiness = () => {
     setSnackbar({
       open: true,
       message: "This feature is coming soon!",
       severity: "info",
+    });
+  };
+
+  const planDeleted = () => {
+    setSnackbar({
+      open: true,
+      message: "Plan deleted! Make sure to save your changes.",
+      severity: "success",
+    });
+  };
+
+  const planAdded = () => {
+    setSnackbar({
+      open: true,
+      message: "Plan added! Make sure to save your changes.",
+      severity: "success",
+    });
+  };
+
+  const pleasePlans = () => {
+    setSnackbar({
+      open: true,
+      message: "Please create a plan before saving!",
+      severity: "error",
+    });
+  };
+
+  const handleUpdate = () => {
+    setSnackbar({
+      open: true,
+      message: "Plans saved!",
+      severity: "success",
+    });
+  };
+
+  const pleaseInput = () => {
+    setSnackbar({
+      open: true,
+      message: "Please input a plan name!",
+      severity: "error",
     });
   };
 
@@ -119,6 +160,15 @@ export default function SelectQuotes({
     setSelectedClient(selectedClient);
     return;
   }
+
+  const handleClearCheckboxes = () => {
+    setQuotes((prevQuotes) =>
+      prevQuotes?.map((quote) => ({ 
+          ...quote, isSelected: false
+      })),
+    );
+    setSelectedQuotes([])
+  };
 
   async function handleDeleteQuote() {
     const selectedQuoteIds =
@@ -205,13 +255,16 @@ export default function SelectQuotes({
       };
       setPlans([...plans, newPlan]);
       setNewPlanName("");
+      planAdded();
+    } else {
+      pleaseInput();
     }
   };
 
   const handleDeletePlan = (planId: number) => {
     const updatedPlans = plans.filter((plan) => plan.id !== planId);
     setPlans(updatedPlans);
-    updateConnectedPlans(updatedPlans);
+    planDeleted();
   };
 
   const handleAddQuotesToPlan = (planId: number) => {
@@ -219,8 +272,11 @@ export default function SelectQuotes({
       if (plan.id === planId) {
         // Filter out duplicates before updating the currentQuotes array
         const uniqueQuotesToAdd = selectedQuotes.filter(
-          (quote) => !plan.selectedQuotes.includes(quote),
-        );
+          (selectedQuote) => !plan.selectedQuotes.some((planQuote) => planQuote.id === selectedQuote.id),
+        );        
+        console.log(selectedQuotes)
+        console.log(plan.selectedQuotes)
+        console.log(uniqueQuotesToAdd)
         return {
           ...plan,
           selectedQuotes: [...plan.selectedQuotes, ...uniqueQuotesToAdd],
@@ -230,7 +286,8 @@ export default function SelectQuotes({
     });
 
     setPlans(updatedPlans);
-    updateConnectedPlans(updatedPlans);
+    // updateConnectedPlans(updatedPlans);
+    handleClearCheckboxes();
   };
 
   const handleRemoveQuoteFromPlan = (
@@ -249,7 +306,7 @@ export default function SelectQuotes({
       return plan;
     });
     setPlans(updatedPlans);
-    updateConnectedPlans(updatedPlans);
+    // updateConnectedPlans(updatedPlans);
   };
 
   const handleSort = (option: string | null) => {
@@ -353,30 +410,16 @@ export default function SelectQuotes({
 
   const handleNextClick = async () => {
     const clientId = selectedClient.id;
-    const selectedQuoteIds =
-      quotes?.filter((quote) => quote.isSelected).map((quote) => quote.id) ||
-      [];
-    console.log("selectedQuotes", selectedQuoteIds);
     if (!plans.length) {
       createAPlan();
       return;
     }
-
-    // setSelectedQuotes(selected);
-    const { data: insertData, error: insertError } = await supabase
-      .from("clients") // Replace with your actual Supabase table name
-      .upsert({ id: selectedClient.id, selected_quotes: selectedQuoteIds });
-
-    if (insertError) {
-      console.error("Error inserting row into Supabase table:", insertError);
-      return { success: false };
-    } else {
-      router.push(
-        `/quotes?clientId=${clientId}`,
-      );
-
-      return { success: true };
-    }
+    updateConnectedPlans(plans);
+    comparison_created_true();
+    router.push(
+      `/quotes?clientId=${clientId}`,
+    );
+    return { success: true };
   };
 
   const fetchQuoteData = async () => {
@@ -395,33 +438,8 @@ export default function SelectQuotes({
       alert("Error updating data");
     } else {
       // Check if selected_quotes is not null
-      if (selectedClient.selected_quotes !== null) {
-        // Update isSelected attribute based on selected_quotes
-        const updatedQuotes = data.map((quote) => {
-          const isSelected = selectedClient.selected_quotes?.includes(
-            quote.id.toString(),
-          );
-          return { ...quote, isSelected: isSelected || false };
-        });
-
-        // Sort the quotes so that selected ones appear above the ones that aren't selected
-        const sortedQuotes = updatedQuotes.sort((a, b) => {
-          // Put selected quotes above the ones that aren't selected
-          return a.isSelected && !b.isSelected ? -1 : 1;
-        });
-
-        console.log("sortedQuotes", sortedQuotes);
-        setQuotes(sortedQuotes);
-        setOriginalQuotes(sortedQuotes);
-
-        // Set selectedQuotes to be all quotes where isSelected is true
-        const selectedQuotes = sortedQuotes.filter((quote) => quote.isSelected);
-        setSelectedQuotes(selectedQuotes);
-      } else {
-        // Handle the case where selected_quotes is null (if needed)
-        setQuotes(data);
-        setOriginalQuotes(data);
-      }
+      setQuotes(data);
+      setOriginalQuotes(data);
 
       if (clientRes.data) {
         // Check if there is data for connected_plans
@@ -445,9 +463,45 @@ export default function SelectQuotes({
   };
 
   const updateConnectedPlans = async (updatedPlans: any) => {
+    
+    if (updatedPlans.length === 0) {
+      comparison_created_false();
+    }
+    
     const { data, error } = await supabase
       .from("clients") // Replace 'your_table_name' with your actual table name
       .update({ connected_plans: updatedPlans }) // 'plans' is the array to insert into the 'connected_plans' column
+      .match({ id: selectedClient.id }); // Assuming 'selectedClient.id' is the primary key of the row you want to update
+
+    if (error) {
+      console.error("Error updating connected plans in Supabase:", error);
+      return { success: false, error };
+    }
+
+    console.log("Connected plans updated successfully:", data);
+
+    return { success: true, data };
+  };
+
+  const comparison_created_true = async () => {
+    const { data, error } = await supabase
+      .from("clients") // Replace 'your_table_name' with your actual table name
+      .update({ comparison_created: true }) // 'plans' is the array to insert into the 'connected_plans' column
+      .match({ id: selectedClient.id }); // Assuming 'selectedClient.id' is the primary key of the row you want to update
+
+    if (error) {
+      console.error("Error updating connected plans in Supabase:", error);
+      return { success: false, error };
+    }
+
+    console.log("Connected plans updated successfully:", data);
+    return { success: true, data };
+  };
+
+  const comparison_created_false = async () => {
+    const { data, error } = await supabase
+      .from("clients") // Replace 'your_table_name' with your actual table name
+      .update({ comparison_created: false }) // 'plans' is the array to insert into the 'connected_plans' column
       .match({ id: selectedClient.id }); // Assuming 'selectedClient.id' is the primary key of the row you want to update
 
     if (error) {
@@ -613,10 +667,11 @@ export default function SelectQuotes({
           rootStyles={{
             height: "100vh",
             overflowY: "auto",
+            overflowX: 'hidden',
             borderLeft: "1px solid #d1d5db", // Set the left border only
           }}
         >
-          <div className="flex-col h-fit w-full pt-3 justify-center overflow-y-scroll">
+          <div className="flex-col h-fit w-full pt-3 justify-center overflow-y-scroll overflow-x-hidden">
             {collapsed && (
               <div className="flex-col h-full w-full text-center">
                 <button
@@ -650,6 +705,13 @@ export default function SelectQuotes({
                   <div className="mr-2 text-sm">Create Comparison</div>
                   <FiArrowRight />
                 </div>
+                <div
+                  onClick={() => {updateConnectedPlans(plans); handleUpdate();}}
+                  className="w-full text-gray-600 mb-2 text-sm md:text-base mr-1 outline outline-1 outline-gray-300 py-1 px-2 rounded-md flex items-center justify-center hover:outline-gray-400 cursor-pointer"
+                >
+                  <div className="mr-2 text-sm">Save Plans</div>
+                  <FaRegSave />
+                </div>
                 <div className="flex gap-1">
                   <input
                     type="text"
@@ -673,16 +735,16 @@ export default function SelectQuotes({
               <div className="flex-col gap-2 py-2 px-4">
                 {plans.map((plan) => (
                   <div key={plan.id} className="flex flex-col gap-1">
-                    <hr className="mt-1 mb-1"></hr>
+                    <hr className="mt-2"></hr>
                     <div className="flex items-center justify-between">
                       <p className="font-semibold mt-1">{plan.name}</p>
-                      <div className="flex">
+                      <div className="flex gap-1">
                         <button onClick={() => handleAddQuotesToPlan(plan.id)}>
                           <IoIosAdd className="h-6 w-6" />
                         </button>
                         <button
                           onClick={() => handleDeletePlan(plan.id)}
-                          className="text-red-500"
+                          className="text-red-500 hover:text-red-600"
                         >
                           <FiTrash />
                         </button>
@@ -708,12 +770,12 @@ export default function SelectQuotes({
                                       height={25}
                                       className="mr-2"
                                     />
-                                    <p className="text-sm truncate">
+                                    <p className="text-sm truncate max-w-36">
                                       {(quote.data as any)?.["plan_id"] || "N/A"}
                                     </p>
                                   </div>
                                   <button
-                                    className="text-red-500"
+                                    className="text-red-500 hover:text-red-600"
                                     onClick={() =>
                                       handleRemoveQuoteFromPlan(plan.id, quote)
                                     }

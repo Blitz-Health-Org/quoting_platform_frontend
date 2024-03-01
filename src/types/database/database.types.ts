@@ -107,6 +107,7 @@ export type Database = {
       clients: {
         Row: {
           classes_contributions: Json[] | null
+          comparison_created: boolean | null
           connected_plans: Json[] | null
           created_at: string
           icon: string | null
@@ -120,6 +121,7 @@ export type Database = {
         }
         Insert: {
           classes_contributions?: Json[] | null
+          comparison_created?: boolean | null
           connected_plans?: Json[] | null
           created_at?: string
           icon?: string | null
@@ -133,6 +135,7 @@ export type Database = {
         }
         Update: {
           classes_contributions?: Json[] | null
+          comparison_created?: boolean | null
           connected_plans?: Json[] | null
           created_at?: string
           icon?: string | null
@@ -500,6 +503,7 @@ export type Database = {
           file_name: string | null
           file_url: string | null
           id: number
+          logo_url: string | null
           metal_tier: string | null
           plan_category: string | null
           plan_name: string | null
@@ -518,6 +522,7 @@ export type Database = {
           file_name?: string | null
           file_url?: string | null
           id?: number
+          logo_url?: string | null
           metal_tier?: string | null
           plan_category?: string | null
           plan_name?: string | null
@@ -536,6 +541,7 @@ export type Database = {
           file_name?: string | null
           file_url?: string | null
           id?: number
+          logo_url?: string | null
           metal_tier?: string | null
           plan_category?: string | null
           plan_name?: string | null
@@ -546,7 +552,7 @@ export type Database = {
         }
         Relationships: [
           {
-            foreignKeyName: "public_quotes_client_id_fkey"
+            foreignKeyName: "fk_client_id"
             columns: ["client_id"]
             isOneToOne: false
             referencedRelation: "clients"

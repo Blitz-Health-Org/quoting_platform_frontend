@@ -148,19 +148,19 @@ export const ClientCard = ({
           <div
             onClick={(event) => {
               event.stopPropagation();
-              (client.connected_plans && client.connected_plans.length > 0)
+              client.comparison_created
                 ? handleViewComparison()
                 : handleNewComparison();
             }}
             className="outline outline-1 hover:bg-gray-100/50 cursor-pointer font-light flex items-center justify-center outline-gray-200 p-0.5 rounded-sm mb-1 mt-1 text-sm"
           >
-            {client.connected_plans && client.connected_plans.length > 0 ? (
+            {client.comparison_created ? (
               <IoEyeSharp className="mr-1" />
             ) : (
               <FaPlus className="mr-1" />
             )}
             <button>
-              {(client.connected_plans && client.connected_plans.length > 0) ? "View Comparison" : "New Comparison"}
+              {client.comparison_created ? "View Comparison" : "New Comparison"}
             </button>
           </div>
           <div
