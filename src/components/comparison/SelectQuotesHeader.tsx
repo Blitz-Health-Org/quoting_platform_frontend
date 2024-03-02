@@ -26,7 +26,7 @@ export default function SelectQuotesHeader({
   selectedFilter,
   handleSort,
   setSelectedFilter,
-  handleBusiness
+  handleBusiness,
 }: SelectQuotesHeaderProps) {
   const [showSortDropdown, setShowSortDropdown] = useState(false);
   const [showFilterDropdown, setShowFilterDropdown] = useState(false);

@@ -163,11 +163,12 @@ export default function SelectQuotes({
 
   const handleClearCheckboxes = () => {
     setQuotes((prevQuotes) =>
-      prevQuotes?.map((quote) => ({ 
-          ...quote, isSelected: false
+      prevQuotes?.map((quote) => ({
+        ...quote,
+        isSelected: false,
       })),
     );
-    setSelectedQuotes([])
+    setSelectedQuotes([]);
   };
 
   async function handleDeleteQuote() {
@@ -196,9 +197,7 @@ export default function SelectQuotes({
       console.error("Error inserting row into Supabase table:", insertError);
       return { success: false };
     } else {
-      router.push(
-        `/quotes?clientId=${clientId}`,
-      );
+      router.push(`/quotes?clientId=${clientId}`);
 
       return { success: true };
     }
@@ -272,11 +271,14 @@ export default function SelectQuotes({
       if (plan.id === planId) {
         // Filter out duplicates before updating the currentQuotes array
         const uniqueQuotesToAdd = selectedQuotes.filter(
-          (selectedQuote) => !plan.selectedQuotes.some((planQuote) => planQuote.id === selectedQuote.id),
-        );        
-        console.log(selectedQuotes)
-        console.log(plan.selectedQuotes)
-        console.log(uniqueQuotesToAdd)
+          (selectedQuote) =>
+            !plan.selectedQuotes.some(
+              (planQuote) => planQuote.id === selectedQuote.id,
+            ),
+        );
+        console.log(selectedQuotes);
+        console.log(plan.selectedQuotes);
+        console.log(uniqueQuotesToAdd);
         return {
           ...plan,
           selectedQuotes: [...plan.selectedQuotes, ...uniqueQuotesToAdd],
@@ -416,9 +418,7 @@ export default function SelectQuotes({
     }
     updateConnectedPlans(plans);
     comparison_created_true();
-    router.push(
-      `/quotes?clientId=${clientId}`,
-    );
+    router.push(`/quotes?clientId=${clientId}`);
     return { success: true };
   };
 
@@ -463,11 +463,10 @@ export default function SelectQuotes({
   };
 
   const updateConnectedPlans = async (updatedPlans: any) => {
-    
     if (updatedPlans.length === 0) {
       comparison_created_false();
     }
-    
+
     const { data, error } = await supabase
       .from("clients") // Replace 'your_table_name' with your actual table name
       .update({ connected_plans: updatedPlans }) // 'plans' is the array to insert into the 'connected_plans' column
@@ -667,7 +666,7 @@ export default function SelectQuotes({
           rootStyles={{
             height: "100vh",
             overflowY: "auto",
-            overflowX: 'hidden',
+            overflowX: "hidden",
             borderLeft: "1px solid #d1d5db", // Set the left border only
           }}
         >
@@ -706,7 +705,10 @@ export default function SelectQuotes({
                   <FiArrowRight />
                 </div>
                 <div
-                  onClick={() => {updateConnectedPlans(plans); handleUpdate();}}
+                  onClick={() => {
+                    updateConnectedPlans(plans);
+                    handleUpdate();
+                  }}
                   className="w-full text-gray-600 mb-2 text-sm md:text-base mr-1 outline outline-1 outline-gray-300 py-1 px-2 rounded-md flex items-center justify-center hover:outline-gray-400 cursor-pointer"
                 >
                   <div className="mr-2 text-sm">Save Plans</div>
@@ -771,7 +773,8 @@ export default function SelectQuotes({
                                       className="mr-2"
                                     />
                                     <p className="text-sm truncate max-w-36">
-                                      {(quote.data as any)?.["plan_id"] || "N/A"}
+                                      {(quote.data as any)?.["plan_id"] ||
+                                        "N/A"}
                                     </p>
                                   </div>
                                   <button

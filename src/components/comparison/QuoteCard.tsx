@@ -38,26 +38,6 @@ export default function QuoteCard({
   const ref2 = useRef();
   const ref3 = useRef();
 
-  const carrierLogos = {
-    Aetna: AetnaLogo,
-    Anthem: AnotherCarrierLogo,
-    Cigna: Cigna,
-    United: United,
-    Chamber: Chamber,
-    Other: NewProject,
-    BCBS: BCBS,
-  };
-
-  const carrierWebsites = {
-    Aetna: "aetna.com",
-    Anthem: "anthem.com",
-    Cigna: "cigna.com",
-    United: "unitedhealthcare.com",
-    Chamber: "chamberselect.com",
-    BCBS: "bcbs.com",
-    Other: "N/A",
-  };
-
   const totalValue = calculateTotalCost(standardContribution, classes, {
     employee: (quote.data as any)?.["employee_only_rate"],
     child: (quote.data as any)?.["employee_child_rate"],
@@ -129,27 +109,6 @@ export default function QuoteCard({
 
   return (
     <div>
-      <div className="flex w-full h-fit justify-center items-center">
-        <div className="w-fit h-fit mb-4 mr-1">
-          <Image
-            src={
-              carrierLogos[quote.carrier as keyof typeof carrierLogos] ||
-              carrierLogos["Other"]
-            }
-            alt={`Logo for ${quote.carrier}`}
-            width={30}
-            height={30}
-            className="mr-2 rounded-md"
-          />
-        </div>
-        <div className="flex flex-col w-fit justify-center items-start ml-1 mb-4">
-          <h1 className="font-bold text-xl">{quote?.carrier}</h1>
-          <p className="text-sm">
-            {carrierWebsites[quote.carrier as keyof typeof carrierLogos] ||
-              carrierWebsites["Other"]}
-          </p>
-        </div>
-      </div>
       <hr className="w-full border-t-1 border-gray-300"></hr>
 
       <div className="flex flex-col items-center bg-violet-100/60">

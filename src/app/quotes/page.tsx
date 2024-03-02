@@ -189,37 +189,37 @@ export default function QuotingPage() {
 
   const fetchClientAndQuotes = async (clientId: string) => {
     try {
-        const { data: clientData, error: clientError } = await supabase
-            .from("clients")
-            .select("*")
-            .eq("id", clientId)
-            .single();
+      const { data: clientData, error: clientError } = await supabase
+        .from("clients")
+        .select("*")
+        .eq("id", clientId)
+        .single();
 
-        if (clientError) throw clientError;
+      if (clientError) throw clientError;
 
-        setClient(clientData);
+      setClient(clientData);
 
-        // Fetch connected plan for the specific client
-        const { data: planData, error: planError } = await supabase
-            .from("clients")
-            .select("connected_plans")
-            .eq("id", clientId)
-            .single();
+      // Fetch connected plan for the specific client
+      const { data: planData, error: planError } = await supabase
+        .from("clients")
+        .select("connected_plans")
+        .eq("id", clientId)
+        .single();
 
-        if (planError) throw planError;
-        setPlans(planData?.connected_plans);
+      if (planError) throw planError;
+      setPlans(planData?.connected_plans);
 
-        if (clientData?.classes_contributions) {
-            console.log("helllo????");
-            setClasses(clientData.classes_contributions as any);
-        }
+      if (clientData?.classes_contributions) {
+        console.log("helllo????");
+        setClasses(clientData.classes_contributions as any);
+      }
 
-        setLoading(false);
+      setLoading(false);
     } catch (error) {
-        console.error("Error fetching data:", error);
-        // Optionally handle errors, such as setting an error state or showing a notification
+      console.error("Error fetching data:", error);
+      // Optionally handle errors, such as setting an error state or showing a notification
     }
-};
+  };
 
   const visibleQuoteFields = Object.values(quoteMetadataObject).filter((val) =>
     isFieldVisible(val),
@@ -301,6 +301,7 @@ export default function QuotingPage() {
             {plans.length > 0 ? (
               plans.map((plan: any) => (
                 <PlanCard
+                  key={plan.key}
                   plan={plan}
                   nonObjectVisibleQuoteFields={nonObjectVisibleQuoteFields}
                   objectVisibleQuoteFields={objectVisibleQuoteFields}

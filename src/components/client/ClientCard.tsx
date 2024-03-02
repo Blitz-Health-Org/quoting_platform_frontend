@@ -51,9 +51,7 @@ export const ClientCard = ({
   }
 
   function handleViewComparison() {
-    router.push(
-      `/quotes?clientId=${client.id}`,
-    );
+    router.push(`/quotes?clientId=${client.id}`);
     return;
   }
 
