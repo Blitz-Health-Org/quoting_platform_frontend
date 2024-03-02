@@ -11,12 +11,12 @@ import { LuLogOut } from "react-icons/lu";
 import { FiHelpCircle } from "react-icons/fi";
 import { RiQuoteText } from "react-icons/ri";
 import { MdOutlineBook } from "react-icons/md";
-import React, { useState } from "react";
-import { SnackbarAlert } from "../ui/SnackbarAlert";
+import React, { useContext, useState } from "react";
 import { MdOutlineCollectionsBookmark } from "react-icons/md";
 import { FaLink } from "react-icons/fa6";
 import { supabase } from "@/src/supabase";
 import { useLocalStorage } from "@/src/utils/useLocalStorage";
+import { SnackBarContext } from "@/src/context/SnackBarContext";
 
 const Tabs = [
   {
@@ -40,11 +40,7 @@ export const Navbar = ({ selected }: { selected: string }) => {
     string | undefined
   >("accessToken", undefined);
 
-  const [snackbar, setSnackbar] = useState({
-    open: false,
-    message: "",
-    severity: "success",
-  });
+  const { setSnackbar } = useContext(SnackBarContext);
 
   const handleBusiness = (index: any) => {
     setSnackbar({
@@ -133,16 +129,6 @@ export const Navbar = ({ selected }: { selected: string }) => {
           </div>
         </div>
       </div>
-
-      <SnackbarAlert
-        openSnackbarShare={snackbar.open}
-        setOpenSnackbarShare={setSnackbar}
-        snackbar={{
-          open: snackbar.open,
-          message: snackbar.message,
-          severity: snackbar.severity,
-        }}
-      />
     </div>
   );
 };

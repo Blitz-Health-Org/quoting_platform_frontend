@@ -33,6 +33,7 @@ import { io } from "socket.io-client";
 import { FiArrowRight, FiTrash } from "react-icons/fi";
 import { UserContext } from "@/src/context/UserContext";
 import SelectQuotesHeader from "../comparison/SelectQuotesHeader";
+import { SnackBarContext } from "@/src/context/SnackBarContext";
 
 export default function SelectQuotes({
   setComparisonOpen,
@@ -47,11 +48,7 @@ export default function SelectQuotes({
 }) {
   type QuoteTypeWithCheckbox = QuoteType & { isSelected: boolean };
 
-  const [snackbar, setSnackbar] = useState({
-    open: false,
-    message: "",
-    severity: "success",
-  });
+  const { setSnackbar } = useContext(SnackBarContext);
   const [selectedQuotes, setSelectedQuotes] = useState<QuoteTypeWithCheckbox[]>(
     [],
   );
@@ -635,16 +632,10 @@ export default function SelectQuotes({
           </div>
           {isModalOpen && (
             <NewClientModal
-              setOpenSnackbarShare={setSnackbar}
               onClose={handleCloseModal}
               setClients={setClients}
             />
           )}
-          <SnackbarAlert
-            openSnackbarShare={snackbar.open}
-            setOpenSnackbarShare={setSnackbar}
-            snackbar={snackbar}
-          />
         </div>
 
         <Sidebar
@@ -786,16 +777,6 @@ export default function SelectQuotes({
           </div>
         </Sidebar>
       </main>
-
-      <SnackbarAlert
-        openSnackbarShare={snackbar.open}
-        setOpenSnackbarShare={setSnackbar}
-        snackbar={{
-          open: snackbar.open,
-          message: snackbar.message,
-          severity: snackbar.severity,
-        }}
-      />
     </>
   );
 }

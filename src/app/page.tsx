@@ -11,7 +11,6 @@ import { useRouter } from "next/navigation";
 import { useSearchParams } from "next/navigation";
 import { supabase } from "@/src/supabase";
 import { AddQuote } from "../components/client/modal/AddQuote";
-import { SnackbarAlert } from "../components/ui/SnackbarAlert";
 import { SnackBarContext } from "../context/SnackBarContext";
 
 export default function Home() {
@@ -26,6 +25,7 @@ export default function Home() {
   );
   const [modalOpen, setModalOpen] = useState<string>("");
 
+  const { setSnackbar } = useContext(SnackBarContext);
   const router = useRouter();
   const searchParams = useSearchParams();
   const fetchClient = async (clientId: any) => {
@@ -57,20 +57,13 @@ export default function Home() {
     }
   }, [searchParams]);
 
-  const [snackbar, setSnackbar] = useState({
-    open: false,
-    message: "",
-    severity: "info", // default severity
-  });
-
   return (
     // <SocketProvider>
-    <SnackBarContext.Provider value={{ setSnackbar }}>
-      <div className="w-full h-full flex flex-row bg-white">
-        <Navbar selected="Quotes" />
+    <div className="w-full h-full flex flex-row bg-white">
+      <Navbar selected="Quotes" />
 
-        <div className="w-full md:w-6/7">
-          {/* <main className="h-screen overflow-hidden flex-col w-full bg-gray-100 bg-opacity-50 pl-2 pr-6 pt-5 pb-6 text-gray-700">
+      <div className="w-full md:w-6/7">
+        {/* <main className="h-screen overflow-hidden flex-col w-full bg-gray-100 bg-opacity-50 pl-2 pr-6 pt-5 pb-6 text-gray-700">
           <div className="flex w-full items-center mb-4 mt-1 justify-between">
             <div className="flex items-center text-sm md:text-base">
               <PiListBulletsBold className="mr-2" />
@@ -122,46 +115,38 @@ export default function Home() {
           />
         </main> */}
 
-          {comparisonOpen === false || selectedClient === undefined ? (
-            <ClientTable
-              setComparisonOpen={setComparisonOpen}
-              setSelectedClient={setSelectedClient}
-              selectedClient={selectedClient}
-              setModalOpen={setModalOpen}
-              modalOpen={modalOpen}
-            />
-          ) : (
-            <SelectQuotes
-              selectedClient={selectedClient}
-              setComparisonOpen={setComparisonOpen}
-              setSelectedClient={setSelectedClient}
-              setModalOpen={setModalOpen}
-            />
-          )}
-        </div>
-
-        {modalOpen === "addNewQuote" && (
-          <AddQuote
-            onClose={() => {
-              setModalOpen("");
-              if (!comparisonOpen) {
-                setSelectedClient(undefined as unknown as ClientType);
-              }
-            }}
-            setModalOpen={setModalOpen}
-            client={selectedClient}
-            setOpenSnackbarShare={setSnackbar}
+        {comparisonOpen === false || selectedClient === undefined ? (
+          <ClientTable
             setComparisonOpen={setComparisonOpen}
             setSelectedClient={setSelectedClient}
+            selectedClient={selectedClient}
+            setModalOpen={setModalOpen}
+            modalOpen={modalOpen}
+          />
+        ) : (
+          <SelectQuotes
+            selectedClient={selectedClient}
+            setComparisonOpen={setComparisonOpen}
+            setSelectedClient={setSelectedClient}
+            setModalOpen={setModalOpen}
           />
         )}
-
-        <SnackbarAlert
-          openSnackbarShare={snackbar.open}
-          setOpenSnackbarShare={setSnackbar}
-          snackbar={snackbar}
-        />
       </div>
-    </SnackBarContext.Provider>
+
+      {modalOpen === "addNewQuote" && (
+        <AddQuote
+          onClose={() => {
+            setModalOpen("");
+            if (!comparisonOpen) {
+              setSelectedClient(undefined as unknown as ClientType);
+            }
+          }}
+          setModalOpen={setModalOpen}
+          client={selectedClient}
+          setComparisonOpen={setComparisonOpen}
+          setSelectedClient={setSelectedClient}
+        />
+      )}
+    </div>
   );
 }

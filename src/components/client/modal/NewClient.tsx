@@ -13,6 +13,7 @@ import { ClientType } from "@/src/types/custom/Client";
 import { FaX } from "react-icons/fa6";
 import { UserContext } from "@/src/context/UserContext";
 import { supabase } from "@/src/supabase";
+import { SnackBarContext } from "@/src/context/SnackBarContext";
 
 export type StateProps = {
   files: File[];
@@ -20,15 +21,13 @@ export type StateProps = {
   setClients: Dispatch<SetStateAction<ClientType>>;
 };
 
-export const NewClientModal = ({
-  onClose,
-  setOpenSnackbarShare,
-  setClients,
-}: any) => {
+export const NewClientModal = ({ onClose, setClients }: any) => {
   const [fieldsValue, setFieldsValue] = useState<Record<string, any>>({});
   const {
     userId: [userId, , loading],
   } = useContext(UserContext);
+
+  const { setSnackbar } = useContext(SnackBarContext);
 
   const handleFieldChange = (field: string, value: any) => {
     setFieldsValue((prevFields) => ({
@@ -138,7 +137,7 @@ export const NewClientModal = ({
 
       onClose();
 
-      setOpenSnackbarShare({
+      setSnackbar({
         open: true,
         message: "New Client Created!",
         severity: "success",

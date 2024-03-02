@@ -1,26 +1,18 @@
 import { supabase } from "@/src/supabase";
 import { useDropzone } from "react-dropzone";
 import { MdUpload } from "react-icons/md";
-import React, { useState, Dispatch, SetStateAction } from "react";
+import React, { useState, Dispatch, SetStateAction, useContext } from "react";
 import Image from "next/image";
 import BlumeLogo from "@/public/BlumeLogo.png";
 import { FaX } from "react-icons/fa6";
 import { v4 as uuid } from "uuid";
 import { ClientType } from "@/src/types/custom/Client";
+import { SnackBarContext } from "@/src/context/SnackBarContext";
 
 type AddQuoteProps = {
   onClose: () => void;
   client: any;
   setModalOpen: any;
-  setOpenSnackbarShare: ({
-    open,
-    message,
-    severity,
-  }: {
-    open: boolean;
-    message: string;
-    severity: string;
-  }) => void;
   setComparisonOpen: Dispatch<SetStateAction<boolean>>;
   setSelectedClient: Dispatch<SetStateAction<ClientType>>;
 };
@@ -28,7 +20,6 @@ type AddQuoteProps = {
 export const AddQuote = ({
   onClose,
   client,
-  setOpenSnackbarShare,
   setModalOpen,
   setComparisonOpen,
   setSelectedClient,
@@ -42,6 +33,8 @@ export const AddQuote = ({
     }
   };
 
+  const { setSnackbar } = useContext(SnackBarContext);
+
   const [files, setFiles] = useState<File[]>([]);
   const [selectedPlan, setSelectedPlan] = useState<string>("bcbs_tx_aca");
 
@@ -53,7 +46,7 @@ export const AddQuote = ({
 
   const handleUpload = async () => {
     if (files.length === 0) {
-      setOpenSnackbarShare({
+      setSnackbar({
         open: true,
         message: "Please upload a file",
         severity: "error",
@@ -92,14 +85,14 @@ export const AddQuote = ({
       }
     }
     if (errFiles.length) {
-      setOpenSnackbarShare({
+      setSnackbar({
         open: true,
         message: `Error occurred for the following files: ${errFiles.join(", ")}`,
         severity: "error",
       });
       return;
     } else {
-      setOpenSnackbarShare({
+      setSnackbar({
         open: true,
         message: `Your files are uploading! They can take 2-5 minutes to populate based on size.`,
         severity: "success",
@@ -145,7 +138,7 @@ export const AddQuote = ({
   //     (file) => file.type !== "application/pdf",
   //   );
   //   if (pdfFiles.length === 0) {
-  //     setOpenSnackbarShare({
+  //     setSnackbar({
   //       open: true,
   //       message: "Please upload a PDF file!",
   //       severity: "error",
@@ -155,7 +148,7 @@ export const AddQuote = ({
   //     setState({ ...state, files: pdfFiles });
   //   }
   //   if (state.files.length === 0) {
-  //     setOpenSnackbarShare({
+  //     setSnackbar({
   //       open: true,
   //       message: "Please upload a file!",
   //       severity: "error",
@@ -229,13 +222,13 @@ export const AddQuote = ({
   //       if (insertResults.every((result) => result.success)) {
   //         console.log("Rows inserted into Supabase successfully");
   //         if (nonPDFs.length >= 0) {
-  //           setOpenSnackbarShare({
+  //           setSnackbar({
   //             open: true,
   //             message: "Only your PDF files were uploaded.",
   //             severity: "info",
   //           });
   //         } else {
-  //           setOpenSnackbarShare({
+  //           setSnackbar({
   //             open: true,
   //             message: "Quotes Added",
   //             severity: "success",

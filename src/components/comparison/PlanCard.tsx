@@ -25,7 +25,7 @@ type PlanCardProps = {
   standardContribution: any;
 };
 
-export default function PlanCard({
+export function PlanCard({
   plan,
   nonObjectVisibleQuoteFields,
   objectVisibleQuoteFields,
@@ -51,7 +51,7 @@ export default function PlanCard({
     BCBS: "bcbs.com",
     Other: "N/A",
   };
-
+  console.log("printt", plan.selectedQuotes);
   return (
     <div className="flex overflow-scroll bg-white h-fit mb-4 min-w-80 mt-4 rounded-lg outline outline-1 outline-gray-300 pt-6 pb-1 mr-1 text-center">
       <div className="flex-col w-full">
@@ -63,17 +63,15 @@ export default function PlanCard({
           {/* Vertical line break */}
           <div className="flex max-w-1/2 truncate">
             <div className="flex items-center justify-center">
-              <Image
-                src={
-                  carrierLogos[
-                    plan.selectedQuotes[0].carrier as keyof typeof carrierLogos
-                  ] || carrierLogos["Other"]
-                }
-                alt={`Logo for ${plan.selectedQuotes[0].carrier}`}
-                width={30}
-                height={30}
-                className="mr-2 rounded-md"
-              />
+              {plan.selectedQuotes[0].logo_url && (
+                <Image
+                  src={plan.selectedQuotes[0].logo_url}
+                  alt={`Logo for ${plan.selectedQuotes[0].carrier}`}
+                  width={30}
+                  height={30}
+                  className="mr-2 rounded-md"
+                />
+              )}
             </div>
             <div className="flex flex-col items-start justify-center ml-1">
               <h1 className="font-bold text-xl">

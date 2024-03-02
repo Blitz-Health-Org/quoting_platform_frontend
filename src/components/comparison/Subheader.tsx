@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import InputLabel from "@mui/material/InputLabel";
 import MenuItem from "@mui/material/MenuItem";
 import FormControl from "@mui/material/FormControl";
@@ -10,9 +10,9 @@ import { FaShareAlt } from "react-icons/fa";
 import { IoMdDownload } from "react-icons/io";
 import { IoIosSettings } from "react-icons/io";
 import { IoChevronDown } from "react-icons/io5";
-import { SnackbarAlert } from "../ui/SnackbarAlert";
 import { useRouter } from "next/navigation";
 import AddCurrentPlanModal from "./AddCurrentPlanModal";
+import { SnackBarContext } from "@/src/context/SnackBarContext";
 
 type SubheaderProps = {
   isPaneOpen: boolean;
@@ -31,11 +31,7 @@ export const Subheader: React.FC<SubheaderProps> = ({
   plansLength,
   clientId,
 }) => {
-  const [snackbar, setSnackbar] = useState({
-    open: false,
-    message: "",
-    severity: "success",
-  });
+  const { setSnackbar } = useContext(SnackBarContext);
 
   const handleBusiness = (index: any) => {
     setSnackbar({
@@ -150,15 +146,7 @@ export const Subheader: React.FC<SubheaderProps> = ({
           <p>Settings</p>
         </button>
       </div>
-      <SnackbarAlert
-        openSnackbarShare={snackbar.open}
-        setOpenSnackbarShare={setSnackbar}
-        snackbar={{
-          open: snackbar.open,
-          message: snackbar.message,
-          severity: snackbar.severity,
-        }}
-      />
+
       {currentPlanModalOpen && (
         <AddCurrentPlanModal setModalOpen={setCurrentPlanModalOpen} />
       )}

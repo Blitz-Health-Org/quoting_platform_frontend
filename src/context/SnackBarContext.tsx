@@ -9,10 +9,10 @@ import React, {
 import { Socket, io } from "socket.io-client";
 
 type SnackBarContextProps = {
-  setSnackbar: Dispatch<SetStateAction<any>> | null;
+  setSnackbar: Dispatch<SetStateAction<any>>;
 };
 
 // Create a context
 export const SnackBarContext = createContext<SnackBarContextProps>({
-  setSnackbar: null,
+  setSnackbar: () => {},
 });
