@@ -108,7 +108,7 @@ export default function QuoteCard({
   });
 
   return (
-    <div>
+    <div className="w-full">
       <hr className="w-full border-t-1 border-gray-300"></hr>
 
       <div className="flex flex-col items-center bg-violet-100/60">

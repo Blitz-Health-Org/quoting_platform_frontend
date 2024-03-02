@@ -54,7 +54,7 @@ export default function PlanCard({
 
   return (
     <div className="flex overflow-scroll bg-white h-fit mb-4 min-w-80 mt-4 rounded-lg outline outline-1 outline-gray-300 pt-6 pb-1 mr-1 text-center">
-      <div className="flex-col w-fit">
+      <div className="flex-col w-full">
         <div className="flex w-full gap-3 h-fit justify-center items-center mb-4">
           <div className="max-w-1/2 truncate">
             <h1 className="font-bold text-lg">{plan.name}</h1>
