@@ -55,6 +55,11 @@ export const ClientCard = ({
     return;
   }
 
+  function handbook() {
+    router.push(`/handbook?clientId=${client.id}`);
+    return;
+  }
+
   const letterToColorMap: { [key: string]: string } = {
     A: "#ff583315",
     B: "#33FF5715",
@@ -141,7 +146,7 @@ export const ClientCard = ({
           {/* TODO: Flush to bottom */}
           <div className="outline outline-1 hover:bg-gray-100/50 cursor-pointer font-light flex items-center justify-center outline-gray-200 p-0.5 rounded-sm mb-1 mt-3 text-sm">
             <FaBook className="mr-1" />
-            <button onClick={handleCreateHandbook}>Create Handbook</button>
+            <button onClick={handbook}>Create Handbook</button>
           </div>
           <div
             onClick={(event) => {
