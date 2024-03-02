@@ -301,6 +301,7 @@ export default function QuotingPage() {
             {plans.length > 0 ? (
               plans.map((plan: any) => (
                 <PlanCard
+                  key={plan.key}
                   plan={plan}
                   nonObjectVisibleQuoteFields={nonObjectVisibleQuoteFields}
                   objectVisibleQuoteFields={objectVisibleQuoteFields}

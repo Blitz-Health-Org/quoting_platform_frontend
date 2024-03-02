@@ -18,7 +18,7 @@ import BCBS from "@/public/BCBS.png";
 import QuoteCard from "./QuoteCard";
 
 type PlanCardProps = {
-  plan: any
+  plan: any;
   nonObjectVisibleQuoteFields: NonSystemField[];
   objectVisibleQuoteFields: NonSystemField[];
   classes: any;
@@ -30,10 +30,8 @@ export default function PlanCard({
   nonObjectVisibleQuoteFields,
   objectVisibleQuoteFields,
   classes,
-  standardContribution
+  standardContribution,
 }: PlanCardProps) {
-
-
   const carrierLogos = {
     Aetna: AetnaLogo,
     Anthem: AnotherCarrierLogo,
@@ -56,31 +54,42 @@ export default function PlanCard({
 
   return (
     <div className="flex overflow-scroll bg-white h-fit mb-4 min-w-80 mt-4 rounded-lg outline outline-1 outline-gray-300 pt-6 pb-1 mr-1 text-center">
-      
-      <div className="flex w-full h-fit justify-center items-center">
-        <div className="w-fit h-fit mb-4 mr-1">
-          <Image
-            src={
-              carrierLogos[plan.selectedQuotes[0].carrier as keyof typeof carrierLogos] ||
-              carrierLogos["Other"]
-            }
-            alt={`Logo for ${plan.selectedQuotes[0].carrier}`}
-            width={30}
-            height={30}
-            className="mr-2 rounded-md"
-          />
+      <div className="flex-col w-full">
+        <div className="flex w-full gap-3 h-fit justify-center items-center mb-4">
+          <div className="max-w-1/2 truncate">
+            <h1 className="font-bold text-lg">{plan.name}</h1>
+          </div>
+          <div className="border-r border-1.5 h-10 border-gray-600"></div>{" "}
+          {/* Vertical line break */}
+          <div className="flex max-w-1/2 truncate">
+            <div className="flex items-center justify-center">
+              <Image
+                src={
+                  carrierLogos[
+                    plan.selectedQuotes[0].carrier as keyof typeof carrierLogos
+                  ] || carrierLogos["Other"]
+                }
+                alt={`Logo for ${plan.selectedQuotes[0].carrier}`}
+                width={30}
+                height={30}
+                className="mr-2 rounded-md"
+              />
+            </div>
+            <div className="flex flex-col items-start justify-center ml-1">
+              <h1 className="font-bold text-xl">
+                {plan.selectedQuotes[0].carrier}
+              </h1>
+              <p className="text-sm">
+                {carrierWebsites[
+                  plan.selectedQuotes[0].carrier as keyof typeof carrierLogos
+                ] || carrierWebsites["Other"]}
+              </p>
+            </div>
+          </div>
         </div>
-        <div className="flex flex-col w-fit justify-center items-start ml-1 mb-4">
-          <h1 className="font-bold text-xl">{plan.selectedQuotes[0].carrier}</h1>
-          <p className="text-sm">
-            {carrierWebsites[plan.selectedQuotes[0].carrier as keyof typeof carrierLogos] ||
-              carrierWebsites["Other"]}
-          </p>
-        </div>
-      </div>
-      
-      {plan.selectedQuotes.map((quote: QuoteType) => (
-        <div key={quote.id} className="quote-card">
+
+        <div className="flex">
+          {plan.selectedQuotes.map((quote: QuoteType) => (
             <QuoteCard
               key={quote.id}
               quote={quote}
@@ -89,8 +98,9 @@ export default function PlanCard({
               classes={classes}
               standardContribution={standardContribution}
             />
+          ))}
         </div>
-      ))}
+      </div>
     </div>
   );
 }
