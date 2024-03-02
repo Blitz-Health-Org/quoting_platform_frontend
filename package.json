@@ -18,6 +18,8 @@
     "@emotion/styled": "^11.11.0",
     "@floating-ui/react": "^0.26.8",
     "@mui/material": "^5.15.7",
+    "@onedoc/client": "^0.1.28",
+    "@react-pdf/renderer": "^3.3.8",
     "@supabase/auth-ui-react": "^0.4.7",
     "@supabase/auth-ui-shared": "^0.1.8",
     "@supabase/ssr": "^0.1.0",
