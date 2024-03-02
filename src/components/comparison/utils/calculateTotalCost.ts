@@ -7,6 +7,9 @@ export function calculateTotalCost(
   if (customClasses.length) {
     for (const customClass of customClasses) {
       for (const value of ["employee", "family", "spouse", "child"]) {
+        if (!rates[value]) {
+          return "N/A";
+        }
         totalSum += parseFloat(
           (
             parseFloat(customClass.data[value].percent) *
@@ -18,6 +21,9 @@ export function calculateTotalCost(
     }
   } else {
     for (const value of ["employee", "family", "spouse", "child"]) {
+      if (!rates[value]) {
+        return "N/A";
+      }
       totalSum += parseFloat(
         (
           parseFloat(standardContribution.data[value].percent) *

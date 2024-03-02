@@ -47,15 +47,6 @@ export default function SelectQuotes({
 }) {
   type QuoteTypeWithCheckbox = QuoteType & { isSelected: boolean };
 
-  const carrierLogos: Record<string, StaticImageData> = {
-    Aetna: AetnaLogo,
-    Anthem: AnotherCarrierLogo,
-    Cigna: Cigna,
-    United: United,
-    Chamber: Chamber,
-    BCBS: BCBS,
-    Other: NewProject,
-  };
   const [snackbar, setSnackbar] = useState({
     open: false,
     message: "",
@@ -318,6 +309,7 @@ export default function SelectQuotes({
     }
 
     // Perform the sorting
+    //TODO: handle empty quotes
     const sortedQuotes = quotes.slice().sort((a, b) => {
       const valueA = parseValue((a.data as any)?.[option]); // Remove extra parenthesis here
       const valueB = parseValue((b.data as any)?.[option]); // Remove extra parenthesis here
@@ -615,19 +607,15 @@ export default function SelectQuotes({
                                     }
                                     className="mr-4"
                                   />
-                                  <Image
-                                    src={
-                                      carrierLogos[
-                                        quote[
-                                          attribute.key
-                                        ] as keyof typeof carrierLogos
-                                      ] || carrierLogos["Chamber"]
-                                    }
-                                    alt={`Logo for ${quote[attribute.key]}`}
-                                    width={20}
-                                    height={20}
-                                    className="mr-2 rounded-md"
-                                  />
+                                  {quote.logo_url && (
+                                    <Image
+                                      src={quote.logo_url}
+                                      alt={`Logo for ${quote[attribute.key]}`}
+                                      width={20}
+                                      height={20}
+                                      className="mr-2 rounded-md"
+                                    />
+                                  )}
                                   <p>{quote[attribute.key] || "Sup"}</p>
                                 </div>
                               ) : (
@@ -761,17 +749,15 @@ export default function SelectQuotes({
                               <li key={quote.id} className="mt-2 w-full">
                                 <div className="flex justify-between w-full gap-1">
                                   <div className="flex gap-1 items-center">
-                                    <Image
-                                      src={
-                                        carrierLogos[
-                                          quote.carrier as keyof typeof carrierLogos
-                                        ] || carrierLogos["Chamber"]
-                                      }
-                                      alt={`Logo for ${(quote.data as any)?.["plan_id"]}`}
-                                      width={25}
-                                      height={25}
-                                      className="mr-2"
-                                    />
+                                    {quote.logo_url && (
+                                      <Image
+                                        src={quote.logo_url}
+                                        alt={`Logo for ${(quote.data as any)?.["plan_id"]}`}
+                                        width={25}
+                                        height={25}
+                                        className="mr-2"
+                                      />
+                                    )}
                                     <p className="text-sm truncate max-w-36">
                                       {(quote.data as any)?.["plan_id"] ||
                                         "N/A"}
