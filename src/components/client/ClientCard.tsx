@@ -45,8 +45,7 @@ export const ClientCard = ({
 
   function handleNewComparison() {
     console.log("what");
-    setComparisonOpen(true);
-    setSelectedClient(client);
+    router.push(`/select?clientId=${client.id}`);
     return;
   }
 

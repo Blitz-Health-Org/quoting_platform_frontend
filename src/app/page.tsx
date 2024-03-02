@@ -144,15 +144,10 @@ export default function Home() {
           <AddQuote
             onClose={() => {
               setModalOpen("");
-              if (!comparisonOpen) {
-                setSelectedClient(undefined as unknown as ClientType);
-              }
             }}
             setModalOpen={setModalOpen}
             client={selectedClient}
             setOpenSnackbarShare={setSnackbar}
-            setComparisonOpen={setComparisonOpen}
-            setSelectedClient={setSelectedClient}
           />
         )}
 

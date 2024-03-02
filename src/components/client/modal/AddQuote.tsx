@@ -21,8 +21,6 @@ type AddQuoteProps = {
     message: string;
     severity: string;
   }) => void;
-  setComparisonOpen: Dispatch<SetStateAction<boolean>>;
-  setSelectedClient: Dispatch<SetStateAction<ClientType>>;
 };
 
 export const AddQuote = ({
@@ -30,8 +28,6 @@ export const AddQuote = ({
   client,
   setOpenSnackbarShare,
   setModalOpen,
-  setComparisonOpen,
-  setSelectedClient,
 }: AddQuoteProps) => {
   const links: string[] = [];
 
@@ -131,9 +127,6 @@ export const AddQuote = ({
     } catch (error) {
       console.error("Fetch error: ", error);
     }
-
-    setSelectedClient(client);
-    setComparisonOpen(true);
     setModalOpen("");
   };
 

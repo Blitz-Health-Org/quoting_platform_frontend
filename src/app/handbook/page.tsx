@@ -88,7 +88,15 @@ export default function QuotingPage() {
 
   return (
     <div className="bg-gray-100 w-full h-screen">
-      Hi
+      <p>{client?.name}</p>
+      <form className="flex-col">
+        <input type="text" placeholder="Input 1" name="input1" />
+        <input type="text" placeholder="Input 2" name="input2" />
+        <input type="email" placeholder="Email" name="email" />
+        <input type="number" placeholder="Number" name="number" />
+        <input type="date" name="date" />
+        <button type="submit">Submit</button>
+      </form>
     </div>
   );
-}
+};  

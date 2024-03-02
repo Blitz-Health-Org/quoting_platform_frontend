@@ -39,7 +39,7 @@ export const AuthContextProvider = ({
         className="w-screen h-screen flex items-center justify-center"
         role="status"
       >
-        <div>Loading...</div>
+        <div className="animate-spin text-3xl">Loading...</div>
       </div>
     );
   }
