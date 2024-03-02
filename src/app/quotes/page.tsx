@@ -46,6 +46,8 @@ export default function QuotingPage() {
     },
   });
 
+  const { setSnackbar } = useContext(SnackBarContext);
+
   const { socket } = useContext(SocketContext);
 
   useEffect(() => {
@@ -68,24 +70,22 @@ export default function QuotingPage() {
 
           setQuotes(orderedByAlphaData);
         }
-      });
 
-      // Listen for 'task_status' events
-      socket.on("task_status", (data) => {
-        console.log("Task Status:", data);
-      });
+        // Listen for 'task_status' events
+        socket.on("task_status", (data) => {
+          console.log("Task Status:", data);
+        });
 
-      return () => {
-        socket.off("sub_task_complete");
-        socket.off("task_status");
-        socket.close();
-      };
+        return () => {
+          socket.off("sub_task_complete");
+          socket.off("task_status");
+          socket.close();
+        };
+      });
     }
   }, []);
 
   const searchParams = useSearchParams();
-
-  const { setSnackbar } = useContext(SnackBarContext);
 
   const handleDownloadCSV = (index: any) => {
     setSnackbar({
