@@ -16,6 +16,7 @@ import { ClientType } from "@/src/types/custom/Client";
 import { supabase } from "../../supabase";
 import { SnackBarContext } from "@/src/context/SnackBarContext";
 import { CiShare1 } from "react-icons/ci";
+import { useGetUserData } from "@/src/utils/useGetUserData";
 
 export default function ClientTable({
   setComparisonOpen,
@@ -34,6 +35,7 @@ export default function ClientTable({
   const {
     userId: [userId, , loading],
   } = useContext(UserContext);
+  const { userData, loadingUserData } = useGetUserData();
 
   const sortedClients = clients
     .filter((client) => client.created_at)
@@ -44,20 +46,36 @@ export default function ClientTable({
 
   useEffect(() => {
     const fetchData = async () => {
+      let queryIds = [];
+
+      if (userData?.permissions == "admin_org") {
+        // Get all the users under the organization
+        const { data, error } = await supabase
+          .from("users")
+          .select()
+          .eq("organization_id", userData.organization_id);
+        if (error) {
+          console.log("error", error);
+        } else {
+          queryIds = data.map((user) => user.user_auth_id);
+        }
+      } else {
+        queryIds = [userId];
+      }
       const { data, error } = await supabase
         .from("clients")
         .select()
-        .eq("user_id", userId);
+        .in("user_id", queryIds);
 
       if (error) {
-        alert(error.message);
+        console.log("error", error);
       } else {
         console.log("data retrieved", data);
         setClients(data); //TODO: make sure the data recieved matches client type
       }
     };
-    if (!loading) fetchData();
-  }, [loading, userId]);
+    if (!loading && !loadingUserData) fetchData();
+  }, [loading, loadingUserData, userData, userId]);
 
   const copyUrlToClipboard = () => {
     // Use window.location.href to get the current URL

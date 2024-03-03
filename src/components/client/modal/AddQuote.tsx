@@ -13,14 +13,9 @@ type AddQuoteProps = {
   onClose: () => void;
   client: any;
   setModalOpen: any;
-
 };
 
-export const AddQuote = ({
-  onClose,
-  client,
-  setModalOpen,
-}: AddQuoteProps) => {
+export const AddQuote = ({ onClose, client, setModalOpen }: AddQuoteProps) => {
   const links: string[] = [];
 
   const handleOverlayClick = (e: React.MouseEvent<HTMLDivElement>) => {

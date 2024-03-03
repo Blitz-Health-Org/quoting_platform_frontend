@@ -122,13 +122,13 @@ export default function Home() {
           />
         </main> */}
 
-            <ClientTable
-              setComparisonOpen={setComparisonOpen}
-              setSelectedClient={setSelectedClient}
-              selectedClient={selectedClient}
-              setModalOpen={setModalOpen}
-              modalOpen={modalOpen}
-            />
+          <ClientTable
+            setComparisonOpen={setComparisonOpen}
+            setSelectedClient={setSelectedClient}
+            selectedClient={selectedClient}
+            setModalOpen={setModalOpen}
+            modalOpen={modalOpen}
+          />
         </div>
 
         {modalOpen === "addNewQuote" && (
