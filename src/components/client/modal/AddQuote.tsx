@@ -8,14 +8,16 @@ import { FaX } from "react-icons/fa6";
 import { v4 as uuid } from "uuid";
 import { ClientType } from "@/src/types/custom/Client";
 import { SnackBarContext } from "@/src/context/SnackBarContext";
+import { useRouter } from "next/navigation";
 
 type AddQuoteProps = {
   onClose: () => void;
   client: any;
   setModalOpen: any;
+  type: any;
 };
 
-export const AddQuote = ({ onClose, client, setModalOpen }: AddQuoteProps) => {
+export const AddQuote = ({ onClose, client, setModalOpen, type }: AddQuoteProps) => {
   const links: string[] = [];
 
   const handleOverlayClick = (e: React.MouseEvent<HTMLDivElement>) => {
@@ -25,8 +27,8 @@ export const AddQuote = ({ onClose, client, setModalOpen }: AddQuoteProps) => {
     }
   };
 
+  const router = useRouter();
   const { setSnackbar } = useContext(SnackBarContext);
-
   const [files, setFiles] = useState<File[]>([]);
   const [selectedPlan, setSelectedPlan] = useState<string>("bcbs_tx_aca");
 
@@ -115,6 +117,9 @@ export const AddQuote = ({ onClose, client, setModalOpen }: AddQuoteProps) => {
       // setParsedData(data);
     } catch (error) {
       console.error("Fetch error: ", error);
+    }
+    if (type === "Main") {
+      router.push(`/select?clientId=${client.id}`);
     }
     setModalOpen("");
   };

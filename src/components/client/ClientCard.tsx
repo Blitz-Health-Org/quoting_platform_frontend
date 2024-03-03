@@ -102,7 +102,7 @@ export const ClientCard = ({
         className="col-span-1 w-full relative flex flex-col justify-between bg-white shadow-sm outline outline-1 outline-gray-200 rounded-md p-3"
       >
         <button
-          className="absolute right-0 top-0 mt-2 mr-2"
+          className="absolute right-1 top-1 mt-2 mr-2"
           onClick={() => handleClientDelete(client)}
         >
           <FaTrash />

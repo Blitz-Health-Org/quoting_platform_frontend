@@ -835,6 +835,7 @@ export default function SelectQuotes() {
           }}
           setModalOpen={setModalOpen}
           client={selectedClient}
+          type={"Select"}
         />
       )}
 
