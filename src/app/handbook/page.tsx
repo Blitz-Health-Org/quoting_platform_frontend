@@ -32,4 +32,4 @@ export default function QuotingPage() {
       <Button onClick={() => setDisplayPDF(true)}>Render Handbook</Button>
     </div>
   );
-};  
+}

@@ -38,30 +38,29 @@ import { AddQuote } from "@/src/components/client/modal/AddQuote";
 import { Navbar } from "@/src/components/comparison/Navbar";
 
 export default function SelectQuotes() {
+  type QuoteTypeWithCheckbox = QuoteType & { isSelected: boolean };
 
-type QuoteTypeWithCheckbox = QuoteType & { isSelected: boolean };
+  const searchParams = useSearchParams();
 
-const searchParams = useSearchParams();
-
-useEffect(() => {
+  useEffect(() => {
     const clientId = searchParams.get("clientId");
     if (clientId) {
-        fetchClients(clientId);
+      fetchClients(clientId);
     }
   }, [searchParams]);
 
-const [snackbar, setSnackbar] = useState({
+  const [snackbar, setSnackbar] = useState({
     open: false,
     message: "",
     severity: "success",
   });
 
-const [selectedQuotes, setSelectedQuotes] = useState<QuoteTypeWithCheckbox[]>(
+  const [selectedQuotes, setSelectedQuotes] = useState<QuoteTypeWithCheckbox[]>(
     [],
   );
-const [collapsed, setCollapsed] = useState(selectedQuotes.length! > 0);
+  const [collapsed, setCollapsed] = useState(selectedQuotes.length! > 0);
 
-const handleBusiness = () => {
+  const handleBusiness = () => {
     setSnackbar({
       open: true,
       message: "This feature is coming soon!",
@@ -147,7 +146,9 @@ const handleBusiness = () => {
   const [entryWidth, setEntryWidth] = useState(
     innerWidth / planAttributesMapping.length,
   );
-  const [selectedClient, setSelectedClient] = useState<ClientType>(undefined as unknown as ClientType);
+  const [selectedClient, setSelectedClient] = useState<ClientType>(
+    undefined as unknown as ClientType,
+  );
   const [quotes, setQuotes] = useState<QuoteTypeWithCheckbox[]>([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [modalOpen, setModalOpen] = useState("");
@@ -159,7 +160,7 @@ const handleBusiness = () => {
   const [search, setSearch] = useState<string>();
 
   const fetchClients = async (clientId: string) => {
-    console.log("client id", clientId)
+    console.log("client id", clientId);
     try {
       const { data: clientData, error: clientError } = await supabase
         .from("clients")
@@ -169,11 +170,11 @@ const handleBusiness = () => {
 
       if (clientError) throw clientError;
 
-        console.log(clientData)
+      console.log(clientData);
 
       setSelectedClient(clientData);
     } catch (error) {
-        console.error("Failed to fetch client and quotes", error);
+      console.error("Failed to fetch client and quotes", error);
     }
   };
 
@@ -342,19 +343,22 @@ const handleBusiness = () => {
     // Perform the sorting
     //TODO: handle empty quotes
     const sortedQuotes = quotes.slice().sort((a, b) => {
-        const valueA = parseValue((a.data as any)?.[option]);
-        const valueB = parseValue((b.data as any)?.[option]);
-      
-        if (valueA === Number.POSITIVE_INFINITY && valueB === Number.POSITIVE_INFINITY) {
-          return 0; // Both are "N/A", keep original order
-        } else if (valueA === Number.POSITIVE_INFINITY) {
-          return sortOrder === "asc" ? 1 : -1; // Put "N/A" at the end or beginning
-        } else if (valueB === Number.POSITIVE_INFINITY) {
-          return sortOrder === "asc" ? -1 : 1; // Put "N/A" at the end or beginning
-        }
-      
-        return sortOrder === "asc" ? valueA - valueB : valueB - valueA;
-      });      
+      const valueA = parseValue((a.data as any)?.[option]);
+      const valueB = parseValue((b.data as any)?.[option]);
+
+      if (
+        valueA === Number.POSITIVE_INFINITY &&
+        valueB === Number.POSITIVE_INFINITY
+      ) {
+        return 0; // Both are "N/A", keep original order
+      } else if (valueA === Number.POSITIVE_INFINITY) {
+        return sortOrder === "asc" ? 1 : -1; // Put "N/A" at the end or beginning
+      } else if (valueB === Number.POSITIVE_INFINITY) {
+        return sortOrder === "asc" ? -1 : 1; // Put "N/A" at the end or beginning
+      }
+
+      return sortOrder === "asc" ? valueA - valueB : valueB - valueA;
+    });
 
     // Update the state with the sorted quotes
     setQuotes(sortedQuotes);
@@ -371,18 +375,18 @@ const handleBusiness = () => {
       value.includes("+")
     )
       return Number.POSITIVE_INFINITY;
-  
+
     // Remove commas, dollar signs, and periods
     const cleanedValue = value.replace(/[,$.]/g, "");
-  
+
     // If the value is a percentage (contains '%'), remove '%' and convert to a number
     if (cleanedValue.includes("%")) {
       return parseFloat(cleanedValue.replace("%", "")) || 0;
     }
-  
+
     // If the value is a regular number or a numeric string, convert it to a number
     return Number(cleanedValue) || 0;
-  };  
+  };
 
   useEffect(() => {
     const socket = io(`${process.env.NEXT_PUBLIC_SOCKET_SERVER_URL!}`, {
@@ -441,12 +445,12 @@ const handleBusiness = () => {
   const handleNextClick = async () => {
     const clientId = selectedClient.id;
     if (!plans.length) {
-        createAPlan();
-        return;
+      createAPlan();
+      return;
     }
-    if (plans.some(plan => plan.selectedQuotes.length === 0)) {
-        makeSure();
-        return;
+    if (plans.some((plan) => plan.selectedQuotes.length === 0)) {
+      makeSure();
+      return;
     }
     updateConnectedPlans(plans);
     comparison_created_true();
@@ -456,21 +460,21 @@ const handleBusiness = () => {
 
   const fetchQuoteData = async () => {
     if (selectedClient) {
-        const { data, error } = await supabase
+      const { data, error } = await supabase
         .from("quotes")
         .select()
         .eq("client_id", selectedClient.id);
-  
+
       if (error) {
         alert("Error updating data");
       } else {
         // Check if selected_quotes is not null
         setQuotes(data);
         setOriginalQuotes(data);
-  
+
         if (selectedClient.connected_plans) {
           // Check if there is data for connected_plans
-          setPlans(selectedClient.connected_plans as any || []); // Update plans state
+          setPlans((selectedClient.connected_plans as any) || []); // Update plans state
         }
       }
     }
@@ -544,290 +548,295 @@ const handleBusiness = () => {
         <Navbar selected="Quotes" />
 
         <div className="w-full md:w-6/7 flex">
-        <div className="h-screen overflow-hidden flex-col w-full bg-gray-100 bg-opacity-50 pl-2 pr-6 pt-5 pb-6 text-gray-700">
-          <div className="flex w-full items-center mb-4 mt-1 justify-between">
-            <div className="flex items-center text-sm md:text-base">
-              <button
-                className="flex items-center"
-                onClick={handleCloseComparison}
-              >
-                <IoMdArrowBack />
-                <p className="ml-2 mr-2">Clients / </p>
-              </button>
-              <IconBuilding className="h-5 w-5 mr-2" />
-              <p className="mr-2">{selectedClient?.name || "Client"}</p>
-              {/* <p className="mr-1">/ Quotes</p>
+          <div className="h-screen overflow-hidden flex-col w-full bg-gray-100 bg-opacity-50 pl-2 pr-6 pt-5 pb-6 text-gray-700">
+            <div className="flex w-full items-center mb-4 mt-1 justify-between">
+              <div className="flex items-center text-sm md:text-base">
+                <button
+                  className="flex items-center"
+                  onClick={handleCloseComparison}
+                >
+                  <IoMdArrowBack />
+                  <p className="ml-2 mr-2">Clients / </p>
+                </button>
+                <IconBuilding className="h-5 w-5 mr-2" />
+                <p className="mr-2">{selectedClient?.name || "Client"}</p>
+                {/* <p className="mr-1">/ Quotes</p>
             <p className="mr-1 text-gray-400 text-xs">•</p>
             <p className="text-gray-400">({quotes.length})</p> */}
-            </div>
-            <div className="flex items-center gap-2">
-              <button
-                onClick={handleAddNewQuote}
-                className="text-sm md:text-base mr-1 outline outline-1 outline-gray-200 py-1 px-2 rounded-md flex items-center justify-center hover:bg-gray-100/80 cursor-pointer"
-              >
-                <div className="mr-2">Add Quotes</div>
-                <MdFileUpload />
-              </button>
-              {/* <button
+              </div>
+              <div className="flex items-center gap-2">
+                <button
+                  onClick={handleAddNewQuote}
+                  className="text-sm md:text-base mr-1 outline outline-1 outline-gray-200 py-1 px-2 rounded-md flex items-center justify-center hover:bg-gray-100/80 cursor-pointer"
+                >
+                  <div className="mr-2">Add Quotes</div>
+                  <MdFileUpload />
+                </button>
+                {/* <button
                 onClick={handleNextClick}
                 className="text-sm md:text-base mr-1 outline outline-1 outline-gray-200 py-1 px-2 rounded-md flex items-center justify-center hover:bg-gray-100/80 cursor-pointer"
               >
                 <div className="mr-2">New Comparison</div>
                 <FiArrowRight />
               </button> */}
-            </div>
-          </div>
-          <div className="rounded-md w-full flex-col overflow-x-hidden h-full pb-12 overflow-y-scroll bg-white outline outline-1 outline-gray-200">
-            <div className="py-2 px-4">
-              <SelectQuotesHeader
-                search={search}
-                setSearch={setSearch}
-                quotes={quotes}
-                handleSort={handleSort}
-                setSelectedFilter={setSelectedFilter}
-                handleBusiness={handleBusiness}
-                selectedFilter={selectedFilter}
-              />
-              <div className="w-full overflow-x-auto">
-                <div className="flex py-2 w-fit border-b">
-                  <div className="grid-cols-9 flex justify-left text-center w-fit gap-1 h-20 font-bold items-center text-wrap text-sm">
-                    {planAttributesMapping.map((attribute) => (
-                      <div
-                        key={attribute.key}
-                        className="flex justify-center gap-2 min-w-32"
-                        style={{ width: `${entryWidth}px` }}
-                      >
-                        <p>{attribute.label}</p>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-                {quotes.length === 0 ? (
-                  <div className="flex w-full mt-16 mb-2 h-fit items-center justify-center flex-col">
-                    <p className="mb-2">No Quotes</p>
-                    <button
-                      onClick={handleAddNewQuote}
-                      className="bg-gray-100 outline outline-1 outline-gray-300 rounded-md px-2 py-0.5"
-                    >
-                      Add Quotes
-                    </button>
-                  </div>
-                ) : (
-                  quotes
-                    .filter(
-                      (quote: any) =>
-                        !search || // Only apply the filter if search is empty
-                        ((quote.data as any)?.["plan_id"] + quote.carrier)
-                          .toLowerCase()
-                          .includes(search.toLowerCase()),
-                    )
-                    .map((quote) => (
-                      <div
-                        key={quote.id}
-                        className="flex items-center w-fit mb-1 mt-1 py-2 border-b"
-                      >
-                        <div className="grid-cols-9 w-full flex justify-left text-center w-fit gap-1 h-8 items-center text-sm">
-                          {/* Map through the plan attributes for each quote */}
-                          {planAttributesMapping.map((attribute) => (
-                            <div
-                              key={attribute.key}
-                              className="min-w-32 max-h-10 overflow-y-auto"
-                              style={{ width: `${entryWidth}px` }}
-                            >
-                              {attribute.key === "carrier" ? (
-                                <div className="flex items-center justify-left ml-6">
-                                  <input
-                                    type="checkbox"
-                                    checked={quote.isSelected}
-                                    onChange={() =>
-                                      handleCheckboxChange(quote.id)
-                                    }
-                                    className="mr-4"
-                                  />
-                                  {quote.logo_url && (
-                                    <Image
-                                      src={quote.logo_url}
-                                      alt={`Logo for ${quote[attribute.key]}`}
-                                      width={20}
-                                      height={20}
-                                      className="mr-2 rounded-md"
-                                    />
-                                  )}
-                                  <p>{quote[attribute.key] || "Sup"}</p>
-                                </div>
-                              ) : (
-                                <p>
-                                  {(quote.data as any)?.[attribute.key] ??
-                                    "N/A"}
-                                </p>
-                              )}
-                            </div>
-                          ))}
-                        </div>
-                      </div>
-                    ))
-                )}
               </div>
             </div>
-          </div>
-
-          <SnackbarAlert
-            openSnackbarShare={snackbar.open}
-            setOpenSnackbarShare={setSnackbar}
-            snackbar={snackbar}
-          />
-        </div>
-
-        <Sidebar
-          collapsedWidth="60px"
-          backgroundColor="white"
-          collapsed={collapsed}
-          rootStyles={{
-            height: "100vh",
-            overflowY: "auto",
-            overflowX: "hidden",
-            borderLeft: "1px solid #d1d5db", // Set the left border only
-          }}
-        >
-          <div className="flex-col h-fit w-full pt-3 justify-center overflow-y-scroll overflow-x-hidden">
-            {collapsed && (
-              <div className="flex-col h-full w-full text-center">
-                <button
-                  className="sb-button"
-                  onClick={() => setCollapsed(false)}
-                >
-                  <LuArrowLeftToLine className="h-6 w-6 text-gray-700" />
-                </button>
-              </div>
-            )}
-
-            {!collapsed && (
-              <div className="flex gap-2 p-3">
-                <button
-                  className="sb-button"
-                  onClick={() => setCollapsed(true)}
-                >
-                  <LuArrowRightToLine className="h-6 w-6 text-gray-700" />
-                </button>
-                <p className="font-normal text-lg">Plan Builder</p>
-              </div>
-            )}
-
-            {/* Add Plan input and button */}
-            {!collapsed && (
-              <div className="flex-col items-center justify-center w-full gap-2 py-2 px-4">
-                <div
-                  onClick={handleNextClick}
-                  className="w-full text-gray-600 mb-2 text-sm md:text-base mr-1 outline outline-1 outline-gray-300 py-1 px-2 rounded-md flex items-center justify-center hover:outline-gray-400 cursor-pointer"
-                >
-                  <div className="mr-2 text-sm">Create Comparison</div>
-                  <FiArrowRight />
-                </div>
-                <div
-                  onClick={() => {
-                    updateConnectedPlans(plans);
-                    handleUpdate();
-                  }}
-                  className="w-full text-gray-600 mb-2 text-sm md:text-base mr-1 outline outline-1 outline-gray-300 py-1 px-2 rounded-md flex items-center justify-center hover:outline-gray-400 cursor-pointer"
-                >
-                  <div className="mr-2 text-sm">Save Plans</div>
-                  <FaRegSave />
-                </div>
-                <div className="flex gap-1">
-                  <input
-                    type="text"
-                    placeholder="Enter New Plan Name"
-                    value={newPlanName}
-                    onChange={(e) => setNewPlanName(e.target.value)}
-                    className="py-1 px-4 text-sm outline outline-1 outline-gray-300 rounded-md w-7/8 hover:cursor-pointer focus:cursor-auto hover:outline-gray-400"
-                  />
-                  <button
-                    onClick={handleAddPlan}
-                    className="sb-button outline outline-1 outline-gray-300 rounded-md px-0.5 hover:outline-gray-400 w-1/8"
-                  >
-                    <IoIosAdd className="h-6 w-6 text-gray-700" />
-                  </button>
-                </div>
-              </div>
-            )}
-
-            {/* Display plans */}
-            {!collapsed && (
-              <div className="flex-col gap-2 py-2 px-4">
-                {plans.map((plan) => (
-                  <div key={plan.id} className="flex flex-col gap-1">
-                    <hr className="mt-2"></hr>
-                    <div className="flex items-center justify-between">
-                      <p className="font-semibold mt-1">{plan.name}</p>
-                      <div className="flex gap-1">
-                        <button onClick={() => handleAddQuotesToPlan(plan.id)}>
-                          <IoIosAdd className="h-6 w-6" />
-                        </button>
-                        <button
-                          onClick={() => handleDeletePlan(plan.id)}
-                          className="text-red-500 hover:text-red-600"
+            <div className="rounded-md w-full flex-col overflow-x-hidden h-full pb-12 overflow-y-scroll bg-white outline outline-1 outline-gray-200">
+              <div className="py-2 px-4">
+                <SelectQuotesHeader
+                  search={search}
+                  setSearch={setSearch}
+                  quotes={quotes}
+                  handleSort={handleSort}
+                  setSelectedFilter={setSelectedFilter}
+                  handleBusiness={handleBusiness}
+                  selectedFilter={selectedFilter}
+                />
+                <div className="w-full overflow-x-auto">
+                  <div className="flex py-2 w-fit border-b">
+                    <div className="grid-cols-9 flex justify-left text-center w-fit gap-1 h-20 font-bold items-center text-wrap text-sm">
+                      {planAttributesMapping.map((attribute) => (
+                        <div
+                          key={attribute.key}
+                          className="flex justify-center gap-2 min-w-32"
+                          style={{ width: `${entryWidth}px` }}
                         >
-                          <FiTrash />
-                        </button>
-                      </div>
+                          <p>{attribute.label}</p>
+                        </div>
+                      ))}
                     </div>
-                    <div className="flex items-center gap-2">
-                      {/* Display current quotes in the plan */}
-                      {plan.selectedQuotes.length > 0 && (
-                        <div className="w-full">
-                          <ul className="w-full">
-                            {plan.selectedQuotes.map((quote) => (
-                              <li key={quote.id} className="mt-2 w-full">
-                                <div className="flex justify-between w-full gap-1">
-                                  <div className="flex gap-1 items-center">
+                  </div>
+                  {quotes.length === 0 ? (
+                    <div className="flex w-full mt-16 mb-2 h-fit items-center justify-center flex-col">
+                      <p className="mb-2">No Quotes</p>
+                      <button
+                        onClick={handleAddNewQuote}
+                        className="bg-gray-100 outline outline-1 outline-gray-300 rounded-md px-2 py-0.5"
+                      >
+                        Add Quotes
+                      </button>
+                    </div>
+                  ) : (
+                    quotes
+                      .filter(
+                        (quote: any) =>
+                          !search || // Only apply the filter if search is empty
+                          ((quote.data as any)?.["plan_id"] + quote.carrier)
+                            .toLowerCase()
+                            .includes(search.toLowerCase()),
+                      )
+                      .map((quote) => (
+                        <div
+                          key={quote.id}
+                          className="flex items-center w-fit mb-1 mt-1 py-2 border-b"
+                        >
+                          <div className="grid-cols-9 w-full flex justify-left text-center w-fit gap-1 h-8 items-center text-sm">
+                            {/* Map through the plan attributes for each quote */}
+                            {planAttributesMapping.map((attribute) => (
+                              <div
+                                key={attribute.key}
+                                className="min-w-32 max-h-10 overflow-y-auto"
+                                style={{ width: `${entryWidth}px` }}
+                              >
+                                {attribute.key === "carrier" ? (
+                                  <div className="flex items-center justify-left ml-6">
+                                    <input
+                                      type="checkbox"
+                                      checked={quote.isSelected}
+                                      onChange={() =>
+                                        handleCheckboxChange(quote.id)
+                                      }
+                                      className="mr-4"
+                                    />
                                     {quote.logo_url && (
                                       <Image
                                         src={quote.logo_url}
-                                        alt={`Logo for ${(quote.data as any)?.["plan_id"]}`}
-                                        width={25}
-                                        height={25}
-                                        className="mr-2"
+                                        alt={`Logo for ${quote[attribute.key]}`}
+                                        width={20}
+                                        height={20}
+                                        className="mr-2 rounded-md"
                                       />
                                     )}
-                                    <p className="text-sm truncate max-w-36">
-                                      {(quote.data as any)?.["plan_id"] ||
-                                        "N/A"}
-                                    </p>
+                                    <p>{quote[attribute.key] || "Sup"}</p>
                                   </div>
-                                  <button
-                                    className="text-red-500 hover:text-red-600"
-                                    onClick={() =>
-                                      handleRemoveQuoteFromPlan(plan.id, quote)
-                                    }
-                                  >
-                                    <FiTrash />
-                                  </button>
-                                </div>
-                              </li>
+                                ) : (
+                                  <p>
+                                    {(quote.data as any)?.[attribute.key] ??
+                                      "N/A"}
+                                  </p>
+                                )}
+                              </div>
                             ))}
-                          </ul>
+                          </div>
                         </div>
-                      )}
-                    </div>
-                    {/* Button to add selected quotes to the plan */}
-                  </div>
-                ))}
+                      ))
+                  )}
+                </div>
               </div>
-            )}
+            </div>
+
+            <SnackbarAlert
+              openSnackbarShare={snackbar.open}
+              setOpenSnackbarShare={setSnackbar}
+              snackbar={snackbar}
+            />
           </div>
-        </Sidebar>
+
+          <Sidebar
+            collapsedWidth="60px"
+            backgroundColor="white"
+            collapsed={collapsed}
+            rootStyles={{
+              height: "100vh",
+              overflowY: "auto",
+              overflowX: "hidden",
+              borderLeft: "1px solid #d1d5db", // Set the left border only
+            }}
+          >
+            <div className="flex-col h-fit w-full pt-3 justify-center overflow-y-scroll overflow-x-hidden">
+              {collapsed && (
+                <div className="flex-col h-full w-full text-center">
+                  <button
+                    className="sb-button"
+                    onClick={() => setCollapsed(false)}
+                  >
+                    <LuArrowLeftToLine className="h-6 w-6 text-gray-700" />
+                  </button>
+                </div>
+              )}
+
+              {!collapsed && (
+                <div className="flex gap-2 p-3">
+                  <button
+                    className="sb-button"
+                    onClick={() => setCollapsed(true)}
+                  >
+                    <LuArrowRightToLine className="h-6 w-6 text-gray-700" />
+                  </button>
+                  <p className="font-normal text-lg">Plan Builder</p>
+                </div>
+              )}
+
+              {/* Add Plan input and button */}
+              {!collapsed && (
+                <div className="flex-col items-center justify-center w-full gap-2 py-2 px-4">
+                  <div
+                    onClick={handleNextClick}
+                    className="w-full text-gray-600 mb-2 text-sm md:text-base mr-1 outline outline-1 outline-gray-300 py-1 px-2 rounded-md flex items-center justify-center hover:outline-gray-400 cursor-pointer"
+                  >
+                    <div className="mr-2 text-sm">Create Comparison</div>
+                    <FiArrowRight />
+                  </div>
+                  <div
+                    onClick={() => {
+                      updateConnectedPlans(plans);
+                      handleUpdate();
+                    }}
+                    className="w-full text-gray-600 mb-2 text-sm md:text-base mr-1 outline outline-1 outline-gray-300 py-1 px-2 rounded-md flex items-center justify-center hover:outline-gray-400 cursor-pointer"
+                  >
+                    <div className="mr-2 text-sm">Save Plans</div>
+                    <FaRegSave />
+                  </div>
+                  <div className="flex gap-1">
+                    <input
+                      type="text"
+                      placeholder="Enter New Plan Name"
+                      value={newPlanName}
+                      onChange={(e) => setNewPlanName(e.target.value)}
+                      className="py-1 px-4 text-sm outline outline-1 outline-gray-300 rounded-md w-7/8 hover:cursor-pointer focus:cursor-auto hover:outline-gray-400"
+                    />
+                    <button
+                      onClick={handleAddPlan}
+                      className="sb-button outline outline-1 outline-gray-300 rounded-md px-0.5 hover:outline-gray-400 w-1/8"
+                    >
+                      <IoIosAdd className="h-6 w-6 text-gray-700" />
+                    </button>
+                  </div>
+                </div>
+              )}
+
+              {/* Display plans */}
+              {!collapsed && (
+                <div className="flex-col gap-2 py-2 px-4">
+                  {plans.map((plan) => (
+                    <div key={plan.id} className="flex flex-col gap-1">
+                      <hr className="mt-2"></hr>
+                      <div className="flex items-center justify-between">
+                        <p className="font-semibold mt-1">{plan.name}</p>
+                        <div className="flex gap-1">
+                          <button
+                            onClick={() => handleAddQuotesToPlan(plan.id)}
+                          >
+                            <IoIosAdd className="h-6 w-6" />
+                          </button>
+                          <button
+                            onClick={() => handleDeletePlan(plan.id)}
+                            className="text-red-500 hover:text-red-600"
+                          >
+                            <FiTrash />
+                          </button>
+                        </div>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        {/* Display current quotes in the plan */}
+                        {plan.selectedQuotes.length > 0 && (
+                          <div className="w-full">
+                            <ul className="w-full">
+                              {plan.selectedQuotes.map((quote) => (
+                                <li key={quote.id} className="mt-2 w-full">
+                                  <div className="flex justify-between w-full gap-1">
+                                    <div className="flex gap-1 items-center">
+                                      {quote.logo_url && (
+                                        <Image
+                                          src={quote.logo_url}
+                                          alt={`Logo for ${(quote.data as any)?.["plan_id"]}`}
+                                          width={25}
+                                          height={25}
+                                          className="mr-2"
+                                        />
+                                      )}
+                                      <p className="text-sm truncate max-w-36">
+                                        {(quote.data as any)?.["plan_id"] ||
+                                          "N/A"}
+                                      </p>
+                                    </div>
+                                    <button
+                                      className="text-red-500 hover:text-red-600"
+                                      onClick={() =>
+                                        handleRemoveQuoteFromPlan(
+                                          plan.id,
+                                          quote,
+                                        )
+                                      }
+                                    >
+                                      <FiTrash />
+                                    </button>
+                                  </div>
+                                </li>
+                              ))}
+                            </ul>
+                          </div>
+                        )}
+                      </div>
+                      {/* Button to add selected quotes to the plan */}
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+          </Sidebar>
         </div>
       </main>
 
       {modalOpen === "addNewQuote" && (
-          <AddQuote
-            onClose={() => {
-              setModalOpen("");
-            }}
-            setModalOpen={setModalOpen}
-            client={selectedClient}
-          />
-        )}
+        <AddQuote
+          onClose={() => {
+            setModalOpen("");
+          }}
+          setModalOpen={setModalOpen}
+          client={selectedClient}
+        />
+      )}
 
       <SnackbarAlert
         openSnackbarShare={snackbar.open}
