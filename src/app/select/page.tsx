@@ -19,13 +19,24 @@ import { Navbar } from "@/src/components/comparison/Navbar";
 import SelectSidebar from "@/src/components/SelectSidebar";
 import toast from "react-hot-toast";
 import { ModalContext } from "@/src/context/ModalContext";
+import { TaskContext } from "@/src/context/TaskContext";
+import { SocketTasksContext } from "@/src/context/SocketContext";
 
 export default function SelectQuotes() {
   type QuoteTypeWithCheckbox = QuoteType & { isSelected: boolean };
+
+  const [modalOpen, setModalOpen] = useState<string>("");
+
   const {
-    modalOpen: [modalOpen, setModalOpen],
-  } = useContext(ModalContext);
+    socketTasks: [socketTasks, setSocketTasks],
+  } = useContext(SocketTasksContext);
+
+  const {
+    taskInfo: [taskInfo, setTaskInfo],
+  } = useContext(TaskContext);
+
   const searchParams = useSearchParams();
+
   const [selectedClient, setSelectedClient] = useState<ClientType>(
     undefined as unknown as ClientType,
   );
@@ -44,8 +55,6 @@ export default function SelectQuotes() {
   const [selectedQuotes, setSelectedQuotes] = useState<QuoteTypeWithCheckbox[]>(
     [],
   );
-
-  const [pdfParsingLoading, setPdfParsingLoading] = useState(false);
 
   const handleBusiness = () => {
     setSnackbar({
@@ -269,56 +278,11 @@ export default function SelectQuotes() {
   };
 
   useEffect(() => {
-    if (selectedClient) {
-      console.log("in socket", selectedClient);
-      const socket = io(`${process.env.NEXT_PUBLIC_SOCKET_SERVER_URL!}`, {
-        path: "/socket.io",
-        transports: ["websocket"],
-      });
-
-      // Connect to the Socket.IO server
-      // Listen for 'task_complete' events
-      socket.on("sub_task_complete", (data) => {
-        console.log("Task Complete:", data);
-        fetchQuoteData(selectedClient);
-      });
-
-      // Listen for 'task_status' events
-      socket.on("task_status", (data) => {
-        console.log("Task Status:", data);
-        if (data.status == "started") {
-          setPdfParsingLoading(true);
-        }
-        if (data.status === "failed") {
-          toast.error("Failed to process PDFs. Please try again.");
-          setPdfParsingLoading(false);
-        }
-      });
-
-      socket.on("task_finished", (data) => {
-        console.log("Task Finished:");
-        setPdfParsingLoading(false);
-        toast.success("PDF(s) processed successfully");
-      });
-
-      return () => {
-        socket.off("sub_task_complete");
-        socket.off("task_status");
-        socket.off("task_finished");
-        socket.close();
-      };
+    if (selectedClient && socketTasks?.includes("fetch_quotes")) {
+      fetchQuoteData(selectedClient);
+      setSocketTasks(socketTasks?.filter((task) => task !== "fetch_quotes"));
     }
-  }, [selectedClient]);
-
-  useEffect(() => {
-    if (pdfParsingLoading) {
-      toast.loading("Processing PDF(s)...", {
-        id: "pdfParsing",
-      });
-    } else {
-      toast.dismiss("pdfParsing");
-    }
-  }, [pdfParsingLoading]);
+  }, [socketTasks, selectedClient]);
 
   const handleCheckboxChange = (quoteId: number) => {
     setQuotes((prevQuotes) =>

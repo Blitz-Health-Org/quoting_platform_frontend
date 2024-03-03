@@ -13,6 +13,7 @@ export type ClientCardProps = {
   setSelectedClient: Dispatch<SetStateAction<ClientType>>;
   client: ClientType;
   handleClientDelete: (client: ClientType) => void;
+  setModalOpen: Dispatch<SetStateAction<string>>;
 };
 
 export const ClientCard = ({
@@ -20,12 +21,11 @@ export const ClientCard = ({
   setSelectedClient,
   handleClientDelete,
   setComparisonOpen,
+  setModalOpen,
 }: ClientCardProps) => {
   const router = useRouter();
   const { setSnackbar } = useContext(SnackBarContext);
-  const {
-    modalOpen: [modalOpen, setModalOpen],
-  } = useContext(ModalContext);
+
   function handleCreateHandbook(event: any) {
     event.stopPropagation();
     setSnackbar({
@@ -87,7 +87,6 @@ export const ClientCard = ({
 
   function handleAddNewQuote(event: any) {
     event?.stopPropagation();
-    router.push(`/select?clientId=${client.id}`);
     setModalOpen("addNewQuote");
     setSelectedClient(client);
     return;
