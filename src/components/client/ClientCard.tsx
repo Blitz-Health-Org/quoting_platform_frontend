@@ -6,13 +6,13 @@ import { AddQuote } from "@/src/components/client/modal/AddQuote";
 import { Dispatch, SetStateAction, useContext, useState } from "react";
 import { useRouter } from "next/navigation";
 import { SnackBarContext } from "@/src/context/SnackBarContext";
+import { ModalContext } from "@/src/context/ModalContext";
 
 export type ClientCardProps = {
   setComparisonOpen: Dispatch<SetStateAction<boolean>>;
   setSelectedClient: Dispatch<SetStateAction<ClientType>>;
   client: ClientType;
   handleClientDelete: (client: ClientType) => void;
-  setModalOpen: Dispatch<SetStateAction<string>>;
 };
 
 export const ClientCard = ({
@@ -20,11 +20,12 @@ export const ClientCard = ({
   setSelectedClient,
   handleClientDelete,
   setComparisonOpen,
-  setModalOpen,
 }: ClientCardProps) => {
   const router = useRouter();
   const { setSnackbar } = useContext(SnackBarContext);
-
+  const {
+    modalOpen: [modalOpen, setModalOpen],
+  } = useContext(ModalContext);
   function handleCreateHandbook(event: any) {
     event.stopPropagation();
     setSnackbar({
@@ -86,6 +87,7 @@ export const ClientCard = ({
 
   function handleAddNewQuote(event: any) {
     event?.stopPropagation();
+    router.push(`/select?clientId=${client.id}`);
     setModalOpen("addNewQuote");
     setSelectedClient(client);
     return;

@@ -35,7 +35,7 @@ export default function QuotingPage() {
   const [quotes, setQuotes] = useState<QuoteType[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [classes, setClasses] = useState<ClassType[]>([]);
-  const [plans, setPlans] = useState<any>(null);
+  const [plans, setPlans] = useState<any>([]);
   const [standardContribution, setStandardContribution] = useState<any>({
     name: "Standard Contribution",
     data: {

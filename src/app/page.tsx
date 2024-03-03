@@ -13,18 +13,24 @@ import { supabase } from "@/src/supabase";
 import { AddQuote } from "../components/client/modal/AddQuote";
 import { SnackbarAlert } from "../components/ui/SnackbarAlert";
 import { SnackBarContext } from "../context/SnackBarContext";
+import { ModalContext } from "../context/ModalContext";
 
 export default function Home() {
   const {
     userId: [userId, , loading],
   } = useContext(UserContext);
+  const {
+    modalOpen: [modalOpen, setModalOpen],
+  } = useContext(ModalContext);
+
   const [taskStatus, setTaskStatus] = useState(null);
 
   const [comparisonOpen, setComparisonOpen] = useState<boolean>(false);
   const [selectedClient, setSelectedClient] = useState<ClientType>(
     undefined as unknown as ClientType,
   );
-  const [modalOpen, setModalOpen] = useState<string>("");
+
+  // const [modalOpen, setModalOpen] = useState<string>("");
 
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -126,8 +132,8 @@ export default function Home() {
             setComparisonOpen={setComparisonOpen}
             setSelectedClient={setSelectedClient}
             selectedClient={selectedClient}
-            setModalOpen={setModalOpen}
-            modalOpen={modalOpen}
+            // setModalOpen={setModalOpen}
+            // modalOpen={modalOpen}
           />
         </div>
 
