@@ -78,8 +78,11 @@ export default function QuotingPage() {
       <div className="w-full flex-col pt-6 pl-6 md:w-6/7">
         <div className="flex gap-3">
           {client?.connected_plans?.map((plan: any, index: any) => (
-            <div className="outline outline-1 outline-gray-400 bg-slate-100 rounded-md p-2">
-              <ul key={index}>
+            <div
+              key={index}
+              className="outline outline-1 outline-gray-400 bg-slate-100 rounded-md p-2"
+            >
+              <ul>
                 <p className="font-semibold">{plan?.name}</p>
                 <ul>
                   <div>
