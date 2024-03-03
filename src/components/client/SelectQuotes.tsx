@@ -435,11 +435,13 @@ export default function SelectQuotes({
     } else {
       // Check if selected_quotes is not null
 
-      setSnackbar({
-        open: true,
-        message: `${data.length - quotes.length} new quotes loaded!`,
-        severity: "success",
-      });
+      if (data.length) {
+        setSnackbar({
+          open: true,
+          message: `${data.length - quotes.length} new quotes loaded!`,
+          severity: "success",
+        });
+      }
 
       setQuotes(data);
       setOriginalQuotes(data);

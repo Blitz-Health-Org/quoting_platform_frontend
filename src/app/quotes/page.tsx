@@ -12,7 +12,7 @@ import { supabase } from "@/src/supabase";
 import { QuoteType } from "@/src/types/custom/Quote";
 import { NonSystemField, quoteMetadataObject } from "@/src/types/metadata";
 import { isFieldVisible } from "@/src/types/utils/isFieldVisible";
-import { notFound, useSearchParams } from "next/navigation";
+import { notFound, redirect, useSearchParams } from "next/navigation";
 import "react-sliding-pane/dist/react-sliding-pane.css";
 import { FaTrash } from "react-icons/fa";
 import { SocketContext } from "@/src/context/SocketContext";
@@ -191,19 +191,14 @@ export default function QuotingPage() {
         .eq("id", clientId)
         .single();
 
-      if (clientError) throw clientError;
+      if (clientError) {
+        alert("No client found");
+        redirect("/404");
+      }
 
       setClient(clientData);
 
-      // Fetch connected plan for the specific client
-      const { data: planData, error: planError } = await supabase
-        .from("clients")
-        .select("connected_plans")
-        .eq("id", clientId)
-        .single();
-
-      if (planError) throw planError;
-      setPlans(planData?.connected_plans);
+      setPlans(clientData.connected_plans);
 
       if (clientData?.classes_contributions) {
         console.log("helllo????");

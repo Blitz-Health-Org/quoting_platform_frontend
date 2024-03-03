@@ -3,6 +3,7 @@
 import { createContext, useEffect, useState } from "react";
 import { useLocalStorage } from "../utils/useLocalStorage";
 import { supabase } from "../supabase";
+import { Loading } from "../components/ui/Loading";
 import { useRouter } from "next/navigation";
 import { useSharingCheck } from "../utils/useSharingCheck";
 
@@ -34,14 +35,7 @@ export const AuthContextProvider = ({
   const [validationComplete, setValidationComplete] = useState(false);
 
   if (loading || sharingLoading || validationLoading) {
-    return (
-      <div
-        className="w-screen h-screen flex items-center justify-center"
-        role="status"
-      >
-        <div>Loading...</div>
-      </div>
-    );
+    return <Loading />;
   }
 
   if (validShare) {
