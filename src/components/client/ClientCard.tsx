@@ -3,8 +3,9 @@ import { FaBook, FaPlus, FaTrash } from "react-icons/fa6";
 import { IoEyeSharp } from "react-icons/io5";
 import Image from "next/image";
 import { AddQuote } from "@/src/components/client/modal/AddQuote";
-import { Dispatch, SetStateAction, useState } from "react";
+import { Dispatch, SetStateAction, useContext, useState } from "react";
 import { useRouter } from "next/navigation";
+import { SnackBarContext } from "@/src/context/SnackBarContext";
 
 export type ClientCardProps = {
   setComparisonOpen: Dispatch<SetStateAction<boolean>>;
@@ -12,30 +13,21 @@ export type ClientCardProps = {
   client: ClientType;
   handleClientDelete: (client: ClientType) => void;
   setModalOpen: Dispatch<SetStateAction<string>>;
-  setOpenSnackbarShare: ({
-    open,
-    message,
-    severity,
-  }: {
-    open: boolean;
-    message: string;
-    severity: string;
-  }) => void;
 };
 
 export const ClientCard = ({
   client,
   setSelectedClient,
-  setOpenSnackbarShare,
   handleClientDelete,
   setComparisonOpen,
   setModalOpen,
 }: ClientCardProps) => {
   const router = useRouter();
+  const { setSnackbar } = useContext(SnackBarContext);
 
   function handleCreateHandbook(event: any) {
     event.stopPropagation();
-    setOpenSnackbarShare({
+    setSnackbar({
       open: true,
       message: `This feature is coming soon!`,
       severity: "info",
@@ -109,12 +101,12 @@ export const ClientCard = ({
         // onClick={handleClientCardClick}
         className="col-span-1 w-full relative flex flex-col justify-between bg-white shadow-sm outline outline-1 outline-gray-200 rounded-md p-3"
       >
-        {/* <button
+        <button
           className="absolute right-0 top-0 mt-2 mr-2"
           onClick={() => handleClientDelete(client)}
         >
           <FaTrash />
-        </button> */}
+        </button>
         <div className="w-full">
           <div className="flex items-center gap-1">
             {client.icon ? (

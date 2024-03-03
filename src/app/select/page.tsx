@@ -809,7 +809,6 @@ const handleBusiness = () => {
             }}
             setModalOpen={setModalOpen}
             client={selectedClient}
-            setOpenSnackbarShare={setSnackbar}
           />
         )}
 

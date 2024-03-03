@@ -122,7 +122,6 @@ export default function Home() {
           />
         </main> */}
 
-          {comparisonOpen === false || selectedClient === undefined ? (
             <ClientTable
               setComparisonOpen={setComparisonOpen}
               setSelectedClient={setSelectedClient}
@@ -130,14 +129,6 @@ export default function Home() {
               setModalOpen={setModalOpen}
               modalOpen={modalOpen}
             />
-          ) : (
-            <SelectQuotes
-              selectedClient={selectedClient}
-              setComparisonOpen={setComparisonOpen}
-              setSelectedClient={setSelectedClient}
-              setModalOpen={setModalOpen}
-            />
-          )}
         </div>
 
         {modalOpen === "addNewQuote" && (
@@ -147,7 +138,6 @@ export default function Home() {
             }}
             setModalOpen={setModalOpen}
             client={selectedClient}
-            setOpenSnackbarShare={setSnackbar}
           />
         )}
 

@@ -1,17 +1,15 @@
-import React from "react";
+import React, { Dispatch, SetStateAction } from "react";
 import { Snackbar, Alert } from "@mui/material";
 
 type SnackBarAlertProps = {
   openSnackbarShare: boolean;
-  setOpenSnackbarShare: ({
-    open,
-    message,
-    severity,
-  }: {
-    open: boolean;
-    message: string;
-    severity: any;
-  }) => void;
+  setOpenSnackbarShare: Dispatch<
+    SetStateAction<{
+      open: boolean;
+      message: string;
+      severity: string;
+    }>
+  >;
   snackbar: {
     open: boolean;
     message: string;
@@ -30,7 +28,12 @@ export const SnackbarAlert = ({
       open={openSnackbarShare}
       autoHideDuration={4000}
       onClose={() =>
-        setOpenSnackbarShare({ open: false, message: "", severity: "info" })
+        setOpenSnackbarShare((prev) => {
+          return {
+            ...prev,
+            open: false,
+          };
+        })
       }
     >
       <Alert

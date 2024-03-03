@@ -33,6 +33,8 @@ import { io } from "socket.io-client";
 import { FiArrowRight, FiTrash } from "react-icons/fi";
 import { UserContext } from "@/src/context/UserContext";
 import SelectQuotesHeader from "../comparison/SelectQuotesHeader";
+import { SnackBarContext } from "@/src/context/SnackBarContext";
+import { set } from "lodash";
 
 export default function SelectQuotes({
   setComparisonOpen,
@@ -47,11 +49,7 @@ export default function SelectQuotes({
 }) {
   type QuoteTypeWithCheckbox = QuoteType & { isSelected: boolean };
 
-  const [snackbar, setSnackbar] = useState({
-    open: false,
-    message: "",
-    severity: "success",
-  });
+  const { setSnackbar } = useContext(SnackBarContext);
   const [selectedQuotes, setSelectedQuotes] = useState<QuoteTypeWithCheckbox[]>(
     [],
   );
@@ -135,7 +133,6 @@ export default function SelectQuotes({
   const [entryWidth, setEntryWidth] = useState(
     innerWidth / planAttributesMapping.length,
   );
-  const [clients, setClients] = useState<ClientType[]>([]);
   const [quotes, setQuotes] = useState<QuoteTypeWithCheckbox[]>([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const {
@@ -224,7 +221,8 @@ export default function SelectQuotes({
     total_cost: string;
   }
 
-  const [sortOption, setSortOption] = useState("deductible"); // Initial sorting option
+  // const [sortOption, setSortOption] = useState("deductible"); // Initial sorting option
+  const [loadingNewQuotes, setLoadingNewQuotes] = useState<boolean>(false);
   const [sortOrder, setSortOrder] = useState("asc"); // Initial sorting order
 
   const [selectedFilter, setSelectedFilter] = useState<string | null>(null);
@@ -355,6 +353,12 @@ export default function SelectQuotes({
     });
     // Connect to the Socket.IO server
     // Listen for 'task_complete' events
+    socket.on("task_status", (data) => {
+      if (data.status === "started") {
+        setLoadingNewQuotes(true);
+      }
+    });
+
     socket.on("sub_task_complete", (data) => {
       console.log("Task Complete:", data);
       fetchQuoteData();
@@ -420,7 +424,7 @@ export default function SelectQuotes({
       .select()
       .eq("client_id", selectedClient.id);
 
-    const clientRes = await supabase
+    const { data: clientData } = await supabase
       .from("clients")
       .select("connected_plans")
       .eq("id", selectedClient.id)
@@ -430,12 +434,19 @@ export default function SelectQuotes({
       alert("Error updating data");
     } else {
       // Check if selected_quotes is not null
+
+      setSnackbar({
+        open: true,
+        message: `${data.length - quotes.length} new quotes loaded!`,
+        severity: "success",
+      });
+
       setQuotes(data);
       setOriginalQuotes(data);
 
-      if (clientRes.data) {
+      if (clientData) {
         // Check if there is data for connected_plans
-        setPlans(clientRes.data.connected_plans || []); // Update plans state
+        setPlans(clientData.connected_plans || []); // Update plans state
       }
     }
   };
@@ -566,15 +577,19 @@ export default function SelectQuotes({
                   </div>
                 </div>
                 {quotes.length === 0 ? (
-                  <div className="flex w-full mt-16 mb-2 h-fit items-center justify-center flex-col">
-                    <p className="mb-2">No Quotes</p>
-                    <button
-                      onClick={handleAddNewQuote}
-                      className="bg-gray-100 outline outline-1 outline-gray-300 rounded-md px-2 py-0.5"
-                    >
-                      Add Quotes
-                    </button>
-                  </div>
+                  loadingNewQuotes ? (
+                    <>Loading</>
+                  ) : (
+                    <div className="flex w-full mt-16 mb-2 h-fit items-center justify-center flex-col">
+                      <p className="mb-2">No Quotes</p>
+                      <button
+                        onClick={handleAddNewQuote}
+                        className="bg-gray-100 outline outline-1 outline-gray-300 rounded-md px-2 py-0.5"
+                      >
+                        Add Quotes
+                      </button>
+                    </div>
+                  )
                 ) : (
                   quotes
                     .filter(
@@ -633,18 +648,6 @@ export default function SelectQuotes({
               </div>
             </div>
           </div>
-          {isModalOpen && (
-            <NewClientModal
-              setOpenSnackbarShare={setSnackbar}
-              onClose={handleCloseModal}
-              setClients={setClients}
-            />
-          )}
-          <SnackbarAlert
-            openSnackbarShare={snackbar.open}
-            setOpenSnackbarShare={setSnackbar}
-            snackbar={snackbar}
-          />
         </div>
 
         <Sidebar
@@ -786,16 +789,6 @@ export default function SelectQuotes({
           </div>
         </Sidebar>
       </main>
-
-      <SnackbarAlert
-        openSnackbarShare={snackbar.open}
-        setOpenSnackbarShare={setSnackbar}
-        snackbar={{
-          open: snackbar.open,
-          message: snackbar.message,
-          severity: snackbar.severity,
-        }}
-      />
     </>
   );
 }

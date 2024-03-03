@@ -15,11 +15,11 @@ import { isFieldVisible } from "@/src/types/utils/isFieldVisible";
 import { notFound, useSearchParams } from "next/navigation";
 import "react-sliding-pane/dist/react-sliding-pane.css";
 import { FaTrash } from "react-icons/fa";
-import { SnackbarAlert } from "../../components/ui/SnackbarAlert";
 import { SocketContext } from "@/src/context/SocketContext";
 import { v4 as uuid } from "uuid";
 import ContributionPane from "@/src/components/comparison/ContributionPane";
-import PlanCard from "@/src/components/comparison/PlanCard";
+import { PlanCard } from "@/src/components/comparison/PlanCard";
+import { SnackBarContext } from "@/src/context/SnackBarContext";
 
 type ClassType = {
   name: string;
@@ -46,6 +46,8 @@ export default function QuotingPage() {
     },
   });
 
+  const { setSnackbar } = useContext(SnackBarContext);
+
   const { socket } = useContext(SocketContext);
 
   useEffect(() => {
@@ -68,28 +70,22 @@ export default function QuotingPage() {
 
           setQuotes(orderedByAlphaData);
         }
-      });
 
-      // Listen for 'task_status' events
-      socket.on("task_status", (data) => {
-        console.log("Task Status:", data);
-      });
+        // Listen for 'task_status' events
+        socket.on("task_status", (data) => {
+          console.log("Task Status:", data);
+        });
 
-      return () => {
-        socket.off("sub_task_complete");
-        socket.off("task_status");
-        socket.close();
-      };
+        return () => {
+          socket.off("sub_task_complete");
+          socket.off("task_status");
+          socket.close();
+        };
+      });
     }
   }, []);
 
   const searchParams = useSearchParams();
-
-  const [snackbar, setSnackbar] = useState({
-    open: false,
-    message: "",
-    severity: "success",
-  });
 
   const handleDownloadCSV = (index: any) => {
     setSnackbar({
@@ -325,16 +321,6 @@ export default function QuotingPage() {
           client={client}
           standardContribution={standardContribution}
           setStandardContribution={setStandardContribution}
-        />
-
-        <SnackbarAlert
-          openSnackbarShare={snackbar.open}
-          setOpenSnackbarShare={setSnackbar}
-          snackbar={{
-            open: snackbar.open,
-            message: snackbar.message,
-            severity: snackbar.severity,
-          }}
         />
       </div>
     </div>

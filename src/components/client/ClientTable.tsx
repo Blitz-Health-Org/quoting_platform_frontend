@@ -8,27 +8,14 @@ import React, {
   SetStateAction,
 } from "react";
 import { PiListBulletsBold } from "react-icons/pi";
-import { RiArrowDropDownLine } from "react-icons/ri";
-import Apple from "../../public/Apple.jpg";
-import Image from "next/image";
-import { FaBook } from "react-icons/fa";
-import { FaPlus } from "react-icons/fa";
-import { IoEyeSharp } from "react-icons/io5";
-import { CiShare1 } from "react-icons/ci";
-import { CiCirclePlus } from "react-icons/ci";
 import { BiPlus } from "react-icons/bi";
-import { useDropzone } from "react-dropzone";
-import { Snackbar, Alert } from "@mui/material";
 import { NewClientModal } from "@/src/components/client/modal/NewClient";
-import { MdUpload } from "react-icons/md";
 import { ClientCard } from "@/src/components/client/ClientCard";
 import { UserContext } from "@/src/context/UserContext";
 import { ClientType } from "@/src/types/custom/Client";
-import { useRouter } from "next/navigation";
-import { SnackbarAlert } from "../ui/SnackbarAlert";
-import error from "next/error";
 import { supabase } from "../../supabase";
-import { AddQuote } from "@/src/components/client/modal/AddQuote";
+import { SnackBarContext } from "@/src/context/SnackBarContext";
+import { CiShare1 } from "react-icons/ci";
 
 export default function ClientTable({
   setComparisonOpen,
@@ -53,11 +40,7 @@ export default function ClientTable({
     .sort((a, b) => b.created_at.localeCompare(a.created_at));
   const [isModalOpen, setIsModalOpen] = useState(false);
 
-  const [snackbar, setSnackbar] = useState({
-    open: false,
-    message: "",
-    severity: "info", // default severity
-  });
+  const { setSnackbar } = useContext(SnackBarContext);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -186,7 +169,6 @@ export default function ClientTable({
                 <div key={client.id}>
                   <ClientCard
                     client={client}
-                    setOpenSnackbarShare={setSnackbar}
                     handleClientDelete={handleClientDelete}
                     setComparisonOpen={setComparisonOpen}
                     setSelectedClient={setSelectedClient}
@@ -198,18 +180,8 @@ export default function ClientTable({
           </div>
         </div>
         {isModalOpen && (
-          <NewClientModal
-            setOpenSnackbarShare={setSnackbar}
-            onClose={handleCloseModal}
-            setClients={setClients}
-          />
+          <NewClientModal onClose={handleCloseModal} setClients={setClients} />
         )}
-
-        <SnackbarAlert
-          openSnackbarShare={snackbar.open}
-          setOpenSnackbarShare={setSnackbar}
-          snackbar={snackbar}
-        />
       </main>
     </>
   );

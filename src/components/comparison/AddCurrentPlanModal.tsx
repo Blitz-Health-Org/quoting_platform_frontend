@@ -21,8 +21,6 @@ const AddCurrentPlanModal = ({ setModalOpen }: AddCurrentPlanModalProps) => {
     setFiles(acceptedFiles);
   };
 
-  const { setSnackbar: setOpenSnackbarShare } = useContext(SnackBarContext);
-
   const handleUpload = async () => {
     // if (files.length === 0) {
     //   setOpenSnackbarShare!({
