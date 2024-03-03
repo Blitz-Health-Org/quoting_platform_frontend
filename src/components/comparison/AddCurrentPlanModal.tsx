@@ -8,12 +8,17 @@ import Image from "next/image";
 import { SnackBarContext } from "@/src/context/SnackBarContext";
 import { v4 as uuid } from "uuid";
 import BlumeLogo from "@/public/BlumeLogo.png";
+import { ClientType } from "@/src/types/custom/Client";
 
 type AddCurrentPlanModalProps = {
-  setModalOpen: Dispatch<SetStateAction<boolean>>;
+  setModalOpen: Dispatch<SetStateAction<any>>;
+  client: ClientType;
 };
 
-const AddCurrentPlanModal = ({ setModalOpen }: AddCurrentPlanModalProps) => {
+const AddCurrentPlanModal = ({
+  setModalOpen,
+  client,
+}: AddCurrentPlanModalProps) => {
   const [files, setFiles] = useState<File[]>([]);
   const [selectedPlan, setSelectedPlan] = useState<string>("bcbs_tx_aca");
 
@@ -216,7 +221,7 @@ const AddCurrentPlanModal = ({ setModalOpen }: AddCurrentPlanModalProps) => {
                 </div>
                 <button
                   onClick={() => {
-                    setModalOpen(false);
+                    setModalOpen("");
                   }}
                   className="text-gray-500 hover:text-gray-700 focus:outline-none"
                 >
@@ -277,7 +282,7 @@ const AddCurrentPlanModal = ({ setModalOpen }: AddCurrentPlanModalProps) => {
             </div>
           </>
         }
-        onClose={() => setModalOpen(false)}
+        onClose={() => setModalOpen("")}
       />
     </div>
   );

@@ -178,7 +178,6 @@ export const NewClientModal = ({ onClose, setClients }: any) => {
                 !clientField.isDefault &&
                 !clientField.isSystem &&
                 !(clientField.field === "icon") &&
-                !(clientField.field === "num_lives") &&
                 !(clientField.field === "plan_category"),
             )
             .map((clientField) => {

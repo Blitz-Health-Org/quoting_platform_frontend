@@ -9,7 +9,7 @@ import { useRouter } from "next/navigation";
 import { MdFileUpload } from "react-icons/md";
 import { SnackbarAlert } from "../../components/ui/SnackbarAlert";
 import { supabase } from "../../supabase";
-import { FaRegSave } from "react-icons/fa";
+import { FaRegSave, FaRegStar } from "react-icons/fa";
 import { notFound, useSearchParams } from "next/navigation";
 import { IoIosAdd } from "react-icons/io";
 import {
@@ -36,10 +36,49 @@ import { UserContext } from "@/src/context/UserContext";
 import SelectQuotesHeader from "../../components/comparison/SelectQuotesHeader";
 import { AddQuote } from "@/src/components/client/modal/AddQuote";
 import { Navbar } from "@/src/components/comparison/Navbar";
+import AddCurrentPlanModal from "@/src/components/comparison/AddCurrentPlanModal";
+import { SnackBarContext } from "@/src/context/SnackBarContext";
+import { SelectedQuotesACAPage } from "@/src/components/client/SelectedQuotesACAPage";
+import { SelectedQuotesNonACAPage } from "@/src/components/client/SelectedQuotesNonACAPage";
+import TabHeader from "@/src/components/ui/TabHeader";
+
+interface PlanAttributes {
+  plan_id: string;
+  carrier: string;
+  plan_name: string;
+  plan_type: string;
+  office_copay: string;
+  deductible: string;
+  coinsurance: string;
+  out_of_pocket_max: string;
+  additional_copay: string;
+  total_cost: string;
+}
+
+const planAttributesMapping: {
+  key: keyof PlanAttributes;
+  label: string;
+  alternateKey?: string;
+}[] = [
+  { key: "carrier", label: "Carrier" },
+  { key: "plan_id", alternateKey: "plan_name", label: "Plan" },
+  // { key: "plan_type", label: "Plan Type" },
+  // { key: "office_copay", label: "Office Copay (PCP/Specialist)" },
+  { key: "deductible", label: "Deductible (Individual)" },
+  { key: "coinsurance", label: "Coinsurance (In-Network)" },
+  { key: "out_of_pocket_max", label: "Out of Pocket (Individual)" },
+  {
+    key: "additional_copay",
+    label: "Additional Copays (ER / Imaging / OP / IP)",
+  },
+  { key: "total_cost", label: "Total Monthly Premium" },
+];
+
+const TABS = ["NON-ACA", "ACA"];
+
+export type QuoteTypeWithCheckbox = QuoteType & { isSelected: boolean };
 
 export default function SelectQuotes() {
-  type QuoteTypeWithCheckbox = QuoteType & { isSelected: boolean };
-
   const searchParams = useSearchParams();
 
   useEffect(() => {
@@ -49,24 +88,12 @@ export default function SelectQuotes() {
     }
   }, [searchParams]);
 
-  const [snackbar, setSnackbar] = useState({
-    open: false,
-    message: "",
-    severity: "success",
-  });
+  const { setSnackbar } = useContext(SnackBarContext);
 
   const [selectedQuotes, setSelectedQuotes] = useState<QuoteTypeWithCheckbox[]>(
     [],
   );
   const [collapsed, setCollapsed] = useState(selectedQuotes.length! > 0);
-
-  const handleBusiness = () => {
-    setSnackbar({
-      open: true,
-      message: "This feature is coming soon!",
-      severity: "info",
-    });
-  };
 
   const planDeleted = () => {
     setSnackbar({
@@ -124,40 +151,137 @@ export default function SelectQuotes() {
     });
   };
 
-  const planAttributesMapping: {
-    key: keyof PlanAttributes;
-    label: string;
-    alternateKey?: string;
-  }[] = [
-    { key: "carrier", label: "Carrier" },
-    { key: "plan_id", alternateKey: "plan_name", label: "Plan" },
-    // { key: "plan_type", label: "Plan Type" },
-    // { key: "office_copay", label: "Office Copay (PCP/Specialist)" },
-    { key: "deductible", label: "Deductible (Individual)" },
-    { key: "coinsurance", label: "Coinsurance (In-Network)" },
-    { key: "out_of_pocket_max", label: "Out of Pocket (Individual)" },
-    {
-      key: "additional_copay",
-      label: "Additional Copays (ER / Imaging / OP / IP)",
-    },
-    { key: "total_cost", label: "Total Monthly Premium" },
-  ];
-
-  const [entryWidth, setEntryWidth] = useState(
-    innerWidth / planAttributesMapping.length,
-  );
   const [selectedClient, setSelectedClient] = useState<ClientType>(
     undefined as unknown as ClientType,
   );
   const [quotes, setQuotes] = useState<QuoteTypeWithCheckbox[]>([]);
+  const [originalQuotes, setOriginalQuotes] = useState<QuoteTypeWithCheckbox[]>(
+    [],
+  );
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [modalOpen, setModalOpen] = useState("");
   const {
     userId: [userId, , loading],
   } = useContext(UserContext);
 
+  const [currentTab, setCurrentTab] = useState<string>("NON-ACA");
+  const [search, setSearch] = useState<string | undefined>();
+
+  const [sortOption, setSortOption] = useState("deductible"); // Initial sorting optio
+  const [sortOrder, setSortOrder] = useState("asc"); // Initial sorting order
+
+  const [entryWidth, setEntryWidth] = useState(
+    innerWidth / planAttributesMapping.length,
+  );
+
+  useEffect(() => {
+    // Update entryWidth when the screen size changes
+
+    const handleResize = () => {
+      setEntryWidth(innerWidth / planAttributesMapping.length);
+      console.log("yeah", entryWidth);
+    };
+
+    // Attach event listener for window resize
+    window.addEventListener("resize", handleResize);
+
+    // Remove event listener on component unmount
+    return () => {
+      window.removeEventListener("resize", handleResize);
+    };
+  }, []);
+
+  const [selectedFilter, setSelectedFilter] = useState<string | null>(null);
+
+  const handleCheckboxChange = (quoteId: number) => {
+    setQuotes((prevQuotes) =>
+      prevQuotes?.map((quote) =>
+        quote.id === quoteId
+          ? { ...quote, isSelected: !quote.isSelected }
+          : quote,
+      ),
+    );
+
+    // Update selectedQuotes state
+    setSelectedQuotes((prevSelectedQuotes) => {
+      const index = prevSelectedQuotes.findIndex(
+        (quote) => quote.id === quoteId,
+      );
+      if (index !== -1) {
+        // If quote is already selected, remove it
+        return prevSelectedQuotes.filter((quote) => quote.id !== quoteId);
+      } else {
+        // If quote is not selected, add it
+        return [
+          ...prevSelectedQuotes,
+          quotes.find((quote) => quote.id === quoteId)!,
+        ];
+      }
+    });
+  };
+
+  const parseValue = (value: string | undefined): number => {
+    if (
+      value === undefined ||
+      value === null || // Add this check for null values
+      value === "MISSING" ||
+      value === "" ||
+      value.includes("N/A") ||
+      value.includes("/") ||
+      value.includes("+")
+    )
+      return Number.POSITIVE_INFINITY;
+
+    // Remove commas, dollar signs, and periods
+    const cleanedValue = value.replace(/[,$.]/g, "");
+
+    // If the value is a percentage (contains '%'), remove '%' and convert to a number
+    if (cleanedValue.includes("%")) {
+      return parseFloat(cleanedValue.replace("%", "")) || 0;
+    }
+
+    // If the value is a regular number or a numeric string, convert it to a number
+    return Number(cleanedValue) || 0;
+  };
+
+  const handleSort = (option: string | null) => {
+    if (option === null) {
+      setQuotes(originalQuotes);
+      return;
+    }
+
+    // Perform the sorting
+    //TODO: handle empty quotes
+    const sortedQuotes = quotes.slice().sort((a, b) => {
+      const valueA = parseValue((a.data as any)?.[option]);
+      const valueB = parseValue((b.data as any)?.[option]);
+
+      if (
+        valueA === Number.POSITIVE_INFINITY &&
+        valueB === Number.POSITIVE_INFINITY
+      ) {
+        return 0; // Both are "N/A", keep original order
+      } else if (valueA === Number.POSITIVE_INFINITY) {
+        return sortOrder === "asc" ? 1 : -1; // Put "N/A" at the end or beginning
+      } else if (valueB === Number.POSITIVE_INFINITY) {
+        return sortOrder === "asc" ? -1 : 1; // Put "N/A" at the end or beginning
+      }
+
+      return sortOrder === "asc" ? valueA - valueB : valueB - valueA;
+    });
+
+    // Update the state with the sorted quotes
+    setQuotes(sortedQuotes);
+  };
+  const handleBusiness = () => {
+    setSnackbar({
+      open: true,
+      message: "This feature is coming soon!",
+      severity: "info",
+    });
+  };
+
   const router = useRouter();
-  const [search, setSearch] = useState<string>();
 
   const fetchClients = async (clientId: string) => {
     console.log("client id", clientId);
@@ -177,6 +301,12 @@ export default function SelectQuotes() {
       console.error("Failed to fetch client and quotes", error);
     }
   };
+
+  function handleAddCurrentPlan(event: any) {
+    event?.stopPropagation();
+    setModalOpen("addCurrentPlan");
+    return;
+  }
 
   function handleAddNewQuote(event: any) {
     event?.stopPropagation();
@@ -226,43 +356,6 @@ export default function SelectQuotes() {
     }
   }
 
-  useEffect(() => {
-    // Update entryWidth when the screen size changes
-
-    const handleResize = () => {
-      setEntryWidth(innerWidth / planAttributesMapping.length);
-      console.log("yeah", entryWidth);
-    };
-
-    // Attach event listener for window resize
-    window.addEventListener("resize", handleResize);
-
-    // Remove event listener on component unmount
-    return () => {
-      window.removeEventListener("resize", handleResize);
-    };
-  }, []);
-
-  interface PlanAttributes {
-    plan_id: string;
-    carrier: string;
-    plan_name: string;
-    plan_type: string;
-    office_copay: string;
-    deductible: string;
-    coinsurance: string;
-    out_of_pocket_max: string;
-    additional_copay: string;
-    total_cost: string;
-  }
-
-  const [sortOption, setSortOption] = useState("deductible"); // Initial sorting option
-  const [sortOrder, setSortOrder] = useState("asc"); // Initial sorting order
-
-  const [selectedFilter, setSelectedFilter] = useState<string | null>(null);
-  const [originalQuotes, setOriginalQuotes] = useState<QuoteTypeWithCheckbox[]>(
-    [],
-  );
   const [plans, setPlans] = useState<
     Array<{ id: number; name: string; selectedQuotes: QuoteTypeWithCheckbox[] }>
   >([]);
@@ -334,60 +427,6 @@ export default function SelectQuotes() {
     // updateConnectedPlans(updatedPlans);
   };
 
-  const handleSort = (option: string | null) => {
-    if (option === null) {
-      setQuotes(originalQuotes);
-      return;
-    }
-
-    // Perform the sorting
-    //TODO: handle empty quotes
-    const sortedQuotes = quotes.slice().sort((a, b) => {
-      const valueA = parseValue((a.data as any)?.[option]);
-      const valueB = parseValue((b.data as any)?.[option]);
-
-      if (
-        valueA === Number.POSITIVE_INFINITY &&
-        valueB === Number.POSITIVE_INFINITY
-      ) {
-        return 0; // Both are "N/A", keep original order
-      } else if (valueA === Number.POSITIVE_INFINITY) {
-        return sortOrder === "asc" ? 1 : -1; // Put "N/A" at the end or beginning
-      } else if (valueB === Number.POSITIVE_INFINITY) {
-        return sortOrder === "asc" ? -1 : 1; // Put "N/A" at the end or beginning
-      }
-
-      return sortOrder === "asc" ? valueA - valueB : valueB - valueA;
-    });
-
-    // Update the state with the sorted quotes
-    setQuotes(sortedQuotes);
-  };
-
-  const parseValue = (value: string | undefined): number => {
-    if (
-      value === undefined ||
-      value === null || // Add this check for null values
-      value === "MISSING" ||
-      value === "" ||
-      value.includes("N/A") ||
-      value.includes("/") ||
-      value.includes("+")
-    )
-      return Number.POSITIVE_INFINITY;
-
-    // Remove commas, dollar signs, and periods
-    const cleanedValue = value.replace(/[,$.]/g, "");
-
-    // If the value is a percentage (contains '%'), remove '%' and convert to a number
-    if (cleanedValue.includes("%")) {
-      return parseFloat(cleanedValue.replace("%", "")) || 0;
-    }
-
-    // If the value is a regular number or a numeric string, convert it to a number
-    return Number(cleanedValue) || 0;
-  };
-
   useEffect(() => {
     const socket = io(`${process.env.NEXT_PUBLIC_SOCKET_SERVER_URL!}`, {
       path: "/socket.io",
@@ -414,33 +453,6 @@ export default function SelectQuotes() {
       socket.close();
     };
   }, []);
-
-  const handleCheckboxChange = (quoteId: number) => {
-    setQuotes((prevQuotes) =>
-      prevQuotes?.map((quote) =>
-        quote.id === quoteId
-          ? { ...quote, isSelected: !quote.isSelected }
-          : quote,
-      ),
-    );
-
-    // Update selectedQuotes state
-    setSelectedQuotes((prevSelectedQuotes) => {
-      const index = prevSelectedQuotes.findIndex(
-        (quote) => quote.id === quoteId,
-      );
-      if (index !== -1) {
-        // If quote is already selected, remove it
-        return prevSelectedQuotes.filter((quote) => quote.id !== quoteId);
-      } else {
-        // If quote is not selected, add it
-        return [
-          ...prevSelectedQuotes,
-          quotes.find((quote) => quote.id === quoteId)!,
-        ];
-      }
-    });
-  };
 
   const handleNextClick = async () => {
     const clientId = selectedClient.id;
@@ -542,6 +554,13 @@ export default function SelectQuotes() {
     return { success: true, data };
   };
 
+  const aca_quotes = quotes.filter((quote) =>
+    Object.keys(quote.data as object).includes("aca"),
+  );
+  const non_aca_quotes = quotes.filter(
+    (quote) => !Object.keys(quote.data as object).includes("aca"),
+  );
+
   return (
     <>
       <main className="flex w-full h-full overflow-hidden">
@@ -566,6 +585,22 @@ export default function SelectQuotes() {
               </div>
               <div className="flex items-center gap-2">
                 <button
+                  onClick={handleAddCurrentPlan}
+                  className="text-sm md:text-base mr-1 outline outline-1 outline-gray-200 py-1 px-2 rounded-md flex items-center justify-center hover:bg-gray-100/80 cursor-pointer"
+                >
+                  <div className="mr-2">Add Current Plan</div>
+                  <FaRegStar />
+                </button>
+                {/* <button
+                onClick={handleNextClick}
+                className="text-sm md:text-base mr-1 outline outline-1 outline-gray-200 py-1 px-2 rounded-md flex items-center justify-center hover:bg-gray-100/80 cursor-pointer"
+              >
+                <div className="mr-2">New Comparison</div>
+                <FiArrowRight />
+              </button> */}
+              </div>
+              <div className="flex items-center gap-2">
+                <button
                   onClick={handleAddNewQuote}
                   className="text-sm md:text-base mr-1 outline outline-1 outline-gray-200 py-1 px-2 rounded-md flex items-center justify-center hover:bg-gray-100/80 cursor-pointer"
                 >
@@ -581,6 +616,7 @@ export default function SelectQuotes() {
               </button> */}
               </div>
             </div>
+
             <div className="rounded-md w-full flex-col overflow-x-hidden h-full pb-12 overflow-y-scroll bg-white outline outline-1 outline-gray-200">
               <div className="py-2 px-4">
                 <SelectQuotesHeader
@@ -592,241 +628,189 @@ export default function SelectQuotes() {
                   handleBusiness={handleBusiness}
                   selectedFilter={selectedFilter}
                 />
-                <div className="w-full overflow-x-auto">
-                  <div className="flex py-2 w-fit border-b">
-                    <div className="grid-cols-9 flex justify-left text-center w-fit gap-1 h-20 font-bold items-center text-wrap text-sm">
-                      {planAttributesMapping.map((attribute) => (
-                        <div
-                          key={attribute.key}
-                          className="flex justify-center gap-2 min-w-32"
-                          style={{ width: `${entryWidth}px` }}
-                        >
-                          <p>{attribute.label}</p>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                  {quotes.length === 0 ? (
-                    <div className="flex w-full mt-16 mb-2 h-fit items-center justify-center flex-col">
-                      <p className="mb-2">No Quotes</p>
-                      <button
-                        onClick={handleAddNewQuote}
-                        className="bg-gray-100 outline outline-1 outline-gray-300 rounded-md px-2 py-0.5"
-                      >
-                        Add Quotes
-                      </button>
-                    </div>
-                  ) : (
-                    quotes
-                      .filter(
-                        (quote: any) =>
-                          !search || // Only apply the filter if search is empty
-                          ((quote.data as any)?.["plan_id"] + quote.carrier)
-                            .toLowerCase()
-                            .includes(search.toLowerCase()),
-                      )
-                      .map((quote) => (
-                        <div
-                          key={quote.id}
-                          className="flex items-center w-fit mb-1 mt-1 py-2 border-b"
-                        >
-                          <div className="grid-cols-9 w-full flex justify-left text-center w-fit gap-1 h-8 items-center text-sm">
-                            {/* Map through the plan attributes for each quote */}
-                            {planAttributesMapping.map((attribute) => (
-                              <div
-                                key={attribute.key}
-                                className="min-w-32 max-h-10 overflow-y-auto"
-                                style={{ width: `${entryWidth}px` }}
-                              >
-                                {attribute.key === "carrier" ? (
-                                  <div className="flex items-center justify-left ml-6">
-                                    <input
-                                      type="checkbox"
-                                      checked={quote.isSelected}
-                                      onChange={() =>
-                                        handleCheckboxChange(quote.id)
-                                      }
-                                      className="mr-4"
-                                    />
-                                    {quote.logo_url && (
-                                      <Image
-                                        src={quote.logo_url}
-                                        alt={`Logo for ${quote[attribute.key]}`}
-                                        width={20}
-                                        height={20}
-                                        className="mr-2 rounded-md"
-                                      />
-                                    )}
-                                    <p>{quote[attribute.key] || "Sup"}</p>
-                                  </div>
-                                ) : (
-                                  <p>
-                                    {(quote.data as any)?.[attribute.key] ??
-                                      "N/A"}
-                                  </p>
-                                )}
-                              </div>
-                            ))}
-                          </div>
-                        </div>
-                      ))
-                  )}
+                <div className="pt-5">
+                  <TabHeader
+                    tabs={TABS}
+                    selectedTab={currentTab}
+                    setSelectedTab={setCurrentTab}
+                  />
                 </div>
+                {currentTab === "NON-ACA" && (
+                  <SelectedQuotesNonACAPage
+                    quotes={non_aca_quotes}
+                    planAttributesMapping={planAttributesMapping}
+                    entryWidth={entryWidth}
+                    handleCheckboxChange={handleCheckboxChange}
+                    handleAddNewQuote={handleAddNewQuote}
+                    search={search}
+                  />
+                )}
+                {currentTab === "ACA" && (
+                  <SelectedQuotesACAPage
+                    quotes={aca_quotes}
+                    planAttributesMapping={planAttributesMapping}
+                    entryWidth={entryWidth}
+                    handleCheckboxChange={handleCheckboxChange}
+                    handleAddNewQuote={handleAddNewQuote}
+                    search={search}
+                  />
+                )}
               </div>
             </div>
 
-            <SnackbarAlert
-              openSnackbarShare={snackbar.open}
-              setOpenSnackbarShare={setSnackbar}
-              snackbar={snackbar}
-            />
-          </div>
-
-          <Sidebar
-            collapsedWidth="60px"
-            backgroundColor="white"
-            collapsed={collapsed}
-            rootStyles={{
-              height: "100vh",
-              overflowY: "auto",
-              overflowX: "hidden",
-              borderLeft: "1px solid #d1d5db", // Set the left border only
-            }}
-          >
-            <div className="flex-col h-fit w-full pt-3 justify-center overflow-y-scroll overflow-x-hidden">
-              {collapsed && (
-                <div className="flex-col h-full w-full text-center">
-                  <button
-                    className="sb-button"
-                    onClick={() => setCollapsed(false)}
-                  >
-                    <LuArrowLeftToLine className="h-6 w-6 text-gray-700" />
-                  </button>
-                </div>
-              )}
-
-              {!collapsed && (
-                <div className="flex gap-2 p-3">
-                  <button
-                    className="sb-button"
-                    onClick={() => setCollapsed(true)}
-                  >
-                    <LuArrowRightToLine className="h-6 w-6 text-gray-700" />
-                  </button>
-                  <p className="font-normal text-lg">Plan Builder</p>
-                </div>
-              )}
-
-              {/* Add Plan input and button */}
-              {!collapsed && (
-                <div className="flex-col items-center justify-center w-full gap-2 py-2 px-4">
-                  <div
-                    onClick={handleNextClick}
-                    className="w-full text-gray-600 mb-2 text-sm md:text-base mr-1 outline outline-1 outline-gray-300 py-1 px-2 rounded-md flex items-center justify-center hover:outline-gray-400 cursor-pointer"
-                  >
-                    <div className="mr-2 text-sm">Create Comparison</div>
-                    <FiArrowRight />
-                  </div>
-                  <div
-                    onClick={() => {
-                      updateConnectedPlans(plans);
-                      handleUpdate();
-                    }}
-                    className="w-full text-gray-600 mb-2 text-sm md:text-base mr-1 outline outline-1 outline-gray-300 py-1 px-2 rounded-md flex items-center justify-center hover:outline-gray-400 cursor-pointer"
-                  >
-                    <div className="mr-2 text-sm">Save Plans</div>
-                    <FaRegSave />
-                  </div>
-                  <div className="flex gap-1">
-                    <input
-                      type="text"
-                      placeholder="Enter New Plan Name"
-                      value={newPlanName}
-                      onChange={(e) => setNewPlanName(e.target.value)}
-                      className="py-1 px-4 text-sm outline outline-1 outline-gray-300 rounded-md w-7/8 hover:cursor-pointer focus:cursor-auto hover:outline-gray-400"
-                    />
+            <Sidebar
+              collapsedWidth="60px"
+              backgroundColor="white"
+              collapsed={collapsed}
+              rootStyles={{
+                height: "100vh",
+                overflowY: "auto",
+                overflowX: "hidden",
+                borderLeft: "1px solid #d1d5db", // Set the left border only
+              }}
+            >
+              <div className="flex-col h-fit w-full pt-3 justify-center overflow-y-scroll overflow-x-hidden">
+                {collapsed && (
+                  <div className="flex-col h-full w-full text-center">
                     <button
-                      onClick={handleAddPlan}
-                      className="sb-button outline outline-1 outline-gray-300 rounded-md px-0.5 hover:outline-gray-400 w-1/8"
+                      className="sb-button"
+                      onClick={() => setCollapsed(false)}
                     >
-                      <IoIosAdd className="h-6 w-6 text-gray-700" />
+                      <LuArrowLeftToLine className="h-6 w-6 text-gray-700" />
                     </button>
                   </div>
-                </div>
-              )}
+                )}
 
-              {/* Display plans */}
-              {!collapsed && (
-                <div className="flex-col gap-2 py-2 px-4">
-                  {plans.map((plan) => (
-                    <div key={plan.id} className="flex flex-col gap-1">
-                      <hr className="mt-2"></hr>
-                      <div className="flex items-center justify-between">
-                        <p className="font-semibold mt-1">{plan.name}</p>
-                        <div className="flex gap-1">
-                          <button
-                            onClick={() => handleAddQuotesToPlan(plan.id)}
-                          >
-                            <IoIosAdd className="h-6 w-6" />
-                          </button>
-                          <button
-                            onClick={() => handleDeletePlan(plan.id)}
-                            className="text-red-500 hover:text-red-600"
-                          >
-                            <FiTrash />
-                          </button>
-                        </div>
-                      </div>
-                      <div className="flex items-center gap-2">
-                        {/* Display current quotes in the plan */}
-                        {plan.selectedQuotes.length > 0 && (
-                          <div className="w-full">
-                            <ul className="w-full">
-                              {plan.selectedQuotes.map((quote) => (
-                                <li key={quote.id} className="mt-2 w-full">
-                                  <div className="flex justify-between w-full gap-1">
-                                    <div className="flex gap-1 items-center">
-                                      {quote.logo_url && (
-                                        <Image
-                                          src={quote.logo_url}
-                                          alt={`Logo for ${(quote.data as any)?.["plan_id"]}`}
-                                          width={25}
-                                          height={25}
-                                          className="mr-2"
-                                        />
-                                      )}
-                                      <p className="text-sm truncate max-w-36">
-                                        {(quote.data as any)?.["plan_id"] ||
-                                          "N/A"}
-                                      </p>
-                                    </div>
-                                    <button
-                                      className="text-red-500 hover:text-red-600"
-                                      onClick={() =>
-                                        handleRemoveQuoteFromPlan(
-                                          plan.id,
-                                          quote,
-                                        )
-                                      }
-                                    >
-                                      <FiTrash />
-                                    </button>
-                                  </div>
-                                </li>
-                              ))}
-                            </ul>
-                          </div>
-                        )}
-                      </div>
-                      {/* Button to add selected quotes to the plan */}
+                {!collapsed && (
+                  <div className="flex gap-2 p-3">
+                    <button
+                      className="sb-button"
+                      onClick={() => setCollapsed(true)}
+                    >
+                      <LuArrowRightToLine className="h-6 w-6 text-gray-700" />
+                    </button>
+                    <p className="font-normal text-lg">Plan Builder</p>
+                  </div>
+                )}
+
+                {/* Add Plan input and button */}
+                {!collapsed && (
+                  <div className="flex-col items-center justify-center w-full gap-2 py-2 px-4">
+                    <div
+                      onClick={handleNextClick}
+                      className="w-full text-gray-600 mb-2 text-sm md:text-base mr-1 outline outline-1 outline-gray-300 py-1 px-2 rounded-md flex items-center justify-center hover:outline-gray-400 cursor-pointer"
+                    >
+                      <div className="mr-2 text-sm">Create Comparison</div>
+                      <FiArrowRight />
                     </div>
-                  ))}
-                </div>
-              )}
-            </div>
-          </Sidebar>
+                    <div
+                      onClick={() => {
+                        updateConnectedPlans(plans);
+                        handleUpdate();
+                      }}
+                      className="w-full text-gray-600 mb-2 text-sm md:text-base mr-1 outline outline-1 outline-gray-300 py-1 px-2 rounded-md flex items-center justify-center hover:outline-gray-400 cursor-pointer"
+                    >
+                      <div className="mr-2 text-sm">Save Plans</div>
+                      <FaRegSave />
+                    </div>
+                    <div className="flex gap-1">
+                      <input
+                        type="text"
+                        placeholder="Enter New Plan Name"
+                        value={newPlanName}
+                        onChange={(e) => setNewPlanName(e.target.value)}
+                        className="py-1 px-4 text-sm outline outline-1 outline-gray-300 rounded-md w-7/8 hover:cursor-pointer focus:cursor-auto hover:outline-gray-400"
+                      />
+                      <button
+                        onClick={handleAddPlan}
+                        className="sb-button outline outline-1 outline-gray-300 rounded-md px-0.5 hover:outline-gray-400 w-1/8"
+                      >
+                        <IoIosAdd className="h-6 w-6 text-gray-700" />
+                      </button>
+                    </div>
+                  </div>
+                )}
+
+                {/* Display plans */}
+                {!collapsed && (
+                  <div className="flex-col gap-2 py-2 px-4">
+                    {plans.map((plan) => (
+                      <div key={plan.id} className="flex flex-col gap-1">
+                        <hr className="mt-2"></hr>
+                        <div className="flex items-center justify-between">
+                          <p className="font-semibold mt-1">{plan.name}</p>
+                          <div className="flex gap-1">
+                            <button
+                              onClick={() => handleAddQuotesToPlan(plan.id)}
+                            >
+                              <IoIosAdd className="h-6 w-6" />
+                            </button>
+                            <button
+                              onClick={() => handleDeletePlan(plan.id)}
+                              className="text-red-500 hover:text-red-600"
+                            >
+                              <FiTrash />
+                            </button>
+                          </div>
+                        </div>
+                        <div className="flex items-center gap-2">
+                          {/* Display current quotes in the plan */}
+                          {plan.selectedQuotes.length > 0 && (
+                            <div className="w-full">
+                              <ul className="w-full">
+                                {plan.selectedQuotes.map((quote) => (
+                                  <li key={quote.id} className="mt-2 w-full">
+                                    <div className="flex justify-between w-full gap-1">
+                                      <div className="flex gap-1 items-center">
+                                        {quote.logo_url && (
+                                          <Image
+                                            src={quote.logo_url}
+                                            alt={`Logo for ${(quote.data as any)?.["plan_id"]}`}
+                                            width={25}
+                                            height={25}
+                                            className="mr-2"
+                                          />
+                                        )}
+                                        <p className="text-sm truncate max-w-36">
+                                          {(quote.data as any)?.["plan_id"] ||
+                                            "N/A"}
+                                        </p>
+                                      </div>
+                                      <button
+                                        className="text-red-500 hover:text-red-600"
+                                        onClick={() =>
+                                          handleRemoveQuoteFromPlan(
+                                            plan.id,
+                                            quote,
+                                          )
+                                        }
+                                      >
+                                        <FiTrash />
+                                      </button>
+                                    </div>
+                                  </li>
+                                ))}
+                              </ul>
+                            </div>
+                          )}
+                        </div>
+                        {/* Button to add selected quotes to the plan */}
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
+            </Sidebar>
+          </div>
         </div>
       </main>
+
+      {modalOpen === "addCurrentPlan" && (
+        <AddCurrentPlanModal
+          setModalOpen={setModalOpen}
+          client={selectedClient}
+        />
+      )}
 
       {modalOpen === "addNewQuote" && (
         <AddQuote
@@ -838,16 +822,6 @@ export default function SelectQuotes() {
           type={"Select"}
         />
       )}
-
-      <SnackbarAlert
-        openSnackbarShare={snackbar.open}
-        setOpenSnackbarShare={setSnackbar}
-        snackbar={{
-          open: snackbar.open,
-          message: snackbar.message,
-          severity: snackbar.severity,
-        }}
-      />
     </>
   );
 }
