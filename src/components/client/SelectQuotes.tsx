@@ -28,7 +28,6 @@ import United from "@/public/United.png";
 import Chamber from "@/public/Chamber.png";
 import BCBS from "@/public/BCBS.png";
 import NewProject from "@/public/NewProject.jpg";
-import { SocketContext } from "@/src/context/SocketContext";
 import { io } from "socket.io-client";
 import { FiArrowRight, FiTrash } from "react-icons/fi";
 import { UserContext } from "@/src/context/UserContext";
@@ -345,39 +344,6 @@ export default function SelectQuotes({
     // If the value is a regular number or a numeric string, convert it to a number
     return Number(cleanedValue) || 0;
   };
-
-  useEffect(() => {
-    const socket = io(`${process.env.NEXT_PUBLIC_SOCKET_SERVER_URL!}`, {
-      path: "/socket.io",
-      transports: ["websocket"],
-    });
-    // Connect to the Socket.IO server
-    // Listen for 'task_complete' events
-    socket.on("task_status", (data) => {
-      if (data.status === "started") {
-        setLoadingNewQuotes(true);
-      }
-    });
-
-    socket.on("sub_task_complete", (data) => {
-      console.log("Task Complete:", data);
-      fetchQuoteData();
-    });
-
-    // Listen for 'task_status' events
-    socket.on("task_status", (data) => {
-      console.log("Task Status:", data);
-      if (data.status === "failed") {
-        alert("Failed to process pdfs. Please try again");
-      }
-    });
-
-    return () => {
-      socket.off("sub_task_complete");
-      socket.off("task_status");
-      socket.close();
-    };
-  }, []);
 
   const handleCheckboxChange = (quoteId: number) => {
     setQuotes((prevQuotes) =>

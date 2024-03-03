@@ -15,7 +15,6 @@ import { isFieldVisible } from "@/src/types/utils/isFieldVisible";
 import { notFound, redirect, useSearchParams } from "next/navigation";
 import "react-sliding-pane/dist/react-sliding-pane.css";
 import { FaTrash } from "react-icons/fa";
-import { SocketContext } from "@/src/context/SocketContext";
 import { v4 as uuid } from "uuid";
 import ContributionPane from "@/src/components/comparison/ContributionPane";
 import { PlanCard } from "@/src/components/comparison/PlanCard";
@@ -47,43 +46,6 @@ export default function QuotingPage() {
   });
 
   const { setSnackbar } = useContext(SnackBarContext);
-
-  const { socket } = useContext(SocketContext);
-
-  useEffect(() => {
-    if (socket && client) {
-      // Connect to the Socket.IO server
-      // Listen for 'task_complete' events
-      socket.on("sub_task_complete", async (data) => {
-        console.log("what the hell socket on");
-        const { data: quotesData, error: quotesError } = await supabase
-          .from("quotes")
-          .select("*")
-          .eq("client_id", client.id);
-
-        if (quotesData) {
-          const orderedByAlphaData = quotesData.sort((rowA, rowB) => {
-            if (rowA.name < rowB.name) return -1;
-            if (rowA.name > rowB.name) return 1;
-            return 0;
-          });
-
-          setQuotes(orderedByAlphaData);
-        }
-
-        // Listen for 'task_status' events
-        socket.on("task_status", (data) => {
-          console.log("Task Status:", data);
-        });
-
-        return () => {
-          socket.off("sub_task_complete");
-          socket.off("task_status");
-          socket.close();
-        };
-      });
-    }
-  }, []);
 
   const searchParams = useSearchParams();
 
