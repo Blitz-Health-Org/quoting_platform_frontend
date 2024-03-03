@@ -47,18 +47,18 @@ export default function HandbookTemplate(props: HandbookTemplateProps) {
           height: window.innerHeight,
         },
         propText: {
-          fontWeight: 'semibold', 
-          textAlign: 'left', 
-          fontSize: 14, 
+          fontWeight: "semibold",
+          textAlign: "left",
+          fontSize: 14,
           height: 28,
           marginBottom: 5,
-          marginTop: 5, 
-          width: '50%', 
-          borderBottomWidth: 1, 
-          borderBottomColor: '#000', // Assuming you want black border
-          borderBottomStyle: 'solid', 
-          backgroundColor: 'transparent',
-          color: 'black',
+          marginTop: 5,
+          width: "50%",
+          borderBottomWidth: 1,
+          borderBottomColor: "#000", // Assuming you want black border
+          borderBottomStyle: "solid",
+          backgroundColor: "transparent",
+          color: "black",
         },
       }),
     );
@@ -73,15 +73,27 @@ export default function HandbookTemplate(props: HandbookTemplateProps) {
           <View style={styles.section}>
             <Text style={styles.propText}>Plan Name: {props.planName}</Text>
             <Text style={styles.propText}>Deductible: {props.deductible}</Text>
-            <Text style={styles.propText}>Coinsurance: {props.coinsurance}</Text>
+            <Text style={styles.propText}>
+              Coinsurance: {props.coinsurance}
+            </Text>
             <Text style={styles.propText}>OOP Max: {props.oopMax}</Text>
             <Text style={styles.propText}>PCP Copay: {props.PCPcopay}</Text>
-            <Text style={styles.propText}>Specialist Copay: {props.specialistCopay}</Text>
+            <Text style={styles.propText}>
+              Specialist Copay: {props.specialistCopay}
+            </Text>
             <Text style={styles.propText}>ER Copay: {props.ERcopay}</Text>
-            <Text style={styles.propText}>Pharmacy Copay: {props.pharmacyCopay}</Text>
-            <Text style={styles.propText}>Inpatient Copay: {props.inpatientCopay}</Text>
-            <Text style={styles.propText}>Urgent Care Copay: {props.urgentCareCopay}</Text>
-            <Text style={styles.propText}>Prescription Deductible: {props.prescriptionDeductible}</Text>
+            <Text style={styles.propText}>
+              Pharmacy Copay: {props.pharmacyCopay}
+            </Text>
+            <Text style={styles.propText}>
+              Inpatient Copay: {props.inpatientCopay}
+            </Text>
+            <Text style={styles.propText}>
+              Urgent Care Copay: {props.urgentCareCopay}
+            </Text>
+            <Text style={styles.propText}>
+              Prescription Deductible: {props.prescriptionDeductible}
+            </Text>
             <Text style={styles.propText}>EE Rate: {props.eeRate}</Text>
             <Text style={styles.propText}>ES Rate: {props.esRate}</Text>
             <Text style={styles.propText}>EC Rate: {props.ecRate}</Text>
