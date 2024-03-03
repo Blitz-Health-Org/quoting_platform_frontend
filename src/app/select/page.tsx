@@ -17,18 +17,23 @@ import SelectQuotesHeader from "../../components/comparison/SelectQuotesHeader";
 import { AddQuote } from "@/src/components/client/modal/AddQuote";
 import { Navbar } from "@/src/components/comparison/Navbar";
 import SelectSidebar from "@/src/components/SelectSidebar";
+import toast from "react-hot-toast";
+import { ModalContext } from "@/src/context/ModalContext";
 
 export default function SelectQuotes() {
   type QuoteTypeWithCheckbox = QuoteType & { isSelected: boolean };
-
+  const {
+    modalOpen: [modalOpen, setModalOpen],
+  } = useContext(ModalContext);
   const searchParams = useSearchParams();
+  const [selectedClient, setSelectedClient] = useState<ClientType>(
+    undefined as unknown as ClientType,
+  );
 
   useEffect(() => {
-    const clientId = searchParams.get("clientId");
-    if (clientId) {
-      fetchClients(clientId);
-    }
-  }, [searchParams]);
+    const clientId = searchParams.get("clientId") as string;
+    if (selectedClient === undefined) fetchClients(clientId);
+  }, [searchParams, selectedClient]);
 
   const [snackbar, setSnackbar] = useState({
     open: false,
@@ -39,6 +44,8 @@ export default function SelectQuotes() {
   const [selectedQuotes, setSelectedQuotes] = useState<QuoteTypeWithCheckbox[]>(
     [],
   );
+
+  const [pdfParsingLoading, setPdfParsingLoading] = useState(false);
 
   const handleBusiness = () => {
     setSnackbar({
@@ -70,12 +77,9 @@ export default function SelectQuotes() {
   const [entryWidth, setEntryWidth] = useState(
     innerWidth / planAttributesMapping.length,
   );
-  const [selectedClient, setSelectedClient] = useState<ClientType>(
-    undefined as unknown as ClientType,
-  );
+
   const [quotes, setQuotes] = useState<QuoteTypeWithCheckbox[]>([]);
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [modalOpen, setModalOpen] = useState("");
+
   const {
     userId: [userId, , loading],
   } = useContext(UserContext);
@@ -84,7 +88,6 @@ export default function SelectQuotes() {
   const [search, setSearch] = useState<string>();
 
   const fetchClients = async (clientId: string) => {
-    console.log("client id", clientId);
     try {
       const { data: clientData, error: clientError } = await supabase
         .from("clients")
@@ -94,9 +97,8 @@ export default function SelectQuotes() {
 
       if (clientError) throw clientError;
 
-      console.log(clientData);
-
       setSelectedClient(clientData);
+      fetchQuoteData(clientData);
     } catch (error) {
       console.error("Failed to fetch client and quotes", error);
     }
@@ -155,7 +157,6 @@ export default function SelectQuotes() {
 
     const handleResize = () => {
       setEntryWidth(innerWidth / planAttributesMapping.length);
-      console.log("yeah", entryWidth);
     };
 
     // Attach event listener for window resize
@@ -201,9 +202,6 @@ export default function SelectQuotes() {
               (planQuote) => planQuote.id === selectedQuote.id,
             ),
         );
-        console.log(selectedQuotes);
-        console.log(plan.selectedQuotes);
-        console.log(uniqueQuotesToAdd);
         return {
           ...plan,
           selectedQuotes: [...plan.selectedQuotes, ...uniqueQuotesToAdd],
@@ -271,31 +269,56 @@ export default function SelectQuotes() {
   };
 
   useEffect(() => {
-    const socket = io(`${process.env.NEXT_PUBLIC_SOCKET_SERVER_URL!}`, {
-      path: "/socket.io",
-      transports: ["websocket"],
-    });
-    // Connect to the Socket.IO server
-    // Listen for 'task_complete' events
-    socket.on("sub_task_complete", (data) => {
-      console.log("Task Complete:", data);
-      fetchQuoteData();
-    });
+    if (selectedClient) {
+      console.log("in socket", selectedClient);
+      const socket = io(`${process.env.NEXT_PUBLIC_SOCKET_SERVER_URL!}`, {
+        path: "/socket.io",
+        transports: ["websocket"],
+      });
 
-    // Listen for 'task_status' events
-    socket.on("task_status", (data) => {
-      console.log("Task Status:", data);
-      if (data.status === "failed") {
-        alert("Failed to process pdfs. Please try again");
-      }
-    });
+      // Connect to the Socket.IO server
+      // Listen for 'task_complete' events
+      socket.on("sub_task_complete", (data) => {
+        console.log("Task Complete:", data);
+        fetchQuoteData(selectedClient);
+      });
 
-    return () => {
-      socket.off("sub_task_complete");
-      socket.off("task_status");
-      socket.close();
-    };
-  }, []);
+      // Listen for 'task_status' events
+      socket.on("task_status", (data) => {
+        console.log("Task Status:", data);
+        if (data.status == "started") {
+          setPdfParsingLoading(true);
+        }
+        if (data.status === "failed") {
+          toast.error("Failed to process PDFs. Please try again.");
+          setPdfParsingLoading(false);
+        }
+      });
+
+      socket.on("task_finished", (data) => {
+        console.log("Task Finished:");
+        setPdfParsingLoading(false);
+        toast.success("PDF(s) processed successfully");
+      });
+
+      return () => {
+        socket.off("sub_task_complete");
+        socket.off("task_status");
+        socket.off("task_finished");
+        socket.close();
+      };
+    }
+  }, [selectedClient]);
+
+  useEffect(() => {
+    if (pdfParsingLoading) {
+      toast.loading("Processing PDF(s)...", {
+        id: "pdfParsing",
+      });
+    } else {
+      toast.dismiss("pdfParsing");
+    }
+  }, [pdfParsingLoading]);
 
   const handleCheckboxChange = (quoteId: number) => {
     setQuotes((prevQuotes) =>
@@ -324,12 +347,12 @@ export default function SelectQuotes() {
     });
   };
 
-  const fetchQuoteData = async () => {
-    if (selectedClient) {
+  const fetchQuoteData = async (clientData: any) => {
+    if (clientData) {
       const { data, error } = await supabase
         .from("quotes")
         .select()
-        .eq("client_id", selectedClient.id);
+        .eq("client_id", clientData.id);
 
       if (error) {
         alert("Error updating data");
@@ -338,17 +361,13 @@ export default function SelectQuotes() {
         setQuotes(data);
         setOriginalQuotes(data);
 
-        if (selectedClient.connected_plans) {
+        if (clientData.connected_plans) {
           // Check if there is data for connected_plans
-          setPlans((selectedClient.connected_plans as any) || []); // Update plans state
+          setPlans((clientData.connected_plans as any) || []); // Update plans state
         }
       }
     }
   };
-
-  useEffect(() => {
-    fetchQuoteData();
-  }, [selectedClient]);
 
   const handleCloseComparison = () => {
     router.push(`/`);

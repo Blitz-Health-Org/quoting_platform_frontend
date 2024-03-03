@@ -17,24 +17,24 @@ import { supabase } from "../../supabase";
 import { SnackBarContext } from "@/src/context/SnackBarContext";
 import { CiShare1 } from "react-icons/ci";
 import { useGetUserData } from "@/src/utils/useGetUserData";
+import { ModalContext } from "@/src/context/ModalContext";
 
 export default function ClientTable({
   setComparisonOpen,
   setSelectedClient,
   selectedClient,
-  setModalOpen,
-  modalOpen,
 }: {
   setComparisonOpen: Dispatch<SetStateAction<boolean>>;
   setSelectedClient: Dispatch<SetStateAction<ClientType>>;
   selectedClient: ClientType;
-  setModalOpen: Dispatch<SetStateAction<string>>;
-  modalOpen: string;
 }) {
   const [clients, setClients] = useState<ClientType[]>([]);
   const {
     userId: [userId, , loading],
   } = useContext(UserContext);
+  const {
+    modalOpen: [modalOpen, setModalOpen],
+  } = useContext(ModalContext);
   const { userData, loadingUserData } = useGetUserData();
 
   const sortedClients = clients
@@ -190,7 +190,6 @@ export default function ClientTable({
                     handleClientDelete={handleClientDelete}
                     setComparisonOpen={setComparisonOpen}
                     setSelectedClient={setSelectedClient}
-                    setModalOpen={setModalOpen}
                   />
                 </div>
               );
