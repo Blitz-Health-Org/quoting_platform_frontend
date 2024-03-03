@@ -53,9 +53,9 @@ export const Navbar = ({ selected }: { selected: string }) => {
   return (
     <div className="invisible w-0 md:visible md:w-1/7 bg-gray-100/50 pb-4 pl-4 pr-4 pt-7 flex flex-col">
       <div className="mb-1 flex justify-left w-full">
-      <a href="/">
-        <Image src="/Blume.png" alt="Bloom Flower" width={90} height={60} />
-      </a>
+        <a href="/">
+          <Image src="/Blume.png" alt="Bloom Flower" width={90} height={60} />
+        </a>
       </div>
 
       <div className="flex flex-col h-full justify-between">

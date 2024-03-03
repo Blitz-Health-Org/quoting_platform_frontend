@@ -17,7 +17,12 @@ type AddQuoteProps = {
   type: any;
 };
 
-export const AddQuote = ({ onClose, client, setModalOpen, type }: AddQuoteProps) => {
+export const AddQuote = ({
+  onClose,
+  client,
+  setModalOpen,
+  type,
+}: AddQuoteProps) => {
   const links: string[] = [];
 
   const handleOverlayClick = (e: React.MouseEvent<HTMLDivElement>) => {
