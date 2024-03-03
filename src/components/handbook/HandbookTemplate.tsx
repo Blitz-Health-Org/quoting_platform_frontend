@@ -51,10 +51,15 @@ export default function HandbookTemplate(props: HandbookTemplateProps) {
         {/*render a single page*/}
         <Page size="A4" style={styles.page}>
           <View style={styles.section}>
-            <Text>Hello</Text>
-          </View>
-          <View style={styles.section}>
-            <Text>World</Text>
+            <Text>Calendar Year Deductible: {props.calendarYearDeductible}</Text>
+            <Text>Calendar Year Maximum: {props.calendarYearMaximum}</Text>
+            <Text>Type 1 Expenses: {props.type1Expenses}</Text>
+            <Text>Type 2 Expenses: {props.type2Expenses}</Text>
+            <Text>Type 3 Expenses: {props.type3Expenses}</Text>
+            <Text>Type 4 Expenses: {props.type4Expenses}</Text>
+            <Text>Orthodontia Lifetime Maximum: {props.orthodontiaLifetimeMaximum}</Text>
+            <Text>Waiting Periods: {props.waitingPeriods}</Text>
+            <Text>OutOfNetwork Reimbursement: {props.outOfNetworkReimbursement}</Text>
           </View>
         </Page>
       </Document>

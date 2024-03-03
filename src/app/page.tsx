@@ -138,6 +138,7 @@ export default function Home() {
             }}
             setModalOpen={setModalOpen}
             client={selectedClient}
+            type={"Main"}
           />
         )}
 
