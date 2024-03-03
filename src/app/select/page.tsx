@@ -117,6 +117,14 @@ const handleBusiness = () => {
     });
   };
 
+  const makeSure = () => {
+    setSnackbar({
+      open: true,
+      message: "Make sure that each plan has at least one quote!",
+      severity: "error",
+    });
+  };
+
   const planAttributesMapping: {
     key: keyof PlanAttributes;
     label: string;
@@ -334,15 +342,19 @@ const handleBusiness = () => {
     // Perform the sorting
     //TODO: handle empty quotes
     const sortedQuotes = quotes.slice().sort((a, b) => {
-      const valueA = parseValue((a.data as any)?.[option]); // Remove extra parenthesis here
-      const valueB = parseValue((b.data as any)?.[option]); // Remove extra parenthesis here
-
-      if (sortOrder === "asc") {
-        return valueA - valueB;
-      } else {
-        return valueB - valueA;
-      }
-    });
+        const valueA = parseValue((a.data as any)?.[option]);
+        const valueB = parseValue((b.data as any)?.[option]);
+      
+        if (valueA === Number.POSITIVE_INFINITY && valueB === Number.POSITIVE_INFINITY) {
+          return 0; // Both are "N/A", keep original order
+        } else if (valueA === Number.POSITIVE_INFINITY) {
+          return sortOrder === "asc" ? 1 : -1; // Put "N/A" at the end or beginning
+        } else if (valueB === Number.POSITIVE_INFINITY) {
+          return sortOrder === "asc" ? -1 : 1; // Put "N/A" at the end or beginning
+        }
+      
+        return sortOrder === "asc" ? valueA - valueB : valueB - valueA;
+      });      
 
     // Update the state with the sorted quotes
     setQuotes(sortedQuotes);
@@ -351,6 +363,7 @@ const handleBusiness = () => {
   const parseValue = (value: string | undefined): number => {
     if (
       value === undefined ||
+      value === null || // Add this check for null values
       value === "MISSING" ||
       value === "" ||
       value.includes("N/A") ||
@@ -358,18 +371,18 @@ const handleBusiness = () => {
       value.includes("+")
     )
       return Number.POSITIVE_INFINITY;
-
+  
     // Remove commas, dollar signs, and periods
     const cleanedValue = value.replace(/[,$.]/g, "");
-
+  
     // If the value is a percentage (contains '%'), remove '%' and convert to a number
     if (cleanedValue.includes("%")) {
       return parseFloat(cleanedValue.replace("%", "")) || 0;
     }
-
+  
     // If the value is a regular number or a numeric string, convert it to a number
     return Number(cleanedValue) || 0;
-  };
+  };  
 
   useEffect(() => {
     const socket = io(`${process.env.NEXT_PUBLIC_SOCKET_SERVER_URL!}`, {
@@ -428,8 +441,12 @@ const handleBusiness = () => {
   const handleNextClick = async () => {
     const clientId = selectedClient.id;
     if (!plans.length) {
-      createAPlan();
-      return;
+        createAPlan();
+        return;
+    }
+    if (plans.some(plan => plan.selectedQuotes.length === 0)) {
+        makeSure();
+        return;
     }
     updateConnectedPlans(plans);
     comparison_created_true();
