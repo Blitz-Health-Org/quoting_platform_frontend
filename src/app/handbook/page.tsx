@@ -76,23 +76,27 @@ export default function QuotingPage() {
     <div className="flex bg-gray-100 w-full h-screen">
       <Navbar selected="Handbook" />
 
-  <div className="w-full flex-col pt-6 md:w-6/7">
+  <div className="w-full flex-col pt-6 pl-6 md:w-6/7">
     <div className="flex gap-3">
       {client?.connected_plans?.map((plan: any, index: any) => (
-        <li key={index}>
-          {plan?.name}
+        <div className="outline outline-1 outline-gray-400 bg-slate-100 rounded-md p-2">
+        <ul key={index}>
+          <p className="font-semibold">{plan?.name}</p>
             <ul>
-              <div className="outline outline-1 outline-gray-400 bg-slate-100 rounded-md p-2">
+              <div>
                 {plan.selectedQuotes?.map((quote: any, quoteIndex: any) => (
                   <li key={quoteIndex}>Quote: {quote.name} - Plan ID: {plan.id}</li>
                 ))}
               </div>
             </ul>
-          </li>      
+          </ul>
+          </div>      
         ))}
       </div>
 
-      <Button onClick={() => setDisplayPDF(true)}>Render Handbook</Button>
+      <button onClick={() => setDisplayPDF(true)} className="mt-3 rounded-sm px-2 py-1 outline outline-1 outline-gray-300 bg-slate-100">
+        Render Handbook
+      </button>
       </div>
     </div>
   );
