@@ -2,7 +2,7 @@
 
 import Image, { StaticImageData } from "next/image";
 import { ClientType } from "@/src/types/custom/Client";
-import { useRouter } from "next/navigation";
+import { redirect, useRouter } from "next/navigation";
 import { MdFileUpload } from "react-icons/md";
 import { SnackbarAlert } from "../../components/ui/SnackbarAlert";
 import { supabase } from "../../supabase";
@@ -95,7 +95,10 @@ export default function SelectQuotes() {
         .eq("id", clientId)
         .single();
 
-      if (clientError) throw clientError;
+        if (clientError) {
+          alert("No client found");
+          redirect("/404");
+        }
 
       setSelectedClient(clientData);
       fetchQuoteData(clientData);

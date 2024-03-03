@@ -10,21 +10,23 @@ import {
 import { useEffect, useState } from "react";
 
 export interface HandbookTemplateProps {
-  planName: number;
-  deductible: number;
-  coinsurance: number;
-  oopMax: number;
-  PCPcopay: number;
-  specialistCopay: number;
-  ERcopay: number;
-  pharmacyCopay: number;
-  inpatientCopay: number;
-  urgentCareCopay: number;
-  prescriptionDeductible: number;
-  eeRate: number;
-  esRate: number;
-  ecRate: number;
-  efRate: number;
+  plan_name: any;
+  plan_id: any;
+  deductible: any;
+  coinsurance: any;
+  employee_only_rate: any;
+  employee_spouse_rate: any;
+  employee_child_rate: any;
+  employee_family_rate: any;
+  pcp_copay: any;
+  specialist_copay: any;
+  er_copay: any;
+  pharmacy_copay: any;
+  inpatient_copay: any;
+  urgent_care_copay: any;
+  prescription_deductible: any;
+  total_cost: any;
+  out_of_pocket_max: any;
 }
 
 // Create Document Component
@@ -71,33 +73,21 @@ export default function HandbookTemplate(props: HandbookTemplateProps) {
         {/*render a single page*/}
         <Page size="A4" style={styles.page}>
           <View style={styles.section}>
-            <Text style={styles.propText}>Plan Name: {props.planName}</Text>
+            <Text style={styles.propText}>Plan Name: {props.plan_name}</Text>
             <Text style={styles.propText}>Deductible: {props.deductible}</Text>
-            <Text style={styles.propText}>
-              Coinsurance: {props.coinsurance}
-            </Text>
-            <Text style={styles.propText}>OOP Max: {props.oopMax}</Text>
-            <Text style={styles.propText}>PCP Copay: {props.PCPcopay}</Text>
-            <Text style={styles.propText}>
-              Specialist Copay: {props.specialistCopay}
-            </Text>
-            <Text style={styles.propText}>ER Copay: {props.ERcopay}</Text>
-            <Text style={styles.propText}>
-              Pharmacy Copay: {props.pharmacyCopay}
-            </Text>
-            <Text style={styles.propText}>
-              Inpatient Copay: {props.inpatientCopay}
-            </Text>
-            <Text style={styles.propText}>
-              Urgent Care Copay: {props.urgentCareCopay}
-            </Text>
-            <Text style={styles.propText}>
-              Prescription Deductible: {props.prescriptionDeductible}
-            </Text>
-            <Text style={styles.propText}>EE Rate: {props.eeRate}</Text>
-            <Text style={styles.propText}>ES Rate: {props.esRate}</Text>
-            <Text style={styles.propText}>EC Rate: {props.ecRate}</Text>
-            <Text style={styles.propText}>EF Rate: {props.efRate}</Text>
+            <Text style={styles.propText}>Coinsurance: {props.coinsurance}</Text>
+            <Text style={styles.propText}>OOP Max: {props.out_of_pocket_max}</Text>
+            <Text style={styles.propText}>PCP Copay: {props.pcp_copay}</Text>
+            <Text style={styles.propText}>Specialist Copay: {props.specialist_copay}</Text>
+            <Text style={styles.propText}>ER Copay: {props.er_copay}</Text>
+            <Text style={styles.propText}>Pharmacy Copay: {props.pharmacy_copay}</Text>
+            <Text style={styles.propText}>Inpatient Copay: {props.inpatient_copay}</Text>
+            <Text style={styles.propText}>Urgent Care Copay: {props.urgent_care_copay}</Text>
+            <Text style={styles.propText}>Prescription Deductible: {props.prescription_deductible}</Text>
+            <Text style={styles.propText}>EE Rate: {props.employee_only_rate}</Text>
+            <Text style={styles.propText}>ES Rate: {props.employee_spouse_rate}</Text>
+            <Text style={styles.propText}>EC Rate: {props.employee_child_rate}</Text>
+            <Text style={styles.propText}>EF Rate: {props.employee_family_rate}</Text>
           </View>
         </Page>
       </Document>
