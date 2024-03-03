@@ -13,16 +13,13 @@ type AddQuoteProps = {
   onClose: () => void;
   client: any;
   setModalOpen: any;
-  setComparisonOpen: Dispatch<SetStateAction<boolean>>;
-  setSelectedClient: Dispatch<SetStateAction<ClientType>>;
+
 };
 
 export const AddQuote = ({
   onClose,
   client,
   setModalOpen,
-  setComparisonOpen,
-  setSelectedClient,
 }: AddQuoteProps) => {
   const links: string[] = [];
 
@@ -124,9 +121,6 @@ export const AddQuote = ({
     } catch (error) {
       console.error("Fetch error: ", error);
     }
-
-    setSelectedClient(client);
-    setComparisonOpen(true);
     setModalOpen("");
   };
 

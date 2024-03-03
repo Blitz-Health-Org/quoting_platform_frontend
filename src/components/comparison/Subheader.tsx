@@ -48,7 +48,7 @@ export const Subheader: React.FC<SubheaderProps> = ({
 
   const handleBusiness2 = (index: any) => {
     // router.push(`/?clientId=${clientId}`);
-    window.location.href = `/?clientId=${clientId}`;
+    window.location.href = `/select?clientId=${clientId}`;
     return;
   };
 
