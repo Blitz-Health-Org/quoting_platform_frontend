@@ -7,11 +7,7 @@ import { MdFileUpload } from "react-icons/md";
 import { SnackbarAlert } from "../../components/ui/SnackbarAlert";
 import { supabase } from "../../supabase";
 import { notFound, useSearchParams } from "next/navigation";
-import {
-  useContext,
-  useEffect,
-  useState,
-} from "react";
+import { useContext, useEffect, useState } from "react";
 import { IoMdArrowBack } from "react-icons/io";
 import { QuoteType } from "@/src/types/custom/Quote";
 import { IconBuilding } from "@tabler/icons-react";
@@ -499,7 +495,6 @@ export default function SelectQuotes() {
             handleAddQuotesToPlan={handleAddQuotesToPlan}
             setSnackbar={setSnackbar}
           />
-        
         </div>
       </main>
 
