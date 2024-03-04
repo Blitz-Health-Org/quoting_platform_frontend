@@ -95,13 +95,13 @@ export const SelectedQuotesACAPage = ({
                           {quote.logo_url && (
                             <Image
                               src={quote.logo_url}
-                              alt={`Logo for ${quote[attribute.key]}`}
+                              alt={`Logo for ${(quote as any)[attribute.key]}`}
                               width={20}
                               height={20}
                               className="mr-2 rounded-md"
                             />
                           )}
-                          <p>{quote[attribute.key] || "Sup"}</p>
+                          <p>{(quote as any)[attribute.key] || "Sup"}</p>
                         </div>
                       ) : (
                         <p>{(quote.data as any)?.[attribute.key] ?? "N/A"}</p>
