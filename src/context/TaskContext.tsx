@@ -41,17 +41,19 @@ export const TaskContextProvider = ({
     // Check on the status of each task in the server
     if (pendingTaskCheck && taskInfo) {
       taskInfo.forEach((task) => {
-        fetch(
-          `${process.env.NEXT_PUBLIC_BACKEND_URL}/task/status/${task.taskId}`,
-        )
-          .then((res) => res.json())
-          .then((data) => {
-            // if it is completed or failed, remove the task from the local storage
-            if (data.status === "completed" || data.status === "failed") {
-              // Remove the task from the local storage
-              setTaskInfo(taskInfo.filter((t) => t.taskId !== task.taskId));
-            }
-          });
+        if (task.taskId) {
+          fetch(
+            `${process.env.NEXT_PUBLIC_BACKEND_URL}/task/status/${task.taskId}`,
+          )
+            .then((res) => res.json())
+            .then((data) => {
+              // if it is completed or failed, remove the task from the local storage
+              if (data.status === "completed" || data.status === "failed") {
+                // Remove the task from the local storage
+                setTaskInfo(taskInfo.filter((t) => t.taskId !== task.taskId));
+              }
+            });
+        }
       });
       setPendingTaskCheck(false);
     }
@@ -59,17 +61,21 @@ export const TaskContextProvider = ({
 
   // Logic for loading state for parsing tasks
   useEffect(() => {
+    console.log("taskInfo IN TASK CONTEXT", taskInfo);
     let loadingParse = false;
     // Check if there are any parsing tasks loading
     if (!loading && taskInfo) {
+      console.log("IN TASKINFO LOOP");
       for (const task of taskInfo) {
+        console.log(task);
         if (task.type === "parse") {
+          console.log("FOUND PARSING TASK");
           toast.loading("Processing PDF(s)...", {
             id: "pdfParsing",
           });
           loadingParse = true;
+          break;
         }
-        break;
       }
     }
     if (!loadingParse) toast.dismiss("pdfParsing");

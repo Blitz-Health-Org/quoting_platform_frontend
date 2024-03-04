@@ -3,6 +3,7 @@ import toast from "react-hot-toast";
 import io, { Socket } from "socket.io-client";
 import { TaskContext } from "./TaskContext";
 import { useLocalStorage } from "../utils/useLocalStorage";
+import { UserContext } from "./UserContext";
 
 export type SocketTasksContextProps = {
   socketTasks: [
@@ -17,10 +18,13 @@ export const SocketTasksContext = createContext<SocketTasksContextProps>({
 });
 
 export function SocketProvider({ children }: { children: React.ReactNode }) {
-  const [socket, setSocket] = useState<Socket>();
   const [socketTasks, setSocketTasks, loading] = useLocalStorage<
     string[] | undefined
   >("socketTasks", undefined);
+
+  const {
+    userId: [userId],
+  } = useContext(UserContext);
 
   const {
     taskInfo: [taskInfo, setTaskInfo],
@@ -33,11 +37,10 @@ export function SocketProvider({ children }: { children: React.ReactNode }) {
       transports: ["websocket"],
     });
 
-    setSocket(socket);
     console.log("Connected to Socket.IO server", socket);
 
     // Listen for 'task_complete' events
-    socket.on("sub_task_complete", (data) => {
+    socket.on(`sub_task_complete/${userId}`, (data) => {
       console.log("Task Complete:", data);
       if (socketTasks) {
         if (!socketTasks.includes("fetch_quotes")) {
@@ -50,7 +53,7 @@ export function SocketProvider({ children }: { children: React.ReactNode }) {
     });
 
     // Listen for 'task_status' events
-    socket.on("task_status", (data) => {
+    socket.on(`task_status/${userId}`, (data) => {
       console.log("Task Status:", data);
       if (data.status == "started") {
         if (taskInfo) {
@@ -71,19 +74,19 @@ export function SocketProvider({ children }: { children: React.ReactNode }) {
       }
     });
 
-    socket.on("task_finished", (data) => {
+    socket.on(`task_finished/${userId}`, (data) => {
       console.log("Task Finished:");
       setTaskInfo(taskInfo?.filter((task) => task.taskId !== data.task_id));
       if (data.type === "parse") toast.success("PDF(s) processed successfully");
     });
 
     return () => {
-      socket.off("sub_task_complete");
-      socket.off("task_status");
-      socket.off("task_finished");
+      socket.off(`task_status/${userId}`);
+      socket.off(`sub_task_complete/${userId}`);
+      socket.off(`task_finished/${userId}`);
       socket.close();
     };
-  }, [socketTasks, taskInfo]);
+  }, [taskInfo]);
 
   return (
     <SocketTasksContext.Provider
