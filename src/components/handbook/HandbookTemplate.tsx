@@ -7,32 +7,59 @@ import {
   StyleSheet,
   PDFViewer,
 } from "@react-pdf/renderer";
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
+
+type PlanDetails = {
+  plan_name: string;
+  plan_id: string;
+  deductible: string;
+  coinsurance: string;
+  employee_only_rate: string;
+  employee_spouse_rate: string;
+  employee_child_rate: string;
+  employee_family_rate: string;
+  pcp_copay: string;
+  specialist_copay: string;
+  er_copay: string;
+  pharmacy_copay: string;
+  inpatient_copay: string;
+  urgent_care_copay: string;
+  prescription_deductible: string;
+  total_cost: string;
+  out_of_pocket_max: string;
+};
+
+type DentalQuoteDetails = {
+  plan_name: string;
+  plan_id: string;
+  deductible: string;
+  coinsurance: string;
+  employee_only_rate: string;
+  employee_spouse_rate: string;
+  employee_child_rate: string;
+  employee_family_rate: string;
+  pcp_copay: string;
+  specialist_copay: string;
+  er_copay: string;
+  pharmacy_copay: string;
+  inpatient_copay: string;
+  urgent_care_copay: string;
+  prescription_deductible: string;
+  total_cost: string;
+  out_of_pocket_max: string;
+};
 
 export interface HandbookTemplateProps {
-  plan_name: any;
-  plan_id: any;
-  deductible: any;
-  coinsurance: any;
-  employee_only_rate: any;
-  employee_spouse_rate: any;
-  employee_child_rate: any;
-  employee_family_rate: any;
-  pcp_copay: any;
-  specialist_copay: any;
-  er_copay: any;
-  pharmacy_copay: any;
-  inpatient_copay: any;
-  urgent_care_copay: any;
-  prescription_deductible: any;
-  total_cost: any;
-  out_of_pocket_max: any;
+  quoteData: PlanDetails[] | undefined;
+  dentalQuoteData: DentalQuoteDetails[] | undefined;
 }
 
 // Create Document Component
 export default function HandbookTemplate(props: HandbookTemplateProps) {
   const [styles, setStyles] = useState({} as any);
   // Create styles
+  console.log("does this work", props.dentalQuoteData)
+  
   useEffect(() => {
     setStyles(
       StyleSheet.create({
@@ -45,8 +72,8 @@ export default function HandbookTemplate(props: HandbookTemplateProps) {
           padding: 20,
         },
         viewer: {
-          width: window.innerWidth, //the pdf viewer will take up all of the width and height
-          height: window.innerHeight,
+          width: '100%', //the pdf viewer will take up all of the width and height
+          height: '100%',
         },
         propText: {
           fontWeight: "semibold",
@@ -71,23 +98,29 @@ export default function HandbookTemplate(props: HandbookTemplateProps) {
       {/* Start of the document*/}
       <Document>
         {/*render a single page*/}
-        <Page size="A4" style={styles.page}>
-          <View style={styles.section}>
-            <Text style={styles.propText}>Plan Name: {props.plan_name}</Text>
-            <Text style={styles.propText}>Deductible: {props.deductible}</Text>
-            <Text style={styles.propText}>Coinsurance: {props.coinsurance}</Text>
-            <Text style={styles.propText}>OOP Max: {props.out_of_pocket_max}</Text>
-            <Text style={styles.propText}>PCP Copay: {props.pcp_copay}</Text>
-            <Text style={styles.propText}>Specialist Copay: {props.specialist_copay}</Text>
-            <Text style={styles.propText}>ER Copay: {props.er_copay}</Text>
-            <Text style={styles.propText}>Pharmacy Copay: {props.pharmacy_copay}</Text>
-            <Text style={styles.propText}>Inpatient Copay: {props.inpatient_copay}</Text>
-            <Text style={styles.propText}>Urgent Care Copay: {props.urgent_care_copay}</Text>
-            <Text style={styles.propText}>Prescription Deductible: {props.prescription_deductible}</Text>
-            <Text style={styles.propText}>EE Rate: {props.employee_only_rate}</Text>
-            <Text style={styles.propText}>ES Rate: {props.employee_spouse_rate}</Text>
-            <Text style={styles.propText}>EC Rate: {props.employee_child_rate}</Text>
-            <Text style={styles.propText}>EF Rate: {props.employee_family_rate}</Text>
+          <Page size="A4" style={styles.page}>
+            <View style={styles.section}>
+              {props.quoteData?.map((plan, index) => (
+                <React.Fragment key={index}>
+                  <Text style={styles.propText}>Plan Name: {plan.plan_name || "MISSING"}</Text>
+                  <Text style={styles.propText}>Deductible: {plan.deductible || "MISSING"}</Text>
+                  <Text style={styles.propText}>Coinsurance: {plan.coinsurance || "MISSING"}</Text>
+                  <Text style={styles.propText}>OOP Max: {plan.out_of_pocket_max || "MISSING"}</Text>
+                  <Text style={styles.propText}>PCP Copay: {plan.pcp_copay || "MISSING"}</Text>
+                  <Text style={styles.propText}>Specialist Copay: {plan.specialist_copay || "MISSING"}</Text>
+                  <Text style={styles.propText}>ER Copay: {plan.er_copay || "MISSING"}</Text>
+                  <Text style={styles.propText}>Pharmacy Copay: {plan.pharmacy_copay || "MISSING"}</Text>
+                  <Text style={styles.propText}>Inpatient Copay: {plan.inpatient_copay || "MISSING"}</Text>
+                  <Text style={styles.propText}>Urgent Care Copay: {plan.urgent_care_copay || "MISSING"}</Text>
+                  <Text style={styles.propText}>Prescription Deductible: {plan.prescription_deductible || "MISSING"}</Text>
+                  <Text style={styles.propText}>EE Rate: {plan.employee_only_rate || "MISSING"}</Text>
+                  <Text style={styles.propText}>ES Rate: {plan.employee_spouse_rate || "MISSING"}</Text>
+                  <Text style={styles.propText}>EC Rate: {plan.employee_child_rate || "MISSING"}</Text>
+                  <Text style={styles.propText}>EF Rate: {plan.employee_family_rate || "MISSING"}</Text>
+                  <Text style={styles.propText}>Plan ID: {plan.plan_id || "MISSING"}</Text>
+                  <Text style={styles.propText}>Total Cost: {plan.total_cost || "MISSING"}</Text>
+                </React.Fragment>
+            ))}
           </View>
         </Page>
       </Document>

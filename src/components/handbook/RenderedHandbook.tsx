@@ -7,7 +7,7 @@ const PDFViewer = dynamic(() => import("./HandbookTemplate"), {
 
 export default function RenderedHandbook(params: HandbookTemplateProps) {
   return (
-    <div className="bg-gray-100 w-full h-screen">
+    <div className="bg-gray-100 w-full h-full">
       <PDFViewer {...params} />
     </div>
   );
