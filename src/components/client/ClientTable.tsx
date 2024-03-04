@@ -44,36 +44,38 @@ export default function ClientTable({
 
   const { setSnackbar } = useContext(SnackBarContext);
 
-  useEffect(() => {
-    const fetchData = async () => {
-      let queryIds = [];
+  const fetchData = async () => {
+    let queryIds = [];
 
-      if (userData?.permissions == "admin_org") {
-        // Get all the users under the organization
-        const { data, error } = await supabase
-          .from("users")
-          .select()
-          .eq("organization_id", userData.organization_id);
-        if (error) {
-          console.log("error", error);
-        } else {
-          queryIds = data.map((user) => user.user_auth_id);
-        }
-      } else {
-        queryIds = [userId];
-      }
+    if (userData?.permissions == "admin_org") {
+      // Get all the users under the organization
       const { data, error } = await supabase
-        .from("clients")
+        .from("users")
         .select()
-        .in("user_id", queryIds);
-
+        .eq("organization_id", userData.organization_id);
       if (error) {
         console.log("error", error);
       } else {
-        console.log("data retrieved", data);
-        setClients(data); //TODO: make sure the data recieved matches client type
+        queryIds = data.map((user) => user.user_auth_id);
       }
-    };
+    } else {
+      queryIds = [userId];
+    }
+    const { data, error } = await supabase
+      .from("clients")
+      .select()
+      .in("user_id", queryIds);
+
+    if (error) {
+      return { result: "error", error: error };
+    } else {
+      console.log("data retrieved", data);
+      setClients(data); //TODO: make sure the data recieved matches client type
+      return { result: "success", data: data };
+    }
+  };
+
+  useEffect(() => {
     if (!loading && !loadingUserData) fetchData();
   }, [loading, loadingUserData, userData, userId]);
 
@@ -104,51 +106,34 @@ export default function ClientTable({
 
   async function handleClientDelete(client: ClientType) {
     // SEND DATA
-    try {
-      const { error } = await supabase
-        .from("clients")
-        .delete()
-        .eq("id", client.id);
+    const { error } = await supabase
+      .from("clients")
+      .delete()
+      .eq("id", client.id);
 
-      if (error) {
+    if (error) {
+      setSnackbar({
+        open: true,
+        message: "Delete failed",
+        severity: "error",
+      });
+      console.error("Error inserting data:", error);
+    } else {
+      //UPDATE DATA
+      const result = await fetchData();
+      if (result.result === "error") {
         setSnackbar({
           open: true,
           message: "Delete failed",
           severity: "error",
         });
-        console.error("Error inserting data:", error);
       } else {
-        //UPDATE DATA
-        try {
-          const { data, error } = await supabase
-            .from("clients")
-            .select()
-            .eq("user_id", userId);
-          if (error) {
-            alert("Error retrieving data");
-          } else {
-            setClients(data);
-            console.log("Data retrieved successfully:", data);
-          }
-        } catch (error) {
-          setSnackbar({
-            open: true,
-            message: "Delete failed",
-            severity: "error",
-          });
-        }
         setSnackbar({
           open: true,
           message: `${client.name} Deleted!`,
           severity: "success",
         });
       }
-    } catch (error) {
-      setSnackbar({
-        open: true,
-        message: "Delete failed",
-        severity: "error",
-      });
     }
   }
 
