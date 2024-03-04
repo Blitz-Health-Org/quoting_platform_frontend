@@ -20,7 +20,7 @@ type SubheaderProps = {
   copyUrlToClipboard: any;
   handleDownloadCSV: any;
   plansLength: number;
-  clientId: any;
+  client: any;
 };
 
 export const Subheader: React.FC<SubheaderProps> = ({
@@ -29,7 +29,7 @@ export const Subheader: React.FC<SubheaderProps> = ({
   copyUrlToClipboard,
   handleDownloadCSV,
   plansLength,
-  clientId,
+  client,
 }) => {
   const { setSnackbar } = useContext(SnackBarContext);
 
@@ -48,7 +48,7 @@ export const Subheader: React.FC<SubheaderProps> = ({
 
   const handleBusiness2 = (index: any) => {
     // router.push(`/?clientId=${clientId}`);
-    window.location.href = `/select?clientId=${clientId}`;
+    window.location.href = `/select?clientId=${client.id}`;
     return;
   };
 
@@ -148,7 +148,10 @@ export const Subheader: React.FC<SubheaderProps> = ({
       </div>
 
       {currentPlanModalOpen && (
-        <AddCurrentPlanModal setModalOpen={setCurrentPlanModalOpen} />
+        <AddCurrentPlanModal
+          client={client}
+          setModalOpen={setCurrentPlanModalOpen}
+        />
       )}
     </div>
   );
