@@ -81,9 +81,9 @@ export function SocketProvider({ children }: { children: React.ReactNode }) {
     });
 
     return () => {
-      socket.off("sub_task_complete");
-      socket.off("task_status");
-      socket.off("task_finished");
+      socket.off(`task_status/${userId}`);
+      socket.off(`sub_task_complete/${userId}`);
+      socket.off(`task_finished/${userId}`);
       socket.close();
     };
   }, [socketTasks, taskInfo]);
