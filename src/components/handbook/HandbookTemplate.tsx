@@ -58,8 +58,8 @@ export interface HandbookTemplateProps {
 export default function HandbookTemplate(props: HandbookTemplateProps) {
   const [styles, setStyles] = useState({} as any);
   // Create styles
-  console.log("does this work", props.dentalQuoteData)
-  
+  console.log("does this work", props.dentalQuoteData);
+
   useEffect(() => {
     setStyles(
       StyleSheet.create({
@@ -72,8 +72,8 @@ export default function HandbookTemplate(props: HandbookTemplateProps) {
           padding: 20,
         },
         viewer: {
-          width: '100%', //the pdf viewer will take up all of the width and height
-          height: '100%',
+          width: "100%", //the pdf viewer will take up all of the width and height
+          height: "100%",
         },
         propText: {
           fontWeight: "semibold",
@@ -98,28 +98,63 @@ export default function HandbookTemplate(props: HandbookTemplateProps) {
       {/* Start of the document*/}
       <Document>
         {/*render a single page*/}
-          <Page size="A4" style={styles.page}>
-            <View style={styles.section}>
-              {props.quoteData?.map((plan, index) => (
-                <React.Fragment key={index}>
-                  <Text style={styles.propText}>Plan Name: {plan.plan_name || "MISSING"}</Text>
-                  <Text style={styles.propText}>Deductible: {plan.deductible || "MISSING"}</Text>
-                  <Text style={styles.propText}>Coinsurance: {plan.coinsurance || "MISSING"}</Text>
-                  <Text style={styles.propText}>OOP Max: {plan.out_of_pocket_max || "MISSING"}</Text>
-                  <Text style={styles.propText}>PCP Copay: {plan.pcp_copay || "MISSING"}</Text>
-                  <Text style={styles.propText}>Specialist Copay: {plan.specialist_copay || "MISSING"}</Text>
-                  <Text style={styles.propText}>ER Copay: {plan.er_copay || "MISSING"}</Text>
-                  <Text style={styles.propText}>Pharmacy Copay: {plan.pharmacy_copay || "MISSING"}</Text>
-                  <Text style={styles.propText}>Inpatient Copay: {plan.inpatient_copay || "MISSING"}</Text>
-                  <Text style={styles.propText}>Urgent Care Copay: {plan.urgent_care_copay || "MISSING"}</Text>
-                  <Text style={styles.propText}>Prescription Deductible: {plan.prescription_deductible || "MISSING"}</Text>
-                  <Text style={styles.propText}>EE Rate: {plan.employee_only_rate || "MISSING"}</Text>
-                  <Text style={styles.propText}>ES Rate: {plan.employee_spouse_rate || "MISSING"}</Text>
-                  <Text style={styles.propText}>EC Rate: {plan.employee_child_rate || "MISSING"}</Text>
-                  <Text style={styles.propText}>EF Rate: {plan.employee_family_rate || "MISSING"}</Text>
-                  <Text style={styles.propText}>Plan ID: {plan.plan_id || "MISSING"}</Text>
-                  <Text style={styles.propText}>Total Cost: {plan.total_cost || "MISSING"}</Text>
-                </React.Fragment>
+        <Page size="A4" style={styles.page}>
+          <View style={styles.section}>
+            {props.quoteData?.map((plan, index) => (
+              <React.Fragment key={index}>
+                <Text style={styles.propText}>
+                  Plan Name: {plan.plan_name || "MISSING"}
+                </Text>
+                <Text style={styles.propText}>
+                  Deductible: {plan.deductible || "MISSING"}
+                </Text>
+                <Text style={styles.propText}>
+                  Coinsurance: {plan.coinsurance || "MISSING"}
+                </Text>
+                <Text style={styles.propText}>
+                  OOP Max: {plan.out_of_pocket_max || "MISSING"}
+                </Text>
+                <Text style={styles.propText}>
+                  PCP Copay: {plan.pcp_copay || "MISSING"}
+                </Text>
+                <Text style={styles.propText}>
+                  Specialist Copay: {plan.specialist_copay || "MISSING"}
+                </Text>
+                <Text style={styles.propText}>
+                  ER Copay: {plan.er_copay || "MISSING"}
+                </Text>
+                <Text style={styles.propText}>
+                  Pharmacy Copay: {plan.pharmacy_copay || "MISSING"}
+                </Text>
+                <Text style={styles.propText}>
+                  Inpatient Copay: {plan.inpatient_copay || "MISSING"}
+                </Text>
+                <Text style={styles.propText}>
+                  Urgent Care Copay: {plan.urgent_care_copay || "MISSING"}
+                </Text>
+                <Text style={styles.propText}>
+                  Prescription Deductible:{" "}
+                  {plan.prescription_deductible || "MISSING"}
+                </Text>
+                <Text style={styles.propText}>
+                  EE Rate: {plan.employee_only_rate || "MISSING"}
+                </Text>
+                <Text style={styles.propText}>
+                  ES Rate: {plan.employee_spouse_rate || "MISSING"}
+                </Text>
+                <Text style={styles.propText}>
+                  EC Rate: {plan.employee_child_rate || "MISSING"}
+                </Text>
+                <Text style={styles.propText}>
+                  EF Rate: {plan.employee_family_rate || "MISSING"}
+                </Text>
+                <Text style={styles.propText}>
+                  Plan ID: {plan.plan_id || "MISSING"}
+                </Text>
+                <Text style={styles.propText}>
+                  Total Cost: {plan.total_cost || "MISSING"}
+                </Text>
+              </React.Fragment>
             ))}
           </View>
         </Page>
