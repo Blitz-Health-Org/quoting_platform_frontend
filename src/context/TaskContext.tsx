@@ -61,17 +61,21 @@ export const TaskContextProvider = ({
 
   // Logic for loading state for parsing tasks
   useEffect(() => {
+    console.log("taskInfo IN TASK CONTEXT", taskInfo);
     let loadingParse = false;
     // Check if there are any parsing tasks loading
     if (!loading && taskInfo) {
+      console.log("IN TASKINFO LOOP");
       for (const task of taskInfo) {
+        console.log(task);
         if (task.type === "parse") {
+          console.log("FOUND PARSING TASK");
           toast.loading("Processing PDF(s)...", {
             id: "pdfParsing",
           });
           loadingParse = true;
+          break;
         }
-        break;
       }
     }
     if (!loadingParse) toast.dismiss("pdfParsing");

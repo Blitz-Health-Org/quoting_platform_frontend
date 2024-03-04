@@ -40,9 +40,7 @@ export default function RootLayout({
           <AuthContextProvider>
             <UserContextProvider>
               <TaskContextProvider>
-                <SocketProvider>
-                  <ModalContextProvider>{children}</ModalContextProvider>
-                </SocketProvider>
+                <SocketProvider>{children}</SocketProvider>
               </TaskContextProvider>
             </UserContextProvider>
           </AuthContextProvider>
