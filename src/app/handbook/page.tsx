@@ -32,13 +32,12 @@ export default function QuotingPage() {
         .single();
 
       if (clientError) {
-        console.log("error", clientError)
+        console.log("error", clientError);
       }
 
-      console.log(clientData)
+      console.log(clientData);
       setClient(clientData);
       setPlans(clientData.connected_plans);
-
     } catch (error) {
       console.error("Error fetching data:", error);
       // Optionally handle errors, such as setting an error state or showing a notification
@@ -76,27 +75,35 @@ export default function QuotingPage() {
     <div className="flex bg-gray-100 w-full h-screen">
       <Navbar selected="Handbook" />
 
-  <div className="w-full flex-col pt-6 pl-6 md:w-6/7">
-    <div className="flex gap-3">
-      {client?.connected_plans?.map((plan: any, index: any) => (
-        <div className="outline outline-1 outline-gray-400 bg-slate-100 rounded-md p-2">
-        <ul key={index}>
-          <p className="font-semibold">{plan?.name}</p>
-            <ul>
-              <div>
-                {plan.selectedQuotes?.map((quote: any, quoteIndex: any) => (
-                  <li key={quoteIndex}>Quote: {quote.name} - Plan ID: {plan.id}</li>
-                ))}
-              </div>
-            </ul>
-          </ul>
-          </div>      
-        ))}
-      </div>
+      <div className="w-full flex-col pt-6 pl-6 md:w-6/7">
+        <div className="flex gap-3">
+          {client?.connected_plans?.map((plan: any, index: any) => (
+            <div
+              key={index}
+              className="outline outline-1 outline-gray-400 bg-slate-100 rounded-md p-2"
+            >
+              <ul>
+                <p className="font-semibold">{plan?.name}</p>
+                <ul>
+                  <div>
+                    {plan.selectedQuotes?.map((quote: any, quoteIndex: any) => (
+                      <li key={quoteIndex}>
+                        Quote: {quote.name} - Plan ID: {plan.id}
+                      </li>
+                    ))}
+                  </div>
+                </ul>
+              </ul>
+            </div>
+          ))}
+        </div>
 
-      <button onClick={() => setDisplayPDF(true)} className="mt-3 rounded-sm px-2 py-1 outline outline-1 outline-gray-300 bg-slate-100">
-        Render Handbook
-      </button>
+        <button
+          onClick={() => setDisplayPDF(true)}
+          className="mt-3 rounded-sm px-2 py-1 outline outline-1 outline-gray-300 bg-slate-100"
+        >
+          Render Handbook
+        </button>
       </div>
     </div>
   );

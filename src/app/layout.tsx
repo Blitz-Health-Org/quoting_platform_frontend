@@ -10,6 +10,8 @@ import { SnackBarContext } from "../context/SnackBarContext";
 import { useState } from "react";
 import { Toaster } from "react-hot-toast";
 import { ModalContextProvider } from "../context/ModalContext";
+import { TaskContext, TaskContextProvider } from "../context/TaskContext";
+import { SocketProvider } from "../context/SocketContext";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -37,7 +39,11 @@ export default function RootLayout({
         <SnackBarContext.Provider value={{ setSnackbar }}>
           <AuthContextProvider>
             <UserContextProvider>
-              <ModalContextProvider>{children}</ModalContextProvider>
+              <TaskContextProvider>
+                <SocketProvider>
+                  <ModalContextProvider>{children}</ModalContextProvider>
+                </SocketProvider>
+              </TaskContextProvider>
             </UserContextProvider>
           </AuthContextProvider>
           <SnackbarAlert
