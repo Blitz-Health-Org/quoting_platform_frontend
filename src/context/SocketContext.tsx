@@ -34,7 +34,7 @@ export function SocketProvider({ children }: { children: React.ReactNode }) {
   useEffect(() => {
     // Connect to the Socket.IO server
     const socket = io(`${process.env.NEXT_PUBLIC_SOCKET_SERVER_URL!}`, {
-      path: `/socket.io/${userId}`,
+      path: "/socket.io",
       transports: ["websocket"],
     });
 
@@ -42,7 +42,7 @@ export function SocketProvider({ children }: { children: React.ReactNode }) {
     console.log("Connected to Socket.IO server", socket);
 
     // Listen for 'task_complete' events
-    socket.on("sub_task_complete", (data) => {
+    socket.on(`sub_task_complete/${userId}`, (data) => {
       console.log("Task Complete:", data);
       if (socketTasks) {
         if (!socketTasks.includes("fetch_quotes")) {
@@ -55,7 +55,7 @@ export function SocketProvider({ children }: { children: React.ReactNode }) {
     });
 
     // Listen for 'task_status' events
-    socket.on("task_status", (data) => {
+    socket.on(`task_status/${userId}`, (data) => {
       console.log("Task Status:", data);
       if (data.status == "started") {
         if (taskInfo) {
@@ -76,7 +76,7 @@ export function SocketProvider({ children }: { children: React.ReactNode }) {
       }
     });
 
-    socket.on("task_finished", (data) => {
+    socket.on(`task_finished/${userId}`, (data) => {
       console.log("Task Finished:");
       setTaskInfo(taskInfo?.filter((task) => task.taskId !== data.task_id));
       if (data.type === "parse") toast.success("PDF(s) processed successfully");
