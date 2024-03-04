@@ -11,7 +11,6 @@ import { IoMdDownload } from "react-icons/io";
 import { IoIosSettings } from "react-icons/io";
 import { IoChevronDown } from "react-icons/io5";
 import { useRouter } from "next/navigation";
-import AddCurrentPlanModal from "./AddCurrentPlanModal";
 import { SnackBarContext } from "@/src/context/SnackBarContext";
 
 type SubheaderProps = {
@@ -20,7 +19,7 @@ type SubheaderProps = {
   copyUrlToClipboard: any;
   handleDownloadCSV: any;
   plansLength: number;
-  clientId: any;
+  client: any;
 };
 
 export const Subheader: React.FC<SubheaderProps> = ({
@@ -29,7 +28,7 @@ export const Subheader: React.FC<SubheaderProps> = ({
   copyUrlToClipboard,
   handleDownloadCSV,
   plansLength,
-  clientId,
+  client,
 }) => {
   const { setSnackbar } = useContext(SnackBarContext);
 
@@ -48,7 +47,7 @@ export const Subheader: React.FC<SubheaderProps> = ({
 
   const handleBusiness2 = (index: any) => {
     // router.push(`/?clientId=${clientId}`);
-    window.location.href = `/select?clientId=${clientId}`;
+    window.location.href = `/select?clientId=${client.id}`;
     return;
   };
 
@@ -147,9 +146,13 @@ export const Subheader: React.FC<SubheaderProps> = ({
         </button>
       </div>
 
-      {currentPlanModalOpen && (
-        <AddCurrentPlanModal setModalOpen={setCurrentPlanModalOpen} />
-      )}
+      {/* {currentPlanModalOpen && (
+        <AddCurrentPlanModal
+          client={client}
+          setModalOpen={setCurrentPlanModalOpen}
+          fetchClients={fetchClients}
+        />
+      )} */}
     </div>
   );
 };

@@ -110,6 +110,7 @@ export type Database = {
           comparison_created: boolean | null;
           connected_plans: Json[] | null;
           created_at: string;
+          current_plan: number | null;
           icon: string | null;
           id: number;
           name: string | null;
@@ -125,6 +126,7 @@ export type Database = {
           comparison_created?: boolean | null;
           connected_plans?: Json[] | null;
           created_at?: string;
+          current_plan?: number | null;
           icon?: string | null;
           id?: number;
           name?: string | null;
@@ -140,6 +142,7 @@ export type Database = {
           comparison_created?: boolean | null;
           connected_plans?: Json[] | null;
           created_at?: string;
+          current_plan?: number | null;
           icon?: string | null;
           id?: number;
           name?: string | null;
@@ -151,6 +154,13 @@ export type Database = {
           zip_code?: string | null;
         };
         Relationships: [
+          {
+            foreignKeyName: "current_plan";
+            columns: ["current_plan"];
+            isOneToOne: false;
+            referencedRelation: "quotes";
+            referencedColumns: ["id"];
+          },
           {
             foreignKeyName: "public_clients_user_id_fkey";
             columns: ["user_id"];

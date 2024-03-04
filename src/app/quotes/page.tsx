@@ -244,7 +244,7 @@ export default function QuotingPage() {
         <Fullheader clientName={client?.name || "N/A"} />
         <div className="bg-gray-100 border border-gray-200 border-b-0 px-6 py-2">
           <Subheader
-            clientId={client?.id || 0}
+            client={client}
             isPaneOpen={paneState.isPaneOpen}
             onPaneToggle={handlePaneToggle}
             copyUrlToClipboard={copyUrlToClipboard}

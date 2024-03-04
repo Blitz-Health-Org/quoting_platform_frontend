@@ -48,9 +48,17 @@ export function useGetUserData() {
   };
 
   useEffect(() => {
+    if (!accessToken && !accessTokenLoading) setLoading(false);
     if (accessToken && !userId) getUserId();
     if (userId && loadingUserData) getUserData();
-  }, [userId, loadingUserData, getUserData, accessToken, getUserId]);
+  }, [
+    userId,
+    loadingUserData,
+    getUserData,
+    accessToken,
+    getUserId,
+    accessTokenLoading,
+  ]);
 
   return { userData, loadingUserData };
 }

@@ -3,7 +3,6 @@
 import React, { useContext, useEffect, useState } from "react";
 import "./globals.css";
 import { Navbar } from "../components/comparison/Navbar";
-import SelectQuotes from "@/src/components/client/SelectQuotes";
 import ClientTable from "@/src/components/client/ClientTable";
 import { UserContext } from "@/src/context/UserContext";
 import { ClientType } from "@/src/types/custom/Client";
