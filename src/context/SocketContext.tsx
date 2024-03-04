@@ -68,8 +68,11 @@ export function SocketProvider({ children }: { children: React.ReactNode }) {
         }
       }
       if (data.status === "failed") {
-        if (data.type === "parse")
-          toast.error("Failed to process PDFs. Please try again.");
+        if (data.type === "parse") {
+          if (data.result === "SoftTimeLimitExceeded()")
+            toast.success("Parsing aborted!");
+          else toast.error("Failed to process PDFs. Please try again.");
+        }
         setTaskInfo(taskInfo?.filter((task) => task.taskId !== data.task_id));
       }
     });

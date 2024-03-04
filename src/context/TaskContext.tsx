@@ -3,10 +3,12 @@
 // 2. check on status of tasks in server
 // 3. update the status of the tasks in the local storage -- only keep the tasks that are not completed
 
-import { createContext, useEffect, useState } from "react";
+import { createContext, useContext, useEffect, useState } from "react";
 import { useLocalStorage } from "../utils/useLocalStorage";
 import { Loading } from "../components/ui/Loading";
 import toast from "react-hot-toast";
+import { ToastLoading } from "../components/ui/ToastLoading";
+import { UserContext } from "./UserContext";
 
 interface PendingTask {
   taskId: string;
@@ -34,8 +36,12 @@ export const TaskContextProvider = ({
   const [taskInfo, setTaskInfo, loading] = useLocalStorage<
     PendingTask[] | undefined
   >("taskInfo", undefined);
+  const {
+    userId: [userId],
+  } = useContext(UserContext);
 
   const [pendingTaskCheck, setPendingTaskCheck] = useState(true);
+  const [runningToastIds, setRunningToastIds] = useState<string[]>([]);
 
   useEffect(() => {
     // Check on the status of each task in the server
@@ -48,7 +54,11 @@ export const TaskContextProvider = ({
             .then((res) => res.json())
             .then((data) => {
               // if it is completed or failed, remove the task from the local storage
-              if (data.status === "completed" || data.status === "failed") {
+              if (
+                data.status === "completed" ||
+                data.status === "failed" ||
+                data.status === "not found"
+              ) {
                 // Remove the task from the local storage
                 setTaskInfo(taskInfo.filter((t) => t.taskId !== task.taskId));
               }
@@ -62,23 +72,28 @@ export const TaskContextProvider = ({
   // Logic for loading state for parsing tasks
   useEffect(() => {
     console.log("taskInfo IN TASK CONTEXT", taskInfo);
-    let loadingParse = false;
     // Check if there are any parsing tasks loading
+    const runningIds = [];
     if (!loading && taskInfo) {
       console.log("IN TASKINFO LOOP");
       for (const task of taskInfo) {
         console.log(task);
         if (task.type === "parse") {
           console.log("FOUND PARSING TASK");
-          toast.loading("Processing PDF(s)...", {
-            id: "pdfParsing",
+          toast.loading(<ToastLoading taskId={task.taskId} userId={userId} />, {
+            id: task.taskId,
           });
-          loadingParse = true;
-          break;
+          runningIds.push(task.taskId);
         }
       }
     }
-    if (!loadingParse) toast.dismiss("pdfParsing");
+    // Dismiss the ids that are no longer running
+    for (const id of runningToastIds) {
+      if (!runningIds.includes(id)) {
+        toast.dismiss(id);
+      }
+    }
+    setRunningToastIds(runningIds);
   }, [taskInfo, loading]);
 
   if (loading) return <Loading />;
