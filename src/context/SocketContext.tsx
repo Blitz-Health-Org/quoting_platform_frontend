@@ -18,7 +18,6 @@ export const SocketTasksContext = createContext<SocketTasksContextProps>({
 });
 
 export function SocketProvider({ children }: { children: React.ReactNode }) {
-  const [socket, setSocket] = useState<Socket>();
   const [socketTasks, setSocketTasks, loading] = useLocalStorage<
     string[] | undefined
   >("socketTasks", undefined);
@@ -38,7 +37,6 @@ export function SocketProvider({ children }: { children: React.ReactNode }) {
       transports: ["websocket"],
     });
 
-    setSocket(socket);
     console.log("Connected to Socket.IO server", socket);
 
     // Listen for 'task_complete' events
@@ -88,7 +86,7 @@ export function SocketProvider({ children }: { children: React.ReactNode }) {
       socket.off("task_finished");
       socket.close();
     };
-  }, [socketTasks, taskInfo, userId]);
+  }, [socketTasks, taskInfo]);
 
   return (
     <SocketTasksContext.Provider

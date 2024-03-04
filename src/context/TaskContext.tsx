@@ -41,17 +41,19 @@ export const TaskContextProvider = ({
     // Check on the status of each task in the server
     if (pendingTaskCheck && taskInfo) {
       taskInfo.forEach((task) => {
-        fetch(
-          `${process.env.NEXT_PUBLIC_BACKEND_URL}/task/status/${task.taskId}`,
-        )
-          .then((res) => res.json())
-          .then((data) => {
-            // if it is completed or failed, remove the task from the local storage
-            if (data.status === "completed" || data.status === "failed") {
-              // Remove the task from the local storage
-              setTaskInfo(taskInfo.filter((t) => t.taskId !== task.taskId));
-            }
-          });
+        if (task.taskId) {
+          fetch(
+            `${process.env.NEXT_PUBLIC_BACKEND_URL}/task/status/${task.taskId}`,
+          )
+            .then((res) => res.json())
+            .then((data) => {
+              // if it is completed or failed, remove the task from the local storage
+              if (data.status === "completed" || data.status === "failed") {
+                // Remove the task from the local storage
+                setTaskInfo(taskInfo.filter((t) => t.taskId !== task.taskId));
+              }
+            });
+        }
       });
       setPendingTaskCheck(false);
     }
