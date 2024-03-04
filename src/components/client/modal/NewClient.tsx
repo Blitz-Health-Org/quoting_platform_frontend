@@ -120,6 +120,7 @@ export const NewClientModal = ({ onClose, setClients }: any) => {
       );
 
       if (!response.ok) {
+        onClose();
         throw new Error(`HTTP error! status: ${response.status}`);
       }
 

@@ -25,6 +25,34 @@ export type NonSystemField = BaseFieldType & {
 // Combined type using union
 export type FieldType = SystemField | NonSystemField;
 
+//TODO: Will have to implement as quote[] at some point
+export const currentPlanMetadataObject: Record<string, FieldType> = {
+  carrier: {
+    field: "carrier",
+    type: "",
+    isDefault: false,
+    isSystem: false,
+    isNullable: false,
+    label: "Carrier",
+  },
+  num_lives: {
+    field: "num_lives",
+    type: "number",
+    isDefault: false,
+    isSystem: false,
+    isNullable: false,
+    label: "No. of Lives",
+  },
+  total_cost: {
+    field: "total_cost",
+    type: "number",
+    isDefault: false,
+    isSystem: false,
+    isNullable: false,
+    label: "Total Cost",
+  },
+};
+
 export const quoteMetadataObject: Record<string, FieldType> = {
   id: {
     field: "id",

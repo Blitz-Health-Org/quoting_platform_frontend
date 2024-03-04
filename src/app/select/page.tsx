@@ -8,7 +8,7 @@ import { SnackbarAlert } from "../../components/ui/SnackbarAlert";
 import { supabase } from "../../supabase";
 import { FaRegSave, FaRegStar } from "react-icons/fa";
 import { notFound, useSearchParams } from "next/navigation";
-import { useContext, useEffect, useState } from "react";
+import { useCallback, useContext, useEffect, useState } from "react";
 import { IoMdArrowBack } from "react-icons/io";
 import { QuoteType } from "@/src/types/custom/Quote";
 import { IconBuilding } from "@tabler/icons-react";
@@ -73,6 +73,44 @@ export default function SelectQuotes() {
     socketTasks: [socketTasks, setSocketTasks],
   } = useContext(SocketTasksContext);
 
+  const fetchQuoteData = async (client: any) => {
+    if (client) {
+      const { data, error } = await supabase
+        .from("quotes")
+        .select()
+        .eq("client_id", client.id);
+
+      if (error) {
+        alert("Error updating data");
+      } else {
+        // Check if selected_quotes is not null
+
+        const currentPlanFirstSortedData = data.sort((quoteA, quoteB) => {
+          if (quoteA.id === client?.current_plan) {
+            return -1;
+          } else if (quoteB.id === client?.current_plan) {
+            return 1;
+          } else return 1;
+        });
+        setQuotes(currentPlanFirstSortedData);
+        setOriginalQuotes(currentPlanFirstSortedData);
+
+        if (client.connected_plans) {
+          // Check if there is data for connected_plans
+          setPlans((client.connected_plans as any) || []); // Update plans state
+        }
+      }
+    }
+  };
+
+  // const {
+  //   socketTasks: [originalSocketTasks, setSocketTasks],
+  // } = useContext(SocketTasksContext);
+
+  // const socketTasks = originalSocketTasks?.filter(
+  //   (task) => task !== "fetch_quotes",
+  // );
+
   const {
     taskInfo: [taskInfo, setTaskInfo],
   } = useContext(TaskContext);
@@ -82,11 +120,6 @@ export default function SelectQuotes() {
   const [selectedClient, setSelectedClient] = useState<ClientType>(
     undefined as unknown as ClientType,
   );
-
-  useEffect(() => {
-    const clientId = searchParams.get("clientId") as string;
-    if (selectedClient === undefined) fetchClients(clientId);
-  }, [searchParams, selectedClient]);
 
   const { setSnackbar } = useContext(SnackBarContext);
 
@@ -135,6 +168,8 @@ export default function SelectQuotes() {
   }, []);
 
   const [selectedFilter, setSelectedFilter] = useState<string | null>(null);
+
+  console.log("selectedCLient", selectedClient);
 
   const handleCheckboxChange = (quoteId: number) => {
     setQuotes((prevQuotes) =>
@@ -195,22 +230,22 @@ export default function SelectQuotes() {
 
   const router = useRouter();
 
-  const fetchClients = async (clientId: string) => {
+  const fetchClients = useCallback(async (clientId: number) => {
     try {
       const { data: clientData, error: clientError } = await supabase
         .from("clients")
         .select("*")
         .eq("id", clientId)
         .single();
-
       if (clientError) throw clientError;
-
-      setSelectedClient(clientData);
       fetchQuoteData(clientData);
+      setSelectedClient(clientData);
+
+      return clientData;
     } catch (error) {
       console.error("Failed to fetch client and quotes", error);
     }
-  };
+  }, []);
 
   function handleAddCurrentPlan(event: any) {
     event?.stopPropagation();
@@ -266,22 +301,6 @@ export default function SelectQuotes() {
     }
   }
 
-  useEffect(() => {
-    // Update entryWidth when the screen size changes
-
-    const handleResize = () => {
-      setEntryWidth(innerWidth / planAttributesMapping.length);
-    };
-
-    // Attach event listener for window resize
-    window.addEventListener("resize", handleResize);
-
-    // Remove event listener on component unmount
-    return () => {
-      window.removeEventListener("resize", handleResize);
-    };
-  }, []);
-
   interface PlanAttributes {
     plan_id: string;
     carrier: string;
@@ -293,6 +312,11 @@ export default function SelectQuotes() {
     out_of_pocket_max: string;
     additional_copay: string;
     total_cost: string;
+  }
+
+  if (selectedClient && socketTasks?.includes("fetch_quotes")) {
+    fetchQuoteData(selectedClient);
+    setSocketTasks(socketTasks?.filter((task) => task !== "fetch_quotes"));
   }
 
   const [plans, setPlans] = useState<
@@ -348,33 +372,12 @@ export default function SelectQuotes() {
   };
 
   useEffect(() => {
-    if (selectedClient && socketTasks?.includes("fetch_quotes")) {
-      fetchQuoteData(selectedClient);
-      setSocketTasks(socketTasks?.filter((task) => task !== "fetch_quotes"));
+    const clientId = searchParams.get("clientId");
+
+    if (clientId) {
+      fetchClients(parseInt(clientId));
     }
-  }, [socketTasks, selectedClient]);
-
-  const fetchQuoteData = async (clientData: any) => {
-    if (clientData) {
-      const { data, error } = await supabase
-        .from("quotes")
-        .select()
-        .eq("client_id", clientData.id);
-
-      if (error) {
-        alert("Error updating data");
-      } else {
-        // Check if selected_quotes is not null
-        setQuotes(data);
-        setOriginalQuotes(data);
-
-        if (clientData.connected_plans) {
-          // Check if there is data for connected_plans
-          setPlans((clientData.connected_plans as any) || []); // Update plans state
-        }
-      }
-    }
-  };
+  }, [fetchClients, searchParams]);
 
   const handleCloseComparison = () => {
     router.push(`/`);
@@ -437,6 +440,12 @@ export default function SelectQuotes() {
     (quote) => !Object.keys(quote.data as object).includes("aca"),
   );
 
+  if (!selectedClient) {
+    return <></>
+  }
+
+  console.log('quotes heorier', quotes, selectedClient)
+
   return (
     <>
       <main className="flex w-full h-full overflow-hidden">
@@ -458,7 +467,9 @@ export default function SelectQuotes() {
             <p className="mr-1 text-gray-400 text-xs">•</p>
             <p className="text-gray-400">({quotes.length})</p> */}
               </div>
+             
               <div className="flex items-center gap-2">
+              {!quotes.map(quote => quote.id).includes(selectedClient.current_plan) &&
                 <button
                   onClick={handleAddCurrentPlan}
                   className="text-sm md:text-base mr-1 outline outline-1 outline-gray-200 py-1 px-2 rounded-md flex items-center justify-center hover:bg-gray-100/80 cursor-pointer"
@@ -466,6 +477,7 @@ export default function SelectQuotes() {
                   <div className="mr-2">Add Current Plan</div>
                   <FaRegStar />
                 </button>
+              }
 
                 <button
                   onClick={handleAddNewQuote}
@@ -508,6 +520,7 @@ export default function SelectQuotes() {
                     handleCheckboxChange={handleCheckboxChange}
                     handleAddNewQuote={handleAddNewQuote}
                     search={search}
+                    currentPlanId={selectedClient?.current_plan ?? null}
                   />
                 )}
                 {currentTab === "ACA" && (
@@ -518,6 +531,7 @@ export default function SelectQuotes() {
                     handleCheckboxChange={handleCheckboxChange}
                     handleAddNewQuote={handleAddNewQuote}
                     search={search}
+                    currentPlanId={selectedClient?.current_plan ?? null}
                   />
                 )}
               </div>
@@ -539,6 +553,7 @@ export default function SelectQuotes() {
         <AddCurrentPlanModal
           setModalOpen={setModalOpen}
           client={selectedClient}
+          fetchClients={fetchClients}
         />
       )}
 
