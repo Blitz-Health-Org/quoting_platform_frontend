@@ -11,7 +11,6 @@ import { IoMdDownload } from "react-icons/io";
 import { IoIosSettings } from "react-icons/io";
 import { IoChevronDown } from "react-icons/io5";
 import { useRouter } from "next/navigation";
-import AddCurrentPlanModal from "./AddCurrentPlanModal";
 import { SnackBarContext } from "@/src/context/SnackBarContext";
 
 type SubheaderProps = {
@@ -147,12 +146,13 @@ export const Subheader: React.FC<SubheaderProps> = ({
         </button>
       </div>
 
-      {currentPlanModalOpen && (
+      {/* {currentPlanModalOpen && (
         <AddCurrentPlanModal
           client={client}
           setModalOpen={setCurrentPlanModalOpen}
+          fetchClients={fetchClients}
         />
-      )}
+      )} */}
     </div>
   );
 };

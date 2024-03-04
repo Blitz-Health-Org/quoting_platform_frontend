@@ -441,10 +441,10 @@ export default function SelectQuotes() {
   );
 
   if (!selectedClient) {
-    return <></>
+    return <></>;
   }
 
-  console.log('quotes heorier', quotes, selectedClient)
+  console.log("quotes heorier", quotes, selectedClient);
 
   return (
     <>
@@ -467,17 +467,20 @@ export default function SelectQuotes() {
             <p className="mr-1 text-gray-400 text-xs">•</p>
             <p className="text-gray-400">({quotes.length})</p> */}
               </div>
-             
+
               <div className="flex items-center gap-2">
-              {!quotes.map(quote => quote.id).includes(selectedClient.current_plan) &&
-                <button
-                  onClick={handleAddCurrentPlan}
-                  className="text-sm md:text-base mr-1 outline outline-1 outline-gray-200 py-1 px-2 rounded-md flex items-center justify-center hover:bg-gray-100/80 cursor-pointer"
-                >
-                  <div className="mr-2">Add Current Plan</div>
-                  <FaRegStar />
-                </button>
-              }
+                {!selectedClient.current_plan ||
+                  (!quotes
+                    .map((quote) => quote.id)
+                    .includes(selectedClient.current_plan) && (
+                    <button
+                      onClick={handleAddCurrentPlan}
+                      className="text-sm md:text-base mr-1 outline outline-1 outline-gray-200 py-1 px-2 rounded-md flex items-center justify-center hover:bg-gray-100/80 cursor-pointer"
+                    >
+                      <div className="mr-2">Add Current Plan</div>
+                      <FaRegStar />
+                    </button>
+                  ))}
 
                 <button
                   onClick={handleAddNewQuote}
@@ -520,7 +523,7 @@ export default function SelectQuotes() {
                     handleCheckboxChange={handleCheckboxChange}
                     handleAddNewQuote={handleAddNewQuote}
                     search={search}
-                    currentPlanId={selectedClient?.current_plan ?? null}
+                    currentPlanId={selectedClient?.current_plan ?? undefined}
                   />
                 )}
                 {currentTab === "ACA" && (
@@ -531,7 +534,7 @@ export default function SelectQuotes() {
                     handleCheckboxChange={handleCheckboxChange}
                     handleAddNewQuote={handleAddNewQuote}
                     search={search}
-                    currentPlanId={selectedClient?.current_plan ?? null}
+                    currentPlanId={selectedClient?.current_plan ?? undefined}
                   />
                 )}
               </div>
