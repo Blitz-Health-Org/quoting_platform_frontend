@@ -397,7 +397,7 @@ export default function QuotingPage() {
           >
             <div className="flex w-full flex-wrap gap-4 p-4">
               {Object.entries(dentalDummyData).map(([key, value]) => (
-                <div className="flex-col col-span-1 w-1/5">
+                <div key={key} className="flex-col col-span-1 w-1/5">
                   <p>{dentalKeyDisplayNames[key]}</p>
                   <input
                     className="w-full px-2 outline outline-1 outline-gray-300"
