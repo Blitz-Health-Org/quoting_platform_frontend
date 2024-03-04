@@ -9,6 +9,7 @@ import { v4 as uuid } from "uuid";
 import { ClientType } from "@/src/types/custom/Client";
 import { SnackBarContext } from "@/src/context/SnackBarContext";
 import { useRouter } from "next/navigation";
+import { UserContext } from "@/src/context/UserContext";
 
 type AddQuoteProps = {
   onClose: () => void;
@@ -36,6 +37,10 @@ export const AddQuote = ({
   const { setSnackbar } = useContext(SnackBarContext);
   const [files, setFiles] = useState<File[]>([]);
   const [selectedPlan, setSelectedPlan] = useState<string>("bcbs_tx_aca");
+
+  const {
+    userId: [userId],
+  } = useContext(UserContext);
 
   console.log(client);
 
@@ -106,7 +111,11 @@ export const AddQuote = ({
           headers: {
             "Content-Type": "application/json",
           },
-          body: JSON.stringify({ successfulFileUrls, clientId: client.id }),
+          body: JSON.stringify({
+            successfulFileUrls,
+            clientId: client.id,
+            userId: userId,
+          }),
         },
       );
 

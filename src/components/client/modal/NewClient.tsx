@@ -115,6 +115,7 @@ export const NewClientModal = ({ onClose, setClients }: any) => {
               zip_code: fieldsValue["zip_code"],
               id: newClient.id,
             },
+            userId: userId,
           }),
         },
       );

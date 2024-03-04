@@ -3,6 +3,7 @@ import toast from "react-hot-toast";
 import io, { Socket } from "socket.io-client";
 import { TaskContext } from "./TaskContext";
 import { useLocalStorage } from "../utils/useLocalStorage";
+import { UserContext } from "./UserContext";
 
 export type SocketTasksContextProps = {
   socketTasks: [
@@ -23,13 +24,17 @@ export function SocketProvider({ children }: { children: React.ReactNode }) {
   >("socketTasks", undefined);
 
   const {
+    userId: [userId],
+  } = useContext(UserContext);
+
+  const {
     taskInfo: [taskInfo, setTaskInfo],
   } = useContext(TaskContext);
 
   useEffect(() => {
     // Connect to the Socket.IO server
     const socket = io(`${process.env.NEXT_PUBLIC_SOCKET_SERVER_URL!}`, {
-      path: "/socket.io",
+      path: `/socket.io/${userId}`,
       transports: ["websocket"],
     });
 
@@ -83,7 +88,7 @@ export function SocketProvider({ children }: { children: React.ReactNode }) {
       socket.off("task_finished");
       socket.close();
     };
-  }, [socketTasks, taskInfo]);
+  }, [socketTasks, taskInfo, userId]);
 
   return (
     <SocketTasksContext.Provider
