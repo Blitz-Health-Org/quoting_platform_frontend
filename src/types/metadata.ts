@@ -373,6 +373,14 @@ export const clientMetadataObject: Record<string, FieldType> = {
     isNullable: false,
     placeholder: "Acme Corporation Inc.",
   },
+  zip_code: {
+    field: "zip_code",
+    type: "string",
+    isDefault: false,
+    isSystem: false,
+    isNullable: false,
+    label: "Zip Code",
+  },
   icon: {
     field: "icon",
     type: "string",
@@ -396,14 +404,6 @@ export const clientMetadataObject: Record<string, FieldType> = {
     isSystem: false,
     isNullable: true,
     label: "Plan Type",
-  },
-  zip_code: {
-    field: "zip_code",
-    type: "string",
-    isDefault: false,
-    isSystem: false,
-    isNullable: true,
-    label: "Zip Code",
   },
 };
 

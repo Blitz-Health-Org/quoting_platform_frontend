@@ -4,12 +4,14 @@ type TabHeaderProps = {
   tabs: string[];
   selectedTab: string;
   setSelectedTab: (tab: string) => void; // Function to update the selected tab
+  titles: string[];
 };
 
 export const TabHeader = ({
   tabs,
   selectedTab,
   setSelectedTab,
+  titles,
 }: TabHeaderProps) => {
   const [highlightStyle, setHighlightStyle] = useState({});
   const tabsRef = useRef<HTMLDivElement[]>([]); // To store refs for each tab
@@ -41,7 +43,7 @@ export const TabHeader = ({
             ${selectedTab === tab ? "bg-gray-200 border border-gray-300" : "hover:bg-gray-100"}`}
             onClick={() => setSelectedTab(tab)} // Handle tab selection
           >
-            {tab}
+            {titles[index]}
           </div>
         ))}
         <div

@@ -8,6 +8,8 @@ import { AuthContextProvider } from "../context/AuthContext";
 import { SnackbarAlert } from "../components/ui/SnackbarAlert";
 import { SnackBarContext } from "../context/SnackBarContext";
 import { useState } from "react";
+import { Toaster } from "react-hot-toast";
+import { ModalContextProvider } from "../context/ModalContext";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -29,9 +31,14 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={inter.className} style={{ backgroundColor: "white" }}>
+        <div>
+          <Toaster position="top-center" />
+        </div>
         <SnackBarContext.Provider value={{ setSnackbar }}>
           <AuthContextProvider>
-            <UserContextProvider>{children}</UserContextProvider>
+            <UserContextProvider>
+              <ModalContextProvider>{children}</ModalContextProvider>
+            </UserContextProvider>
           </AuthContextProvider>
           <SnackbarAlert
             openSnackbarShare={snackbar.open}

@@ -35,7 +35,7 @@ export default function QuotingPage() {
   const [quotes, setQuotes] = useState<QuoteType[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [classes, setClasses] = useState<ClassType[]>([]);
-  const [plans, setPlans] = useState<any>(null);
+  const [plans, setPlans] = useState<any>([]);
   const [standardContribution, setStandardContribution] = useState<any>({
     name: "Standard Contribution",
     data: {
@@ -232,21 +232,27 @@ export default function QuotingPage() {
     // Use window.location.href to get the current URL
     const url = window.location.href;
 
-    // Generate a query_id to store in supabase
-    const queryId = uuid();
-    const { error } = await supabase
-      .from("links")
-      .insert([{ query_id: queryId, url: url }])
-      .select();
-    console.log(queryId);
+    // Check if query_id exists in supabase
+    let queryId = "";
+    const { data, error } = await supabase
+      .from("clients")
+      .select()
+      .eq("id", client?.id);
     if (error) {
-      console.error("Failed to insert URL to supabase", error);
-      setSnackbar({
-        open: true,
-        message: "Failed to copy URL to clipboard",
-        severity: "error",
-      });
+      console.error("Failed to fetch client data", error);
+    } else if (data[0].sharing_id) {
+      queryId = data[0].sharing_id;
+    } else {
+      queryId = uuid();
+      const { error } = await supabase
+        .from("clients")
+        .update({ sharing_id: queryId, shared: true })
+        .eq("id", client?.id);
+      if (error) {
+        console.error("Failed to insert URL to supabase", error);
+      }
     }
+    console.log(queryId);
 
     // Use the Clipboard API to write the text
     navigator.clipboard

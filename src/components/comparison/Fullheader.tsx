@@ -4,6 +4,7 @@ import { IoMdArrowBack } from "react-icons/io";
 import { IoHelpCircleSharp } from "react-icons/io5";
 import { useRouter } from "next/navigation";
 import { IconBuilding } from "@tabler/icons-react";
+import BlumeLogo from "@/public/NewBlumeLogo.jpg";
 
 export default function Fullheader({ clientName }: { clientName: string }) {
   const router = useRouter();
@@ -17,12 +18,18 @@ export default function Fullheader({ clientName }: { clientName: string }) {
   };
 
   return (
-    <div className="grid grid-cols-3 items-center justify-between h-12 bg-white outline outline-1 outline-gray-200 px-6">
+    <div className="grid grid-cols-3 items-center justify-between h-12 bg-white outline outline-1 outline-gray-200 pr-6 pl-2">
       <div
         className="flex items-center cursor-pointer"
         onClick={handleNewClientClick}
       >
-        <IoMdArrowBack className="mr-2" />
+        <Image
+          src={BlumeLogo}
+          width={100}
+          height={100}
+          alt={"Blume Logo"}
+          className="mr-4"
+        />
         <p className="truncate">Client Dashboard</p>
       </div>
 
