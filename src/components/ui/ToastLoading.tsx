@@ -17,14 +17,17 @@ async function cancelProcess(userId: string | undefined, taskId: string) {
 export const ToastLoading = ({
   taskId,
   userId,
+  metadata,
 }: {
   taskId: string;
   userId: string | undefined;
+  metadata: any;
 }) => {
+  console.log(metadata);
   // Small spinner on the left, loading text in the middle, then a stop button on the right
   return (
     <div className="flex items-center justify-center">
-      <p className="mx-2">Loading...</p>
+      <p className="mx-2">{metadata.loading_text}</p>
       <button
         className="text-red-500"
         onClick={() => cancelProcess(userId, taskId)}

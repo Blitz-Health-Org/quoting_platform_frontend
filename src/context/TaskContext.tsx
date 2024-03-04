@@ -12,7 +12,7 @@ import { UserContext } from "./UserContext";
 
 interface PendingTask {
   taskId: string;
-  files: string[];
+  metadata: any;
   type: string;
 }
 
@@ -80,9 +80,16 @@ export const TaskContextProvider = ({
         console.log(task);
         if (task.type === "parse") {
           console.log("FOUND PARSING TASK");
-          toast.loading(<ToastLoading taskId={task.taskId} userId={userId} />, {
-            id: task.taskId,
-          });
+          toast.loading(
+            <ToastLoading
+              taskId={task.taskId}
+              userId={userId}
+              metadata={task.metadata}
+            />,
+            {
+              id: task.taskId,
+            },
+          );
           runningIds.push(task.taskId);
         }
       }
