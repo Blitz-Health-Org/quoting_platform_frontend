@@ -67,14 +67,22 @@ export function SocketProvider({ children }: { children: React.ReactNode }) {
           ]);
         }
       }
-      if (data.status === "failed") {
+
+      if (
+        data.status === "failed" &&
+        data.result !== "SoftTimeLimitExceeded()"
+      ) {
         if (data.type === "parse") {
-          if (data.result === "SoftTimeLimitExceeded()")
-            toast.success(data.metadata.stop_text);
-          else toast.error(data.metadata.failure_text);
+          toast.error(data.metadata.failure_text);
         }
         setTaskInfo(taskInfo?.filter((task) => task.taskId !== data.task_id));
       }
+    });
+
+    socket.on(`task_terminated/${userId}`, (data) => {
+      console.log("Task Terminated:", data);
+      toast.success(data.metadata.stop_text);
+      setTaskInfo(taskInfo?.filter((task) => task.taskId !== data.task_id));
     });
 
     socket.on(`task_finished/${userId}`, (data) => {
