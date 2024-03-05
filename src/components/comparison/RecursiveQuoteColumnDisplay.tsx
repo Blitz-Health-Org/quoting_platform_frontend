@@ -13,6 +13,7 @@ type RecursiveQuoteColumnDisplayProps = {
 };
 
 type HeaderLabelProps = {
+  quoteData?: any;
   field: any;
   className?: string;
 };
@@ -24,8 +25,6 @@ export const RecursiveQuoteColumnDisplay = ({
   quoteData,
   path = "root",
 }: RecursiveQuoteColumnDisplayProps) => {
-  console.log("field", quoteData);
-
   const [fieldState, setFieldState] = useRecoilState(fieldsFamilyState(path));
 
   if (fieldState === null) {
@@ -36,6 +35,7 @@ export const RecursiveQuoteColumnDisplay = ({
   const { isExpanded } = fieldState;
 
   const LabelCell = ({ field, className = "" }: HeaderLabelProps) => {
+    console.log("quoteData", quoteData, path, field);
     return (
       <div className={`w-full text-sm flex-grow ${className}`}>
         {field.type === "object" && (
@@ -45,9 +45,9 @@ export const RecursiveQuoteColumnDisplay = ({
         <hr className="w-full border-t-1 border-gray-300"></hr>
         <div className="flex items-center justify-between h-7 w-full flex-grow">
           <p className="ml-4 my-1 break-all font-semibold">
-            {["string", "number", "boolean"].includes(field.field) ? (
+            {["string", "number", "boolean"].includes(field.type) ? (
               quoteData ? (
-                quoteData[field.field]
+                quoteData
               ) : (
                 field.label
               )
@@ -91,7 +91,7 @@ export const RecursiveQuoteColumnDisplay = ({
   if (field.isVisible === false) return <></>;
 
   if (["string", "number", "boolean"].includes(field.type)) {
-    return <LabelCell field={field} />;
+    return <LabelCell quoteData={quoteData} field={field} />;
   } else if (field.type === "array") {
     return <></>;
   } else {
@@ -102,13 +102,16 @@ export const RecursiveQuoteColumnDisplay = ({
         )}
         {isExpanded && (
           <>
-            {Object.values(field["properties"]).map((nestedField: any) => (
-              <RecursiveQuoteColumnDisplay
-                path={`${path}/${field?.label || "label"}`}
-                key={field.label}
-                field={nestedField}
-              />
-            ))}
+            {Object.entries(field["properties"]).map(
+              ([key, nestedField]: any) => (
+                <RecursiveQuoteColumnDisplay
+                  path={`${path}/${nestedField?.label || "label"}`}
+                  key={`${path}/${nestedField?.label || "label"}`}
+                  field={nestedField}
+                  quoteData={quoteData ? quoteData[key] : undefined}
+                />
+              ),
+            )}
           </>
         )}
       </div>

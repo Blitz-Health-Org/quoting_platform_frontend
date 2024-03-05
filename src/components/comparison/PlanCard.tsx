@@ -15,7 +15,6 @@ import United from "@/public/United.png";
 import Chamber from "@/public/Chamber.png";
 import NewProject from "@/public/NewProject.jpg";
 import BCBS from "@/public/BCBS.png";
-import QuoteCard from "./QuoteCard";
 import { RecursiveQuoteColumnDisplay } from "./RecursiveQuoteColumnDisplay";
 import { QuoteColumnDisplay } from "./QuoteColumnDisplay";
 

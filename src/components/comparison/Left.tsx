@@ -12,7 +12,7 @@ export default function Left({ fieldObject }: LeftProps) {
     <QuoteColumnDisplay
       field={fieldObject}
       initialExpanded
-      className="max-w-44"
+      className="w-fit max-w-44"
     />
   );
 }

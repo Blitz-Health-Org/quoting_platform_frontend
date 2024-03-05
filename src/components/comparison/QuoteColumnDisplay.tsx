@@ -18,7 +18,7 @@ export const QuoteColumnDisplay = ({
   return (
     <>
       <div
-        className={` bg-white flex-grow flex flex-col h-full rounded-lg outline outline-1 outline-gray-300 text-center truncate ${className || ""}`}
+        className={` bg-white flex-grow flex flex-col h-full rounded-lg outline outline-1 outline-gray-300 text-center overflow-y-auto ${className || ""}`}
       >
         {headerComponent ? (
           <>{headerComponent}</>
