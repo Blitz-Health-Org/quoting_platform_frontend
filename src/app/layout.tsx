@@ -1,17 +1,16 @@
-"use client";
-
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
 import { UserContextProvider } from "@/src/context/UserContext";
 import { AuthContextProvider } from "../context/AuthContext";
-import { SnackbarAlert } from "../components/ui/SnackbarAlert";
-import { SnackBarContext } from "../context/SnackBarContext";
-import { useState } from "react";
+import { SnackBarContextProvider } from "../context/SnackBarContext";
 import { Toaster } from "react-hot-toast";
-import { ModalContextProvider } from "../context/ModalContext";
-import { TaskContext, TaskContextProvider } from "../context/TaskContext";
+import { TaskContextProvider } from "../context/TaskContext";
 import { SocketProvider } from "../context/SocketContext";
+import { QuoteSchemaContextProvider } from "../context/QuoteSchemaContext";
+import { RecoilProvider } from "../context/RecoilContext";
+
+// import { RecoilRoot } from "recoil";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -25,31 +24,25 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const [snackbar, setSnackbar] = useState({
-    open: false,
-    message: "",
-    severity: "info", // default severity
-  });
   return (
     <html lang="en">
       <body className={inter.className} style={{ backgroundColor: "white" }}>
         <div>
           <Toaster position="top-center" />
         </div>
-        <SnackBarContext.Provider value={{ setSnackbar }}>
-          <AuthContextProvider>
-            <UserContextProvider>
-              <TaskContextProvider>
-                <SocketProvider>{children}</SocketProvider>
-              </TaskContextProvider>
-            </UserContextProvider>
-          </AuthContextProvider>
-          <SnackbarAlert
-            openSnackbarShare={snackbar.open}
-            setOpenSnackbarShare={setSnackbar}
-            snackbar={snackbar}
-          />
-        </SnackBarContext.Provider>
+        <QuoteSchemaContextProvider>
+          <SnackBarContextProvider>
+            <AuthContextProvider>
+              <UserContextProvider>
+                <TaskContextProvider>
+                  <SocketProvider>
+                    <RecoilProvider>{children}</RecoilProvider>
+                  </SocketProvider>
+                </TaskContextProvider>
+              </UserContextProvider>
+            </AuthContextProvider>
+          </SnackBarContextProvider>
+        </QuoteSchemaContextProvider>
       </body>
     </html>
   );

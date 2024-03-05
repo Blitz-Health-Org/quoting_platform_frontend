@@ -3,6 +3,8 @@
 // 2. check on status of tasks in server
 // 3. update the status of the tasks in the local storage -- only keep the tasks that are not completed
 
+"use client";
+
 import { createContext, useEffect, useState } from "react";
 import { useLocalStorage } from "../utils/useLocalStorage";
 import { Loading } from "../components/ui/Loading";

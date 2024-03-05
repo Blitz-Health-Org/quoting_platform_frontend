@@ -19,6 +19,7 @@ import { v4 as uuid } from "uuid";
 import ContributionPane from "@/src/components/comparison/ContributionPane";
 import { PlanCard } from "@/src/components/comparison/PlanCard";
 import { SnackBarContext } from "@/src/context/SnackBarContext";
+import { QuoteSchemaContext } from "@/src/context/QuoteSchemaContext";
 
 type ClassType = {
   name: string;
@@ -45,6 +46,7 @@ export default function QuotingPage() {
     },
   });
 
+  const { quoteSchema } = useContext(QuoteSchemaContext);
   const { setSnackbar } = useContext(SnackBarContext);
 
   const searchParams = useSearchParams();
@@ -240,9 +242,9 @@ export default function QuotingPage() {
 
   return (
     <div className="bg-gray-100 w-full h-screen">
-      <div className="w-full overflow-x-hidden h-fit bg-gray-100">
+      <div className="w-full overflow-x-hidden h-full bg-gray-100 flex flex-col">
         <Fullheader clientName={client?.name || "N/A"} />
-        <div className="bg-gray-100 border border-gray-200 border-b-0 px-6 py-2">
+        <div className="bg-gray-100 border border-gray-200 border-b-0 px-6 py-2 flex flex-col h-full">
           <Subheader
             client={client}
             isPaneOpen={paneState.isPaneOpen}
@@ -252,27 +254,25 @@ export default function QuotingPage() {
             plansLength={plans.length}
           />
 
-          <div className="p-0.5 flex w-full h-full overflow-auto gap-2">
-            <Left
-              nonObjectVisibleQuoteFields={nonObjectVisibleQuoteFields}
-              objectVisibleQuoteFields={objectVisibleQuoteFields}
-            />
-            {plans.length > 0 ? (
-              plans.map((plan: any) => (
-                <PlanCard
-                  key={plan.key}
-                  plan={plan}
-                  nonObjectVisibleQuoteFields={nonObjectVisibleQuoteFields}
-                  objectVisibleQuoteFields={objectVisibleQuoteFields}
-                  classes={classes}
-                  standardContribution={standardContribution}
-                />
-              ))
-            ) : (
-              <div className="flex items-center justify-center font-bold">
-                <div className="mt-5">No Quotes Available</div>
-              </div>
-            )}
+          <div className="p-0.5 flex-grow w-full">
+            <div className="h-full flex gap-2 overflow-auto p-2">
+              <Left fieldObject={quoteSchema} />
+              {plans.length > 0 ? (
+                plans.map((plan: any) => (
+                  <PlanCard
+                    key={plan.key}
+                    plan={plan}
+                    fieldObject={quoteSchema}
+                    classes={classes}
+                    standardContribution={standardContribution}
+                  />
+                ))
+              ) : (
+                <div className="flex items-center justify-center font-bold">
+                  <div className="mt-5">No Quotes Available</div>
+                </div>
+              )}
+            </div>
           </div>
         </div>
 

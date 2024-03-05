@@ -8,26 +8,16 @@ import { useListenClickOutside } from "../ui/dropdown/utils/useListenClickOutsid
 import { valueOrDefault } from "chart.js/dist/helpers/helpers.core";
 import { calculateTotalCost } from "./utils/calculateTotalCost";
 
-import AetnaLogo from "@/public/Screenshot.png";
-import AnotherCarrierLogo from "@/public/Anthem.jpeg";
-import Cigna from "@/public/Cigna.png";
-import United from "@/public/United.png";
-import Chamber from "@/public/Chamber.png";
-import NewProject from "@/public/NewProject.jpg";
-import BCBS from "@/public/BCBS.png";
-
 type QuoteCardProps = {
   quote: QuoteType;
-  nonObjectVisibleQuoteFields: NonSystemField[];
-  objectVisibleQuoteFields: NonSystemField[];
+  fieldObject: any;
   classes: any;
   standardContribution: any;
 };
 
 export default function QuoteCard({
   quote,
-  nonObjectVisibleQuoteFields,
-  objectVisibleQuoteFields,
+  fieldObject,
   classes,
   standardContribution,
 }: QuoteCardProps) {
@@ -108,173 +98,175 @@ export default function QuoteCard({
   });
 
   return (
-    <div className="w-full">
-      <hr className="w-full border-t-1 border-gray-300"></hr>
+    // <RecursiveColumnDisplay quoteData={quote.data} field={fieldObject} />
+    //   <div className="w-full">
+    //     <hr className="w-full border-t-1 border-gray-300"></hr>
 
-      <div className="flex flex-col items-center bg-violet-100/60">
-        {nonObjectVisibleQuoteFields
-          .filter(
-            (field) => field.field !== "name" && field.field !== "website",
-          )
-          .map((field) => {
-            return (
-              <>
-                <textarea
-                  ref={ref1 as any}
-                  onClick={() => setTextAreaSelected(true)}
-                  onChange={handleQuoteChange(field.field)}
-                  value={valueOrDefault((quoteData as any)[field.field])}
-                  className="text-center resize-none text-sm content-center h-7 w-full bg-transparent focus:outline-0 focus:border focus:border-1 focus:border-gray-200 cursor-pointer focus:cursor-auto rounded-md p-1"
-                />
-                <hr className="w-full border-t-1 border-gray-300"></hr>
-              </>
-            );
-          })}
+    //     <div className="flex flex-col items-center bg-violet-100/60">
+    //       {fieldObject
+    //         .filter(
+    //           (field) => field.field !== "name" && field.field !== "website",
+    //         )
+    //         .map((field) => {
+    //           return (
+    //             <>
+    //               <textarea
+    //                 ref={ref1 as any}
+    //                 onClick={() => setTextAreaSelected(true)}
+    //                 onChange={handleQuoteChange(field.field)}
+    //                 value={valueOrDefault((quoteData as any)[field.field])}
+    //                 className="text-center resize-none text-sm content-center h-7 w-full bg-transparent focus:outline-0 focus:border focus:border-1 focus:border-gray-200 cursor-pointer focus:cursor-auto rounded-md p-1"
+    //               />
+    //               <hr className="w-full border-t-1 border-gray-300"></hr>
+    //             </>
+    //           );
+    //         })}
 
-        {quoteData?.plan_type ? (
-          <>
-            <div className="flex w-full">
-              <textarea
-                disabled
-                value={valueOrDefault(quoteData.plan_type)}
-                className="text-center font-semibold resize-none text-sm content-center h-7 w-1/2 bg-transparent focus:outline-0 focus:border focus:border-1 focus:border-gray-200 cursor-pointer focus:cursor-auto p-1"
-              />
-              <textarea
-                disabled
-                defaultValue={"Out-of-Network"}
-                className="text-center font-semibold resize-none text-sm content-center h-7 w-1/2 bg-transparent focus:outline-0 focus:border focus:border-1 focus:border-gray-200 cursor-pointer focus:cursor-auto p-1"
-              />
-            </div>
-            <hr className="w-full border-t-1 border-gray-500"></hr>
+    //       {quoteData?.plan_type ? (
+    //         <>
+    //           <div className="flex w-full">
+    //             <textarea
+    //               disabled
+    //               value={valueOrDefault(quoteData.plan_type)}
+    //               className="text-center font-semibold resize-none text-sm content-center h-7 w-1/2 bg-transparent focus:outline-0 focus:border focus:border-1 focus:border-gray-200 cursor-pointer focus:cursor-auto p-1"
+    //             />
+    //             <textarea
+    //               disabled
+    //               defaultValue={"Out-of-Network"}
+    //               className="text-center font-semibold resize-none text-sm content-center h-7 w-1/2 bg-transparent focus:outline-0 focus:border focus:border-1 focus:border-gray-200 cursor-pointer focus:cursor-auto p-1"
+    //             />
+    //           </div>
+    //           <hr className="w-full border-t-1 border-gray-500"></hr>
 
-            {objectVisibleQuoteFields.map((objectField) => {
-              return (
-                <>
-                  <div className="flex w-full">
-                    <textarea
-                      disabled
-                      className="text-center resize-none text-sm content-center h-7 w-1/2 bg-transparent border-r focus:outline-0 focus:border focus:border-1 focus:border-gray-200 focus:cursor-auto p-1"
-                    />
-                    <textarea
-                      disabled
-                      className="text-center resize-none text-sm content-center h-7 w-1/2 bg-transparent focus:outline-0 focus:border focus:border-1 focus:border-gray-200 focus:cursor-auto p-1"
-                    />
-                  </div>
+    //           {objectVisibleQuoteFields.map((objectField) => {
+    //             return (
+    //               <>
+    //                 <div className="flex w-full">
+    //                   <textarea
+    //                     disabled
+    //                     className="text-center resize-none text-sm content-center h-7 w-1/2 bg-transparent border-r focus:outline-0 focus:border focus:border-1 focus:border-gray-200 focus:cursor-auto p-1"
+    //                   />
+    //                   <textarea
+    //                     disabled
+    //                     className="text-center resize-none text-sm content-center h-7 w-1/2 bg-transparent focus:outline-0 focus:border focus:border-1 focus:border-gray-200 focus:cursor-auto p-1"
+    //                   />
+    //                 </div>
 
-                  {Object.entries(
-                    JSON.parse(objectField.json_structure as string),
-                  ).map(([subFieldKey, value]) => {
-                    return (
-                      <>
-                        <hr className="w-full border-t-1 border-gray-300"></hr>
-                        <div className="flex w-full bg-white">
-                          <textarea
-                            ref={ref3 as any}
-                            onClick={() => setTextAreaSelected(true)}
-                            onChange={handleQuoteChange(
-                              `${objectField.field}.in.${subFieldKey}`,
-                            )}
-                            value={valueOrDefault(
-                              (quoteData as any)[objectField.field]?.in?.[
-                                subFieldKey
-                              ],
-                            )}
-                            className="text-center resize-none text-sm content-center h-7 w-1/2 border-r bg-transparent focus:outline-0 focus:border focus:border-1 focus:border-gray-200 cursor-pointer focus:cursor-auto p-1"
-                          />
-                          <textarea
-                            ref={ref2 as any}
-                            onClick={() => setTextAreaSelected(true)}
-                            onChange={handleQuoteChange(
-                              `${objectField.field}.oon.${subFieldKey}`,
-                            )}
-                            value={valueOrDefault(
-                              (quoteData as any)[objectField.field]?.oon?.[
-                                subFieldKey
-                              ],
-                            )}
-                            className="text-center resize-none text-sm content-center h-7 w-1/2 bg-transparent focus:outline-0 focus:border focus:border-1 focus:border-gray-200 cursor-pointer focus:cursor-auto p-1"
-                          />
-                        </div>
-                      </>
-                    );
-                  })}
-                  <hr className="w-full border-t-1 border-gray-500"></hr>
-                </>
-              );
-            })}
-          </>
-        ) : (
-          <>
-            <div className="flex w-full">
-              <textarea
-                disabled
-                // value={valueOrDefault(quoteData.plan_type)}
-                className="text-center font-semibold resize-none text-sm content-center h-7 w-1/2 bg-transparent focus:outline-0 focus:border focus:border-1 focus:border-gray-200 cursor-pointer focus:cursor-auto p-1"
-              />
-            </div>
-            <hr className="w-full border-t-1 border-gray-500"></hr>
+    //                 {Object.entries(
+    //                   JSON.parse(objectField.json_structure as string),
+    //                 ).map(([subFieldKey, value]) => {
+    //                   return (
+    //                     <>
+    //                       <hr className="w-full border-t-1 border-gray-300"></hr>
+    //                       <div className="flex w-full bg-white">
+    //                         <textarea
+    //                           ref={ref3 as any}
+    //                           onClick={() => setTextAreaSelected(true)}
+    //                           onChange={handleQuoteChange(
+    //                             `${objectField.field}.in.${subFieldKey}`,
+    //                           )}
+    //                           value={valueOrDefault(
+    //                             (quoteData as any)[objectField.field]?.in?.[
+    //                               subFieldKey
+    //                             ],
+    //                           )}
+    //                           className="text-center resize-none text-sm content-center h-7 w-1/2 border-r bg-transparent focus:outline-0 focus:border focus:border-1 focus:border-gray-200 cursor-pointer focus:cursor-auto p-1"
+    //                         />
+    //                         <textarea
+    //                           ref={ref2 as any}
+    //                           onClick={() => setTextAreaSelected(true)}
+    //                           onChange={handleQuoteChange(
+    //                             `${objectField.field}.oon.${subFieldKey}`,
+    //                           )}
+    //                           value={valueOrDefault(
+    //                             (quoteData as any)[objectField.field]?.oon?.[
+    //                               subFieldKey
+    //                             ],
+    //                           )}
+    //                           className="text-center resize-none text-sm content-center h-7 w-1/2 bg-transparent focus:outline-0 focus:border focus:border-1 focus:border-gray-200 cursor-pointer focus:cursor-auto p-1"
+    //                         />
+    //                       </div>
+    //                     </>
+    //                   );
+    //                 })}
+    //                 <hr className="w-full border-t-1 border-gray-500"></hr>
+    //               </>
+    //             );
+    //           })}
+    //         </>
+    //       ) : (
+    //         <>
+    //           <div className="flex w-full">
+    //             <textarea
+    //               disabled
+    //               // value={valueOrDefault(quoteData.plan_type)}
+    //               className="text-center font-semibold resize-none text-sm content-center h-7 w-1/2 bg-transparent focus:outline-0 focus:border focus:border-1 focus:border-gray-200 cursor-pointer focus:cursor-auto p-1"
+    //             />
+    //           </div>
+    //           <hr className="w-full border-t-1 border-gray-500"></hr>
 
-            {objectVisibleQuoteFields.map((objectField) => {
-              return (
-                <>
-                  <div className="flex w-full">
-                    <textarea
-                      disabled
-                      className="text-center resize-none text-sm content-center h-7 w-full bg-transparent border-r focus:outline-0 focus:border focus:border-1 focus:border-gray-200 focus:cursor-auto p-1"
-                    />
-                  </div>
+    //           {objectVisibleQuoteFields.map((objectField) => {
+    //             return (
+    //               <>
+    //                 <div className="flex w-full">
+    //                   <textarea
+    //                     disabled
+    //                     className="text-center resize-none text-sm content-center h-7 w-full bg-transparent border-r focus:outline-0 focus:border focus:border-1 focus:border-gray-200 focus:cursor-auto p-1"
+    //                   />
+    //                 </div>
 
-                  {Object.entries(
-                    JSON.parse(objectField.json_structure as string),
-                  ).map(([subFieldKey, value]) => {
-                    // console.log(
-                    //   "check this stuff",
-                    //   quoteData,
-                    //   objectField,
-                    //   subFieldKey,
-                    // );
-                    return (
-                      <>
-                        <hr className="w-full border-t-1 border-gray-300"></hr>
-                        <div className="flex w-full bg-white">
-                          <textarea
-                            ref={ref3 as any}
-                            onClick={() => setTextAreaSelected(true)}
-                            onChange={handleQuoteChange(
-                              `${objectField.field}.${subFieldKey}`,
-                            )}
-                            value={valueOrDefault(
-                              (quoteData as any)[objectField.field]?.[
-                                subFieldKey
-                              ],
-                            )}
-                            className="text-center resize-none text-sm content-center h-7 w-full border-r bg-transparent focus:outline-0 focus:border focus:border-1 focus:border-gray-200 cursor-pointer focus:cursor-auto p-1"
-                          />
-                        </div>
-                      </>
-                    );
-                  })}
-                  <hr className="w-full border-t-1 border-gray-500"></hr>
-                </>
-              );
-            })}
-          </>
-        )}
+    //                 {Object.entries(
+    //                   JSON.parse(objectField.json_structure as string),
+    //                 ).map(([subFieldKey, value]) => {
+    //                   // console.log(
+    //                   //   "check this stuff",
+    //                   //   quoteData,
+    //                   //   objectField,
+    //                   //   subFieldKey,
+    //                   // );
+    //                   return (
+    //                     <>
+    //                       <hr className="w-full border-t-1 border-gray-300"></hr>
+    //                       <div className="flex w-full bg-white">
+    //                         <textarea
+    //                           ref={ref3 as any}
+    //                           onClick={() => setTextAreaSelected(true)}
+    //                           onChange={handleQuoteChange(
+    //                             `${objectField.field}.${subFieldKey}`,
+    //                           )}
+    //                           value={valueOrDefault(
+    //                             (quoteData as any)[objectField.field]?.[
+    //                               subFieldKey
+    //                             ],
+    //                           )}
+    //                           className="text-center resize-none text-sm content-center h-7 w-full border-r bg-transparent focus:outline-0 focus:border focus:border-1 focus:border-gray-200 cursor-pointer focus:cursor-auto p-1"
+    //                         />
+    //                       </div>
+    //                     </>
+    //                   );
+    //                 })}
+    //                 <hr className="w-full border-t-1 border-gray-500"></hr>
+    //               </>
+    //             );
+    //           })}
+    //         </>
+    //       )}
 
-        <div className="flex w-full">
-          <textarea
-            disabled
-            className="font-semibold text-center resize-none text-sm content-center h-7 w-full border-r bg-transparent focus:outline-0 focus:border focus:border-1 focus:border-gray-200 cursor-pointer focus:cursor-auto p-1"
-          />
-        </div>
-        <hr className="w-full border-t-1 border-gray-300"></hr>
-        <div className="flex w-full bg-white">
-          <textarea
-            value={totalValue}
-            className="text-center resize-none text-sm content-center h-7 w-full border-r bg-transparent focus:outline-0 focus:border focus:border-1 focus:border-gray-200 cursor-pointer focus:cursor-auto p-1"
-          />
-        </div>
-      </div>
-    </div>
+    //       <div className="flex w-full">
+    //         <textarea
+    //           disabled
+    //           className="font-semibold text-center resize-none text-sm content-center h-7 w-full border-r bg-transparent focus:outline-0 focus:border focus:border-1 focus:border-gray-200 cursor-pointer focus:cursor-auto p-1"
+    //         />
+    //       </div>
+    //       <hr className="w-full border-t-1 border-gray-300"></hr>
+    //       <div className="flex w-full bg-white">
+    //         <textarea
+    //           value={totalValue}
+    //           className="text-center resize-none text-sm content-center h-7 w-full border-r bg-transparent focus:outline-0 focus:border focus:border-1 focus:border-gray-200 cursor-pointer focus:cursor-auto p-1"
+    //         />
+    //       </div>
+    //     </div>
+    //   </div>
+    <></>
   );
 }

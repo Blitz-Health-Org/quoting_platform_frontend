@@ -1,3 +1,5 @@
+"use client";
+
 import React, { createContext, useContext, useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import io, { Socket } from "socket.io-client";
