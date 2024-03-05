@@ -2,7 +2,7 @@
 
 import Image, { StaticImageData } from "next/image";
 import { ClientType } from "@/src/types/custom/Client";
-import { useRouter } from "next/navigation";
+import { redirect, useRouter } from "next/navigation";
 import { MdFileUpload } from "react-icons/md";
 import { SnackbarAlert } from "../../components/ui/SnackbarAlert";
 import { supabase } from "../../supabase";

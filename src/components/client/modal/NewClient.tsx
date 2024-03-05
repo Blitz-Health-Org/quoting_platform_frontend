@@ -14,6 +14,7 @@ import { FaX } from "react-icons/fa6";
 import { UserContext } from "@/src/context/UserContext";
 import { supabase } from "@/src/supabase";
 import { SnackBarContext } from "@/src/context/SnackBarContext";
+import { useGetUserData } from "@/src/utils/useGetUserData";
 
 export type StateProps = {
   files: File[];
@@ -26,6 +27,7 @@ export const NewClientModal = ({ onClose, setClients }: any) => {
   const {
     userId: [userId, , loading],
   } = useContext(UserContext);
+  const { userData, loadingUserData } = useGetUserData();
 
   const { setSnackbar } = useContext(SnackBarContext);
 
@@ -83,6 +85,37 @@ export const NewClientModal = ({ onClose, setClients }: any) => {
     }
   };
 
+  const fetchData = async () => {
+    let queryIds = [];
+
+    if (userData?.permissions == "admin_org") {
+      // Get all the users under the organization
+      const { data, error } = await supabase
+        .from("users")
+        .select()
+        .eq("organization_id", userData.organization_id);
+      if (error) {
+        console.log("error", error);
+      } else {
+        queryIds = data.map((user) => user.user_auth_id);
+      }
+    } else {
+      queryIds = [userId];
+    }
+    const { data, error } = await supabase
+      .from("clients")
+      .select()
+      .in("user_id", queryIds);
+
+    if (error) {
+      return { result: "error", error: error };
+    } else {
+      console.log("data retrieved", data);
+      setClients(data); //TODO: make sure the data recieved matches client type
+      return { result: "success", data: data };
+    }
+  };
+
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
 
@@ -125,17 +158,7 @@ export const NewClientModal = ({ onClose, setClients }: any) => {
         throw new Error(`HTTP error! status: ${response.status}`);
       }
 
-      const { data, error } = await supabase
-        .from("clients")
-        .select()
-        .eq("user_id", userId);
-      if (error) {
-        alert("error fetching from supabase");
-        return;
-      } else {
-        console.log("should set data", data);
-        setClients(data);
-      }
+      await fetchData();
 
       onClose();
 
