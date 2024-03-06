@@ -55,7 +55,6 @@ export const Subheader: React.FC<SubheaderProps> = ({
   };
 
   return (
-    <div className="flex flex-col items-center">
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 h-30 mb-2 mt-12">
         {/* Left-aligned form */}
         <div className="flex gap-2 justify-center lg:justify-start items-center">
@@ -157,10 +156,9 @@ export const Subheader: React.FC<SubheaderProps> = ({
           fetchClients={fetchClients}
         />
       )} */}
-      </div>
-      <div className="my-2">
+            {/* <div className="my-2">
         <ContinuousSlider setStandardContribution={setStandardContribution} />
+      </div> */}
       </div>
-    </div>
   );
 };

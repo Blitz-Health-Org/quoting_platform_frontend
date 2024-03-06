@@ -55,7 +55,7 @@ export const RecursiveQuoteColumnDisplay = ({
         )}
 
         <hr className="w-full border-gray-300"></hr>
-        <div className="flex items-center justify-start h-7 w-full text-nowrap overflow-x-auto">
+        <div className="flex items-center justify-start h-12 w-full text-nowrap overflow-x-auto">
           <p className="ml-4 break-all font-semibold">
             {["string", "number", "boolean"].includes(field.type) ? (
               isQuoteCard ? (
