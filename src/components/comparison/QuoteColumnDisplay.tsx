@@ -20,12 +20,13 @@ export const QuoteColumnDisplay = ({
   return (
     <>
       <div
-        className={` bg-white flex-grow flex flex-col h-full rounded-lg outline outline-1 outline-gray-300 text-center overflow-y-auto ${className || ""}`}
+        className={`min-w-64 bg-white flex-grow flex flex-col h-fit rounded-lg border border-gray-300 text-center overflow-y-auto ${className || ""}`}
       >
         {headerComponent ? (
           <>{headerComponent}</>
         ) : (
-          <div className="mb-28"></div>
+          // <div className="mb-28"></div>
+          <div></div>
         )}
         <RecursiveQuoteColumnDisplay
           field={field}

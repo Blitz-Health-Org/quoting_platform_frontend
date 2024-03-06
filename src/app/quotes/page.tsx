@@ -256,7 +256,7 @@ export default function QuotingPage() {
             />
 
             <div className="p-0.5 flex-grow w-full">
-              <div className="h-full flex gap-2 overflow-auto p-2">
+              <div className="h-full flex gap-2 overflow-auto py-2">
                 <HeaderCard fieldObject={quoteSchema} />
                 {plans.length > 0 ? (
                   plans.map((plan: any) => (

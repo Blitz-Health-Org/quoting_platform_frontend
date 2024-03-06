@@ -52,34 +52,34 @@ export const QuoteCard = ({
       quoteData={quote.data}
       isQuoteCard
       initialExpanded
-      headerComponent={
-        <div className="flex w-full gap-3 h-28 justify-center items-center px-2">
-          <div className="max-w-1/2 truncate">
-            <h1 className="font-bold text-lg">{plan.name}</h1>
-          </div>
-          <div className="border-r border-1.5 h-10 border-gray-600"></div>{" "}
-          {/* Vertical line break */}
-          <div className="flex max-w-1/2 truncate">
-            <div className="flex items-center justify-center">
-              {plan.selectedQuotes[0].logo_url && (
-                <Image
-                  src={plan.selectedQuotes[0].logo_url}
-                  alt={`Logo for ${plan.selectedQuotes[0].carrier}`}
-                  width={30}
-                  height={30}
-                  className="mr-2 rounded-md"
-                />
-              )}
-            </div>
-            <div className="flex flex-col items-start justify-center ml-1">
-              <h1 className="font-bold text-xl">
-                {plan.selectedQuotes[0].carrier}
-              </h1>
-              <p className="text-sm">{"aetna.com"}</p>
-            </div>
-          </div>
-        </div>
-      }
+      // headerComponent={
+      //   <div className="flex w-full gap-3 h-28 justify-center items-center px-2">
+      //     <div className="max-w-1/2 truncate">
+      //       <h1 className="font-bold text-lg text-wrap max-w-">{plan.name}</h1>
+      //     </div>
+      //     <div className="border-r border-1.5 h-10 border-gray-600"></div>{" "}
+      //     {/* Vertical line break */}
+      //     <div className="flex max-w-1/2 truncate">
+      //       <div className="flex items-center justify-center">
+      //         {plan.selectedQuotes[0].logo_url && (
+      //           <Image
+      //             src={plan.selectedQuotes[0].logo_url}
+      //             alt={`Logo for ${plan.selectedQuotes[0].carrier}`}
+      //             width={30}
+      //             height={30}
+      //             className="mr-2 rounded-md"
+      //           />
+      //         )}
+      //       </div>
+      //       <div className="flex flex-col items-start justify-center ml-1">
+      //         <h1 className="font-bold text-xl">
+      //           {plan.selectedQuotes[0].carrier}
+      //         </h1>
+      //         <p className="text-sm">{"aetna.com"}</p>
+      //       </div>
+      //     </div>
+      //   </div>
+      // }
     />
   );
 };

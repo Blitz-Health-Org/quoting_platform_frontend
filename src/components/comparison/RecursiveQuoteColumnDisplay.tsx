@@ -30,7 +30,7 @@ export const RecursiveQuoteColumnDisplay = ({
 
   if (fieldState === null) {
     setFieldState({ isExpanded: initialExpanded });
-    return;
+    return null;
   }
 
   const { isExpanded } = fieldState;
@@ -42,14 +42,14 @@ export const RecursiveQuoteColumnDisplay = ({
   }: HeaderLabelProps) => {
     console.log("quoteData", quoteData, path, field);
     return (
-      <div className={`w-full text-sm flex-grow ${className}`}>
-        {field.type === "object" && (
-          <hr className="w-full border-t-1 border-gray-500"></hr>
+      <div className={`w-full text-sm ${className}`}>
+        {(field.type === "object" || field.label === "Medical Deductible In-Network Individual" || field.label === "Dental Deductible Info" || field.label === "Pharmacy Drug List" || field.label === "Dental Deductible Out-of-Network Family" || field.label === "Out-of-Pocket Max Family" || field.label === "Rate for Family" || field.label === "Pharmacy Tier 4 Deductible") && (
+          <hr className="w-full border-b-1 border-gray-500"></hr>
         )}
 
-        <hr className="w-full border-t-1 border-gray-300"></hr>
-        <div className="flex items-center justify-between h-7 w-full flex-grow">
-          <p className="ml-4 my-1 break-all font-semibold">
+        <hr className="w-full border-gray-300"></hr>
+        <div className="flex items-center justify-start h-7 w-full text-nowrap overflow-x-auto">
+          <p className="ml-4 break-all font-semibold">
             {["string", "number", "boolean"].includes(field.type) ? (
               isQuoteCard ? (
                 quoteData ? (

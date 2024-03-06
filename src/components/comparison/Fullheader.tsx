@@ -20,7 +20,7 @@ export default function Fullheader({ clientName }: { clientName: string }) {
   return (
     <div className="absolute w-full grid grid-cols-3 items-center justify-between h-12 bg-white outline outline-1 outline-gray-200 pr-6 pl-2">
       <div
-        className="flex items-center cursor-pointer"
+        className="flex items-center cursor-pointer ml-2"
         onClick={handleNewClientClick}
       >
         <Image
