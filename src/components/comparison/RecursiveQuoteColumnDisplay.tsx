@@ -43,7 +43,14 @@ export const RecursiveQuoteColumnDisplay = ({
     console.log("quoteData", quoteData, path, field);
     return (
       <div className={`w-full text-sm ${className}`}>
-        {(field.type === "object" || field.label === "Medical Deductible In-Network Individual" || field.label === "Dental Deductible Info" || field.label === "Pharmacy Drug List" || field.label === "Dental Deductible Out-of-Network Family" || field.label === "Out-of-Pocket Max Family" || field.label === "Rate for Family" || field.label === "Pharmacy Tier 4 Deductible") && (
+        {(field.type === "object" ||
+          field.label === "Medical Deductible In-Network Individual" ||
+          field.label === "Dental Deductible Info" ||
+          field.label === "Pharmacy Drug List" ||
+          field.label === "Dental Deductible Out-of-Network Family" ||
+          field.label === "Out-of-Pocket Max Family" ||
+          field.label === "Rate for Family" ||
+          field.label === "Pharmacy Tier 4 Deductible") && (
           <hr className="w-full border-b-1 border-gray-500"></hr>
         )}
 
