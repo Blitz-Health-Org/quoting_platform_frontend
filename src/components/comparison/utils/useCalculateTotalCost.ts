@@ -9,8 +9,8 @@ export function useCalculateTotalCost(
 ) {
   const { client } = useContext(ClientContext);
 
-  if (quoteData?.metadata?.total_employer_cost_is_precalculated)
-    return quoteData.total_employer_cost;
+  // if (quoteData?.metadata?.total_employer_cost_is_precalculated)
+  //   return quoteData.total_employer_cost;
 
   const calculationMethod =
     quoteData?.metadata?.total_employer_cost_calculation_method;

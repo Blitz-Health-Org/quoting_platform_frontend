@@ -40,7 +40,6 @@ export const RecursiveQuoteColumnDisplay = ({
     field,
     className = "",
   }: HeaderLabelProps) => {
-    console.log("quoteData", quoteData, path, field);
     return (
       <div className={`w-full text-sm ${className}`}>
         {(field.type === "object" ||
