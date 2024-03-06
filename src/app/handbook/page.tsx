@@ -27,17 +27,17 @@ type Plans = {
 }[];
 
 type MedicalQuoteDetails = {
-  plan_name: string
-  plan_id: string
-  deductible: string
-  total_employer_cost: string
-  out_of_pocket_max: string
-  copay_coinsurance: string
-  monthly_premium: string
-  employee_rate: string
-  office_copay: string
-  spouse_rate: string
-  family_rate: string
+  plan_name: string;
+  plan_id: string;
+  deductible: string;
+  total_employer_cost: string;
+  out_of_pocket_max: string;
+  copay_coinsurance: string;
+  monthly_premium: string;
+  employee_rate: string;
+  office_copay: string;
+  spouse_rate: string;
+  family_rate: string;
 };
 
 const medicalKeyDisplayNames: { [key: string]: string } = {
