@@ -29,7 +29,7 @@ export const RecursiveQuoteColumnDisplay = ({
 
   if (fieldState === null) {
     setFieldState({ isExpanded: initialExpanded });
-    return;
+    return null;
   }
 
   const { isExpanded } = fieldState;
