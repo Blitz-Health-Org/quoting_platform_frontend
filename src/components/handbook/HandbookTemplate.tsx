@@ -7,7 +7,7 @@ import {
   StyleSheet,
   PDFViewer,
   Image,
-  Font
+  Font,
 } from "@react-pdf/renderer";
 import React, { useEffect, useState } from "react";
 
@@ -81,9 +81,9 @@ export interface HandbookTemplateProps {
 export default function HandbookTemplate(props: HandbookTemplateProps) {
   const [styles, setStyles] = useState({} as any);
   // Create styles
-  console.log("does this work", props.dentalQuoteData)
+  console.log("does this work", props.dentalQuoteData);
   const medicalQuotes = props?.quoteData?.length;
-  console.log(medicalQuotes)
+  console.log(medicalQuotes);
 
   useEffect(() => {
     setStyles(
@@ -98,33 +98,33 @@ export default function HandbookTemplate(props: HandbookTemplateProps) {
           backgroundColor: "#20446c",
         },
         section: {
-          display: 'flex',
-          flexDirection: 'column',
-          width: medicalQuotes ? `${65 / medicalQuotes}%` : '100%',
-          justifyContent: 'center',
-          fontWeight: 'bold'
+          display: "flex",
+          flexDirection: "column",
+          width: medicalQuotes ? `${65 / medicalQuotes}%` : "100%",
+          justifyContent: "center",
+          fontWeight: "bold",
         },
         smallerSection: {
-          display: 'flex',
-          flexDirection: 'column',
-          width: medicalQuotes ? `${73 / medicalQuotes}%` : '100%',
-          justifyContent: 'center',
+          display: "flex",
+          flexDirection: "column",
+          width: medicalQuotes ? `${73 / medicalQuotes}%` : "100%",
+          justifyContent: "center",
           borderLeftWidth: 1,
           borderLeftColor: "#000",
-          borderLeftStyle: 'solid',
-          textAlign: 'center'
+          borderLeftStyle: "solid",
+          textAlign: "center",
         },
         grid: {
-          display: 'flex',
-          flexDirection: 'row',
+          display: "flex",
+          flexDirection: "row",
           paddingBottom: 30,
           paddingLeft: 30,
           paddingRight: 30,
         },
         bullet: {
-          display: 'flex',
-          flexDirection: 'row',
-          alignItems: 'center'
+          display: "flex",
+          flexDirection: "row",
+          alignItems: "center",
         },
         viewer: {
           width: "100%", //the pdf viewer will take up all of the width and height
@@ -143,7 +143,7 @@ export default function HandbookTemplate(props: HandbookTemplateProps) {
           borderBottomStyle: "solid",
           backgroundColor: "transparent",
           color: "black",
-          fontFamily: 'Helvetica'
+          fontFamily: "Helvetica",
         },
         firstTwoFieldsText: {
           textAlign: "center",
@@ -157,7 +157,7 @@ export default function HandbookTemplate(props: HandbookTemplateProps) {
           borderBottomStyle: "solid",
           backgroundColor: "transparent",
           color: "black",
-          fontFamily: 'Helvetica-Bold'
+          fontFamily: "Helvetica-Bold",
         },
         gridHeaderText: {
           textAlign: "left",
@@ -171,7 +171,7 @@ export default function HandbookTemplate(props: HandbookTemplateProps) {
           borderBottomStyle: "solid",
           backgroundColor: "transparent",
           color: "black",
-          fontFamily: 'Helvetica-Bold'
+          fontFamily: "Helvetica-Bold",
         },
         headerText: {
           fontWeight: "semibold",
@@ -183,7 +183,7 @@ export default function HandbookTemplate(props: HandbookTemplateProps) {
           color: "#2f5496",
         },
         boldText: {
-          fontWeight: 'bold',
+          fontWeight: "bold",
           textAlign: "left",
           fontSize: 8,
           marginLeft: 2,
@@ -191,16 +191,16 @@ export default function HandbookTemplate(props: HandbookTemplateProps) {
           height: 10,
           backgroundColor: "transparent",
           color: "black",
-        },        
+        },
         normalText: {
-          fontWeight: 'semibold',
+          fontWeight: "semibold",
           textAlign: "left",
           fontSize: 8,
           height: 10,
           backgroundColor: "transparent",
           color: "black",
           marginTop: 2,
-          marginBottom: 2
+          marginBottom: 2,
         },
         bulletText: {
           fontWeight: "semibold",
@@ -210,7 +210,7 @@ export default function HandbookTemplate(props: HandbookTemplateProps) {
           backgroundColor: "transparent",
           color: "black",
           marginTop: 2,
-          marginBottom: 2
+          marginBottom: 2,
         },
         rightAlignedText: {
           fontWeight: "semibold",
@@ -237,29 +237,29 @@ export default function HandbookTemplate(props: HandbookTemplateProps) {
           opacity: 0.9,
         },
         image: {
-          width: '90%',
+          width: "90%",
           marginTop: 10,
-          marginBottom: 20
+          marginBottom: 20,
         },
         smallerImage: {
-          width: '70%',
+          width: "70%",
           marginTop: 10,
         },
         firstImage: {
-          width: '100%',
+          width: "100%",
         },
         centered: {
-          width: '100%',
-          display: 'flex',
-          flexDirection: 'row',
-          justifyContent: 'center',
+          width: "100%",
+          display: "flex",
+          flexDirection: "row",
+          justifyContent: "center",
         },
         left: {
-          width: '100%',
-          display: 'flex',
-          flexDirection: 'row',
-          justifyContent: 'flex-start',
-          padding: 20
+          width: "100%",
+          display: "flex",
+          flexDirection: "row",
+          justifyContent: "flex-start",
+          padding: 20,
         },
       }),
     );
@@ -273,58 +273,58 @@ export default function HandbookTemplate(props: HandbookTemplateProps) {
 
         <Page size="A4" style={styles.firstPage}>
           <View style={styles.centered}>
-            <Image 
-              src="Glance.png" 
-              style={styles.firstImage} />
+            <Image src="Glance.png" style={styles.firstImage} />
           </View>
-          <Text style={{
-              position: 'absolute',
-              top: '65%',
-              left: '13.5%',
-              transform: 'translate(-50%, -50%)',
-              color: 'white',
+          <Text
+            style={{
+              position: "absolute",
+              top: "65%",
+              left: "13.5%",
+              transform: "translate(-50%, -50%)",
+              color: "white",
               fontSize: 42,
-            }}>
-              Benefits at a Glance -
-            </Text>
-          <Text style={{
-              position: 'absolute',
-              top: '72%',
-              left: '13.5%',
-              transform: 'translate(-50%, -50%)',
-              color: 'white',
+            }}
+          >
+            Benefits at a Glance -
+          </Text>
+          <Text
+            style={{
+              position: "absolute",
+              top: "72%",
+              left: "13.5%",
+              transform: "translate(-50%, -50%)",
+              color: "white",
               fontSize: 42,
-            }}>
-              {props.clientName}
-            </Text>
-            <Text style={{
-            position: 'absolute',
-            top: '103.5%',
-            left: '93.5%',
-            transform: 'translate(-50%, -50%)',
-            color: 'white',
-            fontSize: 10,
-          }}>
+            }}
+          >
+            {props.clientName}
+          </Text>
+          <Text
+            style={{
+              position: "absolute",
+              top: "103.5%",
+              left: "93.5%",
+              transform: "translate(-50%, -50%)",
+              color: "white",
+              fontSize: 10,
+            }}
+          >
             ANGUS MCRAE
           </Text>
         </Page>
 
         <Page size="A4" style={styles.copiedPage}>
-        <View>
-          <Text style={styles.rightAlignedText}>Page 2 | {props.clientName}</Text>
-        </View>
-        <View style={styles.centered}>
-          <Image
-            src="Eligibility.jpeg"
-            style={styles.image}
-          />
-        </View>
-        <View style={styles.centered}>
-          <Image
-            src="Definitions.png"
-            style={styles.image}
-          />
-        </View>
+          <View>
+            <Text style={styles.rightAlignedText}>
+              Page 2 | {props.clientName}
+            </Text>
+          </View>
+          <View style={styles.centered}>
+            <Image src="Eligibility.jpeg" style={styles.image} />
+          </View>
+          <View style={styles.centered}>
+            <Image src="Definitions.png" style={styles.image} />
+          </View>
         </Page>
 
         {/* <Page size="A4" style={styles.page}>
@@ -344,44 +344,81 @@ export default function HandbookTemplate(props: HandbookTemplateProps) {
           </View>
         </Page> */}
 
-      <Page size="A4" style={styles.page}>
-        <Text style={styles.rightAlignedTextWithLessBottom}>Page 3 | {props.clientName}</Text>
-        <View style={styles.left}>
-          <Image
-            src="Medical.png"
-            style={styles.smallerImage}
-          />
-        </View>
+        <Page size="A4" style={styles.page}>
+          <Text style={styles.rightAlignedTextWithLessBottom}>
+            Page 3 | {props.clientName}
+          </Text>
+          <View style={styles.left}>
+            <Image src="Medical.png" style={styles.smallerImage} />
+          </View>
           <View style={styles.grid}>
             <View style={styles.section}>
-              {Object.entries(medicalKeyDisplayNames).map(([key, displayName]) => (
-                <Text key={key} style={styles.gridHeaderText}>{displayName || "MISSING"}</Text>
-              ))}
-              </View>
-              {props.quoteData?.map((plan, index) => (
-                <React.Fragment key={index}>
-                <View style={styles.smallerSection}>
-                    <Text style={styles.firstTwoFieldsText}>{plan.plan_name || "MISSING"}</Text>
-                    <Text style={styles.firstTwoFieldsText}>{plan.plan_id || "MISSING"}</Text>
-                    <Text style={styles.gridText}>{plan.deductible || "MISSING"}</Text>
-                    <Text style={styles.gridText}>{plan.coinsurance || "MISSING"}</Text>
-                    <Text style={styles.gridText}>{plan.employee_only_rate || "MISSING"}</Text>
-                    <Text style={styles.gridText}>{plan.employee_spouse_rate || "MISSING"}</Text>
-                    <Text style={styles.gridText}>{plan.employee_child_rate || "MISSING"}</Text>
-                    <Text style={styles.gridText}>{plan.employee_family_rate || "MISSING"}</Text>
-                    <Text style={styles.gridText}>{plan.pcp_copay || "MISSING"}</Text>
-                    <Text style={styles.gridText}>{plan.specialist_copay || "MISSING"}</Text>
-                    <Text style={styles.gridText}>{plan.er_copay || "MISSING"}</Text>
-                    <Text style={styles.gridText}>{plan.pharmacy_copay || "MISSING"}</Text>
-                    <Text style={styles.gridText}>{plan.inpatient_copay || "MISSING"}</Text>
-                    <Text style={styles.gridText}>{plan.urgent_care_copay || "MISSING"}</Text>
-                    <Text style={styles.gridText}>{plan.prescription_deductible || "MISSING"}</Text>
-                    <Text style={styles.gridText}>{plan.total_cost || "MISSING"}</Text>
-                    <Text style={styles.gridText}>{plan.out_of_pocket_max || "MISSING"}</Text>
-                  </View>
-                </React.Fragment>
-            ))}
+              {Object.entries(medicalKeyDisplayNames).map(
+                ([key, displayName]) => (
+                  <Text key={key} style={styles.gridHeaderText}>
+                    {displayName || "MISSING"}
+                  </Text>
+                ),
+              )}
             </View>
+            {props.quoteData?.map((plan, index) => (
+              <React.Fragment key={index}>
+                <View style={styles.smallerSection}>
+                  <Text style={styles.firstTwoFieldsText}>
+                    {plan.plan_name || "MISSING"}
+                  </Text>
+                  <Text style={styles.firstTwoFieldsText}>
+                    {plan.plan_id || "MISSING"}
+                  </Text>
+                  <Text style={styles.gridText}>
+                    {plan.deductible || "MISSING"}
+                  </Text>
+                  <Text style={styles.gridText}>
+                    {plan.coinsurance || "MISSING"}
+                  </Text>
+                  <Text style={styles.gridText}>
+                    {plan.employee_only_rate || "MISSING"}
+                  </Text>
+                  <Text style={styles.gridText}>
+                    {plan.employee_spouse_rate || "MISSING"}
+                  </Text>
+                  <Text style={styles.gridText}>
+                    {plan.employee_child_rate || "MISSING"}
+                  </Text>
+                  <Text style={styles.gridText}>
+                    {plan.employee_family_rate || "MISSING"}
+                  </Text>
+                  <Text style={styles.gridText}>
+                    {plan.pcp_copay || "MISSING"}
+                  </Text>
+                  <Text style={styles.gridText}>
+                    {plan.specialist_copay || "MISSING"}
+                  </Text>
+                  <Text style={styles.gridText}>
+                    {plan.er_copay || "MISSING"}
+                  </Text>
+                  <Text style={styles.gridText}>
+                    {plan.pharmacy_copay || "MISSING"}
+                  </Text>
+                  <Text style={styles.gridText}>
+                    {plan.inpatient_copay || "MISSING"}
+                  </Text>
+                  <Text style={styles.gridText}>
+                    {plan.urgent_care_copay || "MISSING"}
+                  </Text>
+                  <Text style={styles.gridText}>
+                    {plan.prescription_deductible || "MISSING"}
+                  </Text>
+                  <Text style={styles.gridText}>
+                    {plan.total_cost || "MISSING"}
+                  </Text>
+                  <Text style={styles.gridText}>
+                    {plan.out_of_pocket_max || "MISSING"}
+                  </Text>
+                </View>
+              </React.Fragment>
+            ))}
+          </View>
         </Page>
       </Document>
     </PDFViewer>
