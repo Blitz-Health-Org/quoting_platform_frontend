@@ -9,11 +9,11 @@ export function useCalculateTotalCost(
 ) {
   const { client } = useContext(ClientContext);
 
-  if (quoteData.metadata.total_employer_cost_is_precalculated)
+  if (quoteData?.metadata?.total_employer_cost_is_precalculated)
     return quoteData.total_employer_cost;
 
   const calculationMethod =
-    quoteData.metadata.total_employer_cost_calculation_method;
+    quoteData?.metadata?.total_employer_cost_calculation_method;
 
   if (calculationMethod === "aca_age_banded") {
     //implement (need more aca context)

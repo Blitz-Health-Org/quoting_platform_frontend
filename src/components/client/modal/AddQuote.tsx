@@ -113,7 +113,7 @@ export const AddQuote = ({
           },
           body: JSON.stringify({
             successfulFileUrls,
-            client: client,
+            clientId: client.id,
             userId: userId,
           }),
         },
