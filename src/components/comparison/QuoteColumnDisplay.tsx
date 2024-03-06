@@ -6,6 +6,7 @@ type QuoteColumnDisplayProps = {
   className?: string;
   quoteData?: any;
   headerComponent?: React.ReactNode;
+  isQuoteCard?: boolean;
 };
 
 export const QuoteColumnDisplay = ({
@@ -14,6 +15,7 @@ export const QuoteColumnDisplay = ({
   className,
   quoteData,
   headerComponent,
+  isQuoteCard = false,
 }: QuoteColumnDisplayProps) => {
   return (
     <>
@@ -29,6 +31,7 @@ export const QuoteColumnDisplay = ({
           field={field}
           initialExpanded={initialExpanded}
           quoteData={quoteData}
+          isQuoteCard={isQuoteCard}
         />
       </div>
     </>

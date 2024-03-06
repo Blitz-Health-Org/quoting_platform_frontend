@@ -433,11 +433,11 @@ export default function SelectQuotes() {
     return { success: true, data };
   };
 
-  const aca_quotes = quotes.filter((quote) =>
-    Object.keys(quote.data as object).includes("aca"),
+  const aca_quotes = quotes.filter(
+    (quote) => (quote.data as any)?.["metadata"]?.["is_aca"] === true,
   );
   const non_aca_quotes = quotes.filter(
-    (quote) => !Object.keys(quote.data as object).includes("aca"),
+    (quote) => !(quote.data as any)?.["metadata"]?.["is_aca"] === true,
   );
 
   if (!selectedClient) {

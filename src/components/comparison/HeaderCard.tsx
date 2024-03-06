@@ -3,11 +3,11 @@ import { QuoteColumnDisplay } from "./QuoteColumnDisplay";
 
 //TODO: Need to clean and validate the schema somewhere
 
-export type LeftProps = {
+export type HeaderCardProps = {
   fieldObject: Record<string, any>;
 };
 
-export default function Left({ fieldObject }: LeftProps) {
+export const HeaderCard = ({ fieldObject }: HeaderCardProps) => {
   return (
     <QuoteColumnDisplay
       field={fieldObject}
@@ -15,4 +15,4 @@ export default function Left({ fieldObject }: LeftProps) {
       className="w-fit max-w-44"
     />
   );
-}
+};

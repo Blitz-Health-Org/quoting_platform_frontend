@@ -1,6 +1,4 @@
 import { fieldsFamilyState } from "@/src/states/fieldsFamilyState";
-import { values } from "lodash";
-import { useState } from "react";
 import { MdOutlineArrowRight } from "react-icons/md";
 import { MdOutlineArrowDropDown } from "react-icons/md";
 import { useRecoilState } from "recoil";
@@ -10,12 +8,14 @@ type RecursiveQuoteColumnDisplayProps = {
   initialExpanded?: boolean;
   quoteData?: any;
   path?: string;
+  isQuoteCard?: boolean;
 };
 
 type HeaderLabelProps = {
   quoteData?: any;
   field: any;
   className?: string;
+  isQuoteCard?: boolean;
 };
 
 //recursively displays nested header or body quote column based on whether quoteData is passed in
@@ -24,6 +24,7 @@ export const RecursiveQuoteColumnDisplay = ({
   initialExpanded = false,
   quoteData,
   path = "root",
+  isQuoteCard = false,
 }: RecursiveQuoteColumnDisplayProps) => {
   const [fieldState, setFieldState] = useRecoilState(fieldsFamilyState(path));
 
@@ -34,7 +35,11 @@ export const RecursiveQuoteColumnDisplay = ({
 
   const { isExpanded } = fieldState;
 
-  const LabelCell = ({ field, className = "" }: HeaderLabelProps) => {
+  const LabelCell = ({
+    isQuoteCard = false,
+    field,
+    className = "",
+  }: HeaderLabelProps) => {
     console.log("quoteData", quoteData, path, field);
     return (
       <div className={`w-full text-sm flex-grow ${className}`}>
@@ -46,13 +51,17 @@ export const RecursiveQuoteColumnDisplay = ({
         <div className="flex items-center justify-between h-7 w-full flex-grow">
           <p className="ml-4 my-1 break-all font-semibold">
             {["string", "number", "boolean"].includes(field.type) ? (
-              quoteData ? (
-                quoteData
+              isQuoteCard ? (
+                quoteData ? (
+                  quoteData
+                ) : (
+                  "N/A"
+                )
+              ) : field?.label ? (
+                field?.label
               ) : (
-                field.label
+                <></>
               )
-            ) : quoteData ? (
-              <></>
             ) : (
               field?.label
             )}
@@ -91,14 +100,24 @@ export const RecursiveQuoteColumnDisplay = ({
   if (field.isVisible === false) return <></>;
 
   if (["string", "number", "boolean"].includes(field.type)) {
-    return <LabelCell quoteData={quoteData} field={field} />;
+    return (
+      <LabelCell
+        isQuoteCard={isQuoteCard}
+        quoteData={quoteData}
+        field={field}
+      />
+    );
   } else if (field.type === "array") {
     return <></>;
   } else {
     return (
       <div className="flex flex-col flex-grow">
         {field.label && (
-          <LabelCell className={"bg-violet-100/60"} field={field} />
+          <LabelCell
+            isQuoteCard={isQuoteCard}
+            className={"bg-violet-100/60"}
+            field={field}
+          />
         )}
         {isExpanded && (
           <>
@@ -109,6 +128,7 @@ export const RecursiveQuoteColumnDisplay = ({
                   key={`${path}/${nestedField?.label || "label"}`}
                   field={nestedField}
                   quoteData={quoteData ? quoteData[key] : undefined}
+                  isQuoteCard={isQuoteCard}
                 />
               ),
             )}
