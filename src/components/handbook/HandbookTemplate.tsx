@@ -127,8 +127,8 @@ export default function HandbookTemplate(props: HandbookTemplateProps) {
           alignItems: 'center'
         },
         viewer: {
-          width: '100%', //the pdf viewer will take up all of the width and height
-          height: '100%',
+          width: "100%", //the pdf viewer will take up all of the width and height
+          height: "100%",
         },
         gridText: {
           fontWeight: "semibold",

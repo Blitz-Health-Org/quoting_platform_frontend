@@ -52,7 +52,7 @@ export const Subheader: React.FC<SubheaderProps> = ({
   };
 
   return (
-    <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 mt-2">
+    <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 h-30 mb-2 mt-12">
       {/* Left-aligned form */}
       <div className="flex gap-2 justify-center lg:justify-start items-center">
         <button onClick={handleBusiness} className="flex items-center mr-1">

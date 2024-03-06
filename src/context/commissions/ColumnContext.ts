@@ -1,7 +1,7 @@
-import { createContext } from "react";
+// import { createContext } from "react";
 
-type ColumnContext = {
-  field: string;
-};
+// type ColumnContext = {
+//   field: string;
+// };
 
-export const ColumnContext = createContext<ColumnContext | null>(null);
+// export const ColumnContext = createContext<ColumnContext | null>(null);

@@ -9,7 +9,7 @@ import { Navbar } from "@/src/components/comparison/Navbar";
 import { QuoteType } from "@/src/types/custom/Quote";
 import { IoMdArrowBack } from "react-icons/io";
 import { IconBuilding } from "@tabler/icons-react";
-import { Collapse } from '@mui/material';
+import { Collapse } from "@mui/material";
 import { SlArrowUp } from "react-icons/sl";
 import { SlArrowDown } from "react-icons/sl";
 import Image from "next/image";
@@ -115,18 +115,27 @@ export default function QuotingPage() {
   const [displayPlans, setDisplayPlans] = useState(false);
   const [selectedPlanId, setSelectedPlanId] = useState<number | null>(null);
   const [quoteData, setQuoteData] = useState<MedicalQuoteDetails[]>();
-  const [editableQuotes, setEditableQuotes] = useState<{ [key: string]: { [dataKey: string]: string } }>({});
+  const [editableQuotes, setEditableQuotes] = useState<{
+    [key: string]: { [dataKey: string]: string };
+  }>({});
   const [displayDentalPlans, setDisplayDentalPlans] = useState(false);
-  const [dentalQuoteData, setDentalQuoteData] = useState<DentalQuoteDetails[]>([]);
-  
-  const handleInputChange = (planIndex: number, quoteIndex: number, key: string, value: string) => {
+  const [dentalQuoteData, setDentalQuoteData] = useState<DentalQuoteDetails[]>(
+    [],
+  );
+
+  const handleInputChange = (
+    planIndex: number,
+    quoteIndex: number,
+    key: string,
+    value: string,
+  ) => {
     const newState = { ...editableQuotes };
     const indexKey = `${planIndex}-${quoteIndex}`;
     if (!newState[indexKey]) newState[indexKey] = {};
     newState[indexKey][key] = value;
     setEditableQuotes(newState);
   };
-  
+
   const handlePlanClick = (planId: number) => {
     if (selectedPlanId === planId) {
       setSelectedPlanId(null); // Deselect if the same plan is clicked again
@@ -155,10 +164,10 @@ export default function QuotingPage() {
         .eq("id", clientId)
         .single();
 
-        if (clientError) {
-          alert("No client found");
-          redirect("/404");
-        }
+      if (clientError) {
+        alert("No client found");
+        redirect("/404");
+      }
 
       setClient(clientData);
       setPlans(clientData.connected_plans);
@@ -174,26 +183,29 @@ export default function QuotingPage() {
   };
 
   const combineSelectedQuotesData = () => {
-    const selectedPlan = plans?.find(plan => plan.id === selectedPlanId);
+    const selectedPlan = plans?.find((plan) => plan.id === selectedPlanId);
     if (!selectedPlan) return;
-  
-    const updatedQuoteData = selectedPlan.selectedQuotes.map((quote, quoteIndex) => {
-      const planIndex = plans?.indexOf(selectedPlan);
-      // Assuming plans is an array and contains selectedPlan
-  
-      // Use type assertion here to assure TypeScript that editedData will be an object.
-      const editedData = (editableQuotes[`${planIndex}-${quoteIndex}`] || {}) as { [key: string]: any };
-  
-      // Also ensure quote.data is always treated as an object with a type assertion
-      const quoteData = (quote.data || {}) as { [key: string]: any };
-  
-      return { ...quoteData, ...editedData };
-    });
-  
+
+    const updatedQuoteData = selectedPlan.selectedQuotes.map(
+      (quote, quoteIndex) => {
+        const planIndex = plans?.indexOf(selectedPlan);
+        // Assuming plans is an array and contains selectedPlan
+
+        // Use type assertion here to assure TypeScript that editedData will be an object.
+        const editedData = (editableQuotes[`${planIndex}-${quoteIndex}`] ||
+          {}) as { [key: string]: any };
+
+        // Also ensure quote.data is always treated as an object with a type assertion
+        const quoteData = (quote.data || {}) as { [key: string]: any };
+
+        return { ...quoteData, ...editedData };
+      },
+    );
+
     // Assuming setQuoteData expects updatedQuoteData to be of a specific type
     setQuoteData(updatedQuoteData as any); // Adjust the 'any' type to match the expected type of setQuoteData
     console.log("Updated Data", updatedQuoteData);
-  };  
+  };
 
   const medicalDummyData = {
     plan_name: "Missing",
@@ -240,11 +252,11 @@ export default function QuotingPage() {
       <Navbar selected="Handbooks" />
 
       <div className="w-full flex-col pt-6 pl-6 pr-4 pb-6 md:w-6/7 overflow-hidden">
-      <div className="flex justify-between w-full">
-      <div className="flex items-center text-sm md:text-base mb-4">
+        <div className="flex justify-between w-full">
+          <div className="flex items-center text-sm md:text-base mb-4">
             <button
               className="flex items-center"
-              onClick={() => router.push('/')}
+              onClick={() => router.push("/")}
             >
               <IoMdArrowBack />
               <p className="ml-2 mr-1">Clients / </p>
@@ -255,27 +267,30 @@ export default function QuotingPage() {
             {/* <p className="mr-1">/ Quotes</p>
         <p className="mr-1 text-gray-400 text-xs">•</p>
         <p className="text-gray-400">({quotes.length})</p> */}
-        </div>
-        <button
+          </div>
+          <button
             onClick={async () => {
               combineSelectedQuotesData();
               setDisplayPDF(true);
             }}
             className="items-center justify-center gap-2 flex ml-1 mb-2 rounded-md px-2 py-1 outline outline-1 outline-gray-300 hover:bg-gray-100 hover:outline-gray-400/90"
           >
-            <RiAiGenerate/>
+            <RiAiGenerate />
             <p>Render Handbook</p>
           </button>
-          </div>
+        </div>
         <div className="p-6 rounded-md w-full flex-col overflow-x-hidden h-full pb-12 overflow-y-scroll bg-white outline outline-1 outline-gray-200">
-        
-        <button
-          onClick={() => setDisplayPlans(!displayPlans)}
-          className="ml-0.5 mr-0.5 bg-gray-100/50 outline outline-1 outline-gray-300 w-full rounded-md h-10 mb-2"
-        >
+          <button
+            onClick={() => setDisplayPlans(!displayPlans)}
+            className="ml-0.5 mr-0.5 bg-gray-100/50 outline outline-1 outline-gray-300 w-full rounded-md h-10 mb-2"
+          >
             <div className="pl-4 pr-4 flex items-center justify-between">
               <div className="flex">
-              <input type="checkbox" className="mr-2" onClick={(e) => e.stopPropagation()} />
+                <input
+                  type="checkbox"
+                  className="mr-2"
+                  onClick={(e) => e.stopPropagation()}
+                />
                 Medical
               </div>
               {displayPlans ? 
@@ -357,7 +372,11 @@ export default function QuotingPage() {
         >
             <div className="pl-4 pr-4 flex items-center justify-between">
               <div className="flex">
-              <input type="checkbox" className="mr-2" onClick={(e) => e.stopPropagation()} />
+                <input
+                  type="checkbox"
+                  className="mr-2"
+                  onClick={(e) => e.stopPropagation()}
+                />
                 Dental
               </div>
               {displayDentalPlans ? 

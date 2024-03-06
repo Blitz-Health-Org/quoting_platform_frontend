@@ -53,10 +53,150 @@ export const currentPlanMetadataObject: Record<string, FieldType> = {
   },
 };
 
+export const updatedQuoteMetadataObject: Record<string, any> = {
+  type: "object",
+  properties: {
+    metadata: {
+      label: "Metadata",
+      type: "object",
+      isVisible: false,
+      properties: {
+        is_aca: { type: "boolean", label: "Is ACA" }, // Assuming ACA flag is a boolean
+      },
+    },
+    plan_type: { type: "string", label: "Plan Type" },
+    metal_tier: { type: "string", label: "Metal Tier" },
+    plan_name: { type: "string", label: "Plan Name" },
+    plan_id: { type: "string", label: "Plan ID" },
+    monthly_premium: { type: "number", label: "Monthly Premium" },
+    details: {
+      type: "object",
+      label: "Details",
+      properties: {
+        deductible: {
+          label: "Deductible",
+          type: "object",
+          properties: {
+            medical: {
+              type: "object",
+              label: "Medical",
+              properties: {
+                info: { type: "string", label: "Info" },
+                in_network: {
+                  label: "In Network",
+                  type: "object",
+                  properties: {
+                    individual: { type: "number", label: "Individual" },
+                    family: { type: "number", label: "Family" },
+                  },
+                },
+                out_of_network: {
+                  label: "Out of Network",
+                  type: "object",
+                  properties: {
+                    individual: { type: "number", label: "Individual" },
+                    family: { type: "number", label: "Family" },
+                  },
+                },
+              },
+            },
+            dental: {
+              type: "object",
+              label: "Dental",
+              properties: {
+                info: { type: "string", label: "Info" },
+                in_network: {
+                  label: "In Network",
+                  type: "object",
+                  properties: {
+                    individual: { type: "number", label: "Individual" },
+                    family: { type: "number", label: "Family" },
+                  },
+                },
+                out_of_network: {
+                  label: "Out of Network",
+                  type: "object",
+                  properties: {
+                    individual: { type: "number", label: "Individual" },
+                    family: { type: "number", label: "Family" },
+                  },
+                },
+              },
+            },
+          },
+        },
+        covered_benefits: {
+          label: "Covered Benefits",
+          type: "array", // Assuming an array of benefits
+          items: {
+            type: "string",
+          },
+        },
+        out_of_pocket: {
+          label: "Out of Pocket",
+          type: "object",
+          properties: {
+            individual: { type: "number", label: "Individual Max" },
+            family: { type: "number", label: "Family Max" },
+          },
+        },
+        cost: {
+          label: "Costs",
+          type: "object",
+          properties: {
+            is_precalculated: { type: "boolean", label: "Is Precalculated" },
+            total_employer_cost: {
+              type: "number",
+              label: "Total Employer Cost",
+            },
+          },
+        },
+        copay_coinsurance: {
+          label: "Copay/Coinsurance",
+          type: "object", // Assuming structure needed
+          properties: {
+            // Example properties, adjust as needed
+            copay: { type: "number", label: "Copay" },
+            coinsurance: { type: "number", label: "Coinsurance %" },
+          },
+        },
+        pharmacy: {
+          label: "Pharmacy",
+          type: "object",
+          properties: {
+            network: { type: "string", label: "Network" },
+            drug_list: { type: "string", label: "Drug List" },
+            deductible: {
+              label: "Deductible",
+              type: "object",
+              properties: {
+                tier_1: { type: "number", label: "Tier 1 Deductible" },
+                tier_2: { type: "number", label: "Tier 2 Deductible" },
+                tier_3: { type: "number", label: "Tier 3 Deductible" },
+                tier_4: { type: "number", label: "Tier 4 Deductible" },
+              },
+            },
+          },
+        },
+        additional_info: { type: "string", label: "Additional Info" },
+      },
+    },
+  },
+  required: [
+    "plan_type",
+    "metal_tier",
+    "plan_name",
+    "plan_id",
+    "monthly_premium",
+    // Add other fields as required by your application
+  ],
+};
+
+//will probably deprecate
 export const quoteMetadataObject: Record<string, FieldType> = {
   id: {
     field: "id",
-    type: "number", //TODO: does it make sense for this to be js types or supabase types?
+    type: "number",
     isDefault: true,
     isSystem: true,
     isNullable: false,
@@ -93,7 +233,7 @@ export const quoteMetadataObject: Record<string, FieldType> = {
   },
   data: {
     field: "data",
-    type: "jsonb",
+    type: "object",
     isDefault: true,
     isSystem: false,
     isNullable: false,

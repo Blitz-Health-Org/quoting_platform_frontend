@@ -1,12 +1,12 @@
+"use client";
+
 import React, {
   Dispatch,
   SetStateAction,
   createContext,
-  useContext,
-  useEffect,
   useState,
 } from "react";
-import { Socket, io } from "socket.io-client";
+import { SnackbarAlert } from "../components/ui/SnackbarAlert";
 
 type SnackBarContextProps = {
   setSnackbar: Dispatch<SetStateAction<any>>;
@@ -16,3 +16,28 @@ type SnackBarContextProps = {
 export const SnackBarContext = createContext<SnackBarContextProps>({
   setSnackbar: () => {},
 });
+
+export const SnackBarContextProvider = ({
+  children,
+}: {
+  children: React.ReactNode;
+}) => {
+  const [snackbar, setSnackbar] = useState({
+    open: false,
+    message: "",
+    severity: "info", // default severity
+  });
+
+  return (
+    <>
+      <SnackBarContext.Provider value={{ setSnackbar }}>
+        {children}
+        <SnackbarAlert
+          openSnackbarShare={snackbar.open}
+          setOpenSnackbarShare={setSnackbar}
+          snackbar={snackbar}
+        />
+      </SnackBarContext.Provider>
+    </>
+  );
+};

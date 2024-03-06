@@ -1,3 +1,5 @@
+"use client";
+
 import { PolicyField } from "../../types/metadata";
 import { Filter } from "@/src/types/custom/Filter";
 import { Dispatch, SetStateAction, createContext, useState } from "react";

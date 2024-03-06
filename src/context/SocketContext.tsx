@@ -1,3 +1,5 @@
+"use client";
+
 import React, { createContext, useContext, useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import io, { Socket } from "socket.io-client";
@@ -59,28 +61,36 @@ export function SocketProvider({ children }: { children: React.ReactNode }) {
         if (taskInfo) {
           setTaskInfo([
             ...taskInfo!,
-            { taskId: data.task_id, files: data.files, type: data.type },
+            { taskId: data.task_id, metadata: data.metadata, type: data.type },
           ]);
         } else {
           setTaskInfo([
-            { taskId: data.task_id, files: data.files, type: data.type },
+            { taskId: data.task_id, metadata: data.metadata, type: data.type },
           ]);
         }
       }
-      if (data.status === "failed") {
+
+      if (
+        data.status === "failed" &&
+        data.result !== "SoftTimeLimitExceeded()"
+      ) {
         if (data.type === "parse") {
-          if (data.result === "SoftTimeLimitExceeded()")
-            toast.success("Parsing aborted!");
-          else toast.error("Failed to process PDFs. Please try again.");
+          toast.error(data.metadata.failure_text);
         }
         setTaskInfo(taskInfo?.filter((task) => task.taskId !== data.task_id));
       }
     });
 
+    socket.on(`task_terminated/${userId}`, (data) => {
+      console.log("Task Terminated:", data);
+      toast.success(data.metadata.stop_text);
+      setTaskInfo(taskInfo?.filter((task) => task.taskId !== data.task_id));
+    });
+
     socket.on(`task_finished/${userId}`, (data) => {
       console.log("Task Finished:");
       setTaskInfo(taskInfo?.filter((task) => task.taskId !== data.task_id));
-      if (data.type === "parse") toast.success("PDF(s) processed successfully");
+      if (data.type === "parse") toast.success(data.metadata.success_text);
     });
 
     return () => {
