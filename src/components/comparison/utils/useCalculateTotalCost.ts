@@ -38,7 +38,8 @@ export function useCalculateTotalCost(
           (
             parseFloat(customClass.data[value].percent) *
             parseFloat(customClass.data[value].employees) *
-            parseFloat(rates[value].slice(1, -1))
+            parseFloat(rates[value].slice(1, -1)) *
+            0.01
           ).toFixed(2),
         );
       }
@@ -52,7 +53,8 @@ export function useCalculateTotalCost(
         (
           parseFloat(standardContribution.data[value].percent) *
           parseFloat(standardContribution.data[value].employees) *
-          parseFloat(rates[value].slice(1, -1))
+          parseFloat(rates[value].slice(1, -1)) *
+          0.01
         ).toFixed(2),
       );
     }
