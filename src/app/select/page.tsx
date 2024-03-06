@@ -28,17 +28,17 @@ import { SelectedQuotesACAPage } from "@/src/components/client/SelectedQuotesACA
 import { SelectedQuotesNonACAPage } from "@/src/components/client/SelectedQuotesNonACAPage";
 import TabHeader from "@/src/components/ui/TabHeader";
 
-interface PlanAttributes {
+export interface PlanAttributes {
   plan_id: string;
   carrier: string;
   plan_name: string;
   plan_type: string;
   office_copay: string;
   deductible: string;
-  coinsurance: string;
+  copay_coinsurance: string;
   out_of_pocket_max: string;
   additional_copay: string;
-  total_cost: string;
+  total_employer_cost: string;
 }
 
 const planAttributesMapping: {
@@ -51,13 +51,13 @@ const planAttributesMapping: {
   // { key: "plan_type", label: "Plan Type" },
   // { key: "office_copay", label: "Office Copay (PCP/Specialist)" },
   { key: "deductible", label: "Deductible (Individual)" },
-  { key: "coinsurance", label: "Coinsurance (In-Network)" },
+  { key: "copay_coinsurance", label: "Coinsurance (In-Network)" },
   { key: "out_of_pocket_max", label: "Out of Pocket (Individual)" },
-  {
-    key: "additional_copay",
-    label: "Additional Copays (ER / Imaging / OP / IP)",
-  },
-  { key: "total_cost", label: "Total Monthly Premium" },
+  // {
+  //   key: "additional_copay",
+  //   label: "Additional Copays (ER / Imaging / OP / IP)",
+  // },
+  { key: "total_employer_cost", label: "Total Monthly Premium" },
 ];
 
 const TABS = ["NON-ACA", "ACA"];
@@ -433,11 +433,11 @@ export default function SelectQuotes() {
     return { success: true, data };
   };
 
-  const aca_quotes = quotes.filter((quote) =>
-    Object.keys(quote.data as object).includes("aca"),
+  const aca_quotes = quotes.filter(
+    (quote) => (quote.data as any)?.["metadata"]?.["is_aca"] === true,
   );
   const non_aca_quotes = quotes.filter(
-    (quote) => !Object.keys(quote.data as object).includes("aca"),
+    (quote) => !(quote.data as any)?.["metadata"]?.["is_aca"] === true,
   );
 
   if (!selectedClient) {

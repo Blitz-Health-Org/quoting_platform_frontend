@@ -1,18 +1,6 @@
 import { QuoteTypeWithCheckbox } from "@/src/app/select/page";
 import Image from "next/image";
-
-interface PlanAttributes {
-  plan_id: string;
-  carrier: string;
-  plan_name: string;
-  plan_type: string;
-  office_copay: string;
-  deductible: string;
-  coinsurance: string;
-  out_of_pocket_max: string;
-  additional_copay: string;
-  total_cost: string;
-}
+import { PlanAttributes } from "@/src/app/select/page";
 
 type SelectedQuotesNonACAPageProps = {
   quotes: QuoteTypeWithCheckbox[];

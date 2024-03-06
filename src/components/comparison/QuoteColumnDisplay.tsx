@@ -6,6 +6,7 @@ type QuoteColumnDisplayProps = {
   className?: string;
   quoteData?: any;
   headerComponent?: React.ReactNode;
+  isQuoteCard?: boolean;
 };
 
 export const QuoteColumnDisplay = ({
@@ -14,21 +15,24 @@ export const QuoteColumnDisplay = ({
   className,
   quoteData,
   headerComponent,
+  isQuoteCard = false,
 }: QuoteColumnDisplayProps) => {
   return (
     <>
       <div
-        className={` bg-white flex-grow flex flex-col h-full rounded-lg outline outline-1 outline-gray-300 text-center overflow-y-auto ${className || ""}`}
+        className={`min-w-64 bg-white flex-grow flex flex-col h-fit rounded-lg border border-gray-300 text-center overflow-y-auto ${className || ""}`}
       >
         {headerComponent ? (
           <>{headerComponent}</>
         ) : (
-          <div className="mb-28"></div>
+          // <div className="mb-28"></div>
+          <div></div>
         )}
         <RecursiveQuoteColumnDisplay
           field={field}
           initialExpanded={initialExpanded}
           quoteData={quoteData}
+          isQuoteCard={isQuoteCard}
         />
       </div>
     </>

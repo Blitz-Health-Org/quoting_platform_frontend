@@ -98,7 +98,7 @@ export const AddQuote = ({
     } else {
       setSnackbar({
         open: true,
-        message: `Your files are uploading! They can take 2-5 minutes to populate based on size.`,
+        message: `Your files are uploading! They can take 2-5 minutes to populate based on size and existing backlog.`,
         severity: "success",
       });
     }

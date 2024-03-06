@@ -8,12 +8,81 @@
 // import { valueOrDefault } from "chart.js/dist/helpers/helpers.core";
 // import { calculateTotalCost } from "./utils/calculateTotalCost";
 
+import { QuoteColumnDisplay } from "./QuoteColumnDisplay";
+import Image from "next/image";
+import { useCalculateTotalCost } from "./utils/useCalculateTotalCost";
+
 // type QuoteCardProps = {
 //   quote: QuoteType;
 //   fieldObject: any;
 //   classes: any;
 //   standardContribution: any;
 // };
+
+export type QuoteCardProps = {
+  fieldObject: any;
+  quote: any;
+  plan: any;
+  classes: any;
+  standardContribution: any;
+};
+
+export const QuoteCard = ({
+  fieldObject,
+  quote,
+  plan,
+  classes,
+  standardContribution,
+}: QuoteCardProps) => {
+  quote.data.employer_total_cost = useCalculateTotalCost(
+    quote.data,
+    standardContribution,
+    classes,
+    {
+      employee: (quote.data as any)?.["employee_only_rate"],
+      child: (quote.data as any)?.["employee_child_rate"],
+      family: (quote.data as any)?.["employee_family_rate"],
+      spouse: (quote.data as any)?.["employee_spouse_rate"],
+    },
+  );
+
+  return (
+    <QuoteColumnDisplay
+      field={fieldObject}
+      quoteData={quote.data}
+      isQuoteCard
+      initialExpanded
+      // headerComponent={
+      //   <div className="flex w-full gap-3 h-28 justify-center items-center px-2">
+      //     <div className="max-w-1/2 truncate">
+      //       <h1 className="font-bold text-lg text-wrap max-w-">{plan.name}</h1>
+      //     </div>
+      //     <div className="border-r border-1.5 h-10 border-gray-600"></div>{" "}
+      //     {/* Vertical line break */}
+      //     <div className="flex max-w-1/2 truncate">
+      //       <div className="flex items-center justify-center">
+      //         {plan.selectedQuotes[0].logo_url && (
+      //           <Image
+      //             src={plan.selectedQuotes[0].logo_url}
+      //             alt={`Logo for ${plan.selectedQuotes[0].carrier}`}
+      //             width={30}
+      //             height={30}
+      //             className="mr-2 rounded-md"
+      //           />
+      //         )}
+      //       </div>
+      //       <div className="flex flex-col items-start justify-center ml-1">
+      //         <h1 className="font-bold text-xl">
+      //           {plan.selectedQuotes[0].carrier}
+      //         </h1>
+      //         <p className="text-sm">{"aetna.com"}</p>
+      //       </div>
+      //     </div>
+      //   </div>
+      // }
+    />
+  );
+};
 
 // //DEPRECATED
 // export default function QuoteCard({
