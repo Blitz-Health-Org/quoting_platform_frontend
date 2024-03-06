@@ -12,6 +12,7 @@ import { IoIosSettings } from "react-icons/io";
 import { IoChevronDown } from "react-icons/io5";
 import { useRouter } from "next/navigation";
 import { SnackBarContext } from "@/src/context/SnackBarContext";
+import { ContinuousSlider } from "./ContributionSlider";
 
 type SubheaderProps = {
   isPaneOpen: boolean;
@@ -20,6 +21,7 @@ type SubheaderProps = {
   handleDownloadCSV: any;
   plansLength: number;
   client: any;
+  setStandardContribution: any;
 };
 
 export const Subheader: React.FC<SubheaderProps> = ({
@@ -29,6 +31,7 @@ export const Subheader: React.FC<SubheaderProps> = ({
   handleDownloadCSV,
   plansLength,
   client,
+  setStandardContribution,
 }) => {
   const { setSnackbar } = useContext(SnackBarContext);
 
@@ -52,22 +55,23 @@ export const Subheader: React.FC<SubheaderProps> = ({
   };
 
   return (
-    <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 h-30 mb-2 mt-12">
-      {/* Left-aligned form */}
-      <div className="flex gap-2 justify-center lg:justify-start items-center">
-        <button onClick={handleBusiness} className="flex items-center mr-1">
-          <p className="mr-1 truncate">Rank by</p>
-          <IoChevronDown />
-        </button>
-        <button onClick={handleBusiness} className="flex items-center mr-1">
-          <p className="mr-1 truncate">Filter</p>
-          <IoChevronDown />
-        </button>
-        <button onClick={handleBusiness} className="flex items-center mr-1">
-          <p className="mr-1 truncate">Age banded rates</p>
-          <IoChevronDown />
-        </button>
-        {/* <FormControl
+    <div className="flex flex-col items-center">
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 h-30 mb-2 mt-12">
+        {/* Left-aligned form */}
+        <div className="flex gap-2 justify-center lg:justify-start items-center">
+          <button onClick={handleBusiness} className="flex items-center mr-1">
+            <p className="mr-1 truncate">Rank by</p>
+            <IoChevronDown />
+          </button>
+          <button onClick={handleBusiness} className="flex items-center mr-1">
+            <p className="mr-1 truncate">Filter</p>
+            <IoChevronDown />
+          </button>
+          <button onClick={handleBusiness} className="flex items-center mr-1">
+            <p className="mr-1 truncate">Age banded rates</p>
+            <IoChevronDown />
+          </button>
+          {/* <FormControl
           variant="standard"
           sx={{ m: 1, minWidth: 120 }}
           size="small"
@@ -109,50 +113,54 @@ export const Subheader: React.FC<SubheaderProps> = ({
             <MenuItem value={30}>Thirty</MenuItem>
           </Select>
         </FormControl> */}
-      </div>
-
-      <div className="col-span-1 text-center flex items-center justify-center gap-1">
-        <p className="truncate">Showing {plansLength} Plans </p>
-        <p className="cursor-pointer truncate" onClick={handleBusiness2}>
-          | Edit |{" "}
-        </p>
-        <div onClick={() => setCurrentPlanModalOpen(true)}>
-          <p className="cursor-pointer truncate">Add Current Plan</p>
         </div>
-      </div>
 
-      {/* Right-aligned buttons */}
-      <div className="flex items-center lg:justify-end font-light justify-center">
-        <button
-          onClick={copyUrlToClipboard}
-          className="flex items-center gap-2 cursor-pointer outline outline-1 outline-neutral-600 mr-2 rounded-sm bg-neutral-700/80 text-sm text-gray-100 px-2 py-1"
-        >
-          <FaShareAlt />
-          <p>Share</p>
-        </button>
-        <button
-          onClick={handleDownloadCSV}
-          className="flex items-center gap-2 cursor-pointer outline outline-1 outline-neutral-600 mr-2 rounded-sm bg-neutral-700/80 text-sm text-gray-100 px-2 py-1"
-        >
-          <IoMdDownload />
-          <p className="truncate">Download CSV</p>
-        </button>
-        <button
-          onClick={() => onPaneToggle(!isPaneOpen)}
-          className="flex items-center gap-2 cursor-pointer outline outline-1 outline-neutral-600 rounded-sm bg-neutral-700/80 text-sm text-gray-100 px-2 py-1"
-        >
-          <IoIosSettings />
-          <p>Settings</p>
-        </button>
-      </div>
+        <div className="col-span-1 text-center flex items-center justify-center gap-1">
+          <p className="truncate">Showing {plansLength} Plans </p>
+          <p className="cursor-pointer truncate" onClick={handleBusiness2}>
+            | Edit |{" "}
+          </p>
+          <div onClick={() => setCurrentPlanModalOpen(true)}>
+            <p className="cursor-pointer truncate">Add Current Plan</p>
+          </div>
+        </div>
 
-      {/* {currentPlanModalOpen && (
+        {/* Right-aligned buttons */}
+        <div className="flex items-center lg:justify-end font-light justify-center">
+          <button
+            onClick={copyUrlToClipboard}
+            className="flex items-center gap-2 cursor-pointer outline outline-1 outline-neutral-600 mr-2 rounded-sm bg-neutral-700/80 text-sm text-gray-100 px-2 py-1"
+          >
+            <FaShareAlt />
+            <p>Share</p>
+          </button>
+          <button
+            onClick={handleDownloadCSV}
+            className="flex items-center gap-2 cursor-pointer outline outline-1 outline-neutral-600 mr-2 rounded-sm bg-neutral-700/80 text-sm text-gray-100 px-2 py-1"
+          >
+            <IoMdDownload />
+            <p className="truncate">Download CSV</p>
+          </button>
+          <button
+            onClick={() => onPaneToggle(!isPaneOpen)}
+            className="flex items-center gap-2 cursor-pointer outline outline-1 outline-neutral-600 rounded-sm bg-neutral-700/80 text-sm text-gray-100 px-2 py-1"
+          >
+            <IoIosSettings />
+            <p>Settings</p>
+          </button>
+        </div>
+
+        {/* {currentPlanModalOpen && (
         <AddCurrentPlanModal
           client={client}
           setModalOpen={setCurrentPlanModalOpen}
           fetchClients={fetchClients}
         />
       )} */}
+      </div>
+      <div className="my-2">
+        <ContinuousSlider setStandardContribution={setStandardContribution} />
+      </div>
     </div>
   );
 };

@@ -248,6 +248,7 @@ export default function QuotingPage() {
           <div className="bg-gray-100 border border-gray-200 border-b-0 px-6 py-2 flex flex-col h-full">
             <Subheader
               client={client}
+              setStandardContribution={setStandardContribution}
               isPaneOpen={paneState.isPaneOpen}
               onPaneToggle={handlePaneToggle}
               copyUrlToClipboard={copyUrlToClipboard}
