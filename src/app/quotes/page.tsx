@@ -46,6 +46,7 @@ export default function QuotingPage() {
     },
   });
 
+  console.log("standard contribution", standardContribution);
   const { quoteSchema } = useContext(QuoteSchemaContext);
   const { setSnackbar } = useContext(SnackBarContext);
 
