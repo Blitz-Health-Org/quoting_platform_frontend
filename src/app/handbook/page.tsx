@@ -151,6 +151,11 @@ export default function QuotingPage() {
     }
   }, [searchParams]);
 
+  function selectQuotes() {
+    router.push(`/select?clientId=${client?.id}`);
+    return;
+  }
+
   const fetchClient = async (clientId: string) => {
     try {
       const { data: clientData, error: clientError } = await supabase
@@ -288,19 +293,20 @@ export default function QuotingPage() {
                 />
                 Medical
               </div>
-              {displayPlans ? <SlArrowUp /> : <SlArrowDown />}
-            </div>
-          </button>
-          <Collapse
-            in={displayPlans}
-            className={`bg-gray-100/50 border border-1 border-gray-300 rounded-md px-0.5`}
-          >
-            <div className="w-full h-full p-4">
+              {displayPlans ? 
+              <SlArrowUp/> : <SlArrowDown/>
+              }
+            </div> 
+        </button>
+        <Collapse in={displayPlans} className={`bg-gray-100/50 border border-1 border-gray-300 rounded-md px-0.5`}>
+        <div className="w-full h-full p-4">
+          {client?.connected_plans ? (
+            <div>
               <div className="flex gap-3 grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2">
                 {client?.connected_plans?.map((plan: any, index: any) => (
                   <div
                     key={index}
-                    className={`col-span-1 outline ${selectedPlanId === plan.id ? "flex-col outline-blue-400 bg-gray-100/80 shadow" : "outline-gray-300 bg-gray-100/50"} hover: bg-gray-100/80 rounded-md p-2 max-h-32 overflow-auto hover:cursor-pointer`}
+                    className={`col-span-1 outline ${selectedPlanId === plan.id ? 'flex-col outline-blue-400 bg-gray-100/80 shadow' : 'outline-gray-300 bg-gray-100/50'} hover:bg-gray-100/80 rounded-md p-2 max-h-32 overflow-auto hover:cursor-pointer`}
                     onClick={() => handlePlanClick(plan.id)}
                   >
                     <p className="font-semibold p-1">{plan?.name}</p>
@@ -329,55 +335,41 @@ export default function QuotingPage() {
                   <div className="flex flex-col gap-4 mt-4 mr-4 mb-1">
                     <p className="font-semibold mt-8"></p>
                     {Object.entries(medicalDummyData).map(([key, value]) => (
-                      <p className="font-semibold" key={key}>
-                        {medicalKeyDisplayNames[key] || key}
-                      </p> // Use keyDisplayNames for a friendly name
+                      <p className="font-semibold truncate" key={key}>{medicalKeyDisplayNames[key] || key}</p>
                     ))}
                   </div>
                 )}
-                {client?.connected_plans
-                  ?.filter((plan: any) => plan?.id === selectedPlanId)
-                  .map((plan: any, planIndex: any) => (
-                    <div key={planIndex} className="flex gap-4 mt-4">
-                      {plan.selectedQuotes?.map(
-                        (quote: any, quoteIndex: any) => (
-                          <div
-                            key={`${planIndex}-${quote.id}`}
-                            className="mt-2 flex flex-col gap-4"
-                          >
-                            <div className="font-semibold">
-                              Quote {quoteIndex + 1}
-                            </div>
-                            {Object.entries(medicalDummyData).map(
-                              ([key, value]) => (
-                                <input
-                                  className="px-2 outline outline-1 outline-gray-300"
-                                  key={key}
-                                  defaultValue={quote.data[key] || value}
-                                  onChange={(e) =>
-                                    handleInputChange(
-                                      planIndex,
-                                      quoteIndex,
-                                      key,
-                                      e.target.value,
-                                    )
-                                  }
-                                ></input>
-                              ),
-                            )}
-                          </div>
-                        ),
-                      )}
-                    </div>
-                  ))}
+                {client?.connected_plans?.filter((plan: any) => plan?.id === selectedPlanId).map((plan: any, planIndex: any) => (
+                  <div key={planIndex} className="flex gap-4 mt-4">
+                    {plan.selectedQuotes?.map((quote: any, quoteIndex: any) => (
+                      <div key={`${planIndex}-${quote.id}`} className="mt-2 flex flex-col gap-4">
+                        <div className="font-semibold">Quote {quoteIndex + 1}</div>
+                        {Object.entries(medicalDummyData).map(([key, value]) => (
+                          <input
+                            className="px-2 outline outline-1 outline-gray-300"
+                            key={key}
+                            defaultValue={quote.data[key] || value}
+                            onChange={(e) => handleInputChange(planIndex, quoteIndex, key, e.target.value)}
+                          ></input>
+                        ))}
+                      </div>
+                    ))}
+                  </div>
+                ))}
               </div>
             </div>
-          </Collapse>
-
-          <button
-            onClick={() => setDisplayDentalPlans(!displayDentalPlans)}
-            className="ml-0.5 mr-0.5 bg-gray-100/50 outline outline-1 outline-gray-300 w-full rounded-md h-10 mt-2 mb-2"
-          >
+          ) : (
+            <div className="flex-col">
+            <p>No Plans Created</p>
+            <button onClick={selectQuotes} className="px-2 py-1 hover:bg-gray-100 outline outline-1 outline-gray-300 mt-2 rounded-sm">Create a Plan</button>
+            </div>
+          )}
+        </div>
+      </Collapse>      
+        <button
+          onClick={() => setDisplayDentalPlans(!displayDentalPlans)}
+          className="ml-0.5 mr-0.5 bg-gray-100/50 outline outline-1 outline-gray-300 w-full rounded-md h-10 mt-2 mb-2"
+        >
             <div className="pl-4 pr-4 flex items-center justify-between">
               <div className="flex">
                 <input
@@ -387,18 +379,17 @@ export default function QuotingPage() {
                 />
                 Dental
               </div>
-              {displayDentalPlans ? <SlArrowUp /> : <SlArrowDown />}
-            </div>
+              {displayDentalPlans ? 
+              <SlArrowUp/> : <SlArrowDown/>
+              }
+            </div> 
           </button>
 
-          <Collapse
-            in={displayDentalPlans}
-            className={`bg-gray-100/50 border border-1 border-gray-300 rounded-md`}
-          >
+          <Collapse in={displayDentalPlans} className={`bg-gray-100/50 border border-1 border-gray-300 rounded-md`}>
             <div className="flex w-full flex-wrap gap-4 p-4">
               {Object.entries(dentalDummyData).map(([key, value]) => (
-                <div key={key} className="flex-col col-span-1 w-1/5">
-                  <p>{dentalKeyDisplayNames[key]}</p>
+                <div className="flex-col col-span-1 w-1/5">
+                  <p className="truncate">{dentalKeyDisplayNames[key]}</p>
                   <input
                     className="w-full px-2 outline outline-1 outline-gray-300"
                     key={key}
@@ -408,30 +399,25 @@ export default function QuotingPage() {
                       // console.log(dentalQuoteData)
                       const newDentalData = [...dentalQuoteData];
                       if (newDentalData[0] === undefined) {
-                        newDentalData[0] = {
-                          ...dentalDummyData,
-                        } as DentalQuoteDetailsExt; // Initialize with dummy data structure if empty
+                        newDentalData[0] = { ...dentalDummyData } as DentalQuoteDetailsExt; // Initialize with dummy data structure if empty
                       }
-                      (newDentalData[0] as DentalQuoteDetailsExt)[key] =
-                        e.target.value; // Cast here for setting value
+                      (newDentalData[0] as DentalQuoteDetailsExt)[key] = e.target.value; // Cast here for setting value
                       setDentalQuoteData(newDentalData as DentalQuoteDetails[]); // Assuming your state expects an array of DentalQuoteDetails
-                    }}
+                    }}                
                   ></input>
                 </div>
               ))}
             </div>
           </Collapse>
 
-          {displayPDF && (
-            <div className="bg-gray-100 w-full h-screen mt-2">
-              <RenderedHandbook
-                quoteData={quoteData}
-                dentalQuoteData={dentalQuoteData}
-              />
-            </div>
-          )}
-        </div>
+
+          {displayPDF &&
+          <div className="bg-gray-100 w-full h-screen mt-2">
+            <RenderedHandbook quoteData={quoteData} dentalQuoteData={dentalQuoteData} clientName={client?.name}/>
+          </div>
+          }
       </div>
+    </div>
     </div>
   );
 }
