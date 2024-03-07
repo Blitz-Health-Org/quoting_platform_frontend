@@ -379,7 +379,7 @@ export default function QuotingPage() {
               )}
             </div>
           </Collapse>
-          <button
+          {/* <button
             onClick={() => setDisplayDentalPlans(!displayDentalPlans)}
             className="ml-0.5 mr-0.5 bg-gray-100/50 outline outline-1 outline-gray-300 w-full rounded-md h-10 mt-2 mb-2"
           >
@@ -425,7 +425,7 @@ export default function QuotingPage() {
                 </div>
               ))}
             </div>
-          </Collapse>
+          </Collapse> */}
 
           {displayPDF && (
             <div className="bg-gray-100 w-full h-screen mt-2">
