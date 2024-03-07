@@ -49,7 +49,9 @@ export function PlanCard({
             <h1 className="font-bold text-xl">
               {plan.selectedQuotes[0].carrier}
             </h1>
-            <p className="text-sm">{"aetna.com"}</p>
+            <p className="text-sm max-w-16 truncate">
+              {plan.selectedQuotes[0].website}
+            </p>
           </div>
         </div>
       </div>

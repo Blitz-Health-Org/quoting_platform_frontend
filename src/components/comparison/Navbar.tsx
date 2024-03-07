@@ -118,15 +118,14 @@ export const Navbar = ({ selected }: { selected: string }) => {
           </div>
           <div
             style={{ fontSize: "13px" }}
+            onClick={() => {
+              console.log("hello");
+              setAccessToken(undefined);
+              window.location.href = "/sign-in";
+            }}
             className="hover:cursor-pointer flex items-center font-light text-gray-700 ml-1 mb-1 w-full p-1"
           >
-            <LuLogOut
-              className="mr-2 ml-1"
-              onClick={() => {
-                setAccessToken(undefined);
-                window.location.href = "/sign-in";
-              }}
-            />{" "}
+            <LuLogOut className="mr-2 ml-1" />
             Log Out
           </div>
         </div>
