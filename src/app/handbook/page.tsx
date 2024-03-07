@@ -30,40 +30,28 @@ type MedicalQuoteDetails = {
   plan_name: string;
   plan_id: string;
   deductible: string;
-  coinsurance: string;
-  employee_only_rate: string;
-  employee_spouse_rate: string;
-  employee_child_rate: string;
-  employee_family_rate: string;
-  pcp_copay: string;
-  specialist_copay: string;
-  er_copay: string;
-  pharmacy_copay: string;
-  inpatient_copay: string;
-  urgent_care_copay: string;
-  prescription_deductible: string;
-  total_cost: string;
+  total_employer_cost: string;
   out_of_pocket_max: string;
+  copay_coinsurance: string;
+  monthly_premium: string;
+  employee_rate: string;
+  office_copay: string;
+  spouse_rate: string;
+  family_rate: string;
 };
 
 const medicalKeyDisplayNames: { [key: string]: string } = {
   plan_name: "Plan Name",
   plan_id: "Plan ID",
   deductible: "Deductible",
-  coinsurance: "Coinsurance",
-  employee_only_rate: "Employee Only Rate",
-  employee_spouse_rate: "Employee Spouse Rate",
-  employee_child_rate: "Employee Child Rate",
-  employee_family_rate: "Employee Family Rate",
-  pcp_copay: "PCP Copay",
-  specialist_copay: "Specialist Copay",
-  er_copay: "ER Copay",
-  pharmacy_copay: "Pharmacy Copay",
-  inpatient_copay: "Inpatient Copay",
-  urgent_care_copay: "Urgent Care Copay",
-  prescription_deductible: "Prescription Deductible",
-  total_cost: "Total Cost",
+  total_employer_cost: "Total Employer Cost",
   out_of_pocket_max: "Out of Pocket Max",
+  copay_coinsurance: "Copay Coinsurance",
+  monthly_premium: "Monthly Premium",
+  employee_rate: "Employee Rate",
+  office_copay: "Office Copay",
+  spouse_rate: "Spouse Rate",
+  family_rate: "Family Rate",
 };
 
 const dentalKeyDisplayNames: { [key: string]: string } = {
@@ -211,20 +199,14 @@ export default function QuotingPage() {
     plan_name: "Missing",
     plan_id: "Missing",
     deductible: "Missing",
-    coinsurance: "Missing",
-    employee_only_rate: "Missing",
-    employee_spouse_rate: "Missing",
-    employee_child_rate: "Missing",
-    employee_family_rate: "Missing",
-    pcp_copay: "Missing",
-    specialist_copay: "Missing",
-    er_copay: "Missing",
-    pharmacy_copay: "Missing",
-    inpatient_copay: "Missing",
-    urgent_care_copay: "Missing",
-    prescription_deductible: "Missing",
-    total_cost: "Missing",
+    total_employer_cost: "Missing",
     out_of_pocket_max: "Missing",
+    copay_coinsurance: "Missing",
+    monthly_premium: "Missing",
+    employee_rate: "Missing",
+    office_copay: "Missing",
+    spouse_rate: "Missing",
+    family_rate: "Missing",
   };
 
   const dentalDummyData = {
@@ -397,7 +379,7 @@ export default function QuotingPage() {
               )}
             </div>
           </Collapse>
-          <button
+          {/* <button
             onClick={() => setDisplayDentalPlans(!displayDentalPlans)}
             className="ml-0.5 mr-0.5 bg-gray-100/50 outline outline-1 outline-gray-300 w-full rounded-md h-10 mt-2 mb-2"
           >
@@ -443,7 +425,7 @@ export default function QuotingPage() {
                 </div>
               ))}
             </div>
-          </Collapse>
+          </Collapse> */}
 
           {displayPDF && (
             <div className="bg-gray-100 w-full h-screen mt-2">

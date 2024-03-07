@@ -15,20 +15,14 @@ type PlanDetails = {
   plan_name: string;
   plan_id: string;
   deductible: string;
-  coinsurance: string;
-  employee_only_rate: string;
-  employee_spouse_rate: string;
-  employee_child_rate: string;
-  employee_family_rate: string;
-  pcp_copay: string;
-  specialist_copay: string;
-  er_copay: string;
-  pharmacy_copay: string;
-  inpatient_copay: string;
-  urgent_care_copay: string;
-  prescription_deductible: string;
-  total_cost: string;
+  total_employer_cost: string;
   out_of_pocket_max: string;
+  copay_coinsurance: string;
+  monthly_premium: string;
+  employee_rate: string;
+  office_copay: string;
+  spouse_rate: string;
+  family_rate: string;
 };
 
 type DentalQuoteDetails = {
@@ -55,20 +49,14 @@ const medicalKeyDisplayNames: { [key: string]: string } = {
   plan_name: "Plan Name",
   plan_id: "Plan ID",
   deductible: "Deductible",
-  coinsurance: "Coinsurance",
-  employee_only_rate: "Employee Only Rate",
-  employee_spouse_rate: "Employee Spouse Rate",
-  employee_child_rate: "Employee Child Rate",
-  employee_family_rate: "Employee Family Rate",
-  pcp_copay: "PCP Copay",
-  specialist_copay: "Specialist Copay",
-  er_copay: "ER Copay",
-  pharmacy_copay: "Pharmacy Copay",
-  inpatient_copay: "Inpatient Copay",
-  urgent_care_copay: "Urgent Care Copay",
-  prescription_deductible: "Prescription Deductible",
-  total_cost: "Total Cost",
+  total_employer_cost: "Total Employer Cost",
   out_of_pocket_max: "Out of Pocket Max",
+  copay_coinsurance: "Copay Coinsurance",
+  monthly_premium: "Monthly Premium",
+  employee_rate: "Employee Rate",
+  office_copay: "Office Copay",
+  spouse_rate: "Spouse Rate",
+  family_rate: "Family Rate",
 };
 
 export interface HandbookTemplateProps {
@@ -361,6 +349,7 @@ export default function HandbookTemplate(props: HandbookTemplateProps) {
                 ),
               )}
             </View>
+
             {props.quoteData?.map((plan, index) => (
               <React.Fragment key={index}>
                 <View style={styles.smallerSection}>
@@ -374,46 +363,28 @@ export default function HandbookTemplate(props: HandbookTemplateProps) {
                     {plan.deductible || "MISSING"}
                   </Text>
                   <Text style={styles.gridText}>
-                    {plan.coinsurance || "MISSING"}
-                  </Text>
-                  <Text style={styles.gridText}>
-                    {plan.employee_only_rate || "MISSING"}
-                  </Text>
-                  <Text style={styles.gridText}>
-                    {plan.employee_spouse_rate || "MISSING"}
-                  </Text>
-                  <Text style={styles.gridText}>
-                    {plan.employee_child_rate || "MISSING"}
-                  </Text>
-                  <Text style={styles.gridText}>
-                    {plan.employee_family_rate || "MISSING"}
-                  </Text>
-                  <Text style={styles.gridText}>
-                    {plan.pcp_copay || "MISSING"}
-                  </Text>
-                  <Text style={styles.gridText}>
-                    {plan.specialist_copay || "MISSING"}
-                  </Text>
-                  <Text style={styles.gridText}>
-                    {plan.er_copay || "MISSING"}
-                  </Text>
-                  <Text style={styles.gridText}>
-                    {plan.pharmacy_copay || "MISSING"}
-                  </Text>
-                  <Text style={styles.gridText}>
-                    {plan.inpatient_copay || "MISSING"}
-                  </Text>
-                  <Text style={styles.gridText}>
-                    {plan.urgent_care_copay || "MISSING"}
-                  </Text>
-                  <Text style={styles.gridText}>
-                    {plan.prescription_deductible || "MISSING"}
-                  </Text>
-                  <Text style={styles.gridText}>
-                    {plan.total_cost || "MISSING"}
+                    {plan.total_employer_cost || "MISSING"}
                   </Text>
                   <Text style={styles.gridText}>
                     {plan.out_of_pocket_max || "MISSING"}
+                  </Text>
+                  <Text style={styles.gridText}>
+                    {plan.copay_coinsurance || "MISSING"}
+                  </Text>
+                  <Text style={styles.gridText}>
+                    {plan.monthly_premium || "MISSING"}
+                  </Text>
+                  <Text style={styles.gridText}>
+                    {plan.employee_rate || "MISSING"}
+                  </Text>
+                  <Text style={styles.gridText}>
+                    {plan.office_copay || "MISSING"}
+                  </Text>
+                  <Text style={styles.gridText}>
+                    {plan.family_rate || "MISSING"}
+                  </Text>
+                  <Text style={styles.gridText}>
+                    {plan.spouse_rate || "MISSING"}
                   </Text>
                 </View>
               </React.Fragment>
