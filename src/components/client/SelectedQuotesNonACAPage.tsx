@@ -93,7 +93,11 @@ export const SelectedQuotesNonACAPage = ({
                           <p>{(quote as any)[attribute.key] || "N/A"}</p>
                         </div>
                       ) : (
-                        <p>{(quote.data as any)?.[attribute.key] ?? "N/A"}</p>
+                        <p>
+                          {(quote.data as any)?.[attribute.key] ??
+                            (quote.data as any)?.[attribute?.alternateKey] ??
+                            "N/A"}
+                        </p>
                       )}
                     </div>
                   ))}

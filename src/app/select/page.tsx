@@ -48,16 +48,16 @@ const planAttributesMapping: {
 }[] = [
   { key: "carrier", label: "Carrier" },
   { key: "plan_id", alternateKey: "plan_name", label: "Plan" },
-  { key: "plan_type", label: "Plan Type" },
+  { key: "plan_type", label: "Network" },
   { key: "office_copay", label: "Office Copay (PCP/Specialist)" },
   { key: "deductible", label: "Deductible (Individual)" },
-  { key: "copay_coinsurance", label: "Coinsurance (In-Network)" },
+  { key: "copay_coinsurance", label: "Copay / Coinsurance (In-Network)" },
   { key: "out_of_pocket_max", label: "Out of Pocket (Individual)" },
   // {
   //   key: "additional_copay",
   //   label: "Additional Copays (ER / Imaging / OP / IP)",
   // },
-  { key: "total_employer_cost", label: "Total Monthly Premium" },
+  { key: "total_employer_cost", label: "Total Cost" },
 ];
 
 const TABS = ["NON-ACA", "ACA"];
