@@ -8,6 +8,7 @@ import { IoIosAdd } from "react-icons/io";
 import { QuoteType } from "../types/custom/Quote";
 import { supabase } from "../supabase";
 import { useRouter } from "next/navigation";
+import { FaRegStar, FaStar } from "react-icons/fa";
 
 type QuoteTypeWithCheckbox = QuoteType & { isSelected: boolean };
 
@@ -15,6 +16,7 @@ type Props = {
   plans: Array<{
     id: number;
     name: string;
+    isCurrentPlan: boolean;
     selectedQuotes: QuoteTypeWithCheckbox[];
   }>;
   newPlanName: any;
@@ -70,6 +72,22 @@ const SelectSidebar = ({
     });
     setPlans(updatedPlans);
     // updateConnectedPlans(updatedPlans);
+  };
+
+  const handleToggleCurrentPlan = (planId: number) => {
+    const plan = plans.find((plan) => plan.id === planId);
+    console.log(plan?.isCurrentPlan)
+    if (plan?.isCurrentPlan) {
+      plan.isCurrentPlan = false;
+      console.log(plan?.isCurrentPlan)
+      console.log(plans)
+    }
+    else {
+      plans.map((plan) => plan.isCurrentPlan = false);
+      plan!.isCurrentPlan = true;
+      console.log(plan?.isCurrentPlan)
+      console.log(plans)
+    }
   };
 
   const comparison_created_true = async () => {
@@ -142,6 +160,14 @@ const SelectSidebar = ({
     });
   };
 
+  const currentPlan = () => {
+    setSnackbar({
+      open: true,
+      message: "Current plan set!",
+      severity: "success",
+    });
+  };
+
   const handleDeletePlan = (planId: number) => {
     const updatedPlans = plans.filter((plan) => plan.id !== planId);
     setPlans(updatedPlans);
@@ -160,6 +186,7 @@ const SelectSidebar = ({
     if (newPlanName.trim() !== "") {
       const newPlan = {
         id: Date.now(),
+        isCurrentPlan: false,
         name: newPlanName.trim(),
         selectedQuotes: [],
       };
@@ -175,19 +202,15 @@ const SelectSidebar = ({
     if (updatedPlans.length === 0) {
       comparison_created_false();
     }
-
     const { data, error } = await supabase
       .from("clients") // Replace 'your_table_name' with your actual table name
       .update({ connected_plans: updatedPlans }) // 'plans' is the array to insert into the 'connected_plans' column
       .match({ id: selectedClient.id }); // Assuming 'selectedClient.id' is the primary key of the row you want to update
-
     if (error) {
       console.error("Error updating connected plans in Supabase:", error);
       return { success: false, error };
     }
-
     console.log("Connected plans updated successfully:", data);
-
     return { success: true, data };
   };
 
@@ -266,8 +289,15 @@ const SelectSidebar = ({
               <div key={plan.id} className="flex flex-col gap-1">
                 <hr className="mt-2"></hr>
                 <div className="flex items-center justify-between">
-                  <p className="font-semibold mt-1">{plan.name}</p>
-                  <div className="flex gap-1">
+                  <p className="font-semibold mt-1">{plan.isCurrentPlan ? "Current Plan" : plan.name}</p>
+                  <div className="flex gap-1 items-center">
+                    <div
+                      onClick={() => {
+                      handleToggleCurrentPlan(plan.id);
+                      currentPlan();
+                    }}>
+                      {plan.isCurrentPlan ? <FaStar className="h-4 w-4" /> : <FaRegStar className="h-4 w-4" />}
+                    </div>
                     <button onClick={() => handleAddQuotesToPlan(plan.id)}>
                       <IoIosAdd className="h-6 w-6" />
                     </button>

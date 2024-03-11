@@ -62,9 +62,9 @@ export default function SelectQuotesHeader({
         <p className="truncate">{quotes.length} Quotes </p> */}
       </div>
       <div className="w-1/3 ml-4 md:ml-0 md:w-1/2 relative">
-        <div className="absolute left-3 top-1/2 transform -translate-y-1/2 flex items-center">
-          <FaSearch className="h-4 w-4 text-gray-500" />
-        </div>
+          <div className="absolute left-3 top-1/2 -translate-y-1/2 transform flex items-center">
+            <FaSearch className="h-4 w-4 text-gray-500" />
+          </div>
         <input
           value={search}
           onChange={(e) => setSearch(e.target.value)}

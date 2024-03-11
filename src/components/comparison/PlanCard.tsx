@@ -1,6 +1,7 @@
 import { QuoteType } from "@/src/types/custom/Quote";
 import { QuoteCard } from "./QuoteCard";
 import Image from "next/image";
+import { FaStar } from "react-icons/fa";
 
 type PlanCardProps = {
   plan: any;
@@ -28,8 +29,9 @@ export function PlanCard({
   return (
     <div className="flex-col w-fit">
       <div className="flex bg-white border border-b-0 rounded-b-none border-gray-300 rounded-md w-full gap-3 h-28 justify-center items-center px-2">
-        <div className="max-w-1/2 truncate">
-          <h1 className="font-bold text-lg text-wrap max-w-32">{plan.name}</h1>
+        <div className="max-w-1/2 flex items-center justify-center truncate gap-1">
+          {plan.isCurrentPlan ? <FaStar/> : null}
+          <h1 className="font-bold text-lg text-wrap max-w-32">{plan.isCurrentPlan ? "Current Plan" : plan.name}</h1>
         </div>
         <div className="border-r border-1.5 h-10 border-gray-600"></div>{" "}
         {/* Vertical line break */}

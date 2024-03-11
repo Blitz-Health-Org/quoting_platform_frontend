@@ -29,6 +29,7 @@ import { SelectedQuotesNonACAPage } from "@/src/components/client/SelectedQuotes
 import TabHeader from "@/src/components/ui/TabHeader";
 
 export interface PlanAttributes {
+  isCurrentPlan: boolean;
   plan_id: string;
   carrier: string;
   plan_name: string;
@@ -85,15 +86,8 @@ export default function SelectQuotes() {
       } else {
         // Check if selected_quotes is not null
 
-        const currentPlanFirstSortedData = data.sort((quoteA, quoteB) => {
-          if (quoteA.id === client?.current_plan) {
-            return -1;
-          } else if (quoteB.id === client?.current_plan) {
-            return 1;
-          } else return 1;
-        });
-        setQuotes(currentPlanFirstSortedData);
-        setOriginalQuotes(currentPlanFirstSortedData);
+        setQuotes(data);
+        setOriginalQuotes(data);
 
         if (client.connected_plans) {
           // Check if there is data for connected_plans
@@ -247,12 +241,6 @@ export default function SelectQuotes() {
     }
   }, []);
 
-  function handleAddCurrentPlan(event: any) {
-    event?.stopPropagation();
-    setModalOpen("addCurrentPlan");
-    return;
-  }
-
   function handleAddNewQuote(event: any) {
     event?.stopPropagation();
     setModalOpen("addNewQuote");
@@ -301,26 +289,13 @@ export default function SelectQuotes() {
     }
   }
 
-  interface PlanAttributes {
-    plan_id: string;
-    carrier: string;
-    plan_name: string;
-    plan_type: string;
-    office_copay: string;
-    deductible: string;
-    coinsurance: string;
-    out_of_pocket_max: string;
-    additional_copay: string;
-    total_cost: string;
-  }
-
   if (selectedClient && socketTasks?.includes("fetch_quotes")) {
     fetchQuoteData(selectedClient);
     setSocketTasks(socketTasks?.filter((task) => task !== "fetch_quotes"));
   }
 
   const [plans, setPlans] = useState<
-    Array<{ id: number; name: string; selectedQuotes: QuoteTypeWithCheckbox[] }>
+    Array<{ id: number; name: string; isCurrentPlan: boolean; selectedQuotes: QuoteTypeWithCheckbox[] }>
   >([]);
   const [newPlanName, setNewPlanName] = useState("");
 
@@ -343,7 +318,6 @@ export default function SelectQuotes() {
     });
 
     setPlans(updatedPlans);
-    // updateConnectedPlans(updatedPlans);
     handleClearCheckboxes();
   };
 
@@ -383,56 +357,6 @@ export default function SelectQuotes() {
     router.push(`/`);
   };
 
-  const updateConnectedPlans = async (updatedPlans: any) => {
-    if (updatedPlans.length === 0) {
-      comparison_created_false();
-    }
-
-    const { data, error } = await supabase
-      .from("clients") // Replace 'your_table_name' with your actual table name
-      .update({ connected_plans: updatedPlans }) // 'plans' is the array to insert into the 'connected_plans' column
-      .match({ id: selectedClient.id }); // Assuming 'selectedClient.id' is the primary key of the row you want to update
-
-    if (error) {
-      console.error("Error updating connected plans in Supabase:", error);
-      return { success: false, error };
-    }
-
-    console.log("Connected plans updated successfully:", data);
-
-    return { success: true, data };
-  };
-
-  const comparison_created_true = async () => {
-    const { data, error } = await supabase
-      .from("clients") // Replace 'your_table_name' with your actual table name
-      .update({ comparison_created: true }) // 'plans' is the array to insert into the 'connected_plans' column
-      .match({ id: selectedClient.id }); // Assuming 'selectedClient.id' is the primary key of the row you want to update
-
-    if (error) {
-      console.error("Error updating connected plans in Supabase:", error);
-      return { success: false, error };
-    }
-
-    console.log("Connected plans updated successfully:", data);
-    return { success: true, data };
-  };
-
-  const comparison_created_false = async () => {
-    const { data, error } = await supabase
-      .from("clients") // Replace 'your_table_name' with your actual table name
-      .update({ comparison_created: false }) // 'plans' is the array to insert into the 'connected_plans' column
-      .match({ id: selectedClient.id }); // Assuming 'selectedClient.id' is the primary key of the row you want to update
-
-    if (error) {
-      console.error("Error updating connected plans in Supabase:", error);
-      return { success: false, error };
-    }
-
-    console.log("Connected plans updated successfully:", data);
-    return { success: true, data };
-  };
-
   const aca_quotes = quotes.filter(
     (quote) => (quote.data as any)?.["metadata"]?.["is_aca"] === true,
   );
@@ -469,19 +393,6 @@ export default function SelectQuotes() {
               </div>
 
               <div className="flex items-center gap-2">
-                {!selectedClient.current_plan ||
-                  (!quotes
-                    .map((quote) => quote.id)
-                    .includes(selectedClient.current_plan) && (
-                    <button
-                      onClick={handleAddCurrentPlan}
-                      className="text-sm md:text-base mr-1 outline outline-1 outline-gray-200 py-1 px-2 rounded-md flex items-center justify-center hover:bg-gray-100/80 cursor-pointer"
-                    >
-                      <div className="mr-2">Add Current Plan</div>
-                      <FaRegStar />
-                    </button>
-                  ))}
-
                 <button
                   onClick={handleAddNewQuote}
                   className="text-sm md:text-base mr-1 outline outline-1 outline-gray-200 py-1 px-2 rounded-md flex items-center justify-center hover:bg-gray-100/80 cursor-pointer"
@@ -523,7 +434,6 @@ export default function SelectQuotes() {
                     handleCheckboxChange={handleCheckboxChange}
                     handleAddNewQuote={handleAddNewQuote}
                     search={search}
-                    currentPlanId={selectedClient?.current_plan ?? undefined}
                   />
                 )}
                 {currentTab === "ACA" && (
@@ -534,7 +444,6 @@ export default function SelectQuotes() {
                     handleCheckboxChange={handleCheckboxChange}
                     handleAddNewQuote={handleAddNewQuote}
                     search={search}
-                    currentPlanId={selectedClient?.current_plan ?? undefined}
                   />
                 )}
               </div>

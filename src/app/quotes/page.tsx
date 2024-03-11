@@ -163,7 +163,21 @@ export default function QuotingPage() {
 
       setClient(clientData);
 
-      setPlans(clientData.connected_plans);
+      if (clientData?.connected_plans) {
+        // Find the index of the current plan
+        const currentPlanIndex = clientData.connected_plans.findIndex((plan: any) => plan.isCurrentPlan === true);
+      
+        // If a current plan is found and it's not the first element, move it to the front
+        if (currentPlanIndex > 0) {
+          const newPlans = [...clientData.connected_plans];
+          const [currentPlan] = newPlans.splice(currentPlanIndex, 1);
+          newPlans.unshift(currentPlan);
+          setPlans(newPlans);
+        } else {
+          // Else just set the plans normally
+          setPlans(clientData.connected_plans);
+        }
+      }
 
       if (clientData?.classes_contributions) {
         console.log("helllo????");

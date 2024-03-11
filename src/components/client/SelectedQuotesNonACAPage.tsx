@@ -13,11 +13,9 @@ type SelectedQuotesNonACAPageProps = {
   handleCheckboxChange: (quoteId: number) => void;
   handleAddNewQuote: (event: any) => void;
   search: string | undefined;
-  currentPlanId?: number;
 };
 
 export const SelectedQuotesNonACAPage = ({
-  currentPlanId,
   quotes,
   planAttributesMapping,
   handleCheckboxChange,
@@ -63,7 +61,7 @@ export const SelectedQuotesNonACAPage = ({
             .map((quote) => (
               <div
                 key={quote.id}
-                className={`flex items-center w-fit mb-1 mt-1 py-2 border-b ${currentPlanId && quote.id === currentPlanId ? "bg-cyan-500" : ""}`}
+                className={`flex items-center w-fit mb-1 mt-1 py-2 border-b`}
               >
                 <div className="grid-cols-9 w-full flex justify-left text-center gap-1 h-8 items-center text-sm">
                   {/* Map through the plan attributes for each quote */}
