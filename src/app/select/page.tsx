@@ -303,14 +303,18 @@ export default function SelectQuotes() {
   }
 
   const [plans, setPlans] = useState<
-    Array<{ id: number; name: string; isCurrentPlan: boolean; selectedQuotes: QuoteTypeWithCheckbox[] }>
+    Array<{
+      id: number;
+      name: string;
+      isCurrentPlan: boolean;
+      selectedQuotes: QuoteTypeWithCheckbox[];
+    }>
   >([]);
   const [newPlanName, setNewPlanName] = useState("");
 
   const handleAddQuotesToPlan = (planId: number) => {
-
     if (selectedQuotes.length === 0) {
-      selectQuotesFirst()
+      selectQuotesFirst();
     }
 
     const updatedPlans = plans.map((plan) => {
