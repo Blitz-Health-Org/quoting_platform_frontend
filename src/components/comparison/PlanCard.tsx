@@ -27,7 +27,7 @@ export function PlanCard({
   // };
 
   return (
-    <div className="flex-col w-fit">
+    <div className="flex-col w-fit bg-white">
       <div className="flex bg-white border border-b-0 rounded-b-none border-gray-300 rounded-md w-full gap-3 h-28 justify-center items-center px-2">
         <div className="max-w-1/2 flex items-center justify-center truncate gap-1">
           {plan.isCurrentPlan ? <FaStar /> : null}
@@ -59,7 +59,7 @@ export function PlanCard({
           </div>
         </div>
       </div>
-      <div className="flex w-fit rounded-lg text-center gap-2">
+      <div className="flex w-fit text-center border border-l-0 border-t-0 border-b-0 border-gray-300">
         {plan.selectedQuotes.map((quote: QuoteType) => (
           <QuoteCard
             plan={plan}
