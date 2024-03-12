@@ -295,7 +295,12 @@ export default function SelectQuotes() {
   }
 
   const [plans, setPlans] = useState<
-    Array<{ id: number; name: string; isCurrentPlan: boolean; selectedQuotes: QuoteTypeWithCheckbox[] }>
+    Array<{
+      id: number;
+      name: string;
+      isCurrentPlan: boolean;
+      selectedQuotes: QuoteTypeWithCheckbox[];
+    }>
   >([]);
   const [newPlanName, setNewPlanName] = useState("");
 

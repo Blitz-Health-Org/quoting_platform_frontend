@@ -76,17 +76,16 @@ const SelectSidebar = ({
 
   const handleToggleCurrentPlan = (planId: number) => {
     const plan = plans.find((plan) => plan.id === planId);
-    console.log(plan?.isCurrentPlan)
+    console.log(plan?.isCurrentPlan);
     if (plan?.isCurrentPlan) {
       plan.isCurrentPlan = false;
-      console.log(plan?.isCurrentPlan)
-      console.log(plans)
-    }
-    else {
-      plans.map((plan) => plan.isCurrentPlan = false);
+      console.log(plan?.isCurrentPlan);
+      console.log(plans);
+    } else {
+      plans.map((plan) => (plan.isCurrentPlan = false));
       plan!.isCurrentPlan = true;
-      console.log(plan?.isCurrentPlan)
-      console.log(plans)
+      console.log(plan?.isCurrentPlan);
+      console.log(plans);
     }
   };
 
@@ -289,14 +288,21 @@ const SelectSidebar = ({
               <div key={plan.id} className="flex flex-col gap-1">
                 <hr className="mt-2"></hr>
                 <div className="flex items-center justify-between">
-                  <p className="font-semibold mt-1">{plan.isCurrentPlan ? "Current Plan" : plan.name}</p>
+                  <p className="font-semibold mt-1">
+                    {plan.isCurrentPlan ? "Current Plan" : plan.name}
+                  </p>
                   <div className="flex gap-1 items-center">
                     <div
                       onClick={() => {
-                      handleToggleCurrentPlan(plan.id);
-                      currentPlan();
-                    }}>
-                      {plan.isCurrentPlan ? <FaStar className="h-4 w-4" /> : <FaRegStar className="h-4 w-4" />}
+                        handleToggleCurrentPlan(plan.id);
+                        currentPlan();
+                      }}
+                    >
+                      {plan.isCurrentPlan ? (
+                        <FaStar className="h-4 w-4" />
+                      ) : (
+                        <FaRegStar className="h-4 w-4" />
+                      )}
                     </div>
                     <button onClick={() => handleAddQuotesToPlan(plan.id)}>
                       <IoIosAdd className="h-6 w-6" />
