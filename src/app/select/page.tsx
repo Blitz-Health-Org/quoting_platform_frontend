@@ -129,6 +129,14 @@ export default function SelectQuotes() {
     });
   };
 
+  const selectQuotesFirst = () => {
+    setSnackbar({
+      open: true,
+      message: "Select quotes to add them to a plan!",
+      severity: "error",
+    });
+  };
+
   const [quotes, setQuotes] = useState<QuoteTypeWithCheckbox[]>([]);
   const [originalQuotes, setOriginalQuotes] = useState<QuoteTypeWithCheckbox[]>(
     [],
@@ -295,16 +303,16 @@ export default function SelectQuotes() {
   }
 
   const [plans, setPlans] = useState<
-    Array<{
-      id: number;
-      name: string;
-      isCurrentPlan: boolean;
-      selectedQuotes: QuoteTypeWithCheckbox[];
-    }>
+    Array<{ id: number; name: string; isCurrentPlan: boolean; selectedQuotes: QuoteTypeWithCheckbox[] }>
   >([]);
   const [newPlanName, setNewPlanName] = useState("");
 
   const handleAddQuotesToPlan = (planId: number) => {
+
+    if (selectedQuotes.length === 0) {
+      selectQuotesFirst()
+    }
+
     const updatedPlans = plans.map((plan) => {
       if (plan.id === planId) {
         // Filter out duplicates before updating the currentQuotes array
