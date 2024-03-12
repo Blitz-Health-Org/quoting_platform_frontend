@@ -14,6 +14,7 @@ import { SlArrowUp } from "react-icons/sl";
 import { SlArrowDown } from "react-icons/sl";
 import Image from "next/image";
 import { RiAiGenerate } from "react-icons/ri";
+import { FaStar } from "react-icons/fa6";
 
 type QuoteTypeWithCheckbox = QuoteType & { isSelected: boolean };
 type DentalQuoteDetailsExt = DentalQuoteDetails & {
@@ -23,6 +24,7 @@ type DentalQuoteDetailsExt = DentalQuoteDetails & {
 type Plans = {
   id: number;
   name: string;
+  isCurrentPlan: boolean;
   selectedQuotes: QuoteTypeWithCheckbox[];
 }[];
 
@@ -292,7 +294,14 @@ export default function QuotingPage() {
                         className={`col-span-1 outline ${selectedPlanId === plan.id ? "flex-col outline-blue-400 bg-gray-100/80 shadow" : "outline-gray-300 bg-gray-100/50"} hover:bg-gray-100/80 rounded-md p-2 max-h-32 overflow-auto hover:cursor-pointer`}
                         onClick={() => handlePlanClick(plan.id)}
                       >
-                        <p className="font-semibold p-1">{plan?.name}</p>
+                        <div className="flex items-center">
+                          {plan.isCurrentPlan ? (
+                            <FaStar className="ml-1" />
+                          ) : null}
+                          <p className="font-semibold p-1">
+                            {plan.isCurrentPlan ? "Current Plan" : plan?.name}
+                          </p>
+                        </div>
                         <div>
                           {plan.selectedQuotes?.map(
                             (quote: any, index: any) => (
