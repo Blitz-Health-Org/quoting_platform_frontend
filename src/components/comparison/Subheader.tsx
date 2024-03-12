@@ -117,11 +117,8 @@ export const Subheader: React.FC<SubheaderProps> = ({
       <div className="col-span-1 text-center flex items-center justify-center gap-1">
         <p className="truncate">Showing {plansLength} Plans </p>
         <p className="cursor-pointer truncate" onClick={handleBusiness2}>
-          | Edit |{" "}
+          | Edit Plans
         </p>
-        <div onClick={() => setCurrentPlanModalOpen(true)}>
-          <p className="cursor-pointer truncate">Add Current Plan</p>
-        </div>
       </div>
 
       {/* Right-aligned buttons */}
