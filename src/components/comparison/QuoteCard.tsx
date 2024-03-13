@@ -11,6 +11,7 @@
 import { QuoteColumnDisplay } from "./QuoteColumnDisplay";
 import Image from "next/image";
 import { useCalculateTotalCost } from "./utils/useCalculateTotalCost";
+import { MdOutlineArrowDropDown, MdOutlineArrowRight } from "react-icons/md";
 
 // type QuoteCardProps = {
 //   quote: QuoteType;
@@ -34,17 +35,18 @@ export const QuoteCard = ({
   classes,
   standardContribution,
 }: QuoteCardProps) => {
-  quote.data.employer_total_cost = useCalculateTotalCost(
+  quote.data.total_employer_cost = useCalculateTotalCost(
     quote.data,
     standardContribution,
     classes,
     {
-      employee: (quote.data as any)?.["employee_only_rate"],
-      child: (quote.data as any)?.["employee_child_rate"],
-      family: (quote.data as any)?.["employee_family_rate"],
-      spouse: (quote.data as any)?.["employee_spouse_rate"],
+      employee: (quote.data as any)?.["employee_rate"],
+      child: (quote.data as any)?.["child_rate"],
+      family: (quote.data as any)?.["family_rate"],
+      spouse: (quote.data as any)?.["spouse_rate"],
     },
   );
+  console.log("quotedata jere", quote.data);
 
   return (
     <QuoteColumnDisplay

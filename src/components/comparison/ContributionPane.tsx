@@ -17,6 +17,7 @@ type ContributionPaneProps = {
   client: any;
   setClasses: any;
   classes: any;
+  censusData: any;
 };
 
 const ContributionPane = ({
@@ -27,6 +28,7 @@ const ContributionPane = ({
   client,
   standardContribution,
   setStandardContribution,
+  censusData,
 }: ContributionPaneProps) => {
   const [newClassName, setNewClassName] = useState<string>("");
 
@@ -47,10 +49,10 @@ const ContributionPane = ({
         {
           name: newClassName,
           data: {
-            employee: { percent: 100, employees: 50 },
-            family: { percent: 100, employees: 50 },
-            child: { percent: 100, employees: 50 },
-            spouse: { percent: 100, employees: 50 },
+            employee: { percent: 100, employees: censusData["employee_num"] },
+            family: { percent: 100, employees: censusData["family_num"] },
+            child: { percent: 100, employees: censusData["child_num"] },
+            spouse: { percent: 100, employees: censusData["spouse_num"] },
           },
         },
       ]);
@@ -64,10 +66,10 @@ const ContributionPane = ({
           {
             name: newClassName,
             data: {
-              employee: { percent: 100, employees: 50 },
-              family: { percent: 100, employees: 50 },
-              child: { percent: 100, employees: 50 },
-              spouse: { percent: 100, employees: 50 },
+              employee: { percent: 100, employees: censusData["employee_num"] },
+              family: { percent: 100, employees: censusData["family_num"] },
+              child: { percent: 100, employees: censusData["child_num"] },
+              spouse: { percent: 100, employees: censusData["spouse_num"] },
             },
           },
         ],
@@ -115,6 +117,7 @@ const ContributionPane = ({
             <ContributionCard
               contribution={standardContribution}
               onSave={setStandardContribution}
+              censusData={censusData}
             />
 
             <hr className="mt-4 mb-4"></hr>

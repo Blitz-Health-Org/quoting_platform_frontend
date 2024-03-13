@@ -2,7 +2,6 @@
 
 import React, { useContext, useEffect, useState } from "react";
 import { Subheader } from "../../components/comparison/Subheader";
-import { ContributionCard } from "@/src/components/comparison/ContributionCard";
 import "../../components/comparison/sum.css"; // import your custom styles
 import Fullheader from "../../components/comparison/Fullheader";
 import { HeaderCard } from "../../components/comparison/HeaderCard";
@@ -16,7 +15,7 @@ import "react-sliding-pane/dist/react-sliding-pane.css";
 import { FaTrash } from "react-icons/fa";
 import { v4 as uuid } from "uuid";
 import ContributionPane from "@/src/components/comparison/ContributionPane";
-import { PlanCard } from "@/src/components/comparison/PlanCard";
+import { GroupCard } from "@/src/components/comparison/GroupCard";
 import { SnackBarContext } from "@/src/context/SnackBarContext";
 import { QuoteSchemaContext } from "@/src/context/QuoteSchemaContext";
 import { ClientContext } from "@/src/context/ClientContext";
@@ -36,13 +35,37 @@ export default function QuotingPage() {
   const [loading, setLoading] = useState<boolean>(true);
   const [classes, setClasses] = useState<ClassType[]>([]);
   const [plans, setPlans] = useState<any>([]);
+
+  console.log(
+    "plans and quotes",
+    plans,
+    quotes,
+    plans?.[0]?.["selectedQuotes"]?.[0]?.["data"]?.["employee_num"] ?? 5,
+  );
+
   const [standardContribution, setStandardContribution] = useState<any>({
     name: "Standard Contribution",
     data: {
-      employee: { percent: 100, employees: 50 },
-      family: { percent: 100, employees: 50 },
-      child: { percent: 100, employees: 50 },
-      spouse: { percent: 100, employees: 50 },
+      employee: {
+        percent: 100,
+        employees:
+          plans?.[0]?.["selectedQuotes"]?.[0]?.["data"]?.["employee_num"] ?? 5,
+      },
+      family: {
+        percent: 100,
+        employees:
+          plans?.[0]?.["selectedQuotes"]?.[0]?.["data"]?.["family_num"] ?? 5,
+      },
+      child: {
+        percent: 100,
+        employees:
+          plans?.[0]?.["selectedQuotes"]?.[0]?.["data"]?.["child)num"] ?? 5,
+      },
+      spouse: {
+        percent: 100,
+        employees:
+          plans?.[0]?.["selectedQuotes"]?.[0]?.["data"]?.["spouse_num"] ?? 5,
+      },
     },
   });
 
@@ -181,6 +204,42 @@ export default function QuotingPage() {
         }
       }
 
+      const scopedPlans = clientData.connected_plans;
+
+      setStandardContribution({
+        name: "Standard Contribution",
+        data: {
+          employee: {
+            percent: 100,
+            employees:
+              scopedPlans?.[0]?.["selectedQuotes"]?.[0]?.["data"]?.[
+                "employee_num"
+              ] ?? 5,
+          },
+          family: {
+            percent: 100,
+            employees:
+              scopedPlans?.[0]?.["selectedQuotes"]?.[0]?.["data"]?.[
+                "family_num"
+              ] ?? 5,
+          },
+          child: {
+            percent: 100,
+            employees:
+              scopedPlans?.[0]?.["selectedQuotes"]?.[0]?.["data"]?.[
+                "child_num"
+              ] ?? 5,
+          },
+          spouse: {
+            percent: 100,
+            employees:
+              scopedPlans?.[0]?.["selectedQuotes"]?.[0]?.["data"]?.[
+                "spouse_num"
+              ] ?? 5,
+          },
+        },
+      });
+
       if (clientData?.classes_contributions) {
         console.log("helllo????");
         setClasses(clientData.classes_contributions as any);
@@ -257,6 +316,39 @@ export default function QuotingPage() {
       });
   };
 
+  let censusData;
+  if (plans.length == 0) {
+    censusData = {
+      employee: 5,
+      spouse: 5,
+      child: 5,
+      family: 5,
+    };
+  } else {
+    censusData = {
+      employee: {
+        percent: 100,
+        employees:
+          plans?.[0]?.["selectedQuotes"]?.[0]?.["data"]?.["employee_num"] ?? 5,
+      },
+      family: {
+        percent: 100,
+        employees:
+          plans?.[0]?.["selectedQuotes"]?.[0]?.["data"]?.["family_num"] ?? 5,
+      },
+      child: {
+        percent: 100,
+        employees:
+          plans?.[0]?.["selectedQuotes"]?.[0]?.["data"]?.["child_num"] ?? 5,
+      },
+      spouse: {
+        percent: 100,
+        employees:
+          plans?.[0]?.["selectedQuotes"]?.[0]?.["data"]?.["spouse_num"] ?? 5,
+      },
+    };
+  }
+
   return (
     <ClientContext.Provider value={client}>
       <div className="bg-gray-100 w-full h-screen">
@@ -270,7 +362,7 @@ export default function QuotingPage() {
               onPaneToggle={handlePaneToggle}
               copyUrlToClipboard={copyUrlToClipboard}
               handleDownloadCSV={handleDownloadCSV}
-              plansLength={plans.length}
+              plansLength={plans?.length || 0}
             />
 
             <div className="p-0.5 flex-grow w-full">
@@ -280,7 +372,7 @@ export default function QuotingPage() {
                 </div>
                 {plans.length > 0 ? (
                   plans.map((plan: any) => (
-                    <PlanCard
+                    <GroupCard
                       key={plan.key}
                       plan={plan}
                       fieldObject={quoteSchema}
@@ -302,6 +394,7 @@ export default function QuotingPage() {
             classes={classes}
             setClasses={setClasses}
             client={client}
+            censusData={censusData}
             standardContribution={standardContribution}
             setStandardContribution={setStandardContribution}
           />

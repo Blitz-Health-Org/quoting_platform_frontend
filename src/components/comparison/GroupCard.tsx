@@ -3,19 +3,19 @@ import { QuoteCard } from "./QuoteCard";
 import Image from "next/image";
 import { FaStar } from "react-icons/fa";
 
-type PlanCardProps = {
+type GroupCardProps = {
   plan: any;
   fieldObject: any;
   classes: any;
   standardContribution: any;
 };
 
-export function PlanCard({
+export function GroupCard({
   plan,
   fieldObject,
   classes,
   standardContribution,
-}: PlanCardProps) {
+}: GroupCardProps) {
   // const carrierLogos = {
   //   Aetna: AetnaLogo,
   //   Anthem: AnotherCarrierLogo,
