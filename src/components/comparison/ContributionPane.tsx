@@ -121,8 +121,12 @@ const ContributionPane = ({
           </>
         )}
         <div className="flex items-center mt-4 mb-4 gap-2">
-          <button className="outline outline-1 outline-gray-300 p-1 hover:bg-gray-100 rounded-sm">$</button>
-          <button className="outline outline-1 outline-gray-300 p-1 hover:bg-gray-100 rounded-sm">%</button>
+          <button className="outline outline-1 outline-gray-300 p-1 hover:bg-gray-100 rounded-sm">
+            $
+          </button>
+          <button className="outline outline-1 outline-gray-300 p-1 hover:bg-gray-100 rounded-sm">
+            %
+          </button>
         </div>
         <h1 className="mb-2 font-bold">Custom Classes</h1>
         <form className="mt-2" onSubmit={(e) => handleNewClassSubmit(e)}>
