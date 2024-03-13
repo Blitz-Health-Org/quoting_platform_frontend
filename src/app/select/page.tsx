@@ -126,6 +126,7 @@ export default function SelectQuotes() {
   const [selectedQuotes, setSelectedQuotes] = useState<QuoteTypeWithCheckbox[]>(
     [],
   );
+  const [quoteProcessing, setQuoteProcessing] = useState<boolean>(false);
 
   const handleBusiness = () => {
     setSnackbar({
@@ -483,7 +484,12 @@ export default function SelectQuotes() {
                   ))}
 
                 <button
-                  onClick={handleAddNewQuote}
+                  onClick={(event) => {
+                    if (!quoteProcessing) {
+                      handleAddNewQuote(event);
+                    }
+                    setQuoteProcessing(true);
+                  }}
                   className="text-sm md:text-base mr-1 outline outline-1 outline-gray-200 py-1 px-2 rounded-md flex items-center justify-center hover:bg-gray-100/80 cursor-pointer"
                 >
                   <div className="mr-2">Add Quotes</div>

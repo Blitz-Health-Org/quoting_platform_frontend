@@ -244,7 +244,7 @@ const SelectSidebar = ({
             <div className="flex gap-1">
               <input
                 type="text"
-                placeholder="Enter New Plan Name"
+                placeholder="Enter New Group Name"
                 value={newPlanName}
                 onChange={(e) => setNewPlanName(e.target.value)}
                 className="py-1 px-4 text-sm outline outline-1 outline-gray-300 rounded-md w-7/8 hover:cursor-pointer focus:cursor-auto hover:outline-gray-400"

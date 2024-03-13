@@ -140,13 +140,13 @@ export const Subheader: React.FC<SubheaderProps> = ({
           <IoMdDownload />
           <p className="truncate">Download CSV</p>
         </button>
-        {/* <button
+        <button
           onClick={() => onPaneToggle(!isPaneOpen)}
           className="flex items-center gap-2 cursor-pointer outline outline-1 outline-neutral-600 rounded-sm bg-neutral-700/80 text-sm text-gray-100 px-2 py-1"
         >
           <IoIosSettings />
           <p>Settings</p>
-        </button> */}
+        </button>
       </div>
 
       {/* {currentPlanModalOpen && (
@@ -156,9 +156,10 @@ export const Subheader: React.FC<SubheaderProps> = ({
           fetchClients={fetchClients}
         />
       )} */}
-      {/* <div className="my-2">
+      <div></div>
+      <div className="flex my-2 justify-center">
         <ContinuousSlider setStandardContribution={setStandardContribution} />
-      </div> */}
+      </div>
     </div>
   );
 };

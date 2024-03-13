@@ -23,6 +23,15 @@ export const QuoteSchemaContextProvider = ({
       );
       if (response.ok) {
         const data = await response.json();
+
+        // // Adding a new property to the filtered properties
+        // filteredProperties.plan_name = {
+        //   label: "Plan Name",
+        //   type: "string",
+        // };
+
+        // Assign the modified object back to data.properties
+
         setQuoteSchema(data);
       }
     }

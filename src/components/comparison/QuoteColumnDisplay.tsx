@@ -5,6 +5,7 @@ type QuoteColumnDisplayProps = {
   initialExpanded: boolean;
   className?: string;
   quoteData?: any;
+  totalCost?: any;
   headerComponent?: React.ReactNode;
   isQuoteCard?: boolean;
 };
@@ -15,8 +16,10 @@ export const QuoteColumnDisplay = ({
   className,
   quoteData,
   headerComponent,
+  totalCost,
   isQuoteCard = false,
 }: QuoteColumnDisplayProps) => {
+  console.log("quotedata in non recursive", quoteData);
   return (
     <>
       <div

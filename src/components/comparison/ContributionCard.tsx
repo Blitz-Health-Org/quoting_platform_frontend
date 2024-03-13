@@ -9,7 +9,12 @@ import { FaSave } from "react-icons/fa";
 import { parseInt } from "lodash";
 import { supabase } from "@/src/supabase";
 
-export function ContributionCard({ contribution, onSave, setShowPanel }: any) {
+export function ContributionCard({
+  contribution,
+  onSave,
+  setShowPanel,
+  censusData,
+}: any) {
   const [editedContribution, setEditedContribution] = useState(contribution);
   const [isEditing, setIsEditing] = useState<boolean>(false);
 
@@ -66,7 +71,7 @@ export function ContributionCard({ contribution, onSave, setShowPanel }: any) {
         <Input
           disabled={!isEditing}
           className="w-12"
-          defaultValue={50}
+          defaultValue={censusData["employee_num"]}
           size="small"
           value={editedContribution.data.employee.employees}
           onChange={(e) =>
@@ -126,7 +131,7 @@ export function ContributionCard({ contribution, onSave, setShowPanel }: any) {
         <Input
           disabled={!isEditing}
           className="w-12"
-          defaultValue={50}
+          defaultValue={censusData["spouse_num"]}
           size="small"
           value={editedContribution.data.spouse.employees}
           onChange={(e) =>
@@ -186,7 +191,7 @@ export function ContributionCard({ contribution, onSave, setShowPanel }: any) {
         <Input
           disabled={!isEditing}
           className="w-12"
-          defaultValue={50}
+          defaultValue={censusData["child_num"]}
           size="small"
           value={editedContribution.data.child.employees}
           onChange={(e) =>
@@ -246,7 +251,7 @@ export function ContributionCard({ contribution, onSave, setShowPanel }: any) {
         <Input
           disabled={!isEditing}
           className="w-12"
-          defaultValue={50}
+          defaultValue={censusData["family_num"]}
           size="small"
           value={editedContribution.data.family.employees}
           onChange={(e) =>
