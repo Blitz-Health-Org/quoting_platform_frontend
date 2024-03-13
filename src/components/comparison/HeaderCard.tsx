@@ -12,7 +12,7 @@ export const HeaderCard = ({ fieldObject }: HeaderCardProps) => {
     <QuoteColumnDisplay
       field={fieldObject}
       initialExpanded
-      className="w-fit max-w-44 pt-28"
+      className="w-fit max-w-44 pt-28 rounded-t-md"
     />
   );
 };

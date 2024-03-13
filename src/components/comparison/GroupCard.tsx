@@ -1,6 +1,7 @@
 import { QuoteType } from "@/src/types/custom/Quote";
 import { QuoteCard } from "./QuoteCard";
 import Image from "next/image";
+import { FaStar } from "react-icons/fa";
 
 type GroupCardProps = {
   plan: any;
@@ -26,10 +27,13 @@ export function GroupCard({
   // };
 
   return (
-    <div className="flex-col w-fit">
+    <div className="flex-col w-fit bg-white">
       <div className="flex bg-white border border-b-0 rounded-b-none border-gray-300 rounded-md w-full gap-3 h-28 justify-center items-center px-2">
-        <div className="max-w-1/2 truncate">
-          <h1 className="font-bold text-lg text-wrap max-w-32">{plan.name}</h1>
+        <div className="max-w-1/2 flex items-center justify-center truncate gap-1">
+          {plan.isCurrentPlan ? <FaStar /> : null}
+          <h1 className="font-bold text-lg text-wrap max-w-32">
+            {plan.isCurrentPlan ? "Current Plan" : plan.name}
+          </h1>
         </div>
         <div className="border-r border-1.5 h-10 border-gray-600"></div>{" "}
         {/* Vertical line break */}
@@ -49,13 +53,13 @@ export function GroupCard({
             <h1 className="font-bold text-xl">
               {plan.selectedQuotes[0].carrier}
             </h1>
-            <p className="text-sm max-w-16 truncate">
+            <p className="text-sm max-w-32 truncate">
               {plan.selectedQuotes[0].website}
             </p>
           </div>
         </div>
       </div>
-      <div className="flex w-fit rounded-lg text-center gap-2">
+      <div className="flex w-fit text-center border border-l-0 border-t-0 border-b-0 border-gray-300">
         {plan.selectedQuotes.map((quote: QuoteType) => (
           <QuoteCard
             plan={plan}

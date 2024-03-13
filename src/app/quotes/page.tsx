@@ -186,7 +186,23 @@ export default function QuotingPage() {
 
       setClient(clientData);
 
-      setPlans(clientData.connected_plans);
+      if (clientData?.connected_plans) {
+        // Find the index of the current plan
+        const currentPlanIndex = clientData.connected_plans.findIndex(
+          (plan: any) => plan.isCurrentPlan === true,
+        );
+
+        // If a current plan is found and it's not the first element, move it to the front
+        if (currentPlanIndex > 0) {
+          const newPlans = [...clientData.connected_plans];
+          const [currentPlan] = newPlans.splice(currentPlanIndex, 1);
+          newPlans.unshift(currentPlan);
+          setPlans(newPlans);
+        } else {
+          // Else just set the plans normally
+          setPlans(clientData.connected_plans);
+        }
+      }
 
       const scopedPlans = clientData.connected_plans;
 
@@ -338,7 +354,7 @@ export default function QuotingPage() {
       <div className="bg-gray-100 w-full h-screen">
         <div className="w-full overflow-x-hidden h-full bg-gray-100 flex flex-col">
           <Fullheader clientName={client?.name || "N/A"} />
-          <div className="bg-gray-100 border border-gray-200 border-b-0 px-6 py-2 flex flex-col h-full">
+          <div className="bg-gray-100 border border-gray-200 border-b-0 px-6 py-2 mt-2 flex flex-col h-full">
             <Subheader
               client={client}
               setStandardContribution={setStandardContribution}
@@ -351,7 +367,9 @@ export default function QuotingPage() {
 
             <div className="p-0.5 flex-grow w-full">
               <div className="h-full flex gap-2 overflow-auto py-2">
-                <HeaderCard fieldObject={quoteSchema} />
+                <div className="border border-gray-300 border-l-0 border-t-0 border-b-0 rounded-t-md">
+                  <HeaderCard fieldObject={quoteSchema} />
+                </div>
                 {plans.length > 0 ? (
                   plans.map((plan: any) => (
                     <GroupCard
@@ -370,7 +388,6 @@ export default function QuotingPage() {
               </div>
             </div>
           </div>
-
           <ContributionPane
             paneState={paneState}
             setPaneState={setPaneState}
