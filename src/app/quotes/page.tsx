@@ -36,13 +36,6 @@ export default function QuotingPage() {
   const [classes, setClasses] = useState<ClassType[]>([]);
   const [plans, setPlans] = useState<any>([]);
 
-  console.log(
-    "plans and quotes",
-    plans,
-    quotes,
-    plans?.[0]?.["selectedQuotes"]?.[0]?.["data"]?.["employee_num"] ?? 5,
-  );
-
   const [standardContribution, setStandardContribution] = useState<any>({
     name: "Standard Contribution",
     data: {
@@ -69,7 +62,6 @@ export default function QuotingPage() {
     },
   });
 
-  console.log("standard contribution", standardContribution);
   const { quoteSchema } = useContext(QuoteSchemaContext);
   const { setSnackbar } = useContext(SnackBarContext);
 

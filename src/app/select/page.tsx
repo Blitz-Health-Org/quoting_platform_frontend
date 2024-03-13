@@ -27,6 +27,7 @@ import { SnackBarContext } from "@/src/context/SnackBarContext";
 import { SelectedQuotesACAPage } from "@/src/components/client/SelectedQuotesACAPage";
 import { SelectedQuotesNonACAPage } from "@/src/components/client/SelectedQuotesNonACAPage";
 import TabHeader from "@/src/components/ui/TabHeader";
+import { ActionBar } from "@/src/components/record/record-table/ActionBar";
 
 export interface PlanAttributes {
   isCurrentPlan: boolean;
@@ -130,6 +131,26 @@ export default function SelectQuotes() {
     });
   };
 
+  async function deleteQuotes() {
+    console.log("DELETE", quotes, selectedQuotes);
+    setQuotes(
+      quotes.filter(
+        (quote) =>
+          !selectedQuotes
+            .map((selectedQuote) => selectedQuote.id)
+            .includes(quote.id),
+      ),
+    );
+    const { error } = await supabase
+      .from("quotes")
+      .delete()
+      .in(
+        "id",
+        selectedQuotes.map((quote) => quote.id),
+      );
+    handleClearCheckboxes();
+  }
+
   const selectQuotesFirst = () => {
     setSnackbar({
       open: true,
@@ -171,8 +192,6 @@ export default function SelectQuotes() {
   }, []);
 
   const [selectedFilter, setSelectedFilter] = useState<string | null>(null);
-
-  console.log("selectedCLient", selectedClient);
 
   const handleCheckboxChange = (quoteId: number) => {
     setQuotes((prevQuotes) =>
@@ -386,8 +405,6 @@ export default function SelectQuotes() {
     return <></>;
   }
 
-  console.log("quotes heorier", quotes, selectedClient);
-
   return (
     <>
       <main className="flex w-full h-full overflow-hidden">
@@ -502,6 +519,7 @@ export default function SelectQuotes() {
           type={"Select"}
         />
       )}
+      {selectedQuotes.length > 0 && <ActionBar deleteRecords={deleteQuotes} />}
     </>
   );
 }

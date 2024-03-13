@@ -19,7 +19,6 @@ export const QuoteColumnDisplay = ({
   totalCost,
   isQuoteCard = false,
 }: QuoteColumnDisplayProps) => {
-  console.log("quotedata in non recursive", quoteData);
   return (
     <>
       <div

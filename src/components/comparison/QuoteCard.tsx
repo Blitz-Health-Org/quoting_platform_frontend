@@ -46,7 +46,6 @@ export const QuoteCard = ({
       spouse: (quote.data as any)?.["spouse_rate"],
     },
   );
-  console.log("quotedata jere", quote.data);
 
   return (
     <QuoteColumnDisplay

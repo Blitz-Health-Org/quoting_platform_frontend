@@ -7,10 +7,11 @@ export function useCalculateTotalCost(
   customClasses: any,
   rates: any,
 ) {
+  console.log("calctotal cost", quoteData);
   const { client } = useContext(ClientContext);
 
-  // if (quoteData?.metadata?.total_employer_cost_is_precalculated)
-  //   return quoteData.total_employer_cost;
+  if (quoteData?.metadata?.total_employer_cost_is_precalculated)
+    return quoteData.total_employer_cost;
 
   const calculationMethod =
     quoteData?.metadata?.total_employer_cost_calculation_method;
@@ -26,8 +27,6 @@ export function useCalculateTotalCost(
       standardContribution["employee"].percent
     );
   }
-
-  console.log("this is running correctly", standardContribution, rates);
 
   let totalSum = 0;
   if (customClasses.length) {
