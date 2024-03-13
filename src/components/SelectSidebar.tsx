@@ -215,7 +215,6 @@ const SelectSidebar = ({
   };
 
   return (
-    <div>
       <Sidebar
         collapsedWidth="60px"
         backgroundColor="white"
@@ -376,7 +375,6 @@ const SelectSidebar = ({
           )}
         </div>
       </Sidebar>
-    </div>
   );
 };
 

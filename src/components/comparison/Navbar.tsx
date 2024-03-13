@@ -51,7 +51,7 @@ export const Navbar = ({ selected }: { selected: string }) => {
   };
 
   return (
-    <div className="invisible w-0 md:visible md:w-1/7 bg-gray-100/50 pb-4 pl-4 pr-4 pt-7 flex flex-col">
+    <div className="invisible w-0 md:visible md:w-1/7 bg-gray-100/50 md:pb-4 md:pl-4 md:pr-4 md:pt-7 p-0 flex flex-col">
       <div className="mb-1 flex justify-left w-full">
         <a href="/">
           <Image src="/Blume.png" alt="Bloom Flower" width={90} height={60} />
