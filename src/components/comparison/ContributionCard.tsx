@@ -71,7 +71,6 @@ export function ContributionCard({
         <Input
           disabled={!isEditing}
           className="w-12"
-          defaultValue={censusData["employee_num"]}
           size="small"
           value={editedContribution.data.employee.employees}
           onChange={(e) =>

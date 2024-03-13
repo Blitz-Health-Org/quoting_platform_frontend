@@ -35,7 +35,9 @@ export const QuoteCard = ({
   classes,
   standardContribution,
 }: QuoteCardProps) => {
-  quote.data.total_employer_cost = useCalculateTotalCost(
+  const sliderContribution =
+    standardContribution["data"]["employee"]["percent"];
+  const calculatedTotalCost = useCalculateTotalCost(
     quote.data,
     standardContribution,
     classes,
@@ -45,6 +47,7 @@ export const QuoteCard = ({
       family: (quote.data as any)?.["family_rate"],
       spouse: (quote.data as any)?.["spouse_rate"],
     },
+    sliderContribution,
   );
 
   return (
@@ -53,6 +56,7 @@ export const QuoteCard = ({
       quoteData={quote.data}
       isQuoteCard
       initialExpanded
+      calculatedTotalCost={calculatedTotalCost}
       // headerComponent={
       //   <div className="flex w-full gap-3 h-28 justify-center items-center px-2">
       //     <div className="max-w-1/2 truncate">

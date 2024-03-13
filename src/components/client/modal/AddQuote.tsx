@@ -37,6 +37,7 @@ export const AddQuote = ({
   const { setSnackbar } = useContext(SnackBarContext);
   const [files, setFiles] = useState<File[]>([]);
   const [selectedPlan, setSelectedPlan] = useState<string>("bcbs_tx_aca");
+  const [isProcessing, setIsProcessing] = useState<boolean>(false);
 
   const {
     userId: [userId],
@@ -136,6 +137,7 @@ export const AddQuote = ({
       router.push(`/select?clientId=${client.id}`);
     }
     setModalOpen("");
+    setIsProcessing(false);
   };
 
   // const handleUpload = async () => {
@@ -309,51 +311,64 @@ export const AddQuote = ({
         </select>
         <div className="modal-body">
           {/* File Upload Section */}
-          <div className="flex flex-col items-center justify-center cursor-pointer">
-            <div
-              {...getRootProps()}
-              className={`p-6 mb-2 mt-2 drop-shadow-sm outline outline-1 outline-gray-400/65 hover:outline-black w-full ${
-                isDragActive ? "bg-gray-200/50" : "bg-gray-100/50"
-              }`}
-              style={{ borderRadius: "0.25rem" }}
-            >
-              <div className="flex items-center justify-center mb-4">
-                <MdUpload className="h-8 w-8" />
-              </div>
-              <input {...getInputProps()} />
-              <h1 className="text-lg mb-4 text-center">
-                {isDragActive
-                  ? "Drop the files here"
-                  : "Select or Drag-In Quotes"}
-              </h1>
-              {files.length > 0 && (
-                <div className="text-center mb-4">
-                  {files.map((file, index) => (
-                    <p className="truncate" key={index}>
-                      {file.name}
-                    </p>
-                  ))}
-                </div>
-              )}
-            </div>
-            <button
-              onClick={handleUpload}
-              className="w-full bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700 focus:outline-none cursor-pointer"
-            >
-              Upload
-            </button>
-            <p className="text-xs text-center text-gray-700 mb-1 mt-3">
-              We use bank-level security to encrypt and process your statements.
-              For more information about our privacy measures,&nbsp;
-              <a
-                className="text-slate-900 underline"
-                href="mailto:founders@tryblitz.ai?subject=Security%20Inquiry"
+          <form
+            onSubmit={(e) => {
+              e.preventDefault(); // Prevent the default form submission
+              setIsProcessing(true);
+              if (!isProcessing) {
+                handleUpload(); // Call your existing upload function
+              }
+            }}
+          >
+            <div className="flex flex-col items-center justify-center cursor-pointer">
+              <div
+                {...getRootProps()}
+                className={`p-6 mb-2 mt-2 drop-shadow-sm outline outline-1 outline-gray-400/65 hover:outline-black w-full ${
+                  isDragActive ? "bg-gray-200/50" : "bg-gray-100/50"
+                }`}
+                style={{ borderRadius: "0.25rem" }}
               >
-                email us
-              </a>
-              .
-            </p>
-          </div>
+                <div className="flex items-center justify-center mb-4">
+                  <MdUpload className="h-8 w-8" />
+                </div>
+                <input {...getInputProps()} />
+                <h1 className="text-lg mb-4 text-center">
+                  {isDragActive
+                    ? "Drop the files here"
+                    : "Select or Drag-In Quotes"}
+                </h1>
+                {files.length > 0 && (
+                  <div className="text-center mb-4">
+                    {files.map((file, index) => (
+                      <p className="truncate" key={index}>
+                        {file.name}
+                      </p>
+                    ))}
+                  </div>
+                )}
+              </div>
+              <button
+                type="submit"
+                onClick={handleUpload}
+                className="w-full bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700 focus:outline-none cursor-pointer"
+              >
+                Upload
+              </button>
+
+              <p className="text-xs text-center text-gray-700 mb-1 mt-3">
+                We use bank-level security to encrypt and process your
+                statements. For more information about our privacy
+                measures,&nbsp;
+                <a
+                  className="text-slate-900 underline"
+                  href="mailto:founders@tryblitz.ai?subject=Security%20Inquiry"
+                >
+                  email us
+                </a>
+                .
+              </p>
+            </div>
+          </form>
         </div>
       </div>
     </div>

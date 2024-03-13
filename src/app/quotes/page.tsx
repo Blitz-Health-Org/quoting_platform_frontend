@@ -35,29 +35,31 @@ export default function QuotingPage() {
   const [loading, setLoading] = useState<boolean>(true);
   const [classes, setClasses] = useState<ClassType[]>([]);
   const [plans, setPlans] = useState<any>([]);
+  console.log("PLANS IN QUOTING PAGE", plans);
 
   const [standardContribution, setStandardContribution] = useState<any>({
     name: "Standard Contribution",
     data: {
       employee: {
-        percent: 100,
+        percent: 50,
         employees:
-          plans?.[0]?.["selectedQuotes"]?.[0]?.["data"]?.["employee_num"] ?? 5,
+          plans?.[0]?.["selectedQuotes"]?.[0]?.["data"]?.["employee_num"] ??
+          null,
       },
       family: {
-        percent: 100,
+        percent: 50,
         employees:
-          plans?.[0]?.["selectedQuotes"]?.[0]?.["data"]?.["family_num"] ?? 5,
+          plans?.[0]?.["selectedQuotes"]?.[0]?.["data"]?.["family_num"] ?? null,
       },
       child: {
-        percent: 100,
+        percent: 50,
         employees:
-          plans?.[0]?.["selectedQuotes"]?.[0]?.["data"]?.["child)num"] ?? 5,
+          plans?.[0]?.["selectedQuotes"]?.[0]?.["data"]?.["child)num"] ?? null,
       },
       spouse: {
-        percent: 100,
+        percent: 50,
         employees:
-          plans?.[0]?.["selectedQuotes"]?.[0]?.["data"]?.["spouse_num"] ?? 5,
+          plans?.[0]?.["selectedQuotes"]?.[0]?.["data"]?.["spouse_num"] ?? null,
       },
     },
   });
@@ -164,6 +166,7 @@ export default function QuotingPage() {
   // };
 
   const fetchClientAndQuotes = async (clientId: string) => {
+    console.log("client id", clientId);
     try {
       const { data: clientData, error: clientError } = await supabase
         .from("clients")
@@ -191,6 +194,7 @@ export default function QuotingPage() {
           newPlans.unshift(currentPlan);
           setPlans(newPlans);
         } else {
+          console.log("should fire", clientData);
           // Else just set the plans normally
           setPlans(clientData.connected_plans);
         }
@@ -202,32 +206,32 @@ export default function QuotingPage() {
         name: "Standard Contribution",
         data: {
           employee: {
-            percent: 100,
+            percent: 50,
             employees:
               scopedPlans?.[0]?.["selectedQuotes"]?.[0]?.["data"]?.[
                 "employee_num"
-              ] ?? 5,
+              ] ?? null,
           },
           family: {
-            percent: 100,
+            percent: 50,
             employees:
               scopedPlans?.[0]?.["selectedQuotes"]?.[0]?.["data"]?.[
                 "family_num"
-              ] ?? 5,
+              ] ?? null,
           },
           child: {
-            percent: 100,
+            percent: 50,
             employees:
               scopedPlans?.[0]?.["selectedQuotes"]?.[0]?.["data"]?.[
                 "child_num"
-              ] ?? 5,
+              ] ?? null,
           },
           spouse: {
-            percent: 100,
+            percent: 50,
             employees:
               scopedPlans?.[0]?.["selectedQuotes"]?.[0]?.["data"]?.[
                 "spouse_num"
-              ] ?? 5,
+              ] ?? null,
           },
         },
       });
@@ -311,10 +315,10 @@ export default function QuotingPage() {
   let censusData;
   if (plans.length == 0) {
     censusData = {
-      employee: 5,
-      spouse: 5,
-      child: 5,
-      family: 5,
+      employee: null,
+      spouse: null,
+      child: null,
+      family: null,
     };
   } else {
     censusData = {

@@ -9,6 +9,7 @@ type RecursiveQuoteColumnDisplayProps = {
   quoteData?: any;
   path?: string;
   isQuoteCard?: boolean;
+  calculatedTotalCost?: any;
 };
 
 type HeaderLabelProps = {
@@ -24,6 +25,7 @@ export const RecursiveQuoteColumnDisplay = ({
   initialExpanded = false,
   quoteData,
   path = "root",
+  calculatedTotalCost,
   isQuoteCard = false,
 }: RecursiveQuoteColumnDisplayProps) => {
   const [fieldState, setFieldState] = useRecoilState(fieldsFamilyState(path));
@@ -42,14 +44,7 @@ export const RecursiveQuoteColumnDisplay = ({
   }: HeaderLabelProps) => {
     return (
       <div className={`w-full text-sm ${className}`}>
-        {(field.type === "object" ||
-          field.label === "Medical Deductible In-Network Individual" ||
-          field.label === "Dental Deductible Info" ||
-          field.label === "Pharmacy Drug List" ||
-          field.label === "Dental Deductible Out-of-Network Family" ||
-          field.label === "Out-of-Pocket Max Family" ||
-          field.label === "Rate for Family" ||
-          field.label === "Pharmacy Tier 4 Deductible") && (
+        {field.type === "object" && (
           <hr className="w-full border-b-1 border-gray-500"></hr>
         )}
 
@@ -139,6 +134,17 @@ export const RecursiveQuoteColumnDisplay = ({
                   isQuoteCard={isQuoteCard}
                 />
               ),
+            )}
+            {isQuoteCard ? (
+              <RecursiveQuoteColumnDisplay
+                field={{ type: "string", label: "Total Monthly Cost" }}
+                isQuoteCard
+                quoteData={calculatedTotalCost}
+              />
+            ) : (
+              <RecursiveQuoteColumnDisplay
+                field={{ type: "string", label: "Total Monthly Cost" }}
+              />
             )}
           </>
         )}

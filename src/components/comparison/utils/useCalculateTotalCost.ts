@@ -6,12 +6,32 @@ export function useCalculateTotalCost(
   standardContribution: any,
   customClasses: any,
   rates: any,
+  sliderContribution: any,
 ) {
-  console.log("calctotal cost", quoteData);
+  console.log(
+    "calctotal cost",
+    sliderContribution,
+    quoteData,
+    parseFloat(quoteData.total_employer_cost.replace("$", "").replace(",", "")),
+  );
   const { client } = useContext(ClientContext);
 
-  if (quoteData?.metadata?.total_employer_cost_is_precalculated)
-    return quoteData.total_employer_cost;
+  if (
+    quoteData?.metadata?.total_employer_cost_is_precalculated &&
+    !standardContribution?.data?.["employee"]?.employees &&
+    !standardContribution?.data?.["family"]?.employees &&
+    !standardContribution?.data?.["spouse"]?.employees &&
+    !standardContribution?.data?.["child"]?.employees
+  )
+    return (
+      (parseFloat(
+        quoteData.total_employer_cost.replace("$", "").replace(",", ""),
+      ) *
+        sliderContribution) /
+      50
+    )
+      .toFixed(2)
+      .toString();
 
   const calculationMethod =
     quoteData?.metadata?.total_employer_cost_calculation_method;

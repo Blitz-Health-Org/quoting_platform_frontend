@@ -79,7 +79,6 @@ export const TaskContextProvider = ({
     if (!loading && taskInfo) {
       console.log("IN TASKINFO LOOP");
       for (const task of taskInfo) {
-        console.log(task);
         if (task.type === "parse") {
           console.log("FOUND PARSING TASK");
           toast.loading(

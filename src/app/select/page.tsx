@@ -27,7 +27,7 @@ import { SnackBarContext } from "@/src/context/SnackBarContext";
 import { SelectedQuotesACAPage } from "@/src/components/client/SelectedQuotesACAPage";
 import { SelectedQuotesNonACAPage } from "@/src/components/client/SelectedQuotesNonACAPage";
 import TabHeader from "@/src/components/ui/TabHeader";
-import { ActionBar } from "@/src/components/record/record-table/ActionBar";
+import { ActionBar } from "./ActionBar";
 
 export interface PlanAttributes {
   isCurrentPlan: boolean;
@@ -173,6 +173,35 @@ export default function SelectQuotes() {
   const [entryWidth, setEntryWidth] = useState(
     innerWidth / planAttributesMapping.length,
   );
+
+  const createNewPlanAndAddSelectedQuotes = () => {
+    console.log("running create new plan and add selected qutoes");
+    const newPlan = {
+      id: Date.now(),
+      isCurrentPlan: false,
+      name: `Plan #${plans.length + 1}`,
+      selectedQuotes: selectedQuotes,
+    };
+    setPlans([...plans, newPlan]);
+    handleClearCheckboxes();
+    setSnackbar({
+      open: true,
+      message: "Plan added! Make sure to save your changes.",
+      severity: "success",
+    });
+  };
+
+  const actionBarEntries = [
+    {
+      label: "Delete",
+      onClick: deleteQuotes,
+      //TODO: add icon here
+    },
+    {
+      label: "Add to New Plan",
+      onClick: createNewPlanAndAddSelectedQuotes,
+    },
+  ];
 
   useEffect(() => {
     // Update entryWidth when the screen size changes
@@ -519,7 +548,9 @@ export default function SelectQuotes() {
           type={"Select"}
         />
       )}
-      {selectedQuotes.length > 0 && <ActionBar deleteRecords={deleteQuotes} />}
+      {selectedQuotes.length > 0 && (
+        <ActionBar actionBarEntries={actionBarEntries} />
+      )}
     </>
   );
 }

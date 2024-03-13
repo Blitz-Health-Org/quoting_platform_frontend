@@ -8,6 +8,7 @@ type QuoteColumnDisplayProps = {
   totalCost?: any;
   headerComponent?: React.ReactNode;
   isQuoteCard?: boolean;
+  calculatedTotalCost?: any;
 };
 
 export const QuoteColumnDisplay = ({
@@ -16,6 +17,7 @@ export const QuoteColumnDisplay = ({
   className,
   quoteData,
   headerComponent,
+  calculatedTotalCost,
   totalCost,
   isQuoteCard = false,
 }: QuoteColumnDisplayProps) => {
@@ -32,6 +34,7 @@ export const QuoteColumnDisplay = ({
         )}
         <RecursiveQuoteColumnDisplay
           field={field}
+          calculatedTotalCost={calculatedTotalCost}
           initialExpanded={initialExpanded}
           quoteData={quoteData}
           isQuoteCard={isQuoteCard}
