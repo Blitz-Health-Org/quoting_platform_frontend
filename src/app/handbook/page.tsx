@@ -276,19 +276,53 @@ export default function QuotingPage() {
             <div className="flex gap-2 overflow-x-scroll px-0.5">
               <div className="flex-col">
                 <p className="text-gray-600 text-xs mb-1">Effective Date</p>
-                <input className="outline outline-1 outline-gray-300 mb-2 rounded-md px-2 py-0.5 text-gray-700 text-sm" placeholder="Effective Date" onChange={(e) => (setMiscInfo((prev: any) => {return {...prev, effective_date: e.target.value}}))}></input>
+                <input
+                  className="outline outline-1 outline-gray-300 mb-2 rounded-md px-2 py-0.5 text-gray-700 text-sm"
+                  placeholder="Effective Date"
+                  onChange={(e) =>
+                    setMiscInfo((prev: any) => {
+                      return { ...prev, effective_date: e.target.value };
+                    })
+                  }
+                ></input>
               </div>
               <div className="flex-col">
                 <p className="text-gray-600 text-xs mb-1">Client Name</p>
-                <input className="outline outline-1 outline-gray-300 mb-2 rounded-md px-2 py-0.5 text-gray-700 text-sm" placeholder="Client Name" onChange={(e) => (setMiscInfo((prev: any) => {return {...prev, client_name: e.target.value}}))}></input>
+                <input
+                  className="outline outline-1 outline-gray-300 mb-2 rounded-md px-2 py-0.5 text-gray-700 text-sm"
+                  placeholder="Client Name"
+                  onChange={(e) =>
+                    setMiscInfo((prev: any) => {
+                      return { ...prev, client_name: e.target.value };
+                    })
+                  }
+                ></input>
               </div>
               <div className="flex-col">
-                <p className="text-gray-600 text-xs mb-1">Representative Name</p>
-                <input className="outline outline-1 outline-gray-300 mb-2 rounded-md px-2 py-0.5 text-gray-700 text-sm" placeholder="Rep Name" onChange={(e) => (setMiscInfo((prev: any) => {return {...prev, hr_consultant_name: e.target.value}}))}></input>
+                <p className="text-gray-600 text-xs mb-1">
+                  Representative Name
+                </p>
+                <input
+                  className="outline outline-1 outline-gray-300 mb-2 rounded-md px-2 py-0.5 text-gray-700 text-sm"
+                  placeholder="Rep Name"
+                  onChange={(e) =>
+                    setMiscInfo((prev: any) => {
+                      return { ...prev, hr_consultant_name: e.target.value };
+                    })
+                  }
+                ></input>
               </div>
               <div className="flex-col">
                 <p className="text-gray-600 text-xs mb-1">Agent Name</p>
-                <input className="outline outline-1 outline-gray-300 mb-2 rounded-md px-2 py-0.5 text-gray-700 text-sm" placeholder="Agent Name" onChange={(e) => (setMiscInfo((prev: any) => {return {...prev, agent_name: e.target.value}}))}></input>
+                <input
+                  className="outline outline-1 outline-gray-300 mb-2 rounded-md px-2 py-0.5 text-gray-700 text-sm"
+                  placeholder="Agent Name"
+                  onChange={(e) =>
+                    setMiscInfo((prev: any) => {
+                      return { ...prev, agent_name: e.target.value };
+                    })
+                  }
+                ></input>
               </div>
             </div>
           </div>
@@ -298,9 +332,7 @@ export default function QuotingPage() {
             className="ml-0.5 mr-0.5 bg-gray-100/50 outline outline-1 outline-gray-300 w-full rounded-md h-10 mb-2"
           >
             <div className="pl-4 pr-4 flex items-center justify-between">
-              <div className="flex">
-                Medical
-              </div>
+              <div className="flex">Medical</div>
               {displayPlans ? <SlArrowUp /> : <SlArrowDown />}
             </div>
           </button>
