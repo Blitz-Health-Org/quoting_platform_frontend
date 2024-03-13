@@ -42,6 +42,13 @@ type MedicalQuoteDetails = {
   family_rate: string;
 };
 
+type MiscInfo = {
+  effective_date: string;
+  agent_name: string;
+  hr_consultant_name: string;
+  client_name: string;
+};
+
 const medicalKeyDisplayNames: { [key: string]: string } = {
   plan_name: "Plan Name",
   plan_id: "Plan ID",
@@ -109,6 +116,7 @@ export default function QuotingPage() {
     [key: string]: { [dataKey: string]: string };
   }>({});
   const [displayDentalPlans, setDisplayDentalPlans] = useState(false);
+  const [miscInfo, setMiscInfo] = useState<MiscInfo>();
   const [dentalQuoteData, setDentalQuoteData] = useState<DentalQuoteDetails[]>(
     [],
   );
@@ -234,7 +242,6 @@ export default function QuotingPage() {
   return (
     <div className="flex bg-gray-100 w-full h-screen">
       <Navbar selected="Handbooks" />
-
       <div className="w-full flex-col pt-6 pl-6 pr-4 pb-6 md:w-6/7 overflow-hidden">
         <div className="flex justify-between w-full">
           <div className="flex items-center text-sm md:text-base mb-4">
@@ -264,17 +271,34 @@ export default function QuotingPage() {
           </button>
         </div>
         <div className="p-6 rounded-md w-full flex-col overflow-x-hidden h-full pb-12 overflow-y-scroll bg-white outline outline-1 outline-gray-200">
+          <div className="flex flex-col">
+            <p className="mb-2">Miscellaneous</p>
+            <div className="flex gap-2 overflow-x-scroll px-0.5">
+              <div className="flex-col">
+                <p className="text-gray-600 text-xs mb-1">Effective Date</p>
+                <input className="outline outline-1 outline-gray-300 mb-2 rounded-md px-2 py-0.5 text-gray-700 text-sm" placeholder="Effective Date" onChange={(e) => (setMiscInfo((prev: any) => {return {...prev, effective_date: e.target.value}}))}></input>
+              </div>
+              <div className="flex-col">
+                <p className="text-gray-600 text-xs mb-1">Client Name</p>
+                <input className="outline outline-1 outline-gray-300 mb-2 rounded-md px-2 py-0.5 text-gray-700 text-sm" placeholder="Client Name" onChange={(e) => (setMiscInfo((prev: any) => {return {...prev, client_name: e.target.value}}))}></input>
+              </div>
+              <div className="flex-col">
+                <p className="text-gray-600 text-xs mb-1">Representative Name</p>
+                <input className="outline outline-1 outline-gray-300 mb-2 rounded-md px-2 py-0.5 text-gray-700 text-sm" placeholder="Rep Name" onChange={(e) => (setMiscInfo((prev: any) => {return {...prev, hr_consultant_name: e.target.value}}))}></input>
+              </div>
+              <div className="flex-col">
+                <p className="text-gray-600 text-xs mb-1">Agent Name</p>
+                <input className="outline outline-1 outline-gray-300 mb-2 rounded-md px-2 py-0.5 text-gray-700 text-sm" placeholder="Agent Name" onChange={(e) => (setMiscInfo((prev: any) => {return {...prev, agent_name: e.target.value}}))}></input>
+              </div>
+            </div>
+          </div>
+          <hr className="mt-2 mb-4"></hr>
           <button
             onClick={() => setDisplayPlans(!displayPlans)}
             className="ml-0.5 mr-0.5 bg-gray-100/50 outline outline-1 outline-gray-300 w-full rounded-md h-10 mb-2"
           >
             <div className="pl-4 pr-4 flex items-center justify-between">
               <div className="flex">
-                <input
-                  type="checkbox"
-                  className="mr-2"
-                  onClick={(e) => e.stopPropagation()}
-                />
                 Medical
               </div>
               {displayPlans ? <SlArrowUp /> : <SlArrowDown />}
@@ -324,7 +348,6 @@ export default function QuotingPage() {
                       </div>
                     ))}
                   </div>
-
                   <div className="w-full overflow-auto pr-1 pl-1 flex">
                     {selectedPlanId && (
                       <div className="flex flex-col gap-4 mt-4 mr-4 mb-1">
@@ -435,13 +458,13 @@ export default function QuotingPage() {
               ))}
             </div>
           </Collapse> */}
-
           {displayPDF && (
             <div className="bg-gray-100 w-full h-screen mt-2">
               <RenderedHandbook
                 quoteData={quoteData}
                 dentalQuoteData={dentalQuoteData}
                 clientName={client?.name}
+                miscInfo={miscInfo}
               />
             </div>
           )}
