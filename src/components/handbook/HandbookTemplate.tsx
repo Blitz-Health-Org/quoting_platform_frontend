@@ -59,15 +59,24 @@ const medicalKeyDisplayNames: { [key: string]: string } = {
   family_rate: "Family Rate",
 };
 
+type MiscInfo = {
+  effective_date: string;
+  agent_name: string;
+  hr_consultant_name: string;
+  client_name: string;
+};
+
 export interface HandbookTemplateProps {
   quoteData: PlanDetails[] | undefined;
   dentalQuoteData: DentalQuoteDetails[] | undefined;
   clientName: any;
+  miscInfo: MiscInfo | undefined;
 }
 
 // Create Document Component
 export default function HandbookTemplate(props: HandbookTemplateProps) {
   const [styles, setStyles] = useState({} as any);
+  const { miscInfo } = props;
   // Create styles
   console.log("does this work", props.dentalQuoteData);
   const medicalQuotes = props?.quoteData?.length;
@@ -263,6 +272,12 @@ export default function HandbookTemplate(props: HandbookTemplateProps) {
           <View style={styles.centered}>
             <Image src="Glance.png" style={styles.firstImage} />
           </View>
+          <Text>
+            {miscInfo?.agent_name}
+            {miscInfo?.effective_date}
+            {miscInfo?.hr_consultant_name}
+            {miscInfo?.client_name}
+          </Text>
           <Text
             style={{
               position: "absolute",
