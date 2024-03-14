@@ -29,7 +29,7 @@ export const TabHeader = ({
   }, [selectedTab, tabs]);
 
   return (
-    <div className="relative truncate">
+    <div className="relative truncate overflow-x-auto">
       <div className="flex">
         {tabs.map((tab, index) => (
           <div
