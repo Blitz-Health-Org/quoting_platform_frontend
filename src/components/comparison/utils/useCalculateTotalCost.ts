@@ -12,7 +12,15 @@ export function useCalculateTotalCost(
     "calctotal cost",
     sliderContribution,
     quoteData,
-    parseFloat(quoteData.total_employer_cost.replace("$", "").replace(",", "")),
+    (
+      (parseFloat(
+        quoteData.total_employer_cost.replace("$", "").replace(",", ""),
+      ) *
+        sliderContribution) /
+      50
+    )
+      .toFixed(2)
+      .toString(),
   );
   const { client } = useContext(ClientContext);
 

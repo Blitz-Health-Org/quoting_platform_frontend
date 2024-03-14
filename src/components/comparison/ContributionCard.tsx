@@ -32,249 +32,285 @@ export function ContributionCard({
     // For example, you can send it to the server or store it in another state.
   };
 
+  if (
+    !editedContribution.data.employee.employees &&
+    !editedContribution.data.spouse.emploees &&
+    !editedContribution.data.child.employees &&
+    !editedContribution.data.family.employees
+  ) {
+    return <>Unavailable (Incomplete Employee Info)</>;
+  }
+
   return (
     <div className="w-full outline outline-1 outline-gray-300 p-1 bg-slate-100/80 rounded-sm flex-col items-center justify-center shadow">
-      <div className="mb-1.5 flex items-center justify-left pl-2 pt-2">
-        <p className="text-sm mr-2 font-bold">Employee</p>
-        <p className="mr-2">|</p>
-        <Input
-          className="w-11"
-          defaultValue={100}
-          size="small"
-          value={editedContribution.data.employee.percent}
-          onChange={(e) => {
-            let newValue = parseInt(e.target.value);
-            // Check if the value exceeds 100 and reset it to 100
-            newValue = newValue > 100 ? 100 : newValue;
+      {editedContribution.data.employee.employees !== null ? (
+        <div className="mb-1.5 flex items-center justify-left pl-2 pt-2">
+          <p className="text-sm mr-2 font-bold">Employee</p>
+          <p className="mr-2">|</p>
+          <Input
+            className="w-11"
+            defaultValue={100}
+            size="small"
+            value={editedContribution.data.employee.percent}
+            onChange={(e) => {
+              let newValue = parseInt(e.target.value);
+              // Check if the value exceeds 100 and reset it to 100
+              newValue = newValue > 100 ? 100 : newValue;
 
-            setEditedContribution((prev: any) => {
-              return {
+              setEditedContribution((prev: any) => {
+                return {
+                  ...prev,
+                  data: {
+                    ...prev.data,
+                    employee: { ...prev.data.employee, percent: newValue },
+                  },
+                };
+              });
+            }}
+            disabled={!isEditing}
+            inputProps={{
+              step: 1,
+              min: 0,
+              max: 100,
+              type: "number",
+              "aria-labelledby": "input-slider",
+            }}
+          />
+          <p className="text-sm text-gray-500 mr-2">%</p>
+          <>
+            <p className="mr-2">|</p>
+            <Input
+              disabled={!isEditing}
+              className="w-12"
+              size="small"
+              value={editedContribution.data.employee.employees}
+              onChange={(e) =>
+                setEditedContribution((prev: any) => ({
+                  ...prev,
+                  data: {
+                    ...prev.data,
+                    employee: {
+                      ...prev.data.employee,
+                      employees: parseInt(e.target.value),
+                    },
+                  },
+                }))
+              }
+              inputProps={{
+                step: 1,
+                min: 0,
+                max: 10000,
+                type: "number",
+                "aria-labelledby": "input-slider",
+              }}
+            />
+            <p className="text-sm text-gray-800">Lives</p>
+          </>
+        </div>
+      ) : (
+        <></>
+      )}
+
+      {editedContribution.data.spouse.employees !== null ? (
+        <div className="mb-1.5 flex items-center justify-left pl-2 pt-1">
+          <p className="text-sm mr-2 font-bold">Spouse</p>
+          <p className="mr-2">|</p>
+          <Input
+            className="w-11"
+            defaultValue={100}
+            size="small"
+            value={editedContribution.data.spouse.percent}
+            onChange={(e) => {
+              let newValue = parseInt(e.target.value);
+              // Check if the value exceeds 100 and reset it to 100
+              newValue = newValue > 100 ? 100 : newValue;
+
+              setEditedContribution((prev: any) => ({
                 ...prev,
                 data: {
                   ...prev.data,
-                  employee: { ...prev.data.employee, percent: newValue },
+                  spouse: { ...prev.data.spouse, percent: newValue },
                 },
-              };
-            });
-          }}
-          disabled={!isEditing}
-          inputProps={{
-            step: 1,
-            min: 0,
-            max: 100,
-            type: "number",
-            "aria-labelledby": "input-slider",
-          }}
-        />
-        <p className="text-sm text-gray-500 mr-2">%</p>
-        <p className="mr-2">|</p>
-        <Input
-          disabled={!isEditing}
-          className="w-12"
-          size="small"
-          value={editedContribution.data.employee.employees}
-          onChange={(e) =>
-            setEditedContribution((prev: any) => ({
-              ...prev,
-              data: {
-                ...prev.data,
-                employee: {
-                  ...prev.data.employee,
-                  employees: parseInt(e.target.value),
-                },
-              },
-            }))
-          }
-          inputProps={{
-            step: 1,
-            min: 0,
-            max: 10000,
-            type: "number",
-            "aria-labelledby": "input-slider",
-          }}
-        />
-        <p className="text-sm text-gray-800">Lives</p>
-      </div>
-      <div className="mb-1.5 flex items-center justify-left pl-2 pt-1">
-        <p className="text-sm mr-2 font-bold">Spouse</p>
-        <p className="mr-2">|</p>
-        <Input
-          className="w-11"
-          defaultValue={100}
-          size="small"
-          value={editedContribution.data.spouse.percent}
-          onChange={(e) => {
-            let newValue = parseInt(e.target.value);
-            // Check if the value exceeds 100 and reset it to 100
-            newValue = newValue > 100 ? 100 : newValue;
+              }));
+            }}
+            disabled={!isEditing}
+            inputProps={{
+              step: 1,
+              min: 0,
+              max: 100,
+              type: "number",
+              "aria-labelledby": "input-slider",
+            }}
+          />
+          <p className="text-sm text-gray-500 mr-2">%</p>
+          <>
+            <p className="mr-2">|</p>
+            <Input
+              disabled={!isEditing}
+              className="w-12"
+              defaultValue={censusData["spouse_num"]}
+              size="small"
+              value={editedContribution.data.spouse.employees}
+              onChange={(e) =>
+                setEditedContribution((prev: any) => ({
+                  ...prev,
+                  data: {
+                    ...prev.data,
+                    spouse: {
+                      ...prev.data.spouse,
+                      employees: parseInt(e.target.value),
+                    },
+                  },
+                }))
+              }
+              inputProps={{
+                step: 1,
+                min: 0,
+                max: 10000,
+                type: "number",
+                "aria-labelledby": "input-slider",
+              }}
+            />
+            <p className="text-sm text-gray-800 pl-2 pt-1">Lives</p>
+          </>
+        </div>
+      ) : (
+        <></>
+      )}
 
-            setEditedContribution((prev: any) => ({
-              ...prev,
-              data: {
-                ...prev.data,
-                spouse: { ...prev.data.spouse, percent: newValue },
-              },
-            }));
-          }}
-          disabled={!isEditing}
-          inputProps={{
-            step: 1,
-            min: 0,
-            max: 100,
-            type: "number",
-            "aria-labelledby": "input-slider",
-          }}
-        />
-        <p className="text-sm text-gray-500 mr-2">%</p>
-        <p className="mr-2">|</p>
-        <Input
-          disabled={!isEditing}
-          className="w-12"
-          defaultValue={censusData["spouse_num"]}
-          size="small"
-          value={editedContribution.data.spouse.employees}
-          onChange={(e) =>
-            setEditedContribution((prev: any) => ({
-              ...prev,
-              data: {
-                ...prev.data,
-                spouse: {
-                  ...prev.data.spouse,
-                  employees: parseInt(e.target.value),
-                },
-              },
-            }))
-          }
-          inputProps={{
-            step: 1,
-            min: 0,
-            max: 10000,
-            type: "number",
-            "aria-labelledby": "input-slider",
-          }}
-        />
-        <p className="text-sm text-gray-800 pl-2 pt-1">Lives</p>
-      </div>
-      <div className="mb-1.5 flex items-center justify-left pl-2 pt-1">
-        <p className="text-sm mr-2 font-bold">Child</p>
-        <p className="mr-2">|</p>
-        <Input
-          className="w-11"
-          defaultValue={100}
-          size="small"
-          value={editedContribution.data.child.percent}
-          onChange={(e) => {
-            let newValue = parseInt(e.target.value);
-            // Check if the value exceeds 100 and reset it to 100
-            newValue = newValue > 100 ? 100 : newValue;
+      {editedContribution.data.child.employees !== null ? (
+        <div className="mb-1.5 flex items-center justify-left pl-2 pt-1">
+          <p className="text-sm mr-2 font-bold">Child</p>
+          <p className="mr-2">|</p>
+          <Input
+            className="w-11"
+            defaultValue={100}
+            size="small"
+            value={editedContribution.data.child.percent}
+            onChange={(e) => {
+              let newValue = parseInt(e.target.value);
+              // Check if the value exceeds 100 and reset it to 100
+              newValue = newValue > 100 ? 100 : newValue;
 
-            setEditedContribution((prev: any) => ({
-              ...prev,
-              data: {
-                ...prev.data,
-                child: { ...prev.data.child, percent: newValue },
-              },
-            }));
-          }}
-          disabled={!isEditing}
-          inputProps={{
-            step: 1,
-            min: 0,
-            max: 100,
-            type: "number",
-            "aria-labelledby": "input-slider",
-          }}
-        />
-        <p className="text-sm text-gray-500 mr-2">%</p>
-        <p className="mr-2">|</p>
-        <Input
-          disabled={!isEditing}
-          className="w-12"
-          defaultValue={censusData["child_num"]}
-          size="small"
-          value={editedContribution.data.child.employees}
-          onChange={(e) =>
-            setEditedContribution((prev: any) => ({
-              ...prev,
-              data: {
-                ...prev.data,
-                child: {
-                  ...prev.data.child,
-                  employees: parseInt(e.target.value),
+              setEditedContribution((prev: any) => ({
+                ...prev,
+                data: {
+                  ...prev.data,
+                  child: { ...prev.data.child, percent: newValue },
                 },
-              },
-            }))
-          }
-          inputProps={{
-            step: 1,
-            min: 0,
-            max: 10000,
-            type: "number",
-            "aria-labelledby": "input-slider",
-          }}
-        />
-        <p className="text-sm text-gray-800">Lives</p>
-      </div>
-      <div className="mb-1.5 flex items-center justify-left pl-2 pt-1">
-        <p className="text-sm mr-2 font-bold">Family</p>
-        <p className="mr-2">|</p>
-        <Input
-          className="w-11"
-          defaultValue={100}
-          size="small"
-          value={editedContribution.data.family.percent}
-          onChange={(e) => {
-            let newValue = parseInt(e.target.value);
-            // Check if the value exceeds 100 and reset it to 100
-            newValue = newValue > 100 ? 100 : newValue;
+              }));
+            }}
+            disabled={!isEditing}
+            inputProps={{
+              step: 1,
+              min: 0,
+              max: 100,
+              type: "number",
+              "aria-labelledby": "input-slider",
+            }}
+          />
+          <p className="text-sm text-gray-500 mr-2">%</p>
+          <>
+            <p className="mr-2">|</p>
+            <Input
+              disabled={!isEditing}
+              className="w-12"
+              defaultValue={censusData["child_num"]}
+              size="small"
+              value={editedContribution.data.child.employees}
+              onChange={(e) =>
+                setEditedContribution((prev: any) => ({
+                  ...prev,
+                  data: {
+                    ...prev.data,
+                    child: {
+                      ...prev.data.child,
+                      employees: parseInt(e.target.value),
+                    },
+                  },
+                }))
+              }
+              inputProps={{
+                step: 1,
+                min: 0,
+                max: 10000,
+                type: "number",
+                "aria-labelledby": "input-slider",
+              }}
+            />
+            <p className="text-sm text-gray-800">Lives</p>
+          </>
+        </div>
+      ) : (
+        <></>
+      )}
 
-            setEditedContribution((prev: any) => ({
-              ...prev,
-              data: {
-                ...prev.data,
-                family: { ...prev.data.family, percent: newValue },
-              },
-            }));
-          }}
-          disabled={!isEditing}
-          inputProps={{
-            step: 1,
-            min: 0,
-            max: 100,
-            type: "number",
-            "aria-labelledby": "input-slider",
-          }}
-        />
-        <p className="text-sm text-gray-500 mr-2">%</p>
-        <p className="mr-2">|</p>
-        <Input
-          disabled={!isEditing}
-          className="w-12"
-          defaultValue={censusData["family_num"]}
-          size="small"
-          value={editedContribution.data.family.employees}
-          onChange={(e) =>
-            setEditedContribution((prev: any) => ({
-              ...prev,
-              data: {
-                ...prev.data,
-                family: {
-                  ...prev.data.family,
-                  employees: parseInt(e.target.value),
+      {editedContribution.data.family.employees !== null ? (
+        <div className="mb-1.5 flex items-center justify-left pl-2 pt-1">
+          <p className="text-sm mr-2 font-bold">Family</p>
+          <p className="mr-2">|</p>
+          <Input
+            className="w-11"
+            defaultValue={100}
+            size="small"
+            value={editedContribution.data.family.percent}
+            onChange={(e) => {
+              let newValue = parseInt(e.target.value);
+              // Check if the value exceeds 100 and reset it to 100
+              newValue = newValue > 100 ? 100 : newValue;
+
+              setEditedContribution((prev: any) => ({
+                ...prev,
+                data: {
+                  ...prev.data,
+                  family: { ...prev.data.family, percent: newValue },
                 },
-              },
-            }))
-          }
-          inputProps={{
-            step: 1,
-            min: 0,
-            max: 10000,
-            type: "number",
-            "aria-labelledby": "input-slider",
-          }}
-        />
-        <p className="text-sm text-gray-800">Lives</p>
-      </div>
+              }));
+            }}
+            disabled={!isEditing}
+            inputProps={{
+              step: 1,
+              min: 0,
+              max: 100,
+              type: "number",
+              "aria-labelledby": "input-slider",
+            }}
+          />
+          <p className="text-sm text-gray-500 mr-2">%</p>
+          <>
+            <p className="mr-2">|</p>
+            <Input
+              disabled={!isEditing}
+              className="w-12"
+              defaultValue={censusData["family_num"]}
+              size="small"
+              value={editedContribution.data.family.employees}
+              onChange={(e) =>
+                setEditedContribution((prev: any) => ({
+                  ...prev,
+                  data: {
+                    ...prev.data,
+                    family: {
+                      ...prev.data.family,
+                      employees: parseInt(e.target.value),
+                    },
+                  },
+                }))
+              }
+              inputProps={{
+                step: 1,
+                min: 0,
+                max: 10000,
+                type: "number",
+                "aria-labelledby": "input-slider",
+              }}
+            />
+            <p className="text-sm text-gray-800">Lives</p>
+          </>
+        </div>
+      ) : (
+        <></>
+      )}
 
       <div className="mb-3 mt-3 flex items-center justify-center pl-2 w-full">
         {!isEditing && (
