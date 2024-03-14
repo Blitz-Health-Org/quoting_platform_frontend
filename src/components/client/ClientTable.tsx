@@ -166,7 +166,7 @@ export default function ClientTable({
           </div>
         </div>
         <div className="rounded-md w-full flex-col h-full pb-12 overflow-y-scroll">
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2 h-fit overflow-scroll p-0.5">
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2 h-fit overflow-auto p-0.5">
             {sortedClients.map((client) => {
               return (
                 <div key={client.id}>

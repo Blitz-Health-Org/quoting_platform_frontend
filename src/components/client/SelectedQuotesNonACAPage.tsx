@@ -36,7 +36,7 @@ export const SelectedQuotesNonACAPage = ({
                 className="flex justify-center gap-2 min-w-32"
                 style={{ width: `${entryWidth}px` }}
               >
-                <p>{attribute.label}</p>
+                <p className="max-h-12 text-wrap overflow-hidden">{attribute.label}</p>
               </div>
             ))}
           </div>
