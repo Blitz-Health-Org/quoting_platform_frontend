@@ -77,11 +77,11 @@ const SelectSidebar = ({
 
   const handleNameChange = (planId: any, newName: any) => {
     setPlans((currentPlans: any) =>
-      currentPlans.map((plan: any) => 
-        plan.id === planId ? { ...plan, name: newName } : plan
-      )
+      currentPlans.map((plan: any) =>
+        plan.id === planId ? { ...plan, name: newName } : plan,
+      ),
     );
-  };  
+  };
 
   const handleToggleCurrentPlan = (planId: number) => {
     const plan = plans.find((plan) => plan.id === planId);
