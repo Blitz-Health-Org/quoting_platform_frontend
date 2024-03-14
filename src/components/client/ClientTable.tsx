@@ -17,6 +17,7 @@ import { supabase } from "../../supabase";
 import { SnackBarContext } from "@/src/context/SnackBarContext";
 import { CiShare1 } from "react-icons/ci";
 import { useGetUserData } from "@/src/utils/useGetUserData";
+import { useRouter } from "next/navigation";
 
 export default function ClientTable({
   setComparisonOpen,
@@ -43,6 +44,7 @@ export default function ClientTable({
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   const { setSnackbar } = useContext(SnackBarContext);
+  const router = useRouter();
 
   const fetchData = async () => {
     let queryIds = [];
@@ -137,8 +139,11 @@ export default function ClientTable({
     }
   }
 
-  const handleCloseModal = () => {
+  const handleCloseModal = (clientId?: any) => {
     setIsModalOpen(!isModalOpen);
+    if (clientId) {
+      router.push(`/select?clientId=${clientId}`);
+    }
   };
 
   return (

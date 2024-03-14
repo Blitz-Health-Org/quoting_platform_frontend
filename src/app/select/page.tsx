@@ -87,6 +87,8 @@ export default function SelectQuotes() {
       } else {
         // Check if selected_quotes is not null
 
+        console.log("QUOTEDATA", data);
+
         setQuotes(data);
         setOriginalQuotes(data);
 
@@ -121,7 +123,6 @@ export default function SelectQuotes() {
   const [selectedQuotes, setSelectedQuotes] = useState<QuoteTypeWithCheckbox[]>(
     [],
   );
-  const [quoteProcessing, setQuoteProcessing] = useState<boolean>(false);
 
   const handleBusiness = () => {
     setSnackbar({
@@ -289,6 +290,7 @@ export default function SelectQuotes() {
         .eq("id", clientId)
         .single();
       if (clientError) throw clientError;
+      console.log("CLIENTDATA", clientData);
       fetchQuoteData(clientData);
       setSelectedClient(clientData);
 
@@ -413,6 +415,7 @@ export default function SelectQuotes() {
 
   useEffect(() => {
     const clientId = searchParams.get("clientId");
+    console.log("CLIENT ID", clientId);
 
     if (clientId) {
       fetchClients(parseInt(clientId));
@@ -459,10 +462,7 @@ export default function SelectQuotes() {
               <div className="flex items-center gap-2">
                 <button
                   onClick={(event) => {
-                    if (!quoteProcessing) {
-                      handleAddNewQuote(event);
-                    }
-                    setQuoteProcessing(true);
+                    handleAddNewQuote(event);
                   }}
                   className="text-sm md:text-base mr-1 outline outline-1 outline-gray-200 py-1 px-2 rounded-md flex items-center justify-center hover:bg-gray-100/80 cursor-pointer"
                 >

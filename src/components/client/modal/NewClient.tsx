@@ -161,7 +161,7 @@ export const NewClientModal = ({ onClose, setClients }: any) => {
 
       await fetchData();
 
-      onClose();
+      onClose(newClient.id);
 
       setSnackbar({
         open: true,

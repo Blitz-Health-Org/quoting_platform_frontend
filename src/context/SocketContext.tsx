@@ -6,6 +6,7 @@ import io, { Socket } from "socket.io-client";
 import { TaskContext } from "./TaskContext";
 import { useLocalStorage } from "../utils/useLocalStorage";
 import { UserContext } from "./UserContext";
+import { ToastSuccess } from "../components/ui/ToastLoading";
 
 export type SocketTasksContextProps = {
   socketTasks: [
@@ -61,11 +62,21 @@ export function SocketProvider({ children }: { children: React.ReactNode }) {
         if (taskInfo) {
           setTaskInfo([
             ...taskInfo!,
-            { taskId: data.task_id, metadata: data.metadata, type: data.type },
+            {
+              taskId: data.task_id,
+              metadata: data.metadata,
+              clientId: data.client_id,
+              type: data.type,
+            },
           ]);
         } else {
           setTaskInfo([
-            { taskId: data.task_id, metadata: data.metadata, type: data.type },
+            {
+              taskId: data.task_id,
+              metadata: data.metadata,
+              clientId: data.client_id,
+              type: data.type,
+            },
           ]);
         }
       }
@@ -90,7 +101,16 @@ export function SocketProvider({ children }: { children: React.ReactNode }) {
     socket.on(`task_finished/${userId}`, (data) => {
       console.log("Task Finished:");
       setTaskInfo(taskInfo?.filter((task) => task.taskId !== data.task_id));
-      if (data.type === "parse") toast.success(data.metadata.success_text);
+      if (data.type === "parse")
+        toast.success(
+          <ToastSuccess
+            taskId={data.task_id}
+            userId={data.user_id}
+            clientId={data.client_id}
+            metadata={data.metadata}
+          />,
+          { duration: 8000 },
+        );
     });
 
     return () => {

@@ -143,6 +143,7 @@ export default function QuotingPage() {
 
   useEffect(() => {
     const clientId = searchParams.get("clientId");
+
     if (clientId) {
       fetchClientAndQuotes(clientId);
     }

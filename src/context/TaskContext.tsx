@@ -16,6 +16,7 @@ interface PendingTask {
   taskId: string;
   metadata: any;
   type: string;
+  clientId: string;
 }
 
 export type TaskContextProps = {
@@ -80,9 +81,10 @@ export const TaskContextProvider = ({
       console.log("IN TASKINFO LOOP");
       for (const task of taskInfo) {
         if (task.type === "parse") {
-          console.log("FOUND PARSING TASK");
+          console.log("FOUND PARSING TASK", task);
           toast.loading(
             <ToastLoading
+              clientId={task.clientId}
               taskId={task.taskId}
               userId={userId}
               metadata={task.metadata}
