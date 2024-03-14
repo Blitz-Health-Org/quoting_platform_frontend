@@ -26,7 +26,7 @@ export const SelectedQuotesACAPage = ({
   return (
     <>
       {" "}
-      <div className="w-full overflow-x-auto">
+      <div className={`w-full overflow-x-auto ${quotes.length === 0 ? 'h-full' : 'h-fit'} pb-12`}>
         <div className="flex py-2 w-fit border-b">
           <div className="grid-cols-9 flex justify-left text-center w-fit gap-1 h-10 font-bold items-start text-wrap text-sm">
             {planAttributesMapping.map((attribute) => (
@@ -41,7 +41,7 @@ export const SelectedQuotesACAPage = ({
           </div>
         </div>
         {quotes.length === 0 ? (
-          <div className="flex w-full mt-16 mb-2 h-fit items-center justify-center flex-col">
+          <div className="flex w-full h-full mb-2 items-center justify-center flex-col">
             <p className="mb-2">No Quotes</p>
             <button
               onClick={handleAddNewQuote}
@@ -69,7 +69,7 @@ export const SelectedQuotesACAPage = ({
                   {planAttributesMapping.map((attribute: any) => (
                     <div
                       key={attribute.key}
-                      className="min-w-32 max-h-10 overflow-y-auto"
+                      className="min-w-32 max-h-10"
                       style={{ width: `${entryWidth}px` }}
                     >
                       {attribute.key === "carrier" ? (
@@ -89,10 +89,10 @@ export const SelectedQuotesACAPage = ({
                               className="mr-2 rounded-md"
                             />
                           )}
-                          <p>{(quote as any)[attribute.key] || "N/A"}</p>
+                          <p className="truncate">{(quote as any)[attribute.key] || "N/A"}</p>
                         </div>
                       ) : (
-                        <p>{(quote.data as any)?.[attribute.key] ?? "N/A"}</p>
+                        <p className="truncate">{(quote.data as any)?.[attribute.key] ?? "N/A"}</p>
                       )}
                     </div>
                   ))}

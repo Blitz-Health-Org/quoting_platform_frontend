@@ -75,6 +75,14 @@ const SelectSidebar = ({
     // updateConnectedPlans(updatedPlans);
   };
 
+  const handleNameChange = (planId: any, newName: any) => {
+    setPlans((currentPlans: any) =>
+      currentPlans.map((plan: any) => 
+        plan.id === planId ? { ...plan, name: newName } : plan
+      )
+    );
+  };  
+
   const handleToggleCurrentPlan = (planId: number) => {
     const plan = plans.find((plan) => plan.id === planId);
     console.log(plan?.isCurrentPlan);
@@ -290,10 +298,13 @@ const SelectSidebar = ({
             {plans.map((plan) => (
               <div key={plan.id} className="flex flex-col gap-1">
                 <hr className="mt-2"></hr>
-                <div className="flex items-center justify-between">
-                  <p className="font-semibold mt-1">
-                    {plan.isCurrentPlan ? "Current Plan" : plan.name}
-                  </p>
+                <div className="flex items-center justify-between ">
+                  <input
+                    type="text"
+                    value={plan.isCurrentPlan ? "Current Plan" : plan.name}
+                    onChange={(e) => handleNameChange(plan.id, e.target.value)}
+                    className="font-semibold mt-1 px-0.5 py-1 max-w-36"
+                  />
                   <div className="flex gap-1 items-center">
                     <div
                       onClick={() => {
