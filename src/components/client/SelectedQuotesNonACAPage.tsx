@@ -26,7 +26,9 @@ export const SelectedQuotesNonACAPage = ({
 }: SelectedQuotesNonACAPageProps) => {
   return (
     <>
-      <div className="w-full overflow-x-auto">
+      <div
+        className={`w-full overflow-x-auto ${quotes.length === 0 ? "h-full" : "h-fit"} pb-12`}
+      >
         <div className="flex py-2 w-fit border-b">
           <div className="grid-cols-9 flex justify-left text-center w-fit gap-1 h-10 font-bold items-start text-wrap text-sm">
             {planAttributesMapping.map((attribute) => (
@@ -41,7 +43,7 @@ export const SelectedQuotesNonACAPage = ({
           </div>
         </div>
         {quotes.length === 0 ? (
-          <div className="flex w-full mt-16 mb-2 h-fit items-center justify-center flex-col">
+          <div className="flex w-full mb-2 h-full items-center justify-center flex-col">
             <p className="mb-2">No Quotes</p>
             <button
               onClick={handleAddNewQuote}
