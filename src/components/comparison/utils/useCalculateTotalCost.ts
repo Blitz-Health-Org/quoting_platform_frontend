@@ -8,6 +8,9 @@ export function useCalculateTotalCost(
   rates: any,
   sliderContribution: any,
 ) {
+  const { client } = useContext(ClientContext);
+
+  if (!quoteData.total_employer_cost) return "N/A";
   console.log(
     "calctotal cost",
     sliderContribution,
@@ -22,7 +25,6 @@ export function useCalculateTotalCost(
       .toFixed(2)
       .toString(),
   );
-  const { client } = useContext(ClientContext);
 
   if (
     quoteData?.metadata?.total_employer_cost_is_precalculated &&
