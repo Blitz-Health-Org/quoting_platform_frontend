@@ -375,6 +375,7 @@ export default function QuotingPage() {
                       fieldObject={quoteSchema}
                       classes={classes}
                       standardContribution={standardContribution}
+                      setStandardContribution={setStandardContribution}
                     />
                   ))
                 ) : (

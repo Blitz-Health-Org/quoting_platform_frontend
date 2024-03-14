@@ -12,6 +12,10 @@ import { QuoteColumnDisplay } from "./QuoteColumnDisplay";
 import Image from "next/image";
 import { useCalculateTotalCost } from "./utils/useCalculateTotalCost";
 import { MdOutlineArrowDropDown, MdOutlineArrowRight } from "react-icons/md";
+import { max } from "lodash";
+import { QuoteCardContinuousSlider } from "./QuoteCardContinuousSlider";
+import { useState } from "react";
+import { ContinuousSlider } from "./ContributionSlider";
 
 // type QuoteCardProps = {
 //   quote: QuoteType;
@@ -26,6 +30,7 @@ export type QuoteCardProps = {
   plan: any;
   classes: any;
   standardContribution: any;
+  isContributionSettingsExpanded: any;
 };
 
 export const QuoteCard = ({
@@ -34,12 +39,13 @@ export const QuoteCard = ({
   plan,
   classes,
   standardContribution,
+  isContributionSettingsExpanded,
 }: QuoteCardProps) => {
-  const sliderContribution =
-    standardContribution["data"]["employee"]["percent"];
+  const [quoteSpecificContribution, setQuoteSpecificContribution] =
+    useState<any>(standardContribution);
   const calculatedTotalCost = useCalculateTotalCost(
     quote.data,
-    standardContribution,
+    quoteSpecificContribution,
     classes,
     {
       employee: (quote.data as any)?.["employee_rate"],
@@ -47,7 +53,6 @@ export const QuoteCard = ({
       family: (quote.data as any)?.["family_rate"],
       spouse: (quote.data as any)?.["spouse_rate"],
     },
-    sliderContribution,
   );
 
   return (
@@ -57,291 +62,88 @@ export const QuoteCard = ({
       isQuoteCard
       initialExpanded
       calculatedTotalCost={calculatedTotalCost}
-      // headerComponent={
-      //   <div className="flex w-full gap-3 h-28 justify-center items-center px-2">
-      //     <div className="max-w-1/2 truncate">
-      //       <h1 className="font-bold text-lg text-wrap max-w-">{plan.name}</h1>
-      //     </div>
-      //     <div className="border-r border-1.5 h-10 border-gray-600"></div>{" "}
-      //     {/* Vertical line break */}
-      //     <div className="flex max-w-1/2 truncate">
-      //       <div className="flex items-center justify-center">
-      //         {plan.selectedQuotes[0].logo_url && (
-      //           <Image
-      //             src={plan.selectedQuotes[0].logo_url}
-      //             alt={`Logo for ${plan.selectedQuotes[0].carrier}`}
-      //             width={30}
-      //             height={30}
-      //             className="mr-2 rounded-md"
-      //           />
-      //         )}
-      //       </div>
-      //       <div className="flex flex-col items-start justify-center ml-1">
-      //         <h1 className="font-bold text-xl">
-      //           {plan.selectedQuotes[0].carrier}
-      //         </h1>
-      //         <p className="text-sm">{"aetna.com"}</p>
-      //       </div>
-      //     </div>
-      //   </div>
-      // }
+      headerComponent={
+        isContributionSettingsExpanded && (
+          <div className="flex w-full justify-center items-center p-5">
+            <div className="bg-slate-100/80 rounded-sm shadow w-fit p-2">
+              <div className="grid grid-cols-[1fr_1fr_1.5fr_1fr] mb-4 text-center items-center gap-2">
+                <div className="font-bold text-sm w-full">Tier</div>
+                <div className="font-bold text-sm w-full">Lives</div>
+                <div className="font-bold text-sm w-full overflow-x-auto">
+                  Contribution
+                </div>
+                <div className="font-bold text-sm w-full">Rates</div>
+
+                {["Employee", "Family", "Child", "Spouse"].map((tier) => (
+                  <>
+                    <div className="flex justify-center">
+                      <div className="text-xs">{tier}</div>
+                    </div>
+                    <div className="flex justify-center">
+                      <input
+                        className="w-12 mx-2 border border-slate-300 rounded-lg px-1 text-xs h-5 justify-center"
+                        value={
+                          quoteSpecificContribution.data[tier.toLowerCase()]
+                            .employees
+                        }
+                        onChange={(e) =>
+                          setQuoteSpecificContribution((prev: any) => ({
+                            ...prev,
+                            data: {
+                              ...prev.data,
+                              [tier.toLowerCase()]: {
+                                ...prev.data.employee,
+                                employees:
+                                  e.target.value === ""
+                                    ? 0
+                                    : parseInt(e.target.value),
+                              },
+                            },
+                          }))
+                        }
+                      />
+                    </div>
+                    <div className="flex w-40 justify-center">
+                      <QuoteCardContinuousSlider
+                        setContribution={setQuoteSpecificContribution}
+                        className="mx-2 rounded-lg px-1 text-xs h-5"
+                        hideLabels
+                        tier={tier.toLowerCase()}
+                      />
+                    </div>
+                    <div className="flex justify-center">
+                      {" "}
+                      <input
+                        className={`w-20 mx-2 border border-slate-300 rounded-lg px-1 text-xs h-5 justify-center ${quote.data?.[`${tier.toLowerCase()}_rate`] ? "bg-gray-200 text-gray-500 outline-none" : "border-slate-300"}`}
+                        value={
+                          quote.data?.[`${tier.toLowerCase()}_rate`] !==
+                            undefined &&
+                          quote.data?.[`${tier.toLowerCase()}_rate`] !== null
+                            ? quote.data?.[`${tier.toLowerCase()}_rate`]
+                            : "N/A"
+                        }
+                        readOnly={quote.data?.[`${tier.toLowerCase()}_rate`]}
+                        onChange={(e) =>
+                          setQuoteSpecificContribution((prev: any) => ({
+                            ...prev,
+                            data: {
+                              ...prev.data,
+                              [tier.toLowerCase()]: {
+                                ...prev.data.percent,
+                                employees: parseInt(e.target.value),
+                              },
+                            },
+                          }))
+                        }
+                      />
+                    </div>
+                  </>
+                ))}
+              </div>
+            </div>
+          </div>
+        )
+      }
     />
   );
 };
-
-// //DEPRECATED
-// export default function QuoteCard({
-//   quote,
-//   fieldObject,
-//   classes,
-//   standardContribution,
-// }: QuoteCardProps) {
-//   const [quoteData, setQuoteData] = useState<any>(quote);
-
-//   const [textAreaSelected, setTextAreaSelected] = useState<boolean>(false);
-//   const ref1 = useRef();
-//   const ref2 = useRef();
-//   const ref3 = useRef();
-
-//   const totalValue = calculateTotalCost(standardContribution, classes, {
-//     employee: (quote.data as any)?.["employee_only_rate"],
-//     child: (quote.data as any)?.["employee_child_rate"],
-//     family: (quote.data as any)?.["employee_family_rate"],
-//     spouse: (quote.data as any)?.["employee_spouse_rate"],
-//   });
-
-//   function valueOrDefault(val: any, def: string = "N/A") {
-//     return val ?? def;
-//   }
-
-//   function handleQuoteChange(path: string) {
-//     return (event: React.ChangeEvent<HTMLTextAreaElement>) => {
-//       const newValue = event.target.value;
-
-//       // Split the path into parts if it's nested, e.g., 'oop.name' becomes ['oop', 'name']
-//       const pathParts = path.split(".");
-
-//       // Function to recursively update the nested object
-//       const updateNestedObject = (obj: any, pathParts: any, value: any) => {
-//         // Clone the object at the current level
-//         let updated = { ...obj };
-
-//         // If we're at the last part of the path, update the value
-//         if (pathParts.length === 1) {
-//           updated[pathParts[0]] = value;
-//         } else {
-//           // If not, recursively update the next level
-//           const [currentPart, ...remainingParts] = pathParts;
-//           updated[currentPart] = updateNestedObject(
-//             obj[currentPart] || {},
-//             remainingParts,
-//             value,
-//           );
-//         }
-
-//         return updated;
-//       };
-
-//       // Update the quoteData using the recursive function
-//       const updatedQuote = updateNestedObject(quoteData, pathParts, newValue);
-
-//       // Update the state with the new quote
-//       setQuoteData(updatedQuote);
-//     };
-//   }
-
-//   useListenClickOutside({
-//     refs: [ref1 as any, ref2 as any, ref3 as any],
-//     callback: async (event) => {
-//       // SEND DATA
-//       try {
-//         const { data, error } = await supabase
-//           .from("quotes") // Replace with your actual table name
-//           .upsert(quoteData);
-
-//         if (error) {
-//           console.error("Error inserting data:", error);
-//         } else {
-//           console.log("Data inserted successfully:", data);
-//         }
-//       } catch (error) {
-//         console.error("Error connecting to Supabase:", error);
-//       }
-//       setTextAreaSelected(false);
-//     },
-//     enabled: textAreaSelected,
-//   });
-
-//   return (
-//     // <RecursiveColumnDisplay quoteData={quote.data} field={fieldObject} />
-//     //   <div className="w-full">
-//     //     <hr className="w-full border-t-1 border-gray-300"></hr>
-
-//     //     <div className="flex flex-col items-center bg-violet-100/60">
-//     //       {fieldObject
-//     //         .filter(
-//     //           (field) => field.field !== "name" && field.field !== "website",
-//     //         )
-//     //         .map((field) => {
-//     //           return (
-//     //             <>
-//     //               <textarea
-//     //                 ref={ref1 as any}
-//     //                 onClick={() => setTextAreaSelected(true)}
-//     //                 onChange={handleQuoteChange(field.field)}
-//     //                 value={valueOrDefault((quoteData as any)[field.field])}
-//     //                 className="text-center resize-none text-sm content-center h-7 w-full bg-transparent focus:outline-0 focus:border focus:border-1 focus:border-gray-200 cursor-pointer focus:cursor-auto rounded-md p-1"
-//     //               />
-//     //               <hr className="w-full border-t-1 border-gray-300"></hr>
-//     //             </>
-//     //           );
-//     //         })}
-
-//     //       {quoteData?.plan_type ? (
-//     //         <>
-//     //           <div className="flex w-full">
-//     //             <textarea
-//     //               disabled
-//     //               value={valueOrDefault(quoteData.plan_type)}
-//     //               className="text-center font-semibold resize-none text-sm content-center h-7 w-1/2 bg-transparent focus:outline-0 focus:border focus:border-1 focus:border-gray-200 cursor-pointer focus:cursor-auto p-1"
-//     //             />
-//     //             <textarea
-//     //               disabled
-//     //               defaultValue={"Out-of-Network"}
-//     //               className="text-center font-semibold resize-none text-sm content-center h-7 w-1/2 bg-transparent focus:outline-0 focus:border focus:border-1 focus:border-gray-200 cursor-pointer focus:cursor-auto p-1"
-//     //             />
-//     //           </div>
-//     //           <hr className="w-full border-t-1 border-gray-500"></hr>
-
-//     //           {objectVisibleQuoteFields.map((objectField) => {
-//     //             return (
-//     //               <>
-//     //                 <div className="flex w-full">
-//     //                   <textarea
-//     //                     disabled
-//     //                     className="text-center resize-none text-sm content-center h-7 w-1/2 bg-transparent border-r focus:outline-0 focus:border focus:border-1 focus:border-gray-200 focus:cursor-auto p-1"
-//     //                   />
-//     //                   <textarea
-//     //                     disabled
-//     //                     className="text-center resize-none text-sm content-center h-7 w-1/2 bg-transparent focus:outline-0 focus:border focus:border-1 focus:border-gray-200 focus:cursor-auto p-1"
-//     //                   />
-//     //                 </div>
-
-//     //                 {Object.entries(
-//     //                   JSON.parse(objectField.json_structure as string),
-//     //                 ).map(([subFieldKey, value]) => {
-//     //                   return (
-//     //                     <>
-//     //                       <hr className="w-full border-t-1 border-gray-300"></hr>
-//     //                       <div className="flex w-full bg-white">
-//     //                         <textarea
-//     //                           ref={ref3 as any}
-//     //                           onClick={() => setTextAreaSelected(true)}
-//     //                           onChange={handleQuoteChange(
-//     //                             `${objectField.field}.in.${subFieldKey}`,
-//     //                           )}
-//     //                           value={valueOrDefault(
-//     //                             (quoteData as any)[objectField.field]?.in?.[
-//     //                               subFieldKey
-//     //                             ],
-//     //                           )}
-//     //                           className="text-center resize-none text-sm content-center h-7 w-1/2 border-r bg-transparent focus:outline-0 focus:border focus:border-1 focus:border-gray-200 cursor-pointer focus:cursor-auto p-1"
-//     //                         />
-//     //                         <textarea
-//     //                           ref={ref2 as any}
-//     //                           onClick={() => setTextAreaSelected(true)}
-//     //                           onChange={handleQuoteChange(
-//     //                             `${objectField.field}.oon.${subFieldKey}`,
-//     //                           )}
-//     //                           value={valueOrDefault(
-//     //                             (quoteData as any)[objectField.field]?.oon?.[
-//     //                               subFieldKey
-//     //                             ],
-//     //                           )}
-//     //                           className="text-center resize-none text-sm content-center h-7 w-1/2 bg-transparent focus:outline-0 focus:border focus:border-1 focus:border-gray-200 cursor-pointer focus:cursor-auto p-1"
-//     //                         />
-//     //                       </div>
-//     //                     </>
-//     //                   );
-//     //                 })}
-//     //                 <hr className="w-full border-t-1 border-gray-500"></hr>
-//     //               </>
-//     //             );
-//     //           })}
-//     //         </>
-//     //       ) : (
-//     //         <>
-//     //           <div className="flex w-full">
-//     //             <textarea
-//     //               disabled
-//     //               // value={valueOrDefault(quoteData.plan_type)}
-//     //               className="text-center font-semibold resize-none text-sm content-center h-7 w-1/2 bg-transparent focus:outline-0 focus:border focus:border-1 focus:border-gray-200 cursor-pointer focus:cursor-auto p-1"
-//     //             />
-//     //           </div>
-//     //           <hr className="w-full border-t-1 border-gray-500"></hr>
-
-//     //           {objectVisibleQuoteFields.map((objectField) => {
-//     //             return (
-//     //               <>
-//     //                 <div className="flex w-full">
-//     //                   <textarea
-//     //                     disabled
-//     //                     className="text-center resize-none text-sm content-center h-7 w-full bg-transparent border-r focus:outline-0 focus:border focus:border-1 focus:border-gray-200 focus:cursor-auto p-1"
-//     //                   />
-//     //                 </div>
-
-//     //                 {Object.entries(
-//     //                   JSON.parse(objectField.json_structure as string),
-//     //                 ).map(([subFieldKey, value]) => {
-//     //                   // console.log(
-//     //                   //   "check this stuff",
-//     //                   //   quoteData,
-//     //                   //   objectField,
-//     //                   //   subFieldKey,
-//     //                   // );
-//     //                   return (
-//     //                     <>
-//     //                       <hr className="w-full border-t-1 border-gray-300"></hr>
-//     //                       <div className="flex w-full bg-white">
-//     //                         <textarea
-//     //                           ref={ref3 as any}
-//     //                           onClick={() => setTextAreaSelected(true)}
-//     //                           onChange={handleQuoteChange(
-//     //                             `${objectField.field}.${subFieldKey}`,
-//     //                           )}
-//     //                           value={valueOrDefault(
-//     //                             (quoteData as any)[objectField.field]?.[
-//     //                               subFieldKey
-//     //                             ],
-//     //                           )}
-//     //                           className="text-center resize-none text-sm content-center h-7 w-full border-r bg-transparent focus:outline-0 focus:border focus:border-1 focus:border-gray-200 cursor-pointer focus:cursor-auto p-1"
-//     //                         />
-//     //                       </div>
-//     //                     </>
-//     //                   );
-//     //                 })}
-//     //                 <hr className="w-full border-t-1 border-gray-500"></hr>
-//     //               </>
-//     //             );
-//     //           })}
-//     //         </>
-//     //       )}
-
-//     //       <div className="flex w-full">
-//     //         <textarea
-//     //           disabled
-//     //           className="font-semibold text-center resize-none text-sm content-center h-7 w-full border-r bg-transparent focus:outline-0 focus:border focus:border-1 focus:border-gray-200 cursor-pointer focus:cursor-auto p-1"
-//     //         />
-//     //       </div>
-//     //       <hr className="w-full border-t-1 border-gray-300"></hr>
-//     //       <div className="flex w-full bg-white">
-//     //         <textarea
-//     //           value={totalValue}
-//     //           className="text-center resize-none text-sm content-center h-7 w-full border-r bg-transparent focus:outline-0 focus:border focus:border-1 focus:border-gray-200 cursor-pointer focus:cursor-auto p-1"
-//     //         />
-//     //       </div>
-//     //     </div>
-//     //   </div>
-//     <></>
-//   );
-// }
