@@ -472,7 +472,7 @@ export default function SelectQuotes() {
               </div>
             </div>
 
-            <div className="rounded-md w-full flex-col overflow-x-hidden h-full pb-12 overflow-y-scroll bg-white outline outline-1 outline-gray-200">
+            <div className="rounded-md w-full flex-col overflow-x-hidden h-full overflow-y-scroll bg-white outline outline-1 outline-gray-200">
               <div className="py-2 px-4 h-full">
                 <SelectQuotesHeader
                   search={search}

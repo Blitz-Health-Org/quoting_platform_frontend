@@ -48,7 +48,7 @@ export const ClientCard = ({
   }
 
   function handbook() {
-    router.push(`/handbook?clientId=${client.id}`);
+    // router.push(`/handbook?clientId=${client.id}`);
     return;
   }
 
