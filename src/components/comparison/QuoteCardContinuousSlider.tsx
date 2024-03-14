@@ -5,15 +5,17 @@ import clsx from "clsx"; // Import clsx
 import { twMerge } from "tailwind-merge"; // Import tailwindMerge
 
 type ContinuousSliderProps = {
-  setStandardContribution: Dispatch<SetStateAction<any>>;
+  setContribution: Dispatch<SetStateAction<any>>;
   className?: string;
   hideLabels?: boolean;
+  tier: string;
 };
 
-export const ContinuousSlider = ({
-  setStandardContribution,
+export const QuoteCardContinuousSlider = ({
+  setContribution,
   className,
   hideLabels,
+  tier,
 }: ContinuousSliderProps) => {
   const [value, setValue] = useState<number>(50);
 
@@ -22,13 +24,11 @@ export const ContinuousSlider = ({
       setValue(newValue); // Update local state to reflect the slider's new value
     }
 
-    setStandardContribution((prevState: any) => ({
+    setContribution((prevState: any) => ({
       ...prevState,
       data: {
-        employee: { ...prevState.data.employee, percent: newValue },
-        family: { ...prevState.data.family, percent: newValue },
-        child: { ...prevState.data.child, percent: newValue },
-        spouse: { ...prevState.data.spouse, percent: newValue },
+        ...prevState.data,
+        [tier]: { ...prevState.data[tier], percent: newValue },
       },
     }));
   };

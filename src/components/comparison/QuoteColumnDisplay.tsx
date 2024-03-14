@@ -24,7 +24,7 @@ export const QuoteColumnDisplay = ({
   return (
     <>
       <div
-        className={`min-w-64 bg-white flex-grow flex flex-col h-fit border border-r-0 border-gray-300 text-center overflow-y-auto ${className || ""}`}
+        className={`${isQuoteCard ? "min-w-80" : "min-w-64"} bg-white flex-grow flex flex-col h-fit border border-r-0 border-gray-300 text-center overflow-y-auto ${className || ""}`}
       >
         {headerComponent ? (
           <>{headerComponent}</>
