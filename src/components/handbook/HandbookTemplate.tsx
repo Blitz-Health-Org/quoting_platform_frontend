@@ -328,51 +328,55 @@ export default function HandbookTemplate(props: HandbookTemplateProps) {
 
         <Page size="A4" style={styles.copiedPage}>
           <View>
-              <Text
-                style={{
-                  position: "absolute",
-                  top: "50",
-                  left: "50%",
-                  transform: "translate(-50%, -50%)",
-                  color: "black",
-                  fontSize: 10,
-                }}>
-                {miscInfo?.agent_name}
-              </Text>
-              <Text
-                style={{
-                  position: "absolute",
-                  top: "50%",
-                  left: "50%",
-                  transform: "translate(-50%, -50%)",
-                  color: "black",
-                  fontSize: 10,
-                }}>
-                {miscInfo?.effective_date}
-              </Text>
-              <Text
-                style={{
-                  position: "absolute",
-                  top: "70%",
-                  left: "50%",
-                  transform: "translate(-50%, -50%)",
-                  color: "black",
-                  fontSize: 10,
-                }}>
-                {miscInfo?.hr_consultant_name}
-              </Text>
-              <Text
-                style={{
-                  position: "absolute",
-                  top: "80%",
-                  left: "50%",
-                  transform: "translate(-50%, -50%)",
-                  color: "black",
-                  fontSize: 10,
-                }}>
-                {miscInfo?.client_name}
-              </Text>
-              <Image src="0.jpg" style={styles.firstImage} />
+            <Text
+              style={{
+                position: "absolute",
+                top: "50",
+                left: "50%",
+                transform: "translate(-50%, -50%)",
+                color: "black",
+                fontSize: 10,
+              }}
+            >
+              {miscInfo?.agent_name}
+            </Text>
+            <Text
+              style={{
+                position: "absolute",
+                top: "50%",
+                left: "50%",
+                transform: "translate(-50%, -50%)",
+                color: "black",
+                fontSize: 10,
+              }}
+            >
+              {miscInfo?.effective_date}
+            </Text>
+            <Text
+              style={{
+                position: "absolute",
+                top: "70%",
+                left: "50%",
+                transform: "translate(-50%, -50%)",
+                color: "black",
+                fontSize: 10,
+              }}
+            >
+              {miscInfo?.hr_consultant_name}
+            </Text>
+            <Text
+              style={{
+                position: "absolute",
+                top: "80%",
+                left: "50%",
+                transform: "translate(-50%, -50%)",
+                color: "black",
+                fontSize: 10,
+              }}
+            >
+              {miscInfo?.client_name}
+            </Text>
+            <Image src="0.jpg" style={styles.firstImage} />
           </View>
         </Page>
 
