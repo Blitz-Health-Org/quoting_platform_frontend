@@ -13,15 +13,16 @@ import { IoChevronDown } from "react-icons/io5";
 import { useRouter } from "next/navigation";
 import { SnackBarContext } from "@/src/context/SnackBarContext";
 import { ContinuousSlider } from "./ContributionSlider";
+import { MdOutlineCompareArrows } from "react-icons/md";
 
 type SubheaderProps = {
   isPaneOpen: boolean;
   onPaneToggle: (newState: boolean) => void;
   copyUrlToClipboard: any;
   handleDownloadCSV: any;
-  plansLength: number;
   client: any;
   setStandardContribution: any;
+  plans: any;
 };
 
 export const Subheader: React.FC<SubheaderProps> = ({
@@ -29,9 +30,8 @@ export const Subheader: React.FC<SubheaderProps> = ({
   onPaneToggle,
   copyUrlToClipboard,
   handleDownloadCSV,
-  plansLength,
   client,
-  setStandardContribution,
+  plans,
 }) => {
   const { setSnackbar } = useContext(SnackBarContext);
 
@@ -53,6 +53,9 @@ export const Subheader: React.FC<SubheaderProps> = ({
     window.location.href = `/select?clientId=${client.id}`;
     return;
   };
+
+  const handleCompareCostsClick = () =>
+    router.push(`/cost/clientId=${client.id}`);
 
   return (
     <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 h-30 mb-2 mt-12">
@@ -115,7 +118,7 @@ export const Subheader: React.FC<SubheaderProps> = ({
       </div>
 
       <div className="col-span-1 text-center flex items-center justify-center gap-1">
-        <p className="truncate">Showing {plansLength} Plans </p>
+        <p className="truncate">Showing {plans ? plans.length : 0} Plans </p>
         <p className="cursor-pointer truncate" onClick={handleBusiness2}>
           | Edit Plans
         </p>
@@ -137,12 +140,19 @@ export const Subheader: React.FC<SubheaderProps> = ({
           <IoMdDownload />
           <p className="truncate">Download CSV</p>
         </button>
-        <button
+        {/* <button
           onClick={() => onPaneToggle(!isPaneOpen)}
           className="flex items-center gap-2 cursor-pointer outline outline-1 outline-neutral-600 rounded-sm bg-neutral-700/80 text-sm text-gray-100 px-2 py-1"
         >
           <IoIosSettings />
           <p>Settings</p>
+        </button> */}
+        <button
+          onClick={handleCompareCostsClick}
+          className="flex items-center gap-2 cursor-pointer outline outline-1 outline-neutral-600 mr-2 rounded-sm bg-neutral-700/80 text-sm text-gray-100 px-2 py-1"
+        >
+          <MdOutlineCompareArrows />
+          <p className="truncate">Compare Costs</p>
         </button>
       </div>
 
@@ -153,10 +163,10 @@ export const Subheader: React.FC<SubheaderProps> = ({
           fetchClients={fetchClients}
         />
       )} */}
-      <div></div>
+      {/* <div></div>
       <div className="flex my-2 justify-center">
         <ContinuousSlider setStandardContribution={setStandardContribution} />
-      </div>
+      </div> */}
     </div>
   );
 };

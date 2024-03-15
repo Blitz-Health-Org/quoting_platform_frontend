@@ -57,7 +57,13 @@ export function SocketProvider({ children }: { children: React.ReactNode }) {
 
     // Listen for 'task_status' events
     socket.on(`task_status/${userId}`, (data) => {
-      console.log("Task Status:", data);
+      // console.log("Task Status:", data);
+      // if (data.status == "updated") {
+      //   if (taskInfo) {
+      //     taskInfo.find(task => task)
+      //   }
+      // }
+
       if (data.status == "started") {
         if (taskInfo) {
           setTaskInfo([

@@ -20,7 +20,7 @@ export const HeaderCard = ({ fieldObject }: HeaderCardProps) => {
       className="w-fit max-w-44 pt-28 rounded-t-md"
       headerComponent={
         <>
-          <div
+          {/* <div
             className="border invisible border-slate-300 rounded-lg hover:bg-slate-300 bg-slate-100 mb-2"
             onClick={() =>
               setIsContributionSettingsExpanded(!isContributionSettingsExpanded)
@@ -31,7 +31,7 @@ export const HeaderCard = ({ fieldObject }: HeaderCardProps) => {
                 ? "Collapse Contribution Setttings"
                 : "Expand Contribution Settings"}
             </p>
-          </div>
+          </div> */}
           {isContributionSettingsExpanded && (
             <div className="flex invisible w-full justify-center items-center p-5">
               <div className="bg-slate-100/80 rounded-sm shadow w-fit p-2">

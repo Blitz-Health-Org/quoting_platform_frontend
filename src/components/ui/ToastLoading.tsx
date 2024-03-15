@@ -1,6 +1,6 @@
 import { UserContext } from "@/src/context/UserContext";
 import { useRouter } from "next/navigation";
-import { useContext } from "react";
+import { useContext, useEffect, useState } from "react";
 
 async function cancelProcess(userId: string | undefined, taskId: string) {
   // Cancel the process
@@ -26,12 +26,32 @@ export const ToastLoading = ({
   clientId: string;
   metadata: any;
 }) => {
-  const router = useRouter();
-  console.log(metadata);
-  // Small spinner on the left, loading text in the middle, then a stop button on the right
+  // State to keep track of the remaining time in seconds
+  const [remainingTime, setRemainingTime] = useState<number>(120); // 2 minutes in seconds
+
+  useEffect(() => {
+    // Timer to decrement the remaining time every second
+    const timer = setInterval(() => {
+      setRemainingTime((prevTime) => prevTime - 1);
+    }, 1000);
+
+    // Cleanup the interval on component unmount
+    return () => clearInterval(timer);
+  }, []);
+
+  // Format the remaining time in minutes and seconds
+  const formatTime = (totalSeconds: number) => {
+    const minutes = Math.floor(totalSeconds / 60);
+    const seconds = totalSeconds % 60;
+    return `${minutes}:${seconds.toString().padStart(2, "0")}`;
+  };
+
   return (
     <div className="flex items-center justify-center cursor-pointer">
-      <p className="mx-2">{metadata.loading_text}</p>
+      <p className="mx-2">
+        {metadata.loading_text}
+        {/* Estimated time remaining until completely finished: {formatTime(remainingTime)} */}
+      </p>
       <button
         className="text-red-500"
         onClick={(e) => {

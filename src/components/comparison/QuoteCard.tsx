@@ -83,7 +83,7 @@ export const QuoteCard = ({
                       <input
                         className="w-12 mx-2 border border-slate-300 rounded-lg px-1 text-xs h-5 justify-center"
                         value={
-                          quoteSpecificContribution.data[tier.toLowerCase()]
+                          standardContribution.data[tier.toLowerCase()]
                             .employees
                         }
                         onChange={(e) =>

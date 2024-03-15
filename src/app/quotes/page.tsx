@@ -244,6 +244,7 @@ export default function QuotingPage() {
 
       setLoading(false);
     } catch (error) {
+      setLoading(false);
       console.error("Error fetching data:", error);
       // Optionally handle errors, such as setting an error state or showing a notification
     }
@@ -359,7 +360,7 @@ export default function QuotingPage() {
               onPaneToggle={handlePaneToggle}
               copyUrlToClipboard={copyUrlToClipboard}
               handleDownloadCSV={handleDownloadCSV}
-              plansLength={plans?.length || 0}
+              plans={plans}
             />
 
             <div className="p-0.5 flex-grow w-full">
@@ -375,7 +376,6 @@ export default function QuotingPage() {
                       fieldObject={quoteSchema}
                       classes={classes}
                       standardContribution={standardContribution}
-                      setStandardContribution={setStandardContribution}
                     />
                   ))
                 ) : (

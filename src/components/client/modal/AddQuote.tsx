@@ -35,9 +35,12 @@ export const AddQuote = ({
 
   const router = useRouter();
   const { setSnackbar } = useContext(SnackBarContext);
-  const [files, setFiles] = useState<File[]>([]);
+  const [file, setFile] = useState<File | null>(null);
   const [selectedPlan, setSelectedPlan] = useState<string>("bcbs_tx_aca");
   const [isProcessing, setIsProcessing] = useState<boolean>(false);
+  const [customRange, setCustomRange] = useState("");
+  const [isRangeValid, setIsRangeValid] = useState(true);
+  const [rangeSelection, setRangeSelection] = useState("all"); // Dropdown selection state
 
   const {
     userId: [userId],
@@ -46,11 +49,43 @@ export const AddQuote = ({
   console.log(client);
 
   const onDrop = (acceptedFiles: File[]) => {
-    setFiles(acceptedFiles);
+    setFile(acceptedFiles[0]);
   };
 
-  const handleUpload = async () => {
-    if (files.length === 0) {
+  function validateCustomRange(range: string) {
+    const ranges = range
+      .split(",")
+      .map((part) => {
+        const numbers = part.trim().split("-").map(Number);
+        // If it's a single number, duplicate it to make a range [number, number]
+        if (numbers.length === 1 && !isNaN(numbers[0])) {
+          return [numbers[0], numbers[0]];
+        }
+        // If it's a proper range and both numbers are valid, return the range
+        else if (
+          numbers.length === 2 &&
+          !isNaN(numbers[0]) &&
+          !isNaN(numbers[1])
+        ) {
+          return numbers;
+        }
+        // If neither, return null to indicate invalid input
+        return null;
+      })
+      .filter(Boolean); // Filter out any null entries due to invalid input
+
+    // Check if any parsing resulted in null, indicating invalid format
+    if (ranges.length === 0 || ranges.includes(null)) {
+      setIsRangeValid(false);
+      return [];
+    } else {
+      setIsRangeValid(true);
+      return ranges; // Returns a list of tuples like [[1, 5], [8, 8], [11, 13]]
+    }
+  }
+
+  const handleUpload = async (ranges?: number[][]) => {
+    if (!file) {
       setSnackbar({
         open: true,
         message: "Please upload a file",
@@ -61,34 +96,33 @@ export const AddQuote = ({
     const errFiles = [] as string[];
     const successfulFileUrls: string[] = [];
     const fileId = uuid();
-    for (const file of files) {
-      try {
-        console.log("selectedPlan", selectedPlan);
-        const fileName = `${selectedPlan}/${fileId}/whole`;
-        await supabase.storage.from("images").upload(fileName, file);
+    try {
+      console.log("selectedPlan", selectedPlan);
+      const fileName = `${selectedPlan}/${fileId}/whole`;
+      await supabase.storage.from("images").upload(fileName, file);
 
-        const { data } = supabase.storage.from("images").getPublicUrl(fileName);
+      const { data } = supabase.storage.from("images").getPublicUrl(fileName);
 
-        if (!data?.publicUrl) {
-          throw new Error("No url found for file");
-        }
-
-        // const fileUrl = data.publicUrl;
-
-        // await supabase
-        //   .from("quotes") // Replace with your actual Supabase table name
-        //   .upsert({
-        //     client_id: client.id,
-        //     file_url: fileUrl,
-        //     file_name: file.name,
-        //   });
-
-        // Send the fileName instead of fileUrl to backend so we can parse out the carrier name
-        successfulFileUrls.push(fileName);
-      } catch {
-        errFiles.push(file.name);
+      if (!data?.publicUrl) {
+        throw new Error("No url found for file");
       }
+
+      // const fileUrl = data.publicUrl;
+
+      // await supabase
+      //   .from("quotes") // Replace with your actual Supabase table name
+      //   .upsert({
+      //     client_id: client.id,
+      //     file_url: fileUrl,
+      //     file_name: file.name,
+      //   });
+
+      // Send the fileName instead of fileUrl to backend so we can parse out the carrier name
+      successfulFileUrls.push(fileName);
+    } catch {
+      errFiles.push(file.name);
     }
+
     if (errFiles.length) {
       setSnackbar({
         open: true,
@@ -105,6 +139,7 @@ export const AddQuote = ({
     }
 
     try {
+      console.log("RUNNING ONCE");
       const response = await fetch(
         `${process.env.NEXT_PUBLIC_BACKEND_URL}/parse`,
         {
@@ -116,6 +151,7 @@ export const AddQuote = ({
             successfulFileUrls,
             client: client,
             userId: userId,
+            ranges: ranges,
           }),
         },
       );
@@ -259,7 +295,7 @@ export const AddQuote = ({
 
   const { getRootProps, getInputProps, isDragActive } = useDropzone({
     onDrop,
-    multiple: true, // Allow multiple file uploads
+    multiple: false, // Allow multiple file uploads
     accept: {
       "application/pdf": [".pdf"],
     },
@@ -315,8 +351,13 @@ export const AddQuote = ({
             onSubmit={(e) => {
               e.preventDefault(); // Prevent the default form submission
               setIsProcessing(true);
-              if (!isProcessing) {
-                handleUpload(); // Call your existing upload function
+              if (rangeSelection === "all") {
+                handleUpload();
+              } else {
+                const ranges = validateCustomRange(customRange);
+                if (!isProcessing && ranges.length) {
+                  handleUpload(ranges as number[][]); // Proceed with uploading
+                }
               }
             }}
           >
@@ -337,16 +378,47 @@ export const AddQuote = ({
                     ? "Drop the files here"
                     : "Select or Drag-In Quotes"}
                 </h1>
-                {files.length > 0 && (
+                {file && (
                   <div className="text-center mb-4">
-                    {files.map((file, index) => (
-                      <p className="truncate" key={index}>
-                        {file.name}
-                      </p>
-                    ))}
+                    <p className="truncate">{file.name}</p>
                   </div>
                 )}
               </div>
+              <div className="flex items-center my-4 gap-3">
+                <p>Page Range:</p>
+                <select
+                  className="outline outline-1 outline-gray-300 rounded-sm"
+                  value={rangeSelection}
+                  onChange={(e) => {
+                    setRangeSelection(e.target.value);
+                  }}
+                >
+                  <option value="all">All</option>
+                  <option value="custom">Custom</option>
+                </select>
+                {rangeSelection === "custom" && (
+                  <>
+                    <input
+                      type="text"
+                      className="h-5 outline outline-1 outline-gray-300 text-sm rounded-sm"
+                      placeholder="e.g., 1-5, 8, 11-13"
+                      onChange={(e) => {
+                        if (e.target.value && e.target.value.trim()) {
+                          const newValue = e.target.value.trim();
+                          setCustomRange(newValue);
+                          validateCustomRange(newValue);
+                        }
+                      }}
+                    />
+                  </>
+                )}
+              </div>
+              {rangeSelection === "custom" && !isRangeValid && (
+                <div className="text-red-500 text-xs mb-4">
+                  Please enter a valid range format (e.g., 1-5, 8, 11-13).
+                </div>
+              )}
+
               <button
                 type="submit"
                 className="w-full bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700 focus:outline-none cursor-pointer"

@@ -17,6 +17,7 @@ interface PendingTask {
   metadata: any;
   type: string;
   clientId: string;
+  // estimatedRunTime: string;
 }
 
 export type TaskContextProps = {
