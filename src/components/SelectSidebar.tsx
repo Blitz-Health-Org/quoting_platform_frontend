@@ -272,7 +272,7 @@ const SelectSidebar = ({
               <div className="mr-2 text-sm">Save Plans</div>
               <FaRegSave />
             </div>
-            <div className="flex gap-1">
+            <div className="flex gap-1 w-full">
               <input
                 type="text"
                 placeholder="Enter New Plan Name"
