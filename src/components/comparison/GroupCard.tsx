@@ -58,13 +58,48 @@ export function GroupCard({
                   className="mr-2 rounded-md"
                 />
               )}
+
+                {(plan.selectedQuotes[0].carrier).includes("UnitedHealthcare") ? 
+                    <Image
+                      src="/United.png"
+                      alt={`Logo for ${plan.selectedQuotes[0].carrier}`}
+                      width={30}
+                      height={30}
+                      className="mr-2 rounded-md"
+                    />
+                : (plan.selectedQuotes[0].carrier).includes("Anthem") || (plan.selectedQuotes[0].carrier).includes("Blue Cross and Blue Shield") ? 
+                    <Image
+                      src="/Anthem.jpeg"
+                      alt={`Logo for ${plan.selectedQuotes[0].carrier}`}
+                      width={30}
+                      height={30}
+                      className="mr-2 rounded-md"
+                    />
+                : plan.selectedQuotes[0].logo_url && (
+                    <Image
+                      src={plan.selectedQuotes[0].logo_url}
+                      alt={`Logo for ${plan.selectedQuotes[0].carrier}`}
+                      width={30}
+                      height={30}
+                      className="mr-2 rounded-md"
+                    />
+                )}
+
             </div>
             <div className="flex flex-col items-start justify-center ml-1">
               <h1 className="font-bold text-xl">
-                {plan.selectedQuotes[0].carrier}
+                {(plan.selectedQuotes[0].carrier).includes("UnitedHealthcare")
+                ? "United" 
+                : (plan.selectedQuotes[0].carrier).includes("Anthem") || (plan.selectedQuotes[0].carrier).includes("Blue Cross and Blue Shield") 
+                ? "Anthem BCBS" 
+                : plan.selectedQuotes[0].carrier}
               </h1>
               <p className="text-sm max-w-32 truncate">
-                {plan.selectedQuotes[0].website}
+                {(plan.selectedQuotes[0].carrier).includes("UnitedHealthcare")
+                ? "www.uhc.com" 
+                : (plan.selectedQuotes[0].carrier).includes("Anthem") || (plan.selectedQuotes[0].carrier).includes("Blue Cross and Blue Shield") 
+                ? "www.anthem.com" 
+                : plan.selectedQuotes[0].website}
               </p>
             </div>
           </div>

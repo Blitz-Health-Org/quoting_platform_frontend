@@ -154,9 +154,9 @@ export const Subheader: React.FC<SubheaderProps> = ({
         />
       )} */}
       <div></div>
-      <div className="flex my-2 justify-center">
+      {/* <div className="flex my-2 justify-center">
         <ContinuousSlider setStandardContribution={setStandardContribution} />
-      </div>
+      </div> */}
     </div>
   );
 };
