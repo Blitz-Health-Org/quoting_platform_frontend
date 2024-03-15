@@ -363,8 +363,8 @@ export default function QuotingPage() {
             />
 
             <div className="p-0.5 flex-grow w-full">
-              <div className="h-full flex gap-2 overflow-auto py-2">
-                <div className="border border-gray-300 border-l-0 border-t-0 border-b-0 rounded-t-md">
+              <div className="h-full flex gap-2 overflow-auto">
+                <div className="border border-gray-300 h-fit border-l-0 border-t-0 border-b-0 rounded-t-md">
                   <HeaderCard fieldObject={quoteSchema} />
                 </div>
                 {plans.length > 0 ? (
@@ -386,7 +386,9 @@ export default function QuotingPage() {
               </div>
             </div>
           </div>
-          <ContributionPane
+        </div>
+      </div>
+      <ContributionPane
             paneState={paneState}
             setPaneState={setPaneState}
             classes={classes}
@@ -396,8 +398,6 @@ export default function QuotingPage() {
             standardContribution={standardContribution}
             setStandardContribution={setStandardContribution}
           />
-        </div>
-      </div>
     </ClientContext.Provider>
   );
 }

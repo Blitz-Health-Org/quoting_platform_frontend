@@ -6,6 +6,7 @@ import { IoMdArrowDropdown } from "react-icons/io";
 import { useState } from "react";
 import { useRecoilState } from "recoil";
 import { contributionSettingsAtom } from "./contributionSettingsAtom";
+import { IoIosSettings } from "react-icons/io";
 
 type GroupCardProps = {
   plan: any;
@@ -36,9 +37,21 @@ export function GroupCard({
   // };
 
   return (
-    <div className="flex-col w-fit bg-white">
-      <div className="flex flex-col justify-center items-center border border-b-0 rounded-b-none border-gray-300 rounded-t-md">
-        <div className="flex bg-white  rounded-md w-full gap-3 h-28 justify-center items-center px-2">
+    <div className="flex-col w-fit bg-white h-fit">
+      <div className="flex flex-col justify-center pt-3 pr-4 items-center border border-b-0 rounded-b-none border-gray-300 rounded-t-md">
+      <div
+          className="w-full flex justify-end"
+          onClick={() =>
+            setIsContributionSettingsExpanded(!isContributionSettingsExpanded)
+          }>
+          {/* <p className="m-2 text-sm">
+            {isContributionSettingsExpanded
+              ? "Collapse Contribution Setttings"
+              : "Expand Contribution Settings"}
+          </p> */}
+          <IoIosSettings className="w-6 h-6"/>
+        </div>
+        <div className="flex bg-white rounded-md w-full gap-3 h-fit mb-6 mt-2 justify-center items-center px-2">
           <div className="max-w-1/2 flex items-center justify-center truncate gap-1">
             {plan.isCurrentPlan ? <FaStar /> : null}
             <h1 className="font-bold text-lg text-wrap max-w-32">
@@ -104,20 +117,8 @@ export function GroupCard({
             </div>
           </div>
         </div>
-        <div
-          className="border border-slate-300 rounded-lg hover:bg-slate-300 bg-slate-100  mb-2"
-          onClick={() =>
-            setIsContributionSettingsExpanded(!isContributionSettingsExpanded)
-          }
-        >
-          <p className="m-2 text-sm">
-            {isContributionSettingsExpanded
-              ? "Collapse Contribution Setttings"
-              : "Expand Contribution Settings"}
-          </p>
-        </div>
       </div>
-      <div className="flex w-fit text-center border border-l-0 border-t-0 border-b-0 border-gray-300">
+      <div className="flex w-fit h-fit text-center border border-l-0 border-t-0 border-b-0 border-gray-300">
         {plan.selectedQuotes.map((quote: QuoteType) => (
           <QuoteCard
             plan={plan}

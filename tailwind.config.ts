@@ -20,6 +20,12 @@ const config: Config = {
         "1/7": "14.2857143%", // Adjust the value based on your needs
         "6/7": "85.7142857%", // Adjust the value based on your needs
       },
+      padding: {
+        "17": "4.25rem",
+        "17.5": "4.375rem",
+        "17.75": "4.4375rem", // 17.75 * 0.25 = 4.4375rem
+        "18": "4.5rem",
+      },
     },
   },
   plugins: [],
