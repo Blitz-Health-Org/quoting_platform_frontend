@@ -118,7 +118,7 @@ export function GroupCard({
           </div>
         </div>
       </div>
-      <div className="flex w-fit h-fit text-center border border-l-0 border-t-0 border-b-0 border-gray-300">
+      <div className="min-w-80 flex w-fit h-fit text-center border border-l-0 border-t-0 border-b-0 border-gray-300">
         {plan.selectedQuotes.map((quote: QuoteType) => (
           <QuoteCard
             plan={plan}
