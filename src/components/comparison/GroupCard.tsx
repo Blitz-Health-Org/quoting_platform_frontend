@@ -63,7 +63,6 @@ export function GroupCard({
           {/* Vertical line break */}
           <div className="flex max-w-1/2 truncate">
             <div className="flex items-center justify-center">
-
               {plan.selectedQuotes[0].carrier.includes("UnitedHealthcare") ? (
                 <Image
                   src="/United.png"
