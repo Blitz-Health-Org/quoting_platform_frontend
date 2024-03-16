@@ -63,15 +63,6 @@ export function GroupCard({
           {/* Vertical line break */}
           <div className="flex max-w-1/2 truncate">
             <div className="flex items-center justify-center">
-              {plan.selectedQuotes[0].logo_url && (
-                <Image
-                  src={plan.selectedQuotes[0].logo_url}
-                  alt={`Logo for ${plan.selectedQuotes[0].carrier}`}
-                  width={30}
-                  height={30}
-                  className="mr-2 rounded-md"
-                />
-              )}
 
               {plan.selectedQuotes[0].carrier.includes("UnitedHealthcare") ? (
                 <Image
