@@ -39,17 +39,18 @@ export function GroupCard({
   return (
     <div className="flex-col w-fit bg-white h-fit">
       <div className="flex flex-col justify-center pt-3 pr-4 items-center border border-b-0 rounded-b-none border-gray-300 rounded-t-md">
-      <div
+        <div
           className="w-full flex justify-end"
           onClick={() =>
             setIsContributionSettingsExpanded(!isContributionSettingsExpanded)
-          }>
+          }
+        >
           {/* <p className="m-2 text-sm">
             {isContributionSettingsExpanded
               ? "Collapse Contribution Setttings"
               : "Expand Contribution Settings"}
           </p> */}
-          <IoIosSettings className="w-6 h-6"/>
+          <IoIosSettings className="w-6 h-6" />
         </div>
         <div className="flex bg-white rounded-md w-full gap-3 h-fit mb-6 mt-2 justify-center items-center px-2">
           <div className="max-w-1/2 flex items-center justify-center truncate gap-1">
@@ -72,47 +73,57 @@ export function GroupCard({
                 />
               )}
 
-                {(plan.selectedQuotes[0].carrier).includes("UnitedHealthcare") ? 
-                    <Image
-                      src="/United.png"
-                      alt={`Logo for ${plan.selectedQuotes[0].carrier}`}
-                      width={30}
-                      height={30}
-                      className="mr-2 rounded-md"
-                    />
-                : (plan.selectedQuotes[0].carrier).includes("Anthem") || (plan.selectedQuotes[0].carrier).includes("Blue Cross and Blue Shield") ? 
-                    <Image
-                      src="/Anthem.jpeg"
-                      alt={`Logo for ${plan.selectedQuotes[0].carrier}`}
-                      width={30}
-                      height={30}
-                      className="mr-2 rounded-md"
-                    />
-                : plan.selectedQuotes[0].logo_url && (
-                    <Image
-                      src={plan.selectedQuotes[0].logo_url}
-                      alt={`Logo for ${plan.selectedQuotes[0].carrier}`}
-                      width={30}
-                      height={30}
-                      className="mr-2 rounded-md"
-                    />
-                )}
-
+              {plan.selectedQuotes[0].carrier.includes("UnitedHealthcare") ? (
+                <Image
+                  src="/United.png"
+                  alt={`Logo for ${plan.selectedQuotes[0].carrier}`}
+                  width={30}
+                  height={30}
+                  className="mr-2 rounded-md"
+                />
+              ) : plan.selectedQuotes[0].carrier.includes("Anthem") ||
+                plan.selectedQuotes[0].carrier.includes(
+                  "Blue Cross and Blue Shield",
+                ) ? (
+                <Image
+                  src="/Anthem.jpeg"
+                  alt={`Logo for ${plan.selectedQuotes[0].carrier}`}
+                  width={30}
+                  height={30}
+                  className="mr-2 rounded-md"
+                />
+              ) : (
+                plan.selectedQuotes[0].logo_url && (
+                  <Image
+                    src={plan.selectedQuotes[0].logo_url}
+                    alt={`Logo for ${plan.selectedQuotes[0].carrier}`}
+                    width={30}
+                    height={30}
+                    className="mr-2 rounded-md"
+                  />
+                )
+              )}
             </div>
             <div className="flex flex-col items-start justify-center ml-1">
               <h1 className="font-bold text-xl">
-                {(plan.selectedQuotes[0].carrier).includes("UnitedHealthcare")
-                ? "United" 
-                : (plan.selectedQuotes[0].carrier).includes("Anthem") || (plan.selectedQuotes[0].carrier).includes("Blue Cross and Blue Shield") 
-                ? "Anthem BCBS" 
-                : plan.selectedQuotes[0].carrier}
+                {plan.selectedQuotes[0].carrier.includes("UnitedHealthcare")
+                  ? "United"
+                  : plan.selectedQuotes[0].carrier.includes("Anthem") ||
+                      plan.selectedQuotes[0].carrier.includes(
+                        "Blue Cross and Blue Shield",
+                      )
+                    ? "Anthem BCBS"
+                    : plan.selectedQuotes[0].carrier}
               </h1>
               <p className="text-sm max-w-32 truncate">
-                {(plan.selectedQuotes[0].carrier).includes("UnitedHealthcare")
-                ? "www.uhc.com" 
-                : (plan.selectedQuotes[0].carrier).includes("Anthem") || (plan.selectedQuotes[0].carrier).includes("Blue Cross and Blue Shield") 
-                ? "www.anthem.com" 
-                : plan.selectedQuotes[0].website}
+                {plan.selectedQuotes[0].carrier.includes("UnitedHealthcare")
+                  ? "www.uhc.com"
+                  : plan.selectedQuotes[0].carrier.includes("Anthem") ||
+                      plan.selectedQuotes[0].carrier.includes(
+                        "Blue Cross and Blue Shield",
+                      )
+                    ? "www.anthem.com"
+                    : plan.selectedQuotes[0].website}
               </p>
             </div>
           </div>

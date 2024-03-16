@@ -82,37 +82,43 @@ export const SelectedQuotesACAPage = ({
                             onChange={() => handleCheckboxChange(quote.id)}
                             className="mr-4"
                           />
-                          {(quote as any)[attribute.key] === "UnitedHealthcare" ?                               
-                          <Image
-                            src="/United.png"
-                            alt={`Logo for United`}
-                            width={20}
-                            height={20}
-                            className="mr-2 rounded-md"
-                          />
-                          : (quote as any)[attribute.key] === "Anthem Blue Cross and Blue Shield" ? 
-                          <Image
-                          src="/Anthem.jpeg"
-                          alt={`Logo for Anthem / BCBS`}
-                          width={20}
-                          height={20}
-                          className="mr-2 rounded-md"
-                          />
-                          : quote.logo_url && (
+                          {(quote as any)[attribute.key] ===
+                          "UnitedHealthcare" ? (
                             <Image
-                              src={quote.logo_url}
-                              alt={`Logo for ${(quote as any)[attribute.key]}`}
+                              src="/United.png"
+                              alt={`Logo for United`}
                               width={20}
                               height={20}
                               className="mr-2 rounded-md"
                             />
+                          ) : (quote as any)[attribute.key] ===
+                            "Anthem Blue Cross and Blue Shield" ? (
+                            <Image
+                              src="/Anthem.jpeg"
+                              alt={`Logo for Anthem / BCBS`}
+                              width={20}
+                              height={20}
+                              className="mr-2 rounded-md"
+                            />
+                          ) : (
+                            quote.logo_url && (
+                              <Image
+                                src={quote.logo_url}
+                                alt={`Logo for ${(quote as any)[attribute.key]}`}
+                                width={20}
+                                height={20}
+                                className="mr-2 rounded-md"
+                              />
+                            )
                           )}
                           <p className="truncate">
-                            {(quote as any)[attribute.key] === "UnitedHealthcare" 
-                            ? "United" 
-                            : ((quote as any)[attribute.key] === "Anthem Blue Cross and Blue Shield" 
-                            ? "Anthem BCBS" 
-                            : (quote as any)[attribute.key])}
+                            {(quote as any)[attribute.key] ===
+                            "UnitedHealthcare"
+                              ? "United"
+                              : (quote as any)[attribute.key] ===
+                                  "Anthem Blue Cross and Blue Shield"
+                                ? "Anthem BCBS"
+                                : (quote as any)[attribute.key]}
                           </p>
                         </div>
                       ) : (

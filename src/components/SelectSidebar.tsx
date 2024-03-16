@@ -351,7 +351,9 @@ const SelectSidebar = ({
                           <li key={quote.id} className="mt-2 w-full">
                             <div className="flex justify-between w-full gap-1">
                               <div className="flex gap-1 items-center">
-                                {((quote.data as any)["carrier"])?.includes("UnitedHealthcare") ?                               
+                                {(quote.data as any)["carrier"]?.includes(
+                                  "UnitedHealthcare",
+                                ) ? (
                                   <Image
                                     src="/United.png"
                                     alt={`Logo for United`}
@@ -359,15 +361,21 @@ const SelectSidebar = ({
                                     height={20}
                                     className="mr-2 rounded-md"
                                   />
-                                  : ((quote.data as any)["carrier"])?.includes("Anthem") || ((quote.data as any)["carrier"])?.includes("Blue Cross and Blue Shield") ? 
+                                ) : (quote.data as any)["carrier"]?.includes(
+                                    "Anthem",
+                                  ) ||
+                                  (quote.data as any)["carrier"]?.includes(
+                                    "Blue Cross and Blue Shield",
+                                  ) ? (
                                   <Image
-                                  src="/Anthem.jpeg"
-                                  alt={`Logo for Anthem / BCBS`}
-                                  width={20}
-                                  height={20}
-                                  className="mr-2 rounded-md"
+                                    src="/Anthem.jpeg"
+                                    alt={`Logo for Anthem / BCBS`}
+                                    width={20}
+                                    height={20}
+                                    className="mr-2 rounded-md"
                                   />
-                                  : quote.logo_url && (
+                                ) : (
+                                  quote.logo_url && (
                                     <Image
                                       src={quote.logo_url}
                                       alt={`Logo for ${(quote.data as any)["carrier"]}`}
@@ -375,7 +383,8 @@ const SelectSidebar = ({
                                       height={20}
                                       className="mr-2 rounded-md"
                                     />
-                                  )}
+                                  )
+                                )}
                                 <p className="text-sm truncate max-w-36">
                                   {(quote.data as any)?.["plan_id"] || "N/A"}
                                 </p>

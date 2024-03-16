@@ -389,15 +389,15 @@ export default function QuotingPage() {
         </div>
       </div>
       <ContributionPane
-            paneState={paneState}
-            setPaneState={setPaneState}
-            classes={classes}
-            setClasses={setClasses}
-            client={client}
-            censusData={censusData}
-            standardContribution={standardContribution}
-            setStandardContribution={setStandardContribution}
-          />
+        paneState={paneState}
+        setPaneState={setPaneState}
+        classes={classes}
+        setClasses={setClasses}
+        client={client}
+        censusData={censusData}
+        standardContribution={standardContribution}
+        setStandardContribution={setStandardContribution}
+      />
     </ClientContext.Provider>
   );
 }
