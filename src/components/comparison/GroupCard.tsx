@@ -39,19 +39,19 @@ export function GroupCard({
   return (
     <div className="flex-col w-fit bg-white h-fit">
       <div className="flex flex-col justify-center pt-3 pr-4 items-center border border-b-0 rounded-b-none border-gray-300 rounded-t-md">
-        <div
+        {/* <div
           className="w-full flex justify-end"
           onClick={() =>
             setIsContributionSettingsExpanded(!isContributionSettingsExpanded)
           }
         >
-          {/* <p className="m-2 text-sm">
+          <p className="m-2 text-sm">
             {isContributionSettingsExpanded
               ? "Collapse Contribution Setttings"
               : "Expand Contribution Settings"}
-          </p> */}
+          </p>
           <IoIosSettings className="w-6 h-6" />
-        </div>
+        </div> */}
         <div className="flex bg-white rounded-md w-full gap-3 h-fit mb-6 mt-2 justify-center items-center px-2">
           <div className="max-w-1/2 flex items-center justify-center truncate gap-1">
             {plan.isCurrentPlan ? <FaStar /> : null}
