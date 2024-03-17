@@ -65,7 +65,7 @@ export function GroupCard({
         <div className="flex rounded-md w-full gap-3 h-fit mb-6 mt-2 justify-center items-center px-2">
           <div className="max-w-1/2 flex items-center justify-center truncate gap-1">
             {plan.isCurrentPlan ? <FaStar /> : null}
-            <h1 className="font-bold text-lg text-wrap max-w-32">
+            <h1 className="font-bold text-lg truncate">
               {plan.isCurrentPlan ? "Current Plan" : plan.name}
             </h1>
           </div>
@@ -112,17 +112,17 @@ export function GroupCard({
                       plan.selectedQuotes[0].carrier.includes(
                         "Blue Cross and Blue Shield",
                       )
-                    ? "Anthem BCBS"
+                    ? "Anthem"
                     : plan.selectedQuotes[0].carrier}
               </h1>
               <p className="text-sm max-w-32 truncate">
                 {plan.selectedQuotes[0].carrier.includes("UnitedHealthcare")
-                  ? "www.uhc.com"
+                  ? "uhc.com"
                   : plan.selectedQuotes[0].carrier.includes("Anthem") ||
                       plan.selectedQuotes[0].carrier.includes(
                         "Blue Cross and Blue Shield",
                       )
-                    ? "www.anthem.com"
+                    ? "anthem.com"
                     : plan.selectedQuotes[0].website}
               </p>
             </div>

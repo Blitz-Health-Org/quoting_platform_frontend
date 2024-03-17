@@ -59,7 +59,7 @@ const planAttributesMapping: {
   { key: "total_employer_cost", label: "Total Cost" },
 ];
 
-const TABS = ["NON-ACA", "ACA"];
+const TABS = ["NON-ACA", "ACA", "Dental", "Vision", "STD", "LTD"];
 
 export type QuoteTypeWithCheckbox = QuoteType & { isSelected: boolean };
 
@@ -436,7 +436,7 @@ export default function SelectQuotes() {
 
   return (
     <>
-      <main className="flex w-full h-full overflow-hidden">
+      <main className="flex w-full h-full overflow-hidden pl-4 md:pl-0 bg-gray-100">
         <Navbar selected="Quotes" />
         <div className="w-full md:w-6/7 flex">
           <div className="h-screen overflow-hidden flex-col w-full bg-gray-100 bg-opacity-50 pl-2 pr-6 pt-5 pb-6 text-gray-700">
@@ -485,6 +485,10 @@ export default function SelectQuotes() {
                       titles={[
                         `Non-ACA (${non_aca_quotes.length})`,
                         `ACA (${aca_quotes.length})`,
+                        `Dental`,
+                        `Vision`,
+                        `STD`,
+                        `LTD`
                       ]}
                       selectedTab={currentTab}
                       setSelectedTab={setCurrentTab}
