@@ -38,7 +38,13 @@ export function GroupCard({
 
   return (
     <div className="flex-col w-fit bg-white h-fit">
-      <div className="flex flex-col justify-center pt-3 pr-4 items-center border border-b-0 rounded-b-none border-gray-300 rounded-t-md">
+      <div className={`flex flex-col justify-center pt-3 pr-4 items-center border border-b-0 rounded-b-none border-gray-300 rounded-t-md
+      ${plan.selectedQuotes[0].carrier.includes("Anthem") ? "bg-yellow-100/50" :
+        plan.selectedQuotes[0].carrier.includes("United") ? "bg-blue-100/50" :
+        plan.selectedQuotes[0].carrier.includes("Cigna") ? "bg-red-100/50" :
+        plan.selectedQuotes[0].carrier.includes("Aetna") ? "bg-violet-100/50" :
+        "bg-green-100/50"} 
+      `}>
         {/* <div
           className="w-full flex justify-end"
           onClick={() =>
@@ -52,7 +58,7 @@ export function GroupCard({
           </p>
           <IoIosSettings className="w-6 h-6" />
         </div> */}
-        <div className="flex bg-white rounded-md w-full gap-3 h-fit mb-6 mt-2 justify-center items-center px-2">
+        <div className="flex rounded-md w-full gap-3 h-fit mb-6 mt-2 justify-center items-center px-2">
           <div className="max-w-1/2 flex items-center justify-center truncate gap-1">
             {plan.isCurrentPlan ? <FaStar /> : null}
             <h1 className="font-bold text-lg text-wrap max-w-32">

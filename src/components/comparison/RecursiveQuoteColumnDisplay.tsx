@@ -10,6 +10,7 @@ type RecursiveQuoteColumnDisplayProps = {
   path?: string;
   isQuoteCard?: boolean;
   calculatedTotalCost?: any;
+  alternateColor?: boolean;
 };
 
 type HeaderLabelProps = {
@@ -17,6 +18,7 @@ type HeaderLabelProps = {
   field: any;
   className?: string;
   isQuoteCard?: boolean;
+  alternateColor?: boolean;
 };
 
 //recursively displays nested header or body quote column based on whether quoteData is passed in
@@ -27,6 +29,7 @@ export const RecursiveQuoteColumnDisplay = ({
   path = "root",
   calculatedTotalCost,
   isQuoteCard = false,
+  alternateColor = false,
 }: RecursiveQuoteColumnDisplayProps) => {
   const [fieldState, setFieldState] = useRecoilState(fieldsFamilyState(path));
 
@@ -36,14 +39,16 @@ export const RecursiveQuoteColumnDisplay = ({
   }
 
   const { isExpanded } = fieldState;
-
+  
   const LabelCell = ({
     isQuoteCard = false,
     field,
     className = "",
+    alternateColor = false,
   }: HeaderLabelProps) => {
+
     return (
-      <div className={`w-full text-sm ${className}`}>
+      <div className={`w-full text-sm ${className} ${!alternateColor ? 'bg-gray-100/50' : 'bg-white'}`}>
         {field.type === "object" && (
           <hr className="w-full border-b-1 border-gray-500"></hr>
         )}
@@ -110,6 +115,7 @@ export const RecursiveQuoteColumnDisplay = ({
         isQuoteCard={isQuoteCard}
         quoteData={quoteData}
         field={field}
+        alternateColor={alternateColor}
       />
     );
   } else if (field.type === "array") {
@@ -127,13 +133,14 @@ export const RecursiveQuoteColumnDisplay = ({
         {isExpanded && (
           <>
             {Object.entries(field["properties"]).map(
-              ([key, nestedField]: any) => (
+              ([key, nestedField]: any, index: number) => (
                 <RecursiveQuoteColumnDisplay
                   path={`${path}/${nestedField?.label || "label"}`}
                   key={`${path}/${nestedField?.label || "label"}`}
                   field={nestedField}
                   quoteData={quoteData ? quoteData[key] : undefined}
                   isQuoteCard={isQuoteCard}
+                  alternateColor={index % 2 === 1}
                 />
               ),
             )}

@@ -290,25 +290,27 @@ export const AddQuote = ({
             <FaX />
           </button>
         </div>
-        <label className="mr-2">Choose a plan:</label>
-        <select
-          className="outline outline-1 outline-gray-300 rounded-sm"
-          name="plan"
-          id="plan"
-          onChange={(e) => {
-            console.log("e", e.target.value);
-            setSelectedPlan(e.target.value);
-          }}
-        >
-          <option value="bcbs_tx_aca">BCBS TX ACA</option>
-          <option value="aetna">Aetna</option>
-          <option value="chamber_smart">Chamber Smart</option>
-          <option value="anthem">Anthem</option>
-          <option value="uhc_aca">UHC ACA</option>
-          <option value="uhc_lf">UHC Level Funded</option>
-          <option value="cigna">Cigna</option>
-          <option value="other">Other</option>
-        </select>
+        <div className="flex flex-col">
+          <label className="mr-2 text-sm mb-1">Carrier</label>
+          <select
+            className="bg-gray-100 hover:cursor-pointer hover:outline-gray-400 outline outline-1 outline-gray-400/80 rounded-sm px-1 py-1"
+            name="plan"
+            id="plan"
+            onChange={(e) => {
+              console.log("e", e.target.value);
+              setSelectedPlan(e.target.value);
+            }}
+          >
+            <option value="bcbs_tx_aca">BCBS TX ACA</option>
+            <option value="aetna">Aetna</option>
+            <option value="chamber_smart">Chamber Smart</option>
+            <option value="anthem">Anthem</option>
+            <option value="uhc_aca">UHC ACA</option>
+            <option value="uhc_lf">UHC Level Funded</option>
+            <option value="cigna">Cigna</option>
+            <option value="other">Other</option>
+          </select>
+        </div>
         <div className="modal-body">
           {/* File Upload Section */}
           <form
@@ -323,7 +325,7 @@ export const AddQuote = ({
             <div className="flex flex-col items-center justify-center cursor-pointer">
               <div
                 {...getRootProps()}
-                className={`p-6 mb-2 mt-2 drop-shadow-sm outline outline-1 outline-gray-400/65 hover:outline-black w-full ${
+                className={`p-6 mb-2 mt-2 drop-shadow-sm outline outline-1 outline-gray-400/80 hover:outline-gray-400 w-full ${
                   isDragActive ? "bg-gray-200/50" : "bg-gray-100/50"
                 }`}
                 style={{ borderRadius: "0.25rem" }}
