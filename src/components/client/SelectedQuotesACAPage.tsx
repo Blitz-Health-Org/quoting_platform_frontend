@@ -37,7 +37,9 @@ export const SelectedQuotesACAPage = ({
                 className="flex justify-center gap-2 min-w-32"
                 style={{ width: `${entryWidth}px` }}
               >
-                <p className="max-h-12 text-wrap overflow-hidden">{attribute.label}</p>
+                <p className="max-h-12 text-wrap overflow-hidden">
+                  {attribute.label}
+                </p>
               </div>
             ))}
           </div>
@@ -82,8 +84,7 @@ export const SelectedQuotesACAPage = ({
                             onChange={() => handleCheckboxChange(quote.id)}
                             className="mr-4"
                           />
-                          {((quote as any)[attribute.key]).includes("United")
-                          ? (
+                          {(quote as any)[attribute.key].includes("United") ? (
                             <Image
                               src="/United.png"
                               alt={`Logo for United`}
@@ -91,8 +92,9 @@ export const SelectedQuotesACAPage = ({
                               height={20}
                               className="mr-2 rounded-md"
                             />
-                          ) : ((quote as any)[attribute.key]).includes(
-                            "Blue Cross") ? (
+                          ) : (quote as any)[attribute.key].includes(
+                              "Blue Cross",
+                            ) ? (
                             <Image
                               src="/Anthem.jpeg"
                               alt={`Logo for Anthem / BCBS`}

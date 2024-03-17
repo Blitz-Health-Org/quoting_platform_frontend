@@ -39,16 +39,17 @@ export const RecursiveQuoteColumnDisplay = ({
   }
 
   const { isExpanded } = fieldState;
-  
+
   const LabelCell = ({
     isQuoteCard = false,
     field,
     className = "",
     alternateColor = false,
   }: HeaderLabelProps) => {
-
     return (
-      <div className={`w-full text-sm ${className} ${!alternateColor ? 'bg-gray-100/50' : 'bg-white'}`}>
+      <div
+        className={`w-full text-sm ${className} ${!alternateColor ? "bg-gray-100/50" : "bg-white"}`}
+      >
         {field.type === "object" && (
           <hr className="w-full border-b-1 border-gray-500"></hr>
         )}

@@ -488,7 +488,7 @@ export default function SelectQuotes() {
                         `Dental`,
                         `Vision`,
                         `STD`,
-                        `LTD`
+                        `LTD`,
                       ]}
                       selectedTab={currentTab}
                       setSelectedTab={setCurrentTab}
