@@ -82,8 +82,8 @@ export const SelectedQuotesACAPage = ({
                             onChange={() => handleCheckboxChange(quote.id)}
                             className="mr-4"
                           />
-                          {(quote as any)[attribute.key] ===
-                          "UnitedHealthcare" ? (
+                          {((quote as any)[attribute.key]).includes("United")
+                          ? (
                             <Image
                               src="/United.png"
                               alt={`Logo for United`}
@@ -91,8 +91,8 @@ export const SelectedQuotesACAPage = ({
                               height={20}
                               className="mr-2 rounded-md"
                             />
-                          ) : (quote as any)[attribute.key] ===
-                            "Anthem Blue Cross and Blue Shield" ? (
+                          ) : ((quote as any)[attribute.key]).includes(
+                            "Blue Cross") ? (
                             <Image
                               src="/Anthem.jpeg"
                               alt={`Logo for Anthem / BCBS`}
