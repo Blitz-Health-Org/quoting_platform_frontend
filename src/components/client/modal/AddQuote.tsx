@@ -348,41 +348,45 @@ export const AddQuote = ({
           </select>
         </div>
         <div className="flex flex-col items-start justify-center w-full my-1 gap-1 mb-2">
-                <p className="mr-2 text-sm mt-2">Page Range</p>
-                <div className="flex gap-2 w-full">
-                  <select
-                    className="bg-gray-100 px-2 rounded-sm w-full drop-shadow-sm outline outline-1 h-8 outline-gray-400/80 hover:outline-gray-400"
-                    value={rangeSelection}
-                    onChange={(e) => {
-                      setRangeSelection(e.target.value);
-                    }}
-                  >
-                    <option value="all" className="w-full">All</option>
-                    <option value="custom" className="w-1/2">Custom</option>
-                  </select>
-                    {rangeSelection === "custom" && (
-                      <>
-                        <input
-                          type="text"
-                          className="bg-gray-100 px-2 h-8 drop-shadow-sm outline outline-1 outline-gray-400/80 hover:outline-gray-400 text-sm rounded-sm w-full"
-                          placeholder="e.g., 1-5, 8, 11-13"
-                          onChange={(e) => {
-                            if (e.target.value && e.target.value.trim()) {
-                              const newValue = e.target.value.trim();
-                              setCustomRange(newValue);
-                              validateCustomRange(newValue);
-                            }
-                          }}
-                        />
-                      </>
-                    )}
-                </div>
-              </div>
-              {rangeSelection === "custom" && !isRangeValid && (
-                <div className="text-red-500 text-xs mb-4">
-                  Please enter a valid range format (e.g., 1-5, 8, 11-13).
-                </div>
-              )}
+          <p className="mr-2 text-sm mt-2">Page Range</p>
+          <div className="flex gap-2 w-full">
+            <select
+              className="bg-gray-100 px-2 rounded-sm w-full drop-shadow-sm outline outline-1 h-8 outline-gray-400/80 hover:outline-gray-400"
+              value={rangeSelection}
+              onChange={(e) => {
+                setRangeSelection(e.target.value);
+              }}
+            >
+              <option value="all" className="w-full">
+                All
+              </option>
+              <option value="custom" className="w-1/2">
+                Custom
+              </option>
+            </select>
+            {rangeSelection === "custom" && (
+              <>
+                <input
+                  type="text"
+                  className="bg-gray-100 px-2 h-8 drop-shadow-sm outline outline-1 outline-gray-400/80 hover:outline-gray-400 text-sm rounded-sm w-full"
+                  placeholder="e.g., 1-5, 8, 11-13"
+                  onChange={(e) => {
+                    if (e.target.value && e.target.value.trim()) {
+                      const newValue = e.target.value.trim();
+                      setCustomRange(newValue);
+                      validateCustomRange(newValue);
+                    }
+                  }}
+                />
+              </>
+            )}
+          </div>
+        </div>
+        {rangeSelection === "custom" && !isRangeValid && (
+          <div className="text-red-500 text-xs mb-4">
+            Please enter a valid range format (e.g., 1-5, 8, 11-13).
+          </div>
+        )}
         <div className="modal-body">
           {/* File Upload Section */}
           <form
