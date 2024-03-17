@@ -28,7 +28,7 @@ export default function RootLayout({
     <html lang="en">
       <body className={inter.className} style={{ backgroundColor: "white" }}>
         <div>
-          <Toaster position="top-center" />
+          <Toaster position="bottom-left" />
         </div>
         <QuoteSchemaContextProvider>
           <SnackBarContextProvider>
