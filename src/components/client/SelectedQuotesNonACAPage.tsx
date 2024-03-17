@@ -63,11 +63,11 @@ export const SelectedQuotesNonACAPage = ({
                   .toLowerCase()
                   .includes(search.toLowerCase()),
             )
-            .map((quote) => (
-              <div
-                key={quote.id}
-                className={`flex items-center w-fit mb-1 mt-1 py-2 border-b`}
-              >
+            .map((quote, index) => (
+                <div
+                  key={quote.id}
+                  className={`flex items-center w-fit py-2 border-b ${index % 2 === 0 ? 'bg-gray-100' : 'bg-white'}`}
+                >
                 <div className="grid-cols-9 w-full flex justify-left text-center gap-1 h-8 items-center text-sm">
                   {/* Map through the plan attributes for each quote */}
                   {planAttributesMapping.map((attribute: any) => (
