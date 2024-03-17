@@ -1,10 +1,6 @@
-export type Json =
-  | string
-  | number
-  | boolean
-  | null
-  | { [key: string]: Json | undefined }
-  | Json[];
+export type Json = {
+  [key: string]: Json | string | number | boolean | undefined;
+};
 
 export type Database = {
   public: {
@@ -106,6 +102,7 @@ export type Database = {
       };
       clients: {
         Row: {
+          census_data: Json | null;
           classes_contributions: Json[] | null;
           comparison_created: boolean | null;
           connected_plans: Json[] | null;
@@ -122,6 +119,7 @@ export type Database = {
           zip_code: string | null;
         };
         Insert: {
+          census_data?: Json | null;
           classes_contributions?: Json[] | null;
           comparison_created?: boolean | null;
           connected_plans?: Json[] | null;
@@ -138,6 +136,7 @@ export type Database = {
           zip_code?: string | null;
         };
         Update: {
+          census_data?: Json | null;
           classes_contributions?: Json[] | null;
           comparison_created?: boolean | null;
           connected_plans?: Json[] | null;

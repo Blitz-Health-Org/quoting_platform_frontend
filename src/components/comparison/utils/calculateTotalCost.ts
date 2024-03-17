@@ -1,14 +1,10 @@
-import { ClientContext } from "@/src/context/ClientContext";
-import { useContext } from "react";
-
-export function useCalculateTotalCost(
+export function calculateTotalCost(
   quoteData: any,
-  standardContribution: any,
-  customClasses: any,
+  contribution: any,
   rates: any,
+  client: any,
+  customClasses?: any,
 ) {
-  const { client } = useContext(ClientContext);
-
   if (quoteData?.metadata?.total_employer_cost_is_precalculated) {
     let allFourTiersNACount = 0;
     let totalSum = 0;
@@ -20,14 +16,14 @@ export function useCalculateTotalCost(
         }
       }
       if (
-        standardContribution?.data?.[value]?.percent &&
-        standardContribution?.data?.[value]?.employees &&
+        contribution?.data?.[value]?.percent &&
+        contribution?.data?.[value]?.employees &&
         rates?.[value]
       ) {
         totalSum += parseFloat(
           (
-            parseFloat(standardContribution.data[value].percent) *
-            parseFloat(standardContribution.data[value].employees) *
+            parseFloat(contribution.data[value].percent) *
+            parseFloat(contribution.data[value].employees) *
             parseFloat(rates?.[value]?.slice(1, -1).replace(",", "") || 0) *
             0.01
           ).toFixed(2),
@@ -51,12 +47,12 @@ export function useCalculateTotalCost(
     return (
       client.num_lives *
       quoteData.cost.rates.employee *
-      standardContribution["employee"].percent
+      contribution["employee"].percent
     );
   }
 
   let totalSum = 0;
-  if (customClasses.length) {
+  if (customClasses?.length) {
     for (const customClass of customClasses) {
       for (const value of ["employee", "family", "spouse", "child"]) {
         if (!rates[value]) {

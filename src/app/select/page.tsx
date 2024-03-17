@@ -84,6 +84,7 @@ export default function SelectQuotes() {
 
       if (error) {
         alert("Error updating data");
+        router.push("/404");
       } else {
         // Check if selected_quotes is not null
 
@@ -143,7 +144,7 @@ export default function SelectQuotes() {
       ),
     );
     const { error } = await supabase
-      .from("quotes")
+      .from("plans")
       .delete()
       .in(
         "id",
@@ -322,7 +323,7 @@ export default function SelectQuotes() {
       [];
 
     const { error } = await supabase
-      .from("quotes")
+      .from("plans")
       .delete()
       .in("id", selectedQuoteIds);
     if (error) {

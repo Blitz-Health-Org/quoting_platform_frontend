@@ -10,12 +10,13 @@
 
 import { QuoteColumnDisplay } from "./QuoteColumnDisplay";
 import Image from "next/image";
-import { useCalculateTotalCost } from "./utils/useCalculateTotalCost";
+import { calculateTotalCost } from "./utils/calculateTotalCost";
 import { MdOutlineArrowDropDown, MdOutlineArrowRight } from "react-icons/md";
 import { max } from "lodash";
 import { QuoteCardContinuousSlider } from "./QuoteCardContinuousSlider";
-import { useState } from "react";
+import { useContext, useState } from "react";
 import { ContinuousSlider } from "./ContributionSlider";
+import { ClientContext } from "@/src/context/ClientContext";
 
 // type QuoteCardProps = {
 //   quote: QuoteType;
@@ -43,16 +44,18 @@ export const QuoteCard = ({
 }: QuoteCardProps) => {
   const [quoteSpecificContribution, setQuoteSpecificContribution] =
     useState<any>(standardContribution);
-  const calculatedTotalCost = useCalculateTotalCost(
+  const { client } = useContext(ClientContext);
+  const calculatedTotalCost = calculateTotalCost(
     quote.data,
     quoteSpecificContribution,
-    classes,
     {
       employee: (quote.data as any)?.["employee_rate"],
       child: (quote.data as any)?.["child_rate"],
       family: (quote.data as any)?.["family_rate"],
       spouse: (quote.data as any)?.["spouse_rate"],
     },
+    client,
+    classes,
   );
 
   return (
