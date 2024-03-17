@@ -163,10 +163,6 @@ export const Subheader: React.FC<SubheaderProps> = ({
           fetchClients={fetchClients}
         />
       )} */}
-      {/* <div></div>
-      <div className="flex my-2 justify-center">
-        <ContinuousSlider setStandardContribution={setStandardContribution} />
-      </div> */}
     </div>
   );
 };

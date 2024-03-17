@@ -41,6 +41,7 @@ export const QuoteCard = ({
   standardContribution,
   isContributionSettingsExpanded,
 }: QuoteCardProps) => {
+
   const [quoteSpecificContribution, setQuoteSpecificContribution] =
     useState<any>(standardContribution);
   const calculatedTotalCost = useCalculateTotalCost(
