@@ -17,7 +17,7 @@ export const HeaderCard = ({ fieldObject }: HeaderCardProps) => {
     <QuoteColumnDisplay
       field={fieldObject}
       initialExpanded
-      className="w-fit max-w-44 pt-28 rounded-t-md"
+      className="w-fit max-w-44 pt-6.5 rounded-t-md"
       headerComponent={
         <>
           {/* <div
