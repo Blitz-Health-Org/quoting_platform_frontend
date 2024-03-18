@@ -454,7 +454,7 @@ export default function SelectQuotes() {
                 {/* <p className="mr-1">/ Quotes</p>
             <p className="mr-1 text-gray-400 text-xs">•</p>
             <p className="text-gray-400">({quotes.length})</p> */}
-            {/* Sup */}
+                {/* Sup */}
               </div>
 
               <div className="flex items-center gap-2">
