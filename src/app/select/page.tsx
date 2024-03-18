@@ -434,7 +434,7 @@ export default function SelectQuotes() {
     if (value === "0") {
       return 0;
     }
-    
+
     if (
       value === undefined ||
       value === null ||
@@ -449,24 +449,32 @@ export default function SelectQuotes() {
     }
 
     // Before cleaning up the value, truncate digits after the decimal point
-    const withoutDecimal = value.split('.')[0];
-  
+    const withoutDecimal = value.split(".")[0];
+
     // Remove commas, dollar signs, and any periods that might be left
     const cleanedValue = withoutDecimal.replace(/[,+$]/g, "");
-  
+
     // If the value is a percentage (contains '%'), remove '%' and convert to a number
     if (cleanedValue.includes("%")) {
       return parseFloat(cleanedValue.replace("%", "")) || 0;
     }
-  
+
     // If the value is a regular number or a numeric string, convert it to a number
     return Number(cleanedValue);
   };
-  
-  function findMinimumValue(category: "deductible" | "coinsurance" | "out_of_pocket_max") {
-    let specificQuotes = currentTab === "ACA" ? aca_quotes : non_aca_quotes
+
+  function findMinimumValue(
+    category: "deductible" | "coinsurance" | "out_of_pocket_max",
+  ) {
+    let specificQuotes = currentTab === "ACA" ? aca_quotes : non_aca_quotes;
     if (category === "deductible") {
-      return Math.min(...specificQuotes.map((quote) => parseValue2((quote.data as any)?.["deductible"] ?? "0"))) | 0;
+      return (
+        Math.min(
+          ...specificQuotes.map((quote) =>
+            parseValue2((quote.data as any)?.["deductible"] ?? "0"),
+          ),
+        ) | 0
+      );
     }
     // else if (category === "coinsurance") {
     //   return Math.min(...quotes.map((quote) => parseValue((quote.data as any)?.["coinsurance"] ?? "0"))) | 0;
@@ -475,32 +483,53 @@ export default function SelectQuotes() {
       // if (quotes.every((quote) => (quote.data as any)?.["out_of_pocket_max"] === null)) {
       //   return 0;
       // }
-      return Math.min(...specificQuotes.map((quote) => parseValue2((quote.data as any)?.["out_of_pocket_max"] ?? '0'))) | 0;
-    }
-    else {
+      return (
+        Math.min(
+          ...specificQuotes.map((quote) =>
+            parseValue2((quote.data as any)?.["out_of_pocket_max"] ?? "0"),
+          ),
+        ) | 0
+      );
+    } else {
       return 0;
     }
   }
 
-  function findMaximumValue(category: "deductible" | "coinsurance" | "out_of_pocket_max") {
-    let specificQuotes = currentTab === "ACA" ? aca_quotes : non_aca_quotes
+  function findMaximumValue(
+    category: "deductible" | "coinsurance" | "out_of_pocket_max",
+  ) {
+    let specificQuotes = currentTab === "ACA" ? aca_quotes : non_aca_quotes;
     if (category === "deductible") {
-      return Math.max(...specificQuotes.map((quote) => parseValue2((quote.data as any)?.["deductible"] ?? '0'))) | 0;
+      return (
+        Math.max(
+          ...specificQuotes.map((quote) =>
+            parseValue2((quote.data as any)?.["deductible"] ?? "0"),
+          ),
+        ) | 0
+      );
     }
     // else if (category === "coinsurance") {
     //   return Math.max(...quotes.map((quote) => parseInt((quote.data as any)?.["coinsurance"] ?? '0') || 0));
     // }
     else if (category === "out_of_pocket_max") {
-      const values = specificQuotes.map((quote) => parseValue2((quote.data as any)?.["out_of_pocket_max"] ?? '0'));
+      const values = specificQuotes.map((quote) =>
+        parseValue2((quote.data as any)?.["out_of_pocket_max"] ?? "0"),
+      );
       console.log(values);
       return Math.max(...values) | 0;
     }
     return 10000;
   }
 
-  const [valueDeductible, setValueDeductible] = React.useState<number[]>([findMinimumValue("deductible"), findMaximumValue("deductible")]);
+  const [valueDeductible, setValueDeductible] = React.useState<number[]>([
+    findMinimumValue("deductible"),
+    findMaximumValue("deductible"),
+  ]);
   // const [valueCoinsurance, setValueCoinsurance] = React.useState<number[]>([20, 37]);
-  const [valueOOP, setValueOOP] = React.useState<number[]>([findMinimumValue("out_of_pocket_max"), findMaximumValue("out_of_pocket_max")]);
+  const [valueOOP, setValueOOP] = React.useState<number[]>([
+    findMinimumValue("out_of_pocket_max"),
+    findMaximumValue("out_of_pocket_max"),
+  ]);
 
   if (!selectedClient) {
     return <></>;

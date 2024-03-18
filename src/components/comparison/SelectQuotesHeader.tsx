@@ -4,8 +4,8 @@ import { IoDocumentTextOutline } from "react-icons/io5";
 import { FaSearch } from "react-icons/fa";
 import { FaChevronDown } from "react-icons/fa";
 import { QuoteType } from "@/src/types/custom/Quote";
-import Box from '@mui/material/Box';
-import Slider from '@mui/material/Slider';
+import Box from "@mui/material/Box";
+import Slider from "@mui/material/Slider";
 import React, { Dispatch, SetStateAction, useEffect, useState } from "react";
 import TabHeader from "../ui/TabHeader";
 
@@ -42,7 +42,7 @@ export default function SelectQuotesHeader({
   valueOOP,
   setValueOOP,
   findMinimumValue,
-  findMaximumValue
+  findMaximumValue,
 }: SelectQuotesHeaderProps) {
   const [showSortDropdown, setShowSortDropdown] = useState(false);
   const [showFilterDropdown, setShowFilterDropdown] = useState(false);
@@ -61,14 +61,14 @@ export default function SelectQuotesHeader({
     // Add more sorting options as needed
   ];
 
-  const minimumDeductible = findMinimumValue("deductible")
-  const maximumDeductible = findMaximumValue("deductible")
+  const minimumDeductible = findMinimumValue("deductible");
+  const maximumDeductible = findMaximumValue("deductible");
   // const minimumCoinsurance = findMinimumValue("coinsurance")
   // const maximumCoinsurance = findMaximumValue("coinsurance")
-  const minimumOOP = findMinimumValue("out_of_pocket_max")
-  const maximumOOP = findMaximumValue("out_of_pocket_max")
+  const minimumOOP = findMinimumValue("out_of_pocket_max");
+  const maximumOOP = findMaximumValue("out_of_pocket_max");
 
-  function chooseMinimumValue (category: string) {
+  function chooseMinimumValue(category: string) {
     if (category === "deductible") {
       return minimumDeductible;
     }
@@ -77,14 +77,13 @@ export default function SelectQuotesHeader({
     // }
     else if (category === "out_of_pocket_max") {
       return minimumOOP;
-    }
-    else {
-      console.log("Something shouldn't be happening")
+    } else {
+      console.log("Something shouldn't be happening");
       return 0;
     }
   }
 
-  function chooseMaximumValue (category: string) {
+  function chooseMaximumValue(category: string) {
     if (category === "deductible") {
       return maximumDeductible;
     }
@@ -93,20 +92,29 @@ export default function SelectQuotesHeader({
     // }
     else if (category === "out_of_pocket_max") {
       return maximumOOP;
-    }
-    else {
-      console.log("Something shouldn't be happening")
+    } else {
+      console.log("Something shouldn't be happening");
       return 0;
     }
   }
 
   const marks = {
-    deductible: [{value: minimumDeductible, label: `$${minimumDeductible}`}, {value: maximumDeductible, label: `$${maximumDeductible}`}],
+    deductible: [
+      { value: minimumDeductible, label: `$${minimumDeductible}` },
+      { value: maximumDeductible, label: `$${maximumDeductible}` },
+    ],
     // coinsurance: [{value: minimumCoinsurance, label: `$${minimumCoinsurance}`}, {value: maximumCoinsurance, label: `$${maximumCoinsurance}`}],
-    out_of_pocket_max: [{value: minimumOOP, label: `$${minimumOOP}`}, {value: maximumOOP, label: `$${maximumOOP}`}]
-  }
+    out_of_pocket_max: [
+      { value: minimumOOP, label: `$${minimumOOP}` },
+      { value: maximumOOP, label: `$${maximumOOP}` },
+    ],
+  };
 
-  const handleChange = (category: string, event: Event, newValue: number | number[]) => {
+  const handleChange = (
+    category: string,
+    event: Event,
+    newValue: number | number[],
+  ) => {
     if (category === "deductible") {
       setValueDeductible(newValue as number[]);
     }
@@ -118,7 +126,7 @@ export default function SelectQuotesHeader({
     }
   };
 
-  function chooseValue (category: string) {
+  function chooseValue(category: string) {
     if (category === "deductible") {
       return valueDeductible;
     }
@@ -161,13 +169,13 @@ export default function SelectQuotesHeader({
       setShowFilterDropdown(!showFilterDropdown);
     }
   }
-  
+
   const shouldDisplayOption = (option: any) => {
     const minValue = chooseMinimumValue(option.value);
     const maxValue = chooseMaximumValue(option.value);
-    console.log(option, "should or should not display", minValue, maxValue)
+    console.log(option, "should or should not display", minValue, maxValue);
     return minValue !== maxValue;
-  }
+  };
 
   return (
     <div className="w-full flex flex-col mt-4 mb-2 justify-center">
@@ -190,7 +198,7 @@ export default function SelectQuotesHeader({
         </div>
         <div className="w-full md:w-1/2">
           <div className="flex items-center justify-center md:justify-end md:mt-0 mt-4">
-          <div className="flex flex-col">
+            <div className="flex flex-col">
               <button
                 className="cursor-pointer px-2 py-1 flex items-center gap-1"
                 onClick={() => toggleDropdown("filter")}
@@ -199,37 +207,76 @@ export default function SelectQuotesHeader({
                 <FaChevronDown className="h-3 w-3" />
               </button>
               {showFilterDropdown && (
-              <div className="ml-1 absolute mt-8 z-50 bg-white border rounded-md shadow-lg">
-                {filterOptions.map((option) => (
-                  shouldDisplayOption(option) && (
-                    <div
-                      key={option.value}
-                      className={`px-2 py-1.5 border border-t-0 border-l-0 border-r-0 hover:bg-gray-100 border-gray-400/80 cursor-pointer 
+                <div className="ml-1 absolute mt-8 z-50 bg-white border rounded-md shadow-lg">
+                  {filterOptions.map(
+                    (option) =>
+                      shouldDisplayOption(option) && (
+                        <div
+                          key={option.value}
+                          className={`px-2 py-1.5 border border-t-0 border-l-0 border-r-0 hover:bg-gray-100 border-gray-400/80 cursor-pointer 
                       ${selectedFilter === option.value ? "bg-gray-100" : ""}
                       ${option.value === "out_of_pocket_max" ? "border-b-0" : ""}`}
-                  >
-                    <div className="flex flex-col gap-2 px-6 py-1.5">
-                      {option.label}
-                      <Box sx={{ width: 200 }}>
-                        <Slider
-                          key={JSON.stringify(quotes)}
-                          defaultValue={[chooseMinimumValue(option.value as 'deductible' | 'coinsurance' | 'out_of_pocket_max'), chooseMaximumValue(option.value as 'deductible' | 'coinsurance' | 'out_of_pocket_max')]}
-                          onChange={(event, newValue) => handleChange(option.value as 'deductible' | 'coinsurance' | 'out_of_pocket_max', event, newValue)}
-                          valueLabelDisplay="auto"
-                          getAriaValueText={valuetext}
-                          min={chooseMinimumValue(option.value as 'deductible' | 'coinsurance' | 'out_of_pocket_max')}
-                          max={chooseMaximumValue(option.value as 'deductible' | 'coinsurance' | 'out_of_pocket_max')}
-                          marks={marks[option.value as 'deductible' | 'out_of_pocket_max']}
-                        />
-                      </Box>
-                    </div>
-                  </div>
-                  )
-                ))}
-              </div>
-            )}
-           </div>
-          <div className="flex flex-col">
+                        >
+                          <div className="flex flex-col gap-2 px-6 py-1.5">
+                            {option.label}
+                            <Box sx={{ width: 200 }}>
+                              <Slider
+                                key={JSON.stringify(quotes)}
+                                defaultValue={[
+                                  chooseMinimumValue(
+                                    option.value as
+                                      | "deductible"
+                                      | "coinsurance"
+                                      | "out_of_pocket_max",
+                                  ),
+                                  chooseMaximumValue(
+                                    option.value as
+                                      | "deductible"
+                                      | "coinsurance"
+                                      | "out_of_pocket_max",
+                                  ),
+                                ]}
+                                onChange={(event, newValue) =>
+                                  handleChange(
+                                    option.value as
+                                      | "deductible"
+                                      | "coinsurance"
+                                      | "out_of_pocket_max",
+                                    event,
+                                    newValue,
+                                  )
+                                }
+                                valueLabelDisplay="auto"
+                                getAriaValueText={valuetext}
+                                min={chooseMinimumValue(
+                                  option.value as
+                                    | "deductible"
+                                    | "coinsurance"
+                                    | "out_of_pocket_max",
+                                )}
+                                max={chooseMaximumValue(
+                                  option.value as
+                                    | "deductible"
+                                    | "coinsurance"
+                                    | "out_of_pocket_max",
+                                )}
+                                marks={
+                                  marks[
+                                    option.value as
+                                      | "deductible"
+                                      | "out_of_pocket_max"
+                                  ]
+                                }
+                              />
+                            </Box>
+                          </div>
+                        </div>
+                      ),
+                  )}
+                </div>
+              )}
+            </div>
+            <div className="flex flex-col">
               <button
                 className="cursor-pointer px-2 py-1 flex items-center gap-1"
                 // onClick={() => setShowFilterDropdown(!showFilterDropdown)}
@@ -239,22 +286,22 @@ export default function SelectQuotesHeader({
                 <FaChevronDown className="h-3 w-3" />
               </button>
               {showSortDropdown && (
-              <div className="ml-1 absolute mt-8 z-50 bg-white border rounded-md shadow-lg">
-                {sortingOptions.map((option) => (
-                  <div
-                    key={option.value}
-                    className={`px-2 py-1.5 border border-t-0 border-l-0 border-r-0 hover:bg-gray-100 border-gray-400/80 cursor-pointer 
+                <div className="ml-1 absolute mt-8 z-50 bg-white border rounded-md shadow-lg">
+                  {sortingOptions.map((option) => (
+                    <div
+                      key={option.value}
+                      className={`px-2 py-1.5 border border-t-0 border-l-0 border-r-0 hover:bg-gray-100 border-gray-400/80 cursor-pointer 
                     ${selectedFilter === option.value ? "bg-gray-100" : ""}
                     ${option.value === "out_of_pocket_max" ? "border-b-0" : ""}  
                     `}
-                    onClick={() => handleSortOptionSelect(option.value)}
-                  >
-                    {option.label}
-                  </div>
-                ))}
-              </div>
-            )}
-           </div>
+                      onClick={() => handleSortOptionSelect(option.value)}
+                    >
+                      {option.label}
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
           </div>
         </div>
       </div>

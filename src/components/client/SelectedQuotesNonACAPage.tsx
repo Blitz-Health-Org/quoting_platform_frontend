@@ -32,9 +32,8 @@ export const SelectedQuotesNonACAPage = ({
   parseValue2,
   findMaximumValue,
 }: SelectedQuotesNonACAPageProps) => {
-
   if (valueDeductible[1] === 0) {
-    valueDeductible[1] = findMaximumValue("deductible")
+    valueDeductible[1] = findMaximumValue("deductible");
   }
 
   return (
@@ -76,13 +75,18 @@ export const SelectedQuotesNonACAPage = ({
                   .toLowerCase()
                   .includes(search.toLowerCase()),
             )
-            .filter(
-              (quote: any) =>
-               { return (parseValue2(quote.data["deductible"] ?? "0") >= valueDeductible[0] &&
-                parseValue2(quote.data["deductible"] ?? "0") <= valueDeductible[1] && 
-                parseValue2(quote.data["out_of_pocket_max"] ?? "0") >= valueOOP[0] && 
-                parseValue2(quote.data["out_of_pocket_max"] ?? "0") <= valueOOP[1])
-            }) 
+            .filter((quote: any) => {
+              return (
+                parseValue2(quote.data["deductible"] ?? "0") >=
+                  valueDeductible[0] &&
+                parseValue2(quote.data["deductible"] ?? "0") <=
+                  valueDeductible[1] &&
+                parseValue2(quote.data["out_of_pocket_max"] ?? "0") >=
+                  valueOOP[0] &&
+                parseValue2(quote.data["out_of_pocket_max"] ?? "0") <=
+                  valueOOP[1]
+              );
+            })
             .map((quote, index) => (
               <div
                 key={quote.id}
