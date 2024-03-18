@@ -48,7 +48,7 @@ export const RecursiveQuoteColumnDisplay = ({
   }: HeaderLabelProps) => {
     return (
       <div
-        className={`w-full text-sm ${className} ${!alternateColor ? "bg-gray-100/50" : "bg-white"}`}
+        className={`w-full text-sm ${className} ${!alternateColor ? "bg-gray-100" : "bg-white"}`}
       >
         {field.type === "object" && (
           <hr className="w-full border-b-1 border-gray-500"></hr>
