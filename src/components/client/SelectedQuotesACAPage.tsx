@@ -31,15 +31,20 @@ export const SelectedQuotesACAPage = ({
   parseValue2,
   findMaximumValue,
 }: SelectedQuotesNonACAPageProps) => {
-  
   if (valueDeductible[1] === 0) {
     valueDeductible[1] = findMaximumValue("deductible");
-  } else if (valueOOP[1] === 0) { 
+  } else if (valueOOP[1] === 0) {
     valueOOP[1] = findMaximumValue("out_of_pocket_max");
   }
 
-  console.log("for for for", valueOOP[0], valueOOP[1], valueDeductible[0], valueDeductible[1])
-  
+  console.log(
+    "for for for",
+    valueOOP[0],
+    valueOOP[1],
+    valueDeductible[0],
+    valueDeductible[1],
+  );
+
   return (
     <>
       {" "}

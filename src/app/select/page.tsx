@@ -532,8 +532,14 @@ export default function SelectQuotes() {
 
   useEffect(() => {
     // Reset valueDeductible and valueOOP when currentTab changes.
-    setValueDeductible([findMinimumValue("deductible"), findMaximumValue("deductible")]);
-    setValueOOP([findMinimumValue("out_of_pocket_max"), findMaximumValue("out_of_pocket_max")]);
+    setValueDeductible([
+      findMinimumValue("deductible"),
+      findMaximumValue("deductible"),
+    ]);
+    setValueOOP([
+      findMinimumValue("out_of_pocket_max"),
+      findMaximumValue("out_of_pocket_max"),
+    ]);
   }, [currentTab]);
 
   if (!selectedClient) {
