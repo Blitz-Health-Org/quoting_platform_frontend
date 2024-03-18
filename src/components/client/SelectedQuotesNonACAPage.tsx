@@ -34,7 +34,11 @@ export const SelectedQuotesNonACAPage = ({
 }: SelectedQuotesNonACAPageProps) => {
   if (valueDeductible[1] === 0) {
     valueDeductible[1] = findMaximumValue("deductible");
+  } else if (valueOOP[1] === 0) { 
+    valueOOP[1] = findMaximumValue("out_of_pocket_max");
   }
+
+  console.log("for for for", valueOOP[0], valueOOP[1], valueDeductible[0], valueDeductible[1])
 
   return (
     <>
@@ -76,6 +80,7 @@ export const SelectedQuotesNonACAPage = ({
                   .includes(search.toLowerCase()),
             )
             .filter((quote: any) => {
+              // console.log(parseValue2(quote.data["out_of_pocket_max"] ?? "0"), valueOOP[1])
               return (
                 parseValue2(quote.data["deductible"] ?? "0") >=
                   valueDeductible[0] &&

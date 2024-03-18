@@ -13,6 +13,10 @@ type SelectedQuotesNonACAPageProps = {
   handleCheckboxChange: (quoteId: number) => void;
   handleAddNewQuote: (event: any) => void;
   search: string | undefined;
+  valueOOP: number[];
+  valueDeductible: number[];
+  parseValue2: (value: string | undefined) => number;
+  findMaximumValue: any;
 };
 
 export const SelectedQuotesACAPage = ({
@@ -22,7 +26,20 @@ export const SelectedQuotesACAPage = ({
   handleAddNewQuote,
   search,
   entryWidth,
+  valueOOP,
+  valueDeductible,
+  parseValue2,
+  findMaximumValue,
 }: SelectedQuotesNonACAPageProps) => {
+  
+  if (valueDeductible[1] === 0) {
+    valueDeductible[1] = findMaximumValue("deductible");
+  } else if (valueOOP[1] === 0) { 
+    valueOOP[1] = findMaximumValue("out_of_pocket_max");
+  }
+
+  console.log("for for for", valueOOP[0], valueOOP[1], valueDeductible[0], valueDeductible[1])
+  
   return (
     <>
       {" "}
@@ -63,6 +80,19 @@ export const SelectedQuotesACAPage = ({
                   .toLowerCase()
                   .includes(search.toLowerCase()),
             )
+            .filter((quote: any) => {
+              // console.log(parseValue2(quote.data["out_of_pocket_max"] ?? "0"), valueOOP[1])
+              return (
+                parseValue2(quote.data["deductible"] ?? "0") >=
+                  valueDeductible[0] &&
+                parseValue2(quote.data["deductible"] ?? "0") <=
+                  valueDeductible[1] &&
+                parseValue2(quote.data["out_of_pocket_max"] ?? "0") >=
+                  valueOOP[0] &&
+                parseValue2(quote.data["out_of_pocket_max"] ?? "0") <=
+                  valueOOP[1]
+              );
+            })
             .map((quote, index) => (
               <div
                 key={quote.id}

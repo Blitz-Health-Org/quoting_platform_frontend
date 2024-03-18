@@ -26,6 +26,7 @@ type SelectQuotesHeaderProps = {
   setValueOOP: any;
   findMinimumValue: any;
   findMaximumValue: any;
+  currentTab: any;
 };
 
 export default function SelectQuotesHeader({
@@ -43,6 +44,7 @@ export default function SelectQuotesHeader({
   setValueOOP,
   findMinimumValue,
   findMaximumValue,
+  currentTab,
 }: SelectQuotesHeaderProps) {
   const [showSortDropdown, setShowSortDropdown] = useState(false);
   const [showFilterDropdown, setShowFilterDropdown] = useState(false);
@@ -139,7 +141,7 @@ export default function SelectQuotesHeader({
   }
 
   function valuetext(value: number) {
-    return `${value}°C`;
+    return `$${value}`;
   }
 
   const handleSortOptionSelect = (option: string) => {
@@ -221,7 +223,7 @@ export default function SelectQuotesHeader({
                             {option.label}
                             <Box sx={{ width: 200 }}>
                               <Slider
-                                key={JSON.stringify(quotes)}
+                                key={currentTab}
                                 defaultValue={[
                                   chooseMinimumValue(
                                     option.value as

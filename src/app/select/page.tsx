@@ -434,7 +434,6 @@ export default function SelectQuotes() {
     if (value === "0") {
       return 0;
     }
-
     if (
       value === undefined ||
       value === null ||
@@ -531,6 +530,12 @@ export default function SelectQuotes() {
     findMaximumValue("out_of_pocket_max"),
   ]);
 
+  useEffect(() => {
+    // Reset valueDeductible and valueOOP when currentTab changes.
+    setValueDeductible([findMinimumValue("deductible"), findMaximumValue("deductible")]);
+    setValueOOP([findMinimumValue("out_of_pocket_max"), findMaximumValue("out_of_pocket_max")]);
+  }, [currentTab]);
+
   if (!selectedClient) {
     return <></>;
   }
@@ -586,6 +591,7 @@ export default function SelectQuotes() {
                   setValueOOP={setValueOOP}
                   findMaximumValue={findMaximumValue}
                   findMinimumValue={findMinimumValue}
+                  currentTab={currentTab}
                   TabHeader={
                     <TabHeader
                       tabs={TABS}
@@ -625,9 +631,10 @@ export default function SelectQuotes() {
                     handleCheckboxChange={handleCheckboxChange}
                     handleAddNewQuote={handleAddNewQuote}
                     search={search}
-                    // valueOOP={valueOOP}
-                    // valueDeductible={valueDeductible}
-                    // parseValue={parseValue}
+                    valueOOP={valueOOP}
+                    parseValue2={parseValue2}
+                    valueDeductible={valueDeductible}
+                    findMaximumValue={findMaximumValue}
                   />
                 )}
               </div>
