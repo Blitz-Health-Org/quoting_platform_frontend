@@ -270,7 +270,7 @@ export default function HandbookTemplate(props: HandbookTemplateProps) {
       <Document>
         {/*render a single page*/}
 
-        <Page size="A4" style={styles.firstPage}>
+        {/* <Page size="A4" style={styles.firstPage}>
           <View style={styles.centered}>
             <Image src="Glance.png" style={styles.firstImage} />
           </View>
@@ -310,9 +310,9 @@ export default function HandbookTemplate(props: HandbookTemplateProps) {
           >
             ANGUS MCRAE
           </Text>
-        </Page>
+        </Page> */}
 
-        <Page size="A4" style={styles.copiedPage}>
+        {/* <Page size="A4" style={styles.copiedPage}>
           <View>
             <Text style={styles.rightAlignedText}>
               Page 2 | {props.clientName}
@@ -324,7 +324,7 @@ export default function HandbookTemplate(props: HandbookTemplateProps) {
           <View style={styles.centered}>
             <Image src="Definitions.png" style={styles.image} />
           </View>
-        </Page>
+        </Page> */}
 
         <Page size="A4" style={styles.copiedPage}>
           <View>
