@@ -35,9 +35,9 @@ export interface PlanAttributes {
   carrier: string;
   plan_name: string;
   plan_type: string;
-  office_copay: string;
+  office_copay_pcp: string;
   deductible: string;
-  copay_coinsurance: string;
+  coinsurance: string;
   out_of_pocket_max: string;
   additional_copay: string;
   total_employer_cost: string;
@@ -51,9 +51,9 @@ const planAttributesMapping: {
   { key: "carrier", label: "Carrier" },
   { key: "plan_id", alternateKey: "plan_name", label: "Plan" },
   { key: "deductible", label: "Deductible (Individual)" },
-  { key: "copay_coinsurance", label: "Coinsurance (In-Network)" },
+  { key: "coinsurance", label: "Coinsurance (In-Network)" },
   { key: "out_of_pocket_max", label: "Out of Pocket (Individual)" },
-  { key: "office_copay", label: "Office Copay" },
+  { key: "office_copay_pcp", label: "Office Copay" },
   // { key: "plan_type", label: "Network" },
   // { key: "additional_copay", label: "Additional Copays (ER / Imaging / OP / IP)", },
   { key: "total_employer_cost", label: "Total Cost" },
