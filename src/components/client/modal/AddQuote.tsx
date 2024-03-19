@@ -427,7 +427,7 @@ export const AddQuote = ({
                   </div>
                 )}
               </div>
-              <div className="flex items-center my-4 gap-3">
+              {/* <div className="flex items-center my-4 gap-3">
                 <p>Page Range:</p>
                 <select
                   className="outline outline-1 outline-gray-300 rounded-sm"
@@ -460,7 +460,7 @@ export const AddQuote = ({
                 <div className="text-red-500 text-xs mb-4">
                   Please enter a valid range format (e.g., 1-5, 8, 11-13).
                 </div>
-              )}
+              )} */}
 
               <button
                 type="submit"
