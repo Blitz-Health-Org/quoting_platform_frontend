@@ -18,15 +18,16 @@ export function calculateTotalCost(
   // rates: RateType,
   // classes: PlanSpecificClassInfoType[],
   plan: QuoteType,
-  planSpecificClasses: PlanSpecificClassInfoType[],
+  planSpecificClasses: PlanSpecificClassInfoType[]
 ): string {
   const tiers: TierType[] = ["employee", "spouse", "family", "child"];
 
+  console.log("PLAN", plan);
   const rates = {
-    employee: cleanInput(plan.data.employee_rate as string),
-    spouse: cleanInput(plan.data.spouse_rate as string),
-    child: cleanInput(plan.data.child_rate as string),
-    family: cleanInput(plan.data.family_rate as string),
+    employee: cleanInput((plan.data.employee_rate ?? "") as string),
+    spouse: cleanInput((plan.data.spouse_rate ?? "") as string),
+    child: cleanInput((plan.data.child_rate ?? "") as string),
+    family: cleanInput((plan.data.family_rate ?? "") as string),
   };
 
   let totalCost = 0.0;
