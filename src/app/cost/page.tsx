@@ -224,6 +224,7 @@ export default function CostPage() {
               classes={defaultOrCustomClasses}
               isCustomClassesActivated={isCustomClassesActivated}
               planSpecificClassInfo={planSpecificClassInfo}
+              censusData={client?.census_data as CensusDataType}
               handleUpdatePlanSpecificClassInfo={handleUpdateCustomClass}
             />
           </div>
