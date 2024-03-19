@@ -388,7 +388,10 @@ const SelectSidebar = ({
                                   )
                                 )}
                                 <p className="text-sm truncate max-w-36">
-                                  {(quote.data as any)?.["plan_id"] || "N/A"}
+                                  {(quote.data as any)?.["plan_id"] ||
+                                    (quote.data as any)?.["plan_name"] ||
+                                    (quote.data as any)?.["carrier"] ||
+                                    "N/A"}
                                 </p>
                               </div>
                               <button

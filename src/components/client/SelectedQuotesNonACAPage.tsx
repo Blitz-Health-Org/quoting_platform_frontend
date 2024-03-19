@@ -14,6 +14,10 @@ type SelectedQuotesNonACAPageProps = {
   handleCheckboxChange: (quoteId: number) => void;
   handleAddNewQuote: (event: any) => void;
   search: string | undefined;
+  valueOOP: number[];
+  valueDeductible: number[];
+  parseValue2: (value: string | undefined) => number;
+  findMaximumValue: any;
 };
 
 export const SelectedQuotesNonACAPage = ({
@@ -23,7 +27,25 @@ export const SelectedQuotesNonACAPage = ({
   handleAddNewQuote,
   search,
   entryWidth,
+  valueOOP,
+  valueDeductible,
+  parseValue2,
+  findMaximumValue,
 }: SelectedQuotesNonACAPageProps) => {
+  if (valueDeductible[1] === 0) {
+    valueDeductible[1] = findMaximumValue("deductible");
+  } else if (valueOOP[1] === 0) {
+    valueOOP[1] = findMaximumValue("out_of_pocket_max");
+  }
+
+  console.log(
+    "for for for",
+    valueOOP[0],
+    valueOOP[1],
+    valueDeductible[0],
+    valueDeductible[1],
+  );
+
   return (
     <>
       <div
@@ -63,10 +85,23 @@ export const SelectedQuotesNonACAPage = ({
                   .toLowerCase()
                   .includes(search.toLowerCase()),
             )
-            .map((quote) => (
+            .filter((quote: any) => {
+              // console.log(parseValue2(quote.data["out_of_pocket_max"] ?? "0"), valueOOP[1])
+              return (
+                parseValue2(quote.data["deductible"] ?? "0") >=
+                  valueDeductible[0] &&
+                parseValue2(quote.data["deductible"] ?? "0") <=
+                  valueDeductible[1] &&
+                parseValue2(quote.data["out_of_pocket_max"] ?? "0") >=
+                  valueOOP[0] &&
+                parseValue2(quote.data["out_of_pocket_max"] ?? "0") <=
+                  valueOOP[1]
+              );
+            })
+            .map((quote, index) => (
               <div
                 key={quote.id}
-                className={`flex items-center w-fit mb-1 mt-1 py-2 border-b`}
+                className={`flex items-center w-fit py-2 border-b ${index % 2 === 0 ? "bg-gray-100" : "bg-white"}`}
               >
                 <div className="grid-cols-9 w-full flex justify-left text-center gap-1 h-8 items-center text-sm">
                   {/* Map through the plan attributes for each quote */}
