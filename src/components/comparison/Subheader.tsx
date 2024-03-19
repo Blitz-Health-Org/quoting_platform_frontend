@@ -56,10 +56,12 @@ export const Subheader: React.FC<SubheaderProps> = ({
 
   console.log("client", client);
 
-  const handleCompareCostsClick = () =>
-    router.push(
-      `/cost?clientId=${client.id}&planId=${client.connected_plans[0].id}`,
-    );
+  const handleCompareCostsClick = () => {
+    // router.push(
+    //   `/cost?clientId=${client.id}&planId=${client.connected_plans[0].id}`,
+    // );
+    handleBusiness(1);
+  }
 
   return (
     <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 h-30 mb-2 mt-12">
