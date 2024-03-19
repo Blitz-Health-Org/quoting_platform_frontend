@@ -18,7 +18,7 @@ export function calculateTotalCost(
   // rates: RateType,
   // classes: PlanSpecificClassInfoType[],
   plan: QuoteType,
-  planSpecificClasses: PlanSpecificClassInfoType[]
+  planSpecificClasses: PlanSpecificClassInfoType[],
 ): string {
   const tiers: TierType[] = ["employee", "spouse", "family", "child"];
 
