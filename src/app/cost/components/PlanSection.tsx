@@ -12,18 +12,21 @@ type PlanSectionProps = {
   classes: ClassType[];
   isCustomClassesActivated: boolean;
   planSpecificClassInfo: PlanSpecificClassInfoType[];
+  censusData: CensusDataType;
   handleUpdatePlanSpecificClassInfo: (
     customClass: PlanSpecificClassInfoType,
     planId: number,
   ) => void;
 };
 import lodash from "lodash";
+import { CensusDataType } from "../page";
 
 export const PlanSection = ({
   plans,
   classes,
   isCustomClassesActivated,
   planSpecificClassInfo,
+  censusData,
   handleUpdatePlanSpecificClassInfo,
 }: PlanSectionProps) => {
   const [editedPlanClassId, setEditedPlanClassId] = useState<
@@ -39,25 +42,23 @@ export const PlanSection = ({
               class_id: 1,
               employee: {
                 contribution_percentage: 50,
-                num_lives: 0,
+                num_lives: censusData.employee.num_lives ?? 0,
               },
               spouse: {
                 contribution_percentage: 50,
-                num_lives: 0,
+                num_lives: censusData.spouse.num_lives ?? 0,
               },
               child: {
                 contribution_percentage: 50,
-                num_lives: 0,
+                num_lives: censusData.child.num_lives ?? 0,
               },
               family: {
                 contribution_percentage: 50,
-                num_lives: 0,
+                num_lives: censusData.family.num_lives ?? 0,
               },
             };
           }),
     );
-
-  console.log("EDITEDPLANSPECIFICCLASS", editedPlanSpecificClassInfo);
 
   if (
     isCustomClassesActivated &&
@@ -67,6 +68,8 @@ export const PlanSection = ({
     setEditedPlanSpecificClassInfo(planSpecificClassInfo);
   }
 
+  const errorMessageMap = {};
+
   const handleInputChange = (
     planId: number,
     classId: number,
@@ -74,6 +77,8 @@ export const PlanSection = ({
     field: string,
     value: string,
   ) => {
+    errorMessageMap[planId][classId][tier][field] = cleanInput(value)[1];
+
     setEditedPlanSpecificClassInfo((currentInfo) =>
       currentInfo.map((info) => {
         if (
@@ -162,6 +167,11 @@ export const PlanSection = ({
                                                 )
                                               }
                                             />
+                                            {errorMessageMap[plan.id][
+                                              classItem.id
+                                            ][tier][
+                                              "contribution_percentage"
+                                            ] && "Please enter a valid input"}
                                           </>
                                         ) : (
                                           <span>
