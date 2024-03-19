@@ -426,6 +426,41 @@ export const AddQuote = ({
                   </div>
                 )}
               </div>
+              <div className="flex items-center my-4 gap-3">
+                <p>Page Range:</p>
+                <select
+                  className="outline outline-1 outline-gray-300 rounded-sm"
+                  value={rangeSelection}
+                  onChange={(e) => {
+                    setRangeSelection(e.target.value);
+                  }}
+                >
+                  <option value="all">All</option>
+                  <option value="custom">Custom</option>
+                </select>
+                {rangeSelection === "custom" && (
+                  <>
+                    <input
+                      type="text"
+                      className="h-5 outline outline-1 outline-gray-300 text-sm rounded-sm"
+                      placeholder="e.g., 1-5, 8, 11-13"
+                      onChange={(e) => {
+                        if (e.target.value && e.target.value.trim()) {
+                          const newValue = e.target.value.trim();
+                          setCustomRange(newValue);
+                          validateCustomRange(newValue);
+                        }
+                      }}
+                    />
+                  </>
+                )}
+              </div>
+              {rangeSelection === "custom" && !isRangeValid && (
+                <div className="text-red-500 text-xs mb-4">
+                  Please enter a valid range format (e.g., 1-5, 8, 11-13).
+                </div>
+              )}
+
               <button
                 type="submit"
                 className="w-full bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700 focus:outline-none cursor-pointer mt-1"

@@ -10,7 +10,7 @@
 
 import { QuoteColumnDisplay } from "./QuoteColumnDisplay";
 import Image from "next/image";
-import { useCalculateTotalCost } from "./utils/useCalculateTotalCost";
+import { calculateTotalCost } from "./utils/calculateTotalCost";
 import { MdOutlineArrowDropDown, MdOutlineArrowRight } from "react-icons/md";
 import { max } from "lodash";
 import { QuoteCardContinuousSlider } from "./QuoteCardContinuousSlider";
@@ -43,17 +43,18 @@ export const QuoteCard = ({
 }: QuoteCardProps) => {
   const [quoteSpecificContribution, setQuoteSpecificContribution] =
     useState<any>(standardContribution);
-  const calculatedTotalCost = useCalculateTotalCost(
-    quote.data,
-    quoteSpecificContribution,
-    classes,
-    {
-      employee: (quote.data as any)?.["employee_rate"],
-      child: (quote.data as any)?.["child_rate"],
-      family: (quote.data as any)?.["family_rate"],
-      spouse: (quote.data as any)?.["spouse_rate"],
-    },
-  );
+  const calculatedTotalCost = null;
+  // calculateTotalCost(
+  //   plan
+  //   quoteSpecificContribution,
+  //   {
+  //     employee: (quote.data as any)?.["employee_rate"],
+  //     child: (quote.data as any)?.["child_rate"],
+  //     family: (quote.data as any)?.["family_rate"],
+  //     spouse: (quote.data as any)?.["spouse_rate"],
+  //   },
+  //   classes,
+  // );
 
   return (
     <QuoteColumnDisplay

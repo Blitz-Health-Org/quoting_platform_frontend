@@ -169,11 +169,6 @@ export default function QuotingPage() {
 
       setClient(clientData);
       setPlans(clientData.connected_plans);
-
-      console.log(
-        clientData.connected_plans[0].selectedQuotes[0].data["plan_id"] ||
-          clientData.connected_plans[0].selectedQuotes[0].data["plan_name"],
-      );
     } catch (error) {
       console.error("Error fetching data:", error);
       // Optionally handle errors, such as setting an error state or showing a notification

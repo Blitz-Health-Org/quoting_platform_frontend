@@ -63,7 +63,7 @@ export const RecursiveQuoteColumnDisplay = ({
           <p className="break-all font-semibold max-w-64">
             {["string", "number", "boolean"].includes(field.type) ? (
               isQuoteCard ? (
-                quoteData ? (
+                quoteData !== null && quoteData !== undefined ? (
                   quoteData
                 ) : (
                   "N/A"

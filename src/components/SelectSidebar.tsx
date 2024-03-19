@@ -206,6 +206,7 @@ const SelectSidebar = ({
     }
   };
 
+  //TODO: Also adding to plangroup table, refactoring (Ethan) so that plans can be manipulated on total cost page
   const updateConnectedPlans = async (updatedPlans: any) => {
     if (updatedPlans.length === 0) {
       comparison_created_false();
@@ -219,6 +220,7 @@ const SelectSidebar = ({
       return { success: false, error };
     }
     console.log("Connected plans updated successfully:", data);
+
     return { success: true, data };
   };
 
