@@ -48,7 +48,7 @@ export const RecursiveQuoteColumnDisplay = ({
   }: HeaderLabelProps) => {
     return (
       <div
-        className={`w-full text-sm ${className} ${!alternateColor ? "bg-gray-100" : "bg-white"}`}
+        className={`w-full text-sm ${className} ${!alternateColor && isQuoteCard ? "bg-gray-100" : "bg-white"}`}
       >
         {field.type === "object" && (
           <hr className="w-full border-b-1 border-gray-500"></hr>
@@ -58,7 +58,7 @@ export const RecursiveQuoteColumnDisplay = ({
           className={`w-full border-gray-300 ${field.label === "Plan Name" && isQuoteCard ? "border-t-0" : ""}`}
         ></hr>
         <div
-          className={`w-full flex items-center ${isQuoteCard ? "justify-center" : "justify-start"} h-12 w-full overflow-x-scroll text-nowrap px-3`}
+          className={`w-full flex items-center ${isQuoteCard ? "justify-center" : "justify-start"} h-10 w-full overflow-x-scroll text-nowrap px-3`}
         >
           <p className="break-all font-semibold max-w-64">
             {["string", "number", "boolean"].includes(field.type) ? (

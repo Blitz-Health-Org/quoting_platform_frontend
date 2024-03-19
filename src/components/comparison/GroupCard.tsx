@@ -33,7 +33,7 @@ export function GroupCard({
     useState<boolean>(false);
 
   return (
-    <div className="flex-col w-fit bg-white h-fit rounded-md">
+    <div className="flex-col w-fit bg-white mb-4 h-fit rounded-md">
       <div
         className={`flex flex-col justify-center pt-3 pr-4 items-center border border-b-0 rounded-b-none border-gray-300 rounded-t-md
       ${
