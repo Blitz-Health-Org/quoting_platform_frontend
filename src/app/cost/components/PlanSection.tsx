@@ -68,7 +68,7 @@ export const PlanSection = ({
     setEditedPlanSpecificClassInfo(planSpecificClassInfo);
   }
 
-  const errorMessageMap = {};
+  //   const errorMessageMap = {};
 
   const handleInputChange = (
     planId: number,
@@ -77,7 +77,7 @@ export const PlanSection = ({
     field: string,
     value: string,
   ) => {
-    errorMessageMap[planId][classId][tier][field] = cleanInput(value)[1];
+    // errorMessageMap[planId][classId][tier][field] = cleanInput(value)[1];
 
     setEditedPlanSpecificClassInfo((currentInfo) =>
       currentInfo.map((info) => {
@@ -167,11 +167,11 @@ export const PlanSection = ({
                                                 )
                                               }
                                             />
-                                            {errorMessageMap[plan.id][
+                                            {/* {errorMessageMap[plan.id][
                                               classItem.id
                                             ][tier][
                                               "contribution_percentage"
-                                            ] && "Please enter a valid input"}
+                                            ] && "Please enter a valid input"} */}
                                           </>
                                         ) : (
                                           <span>
