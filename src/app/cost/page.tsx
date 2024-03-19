@@ -8,46 +8,93 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import { calculateTotalCost } from "@/src/components/comparison/utils/calculateTotalCost";
 import { Json } from "@/src/types/database/database.types";
+import { cleanInput } from "@/src/components/comparison/utils/cleanInput";
+import { getCensusData } from "./utils/getCensusData";
+import { PlanSpecificClassInfoType, getClasses } from "./utils/getClasses";
+import { CensusDataSection } from "./components/CensusDataSection";
+import { PlanSection } from "./components/PlanSection";
+import { ClassSection } from "./components/ClassSection";
+import { QuoteType } from "@/src/types/custom/Quote";
+import { useLocalStorage } from "@/src/utils/useLocalStorage";
 
-type ContributionPercentagesType = {
-  employee_contribution: number;
-  spouse_contribution: number;
-  family_contribution: number;
-  child_contribution: number;
+export type CensusDataType = {
+  employee: {
+    num_lives: number | null;
+  };
+  spouse: {
+    num_lives: number | null;
+  };
+  family: {
+    num_lives: number | null;
+  };
+  child: {
+    num_lives: number | null;
+  };
 };
 
 export default function CostPage() {
   const searchParams = useSearchParams();
   const clientId = searchParams.get("clientId");
-  const planGroupId = searchParams.get("planId");
+
+  const planGroupId = parseInt(searchParams.get("planId") as string);
 
   const router = useRouter();
 
   const [loading, setLoading] = useState<boolean>(true);
 
-  const [planGroup, setPlanGroup] = useState<PlanGroupType | null>(null);
   const [client, setClient] = useState<ClientType | null>(null);
+  const [planGroup, setPlanGroup] = useState<PlanGroupType | null>(null);
+  const [isCustomClassesActivated, setIsCustomClassesActivated] =
+    useLocalStorage<boolean>("isCustomClassesActivated", false);
   const [classes, setClasses] = useState<ClassType[]>([]);
-  const [contributionPercentages, setContributionPercentages] =
-    useState<ContributionPercentagesType>(
-      {} as unknown as ContributionPercentagesType,
-    );
+  //separating plan-specific info in state because not stored in database
+  const [planSpecificClassInfo, setPlanSpecificClassInfo] = useState<
+    PlanSpecificClassInfoType[]
+  >([]);
+  console.log("PLAN PLAN PLAN", planSpecificClassInfo);
+  const [censusData, setCensusData] = useState<CensusDataType>({
+    employee: {
+      num_lives: null,
+    },
+    spouse: {
+      num_lives: null,
+    },
+    child: {
+      num_lives: null,
+    },
+    family: {
+      num_lives: null,
+    },
+  });
+  //   const [rates, setRates] = useState<>(null);
 
   const [isFirstOpen, setIsFirstOpen] = useState<boolean>(true);
   const [isSecondOpen, setIsSecondOpen] = useState<boolean>(true);
   const [isThirdOpen, setIsThirdOpen] = useState<boolean>(true);
 
+  //extracted logic for readability, sets both plan specific and non-planspecific
+  const {
+    fetchAndSetCustomClasses,
+    handleAddCustomClass,
+    handleUpdateCustomClass,
+    handleDeleteCustomClass,
+  } = getClasses(setClasses, setPlanSpecificClassInfo);
+  const { handleUpdateCensusData } = getCensusData(setCensusData);
+  //   const updateRates = getUpdateRates(setRates);
+
   //LOAD DATA
-  //num_lives
-  //rates
-  //contribution
-  //classes
+  //num_lives (census data)
+  //rates (plan_group)
+  //contribution (classes)
 
   useEffect(() => {
-    fetchClient();
+    if (loading) {
+      fetchData();
+    }
   }, []);
 
-  const fetchClient = async () => {
+  const fetchData = async () => {
+    //fetch client
     try {
       const { data: clientData, error: clientError } = await supabase
         .from("clients")
@@ -56,51 +103,33 @@ export default function CostPage() {
         .single();
 
       if (clientError) {
+        alert(clientId);
         router.push("/404");
         return;
       }
 
       setClient(clientData);
-      const planGroup = clientData.connected_plans.find(
-        (planGroup: any) => planGroup.id === planGroupId,
-      );
 
-      setPlanGroup(planGroup);
+      setCensusData(clientData.census_data);
 
-      if (clientData.custom_classes?.length) {
-        setClasses(clientData.custom_classes);
-      } else {
-        const defaultClass: ClassType[] = [
-          {
-            class_name: "default",
-            employee: {
-              contribution_percentage: 50,
-              num_lives: clientData.census_data?.employee_num as number,
-            },
-            spouse: {
-              contribution_percentage: 50,
-              num_lives: clientData.census_data?.spouse_num as number,
-            },
-            family: {
-              contribution_percentage: 50,
-              num_lives: clientData.census_data?.family_num as number,
-            },
-            child: {
-              contribution_percentage: 50,
-              num_lives: clientData.census_data?.child_num as number,
-            },
-          },
-        ];
+      const newPlanGroup = (
+        clientData.connected_plans as unknown as PlanGroupType[]
+      ).find((planGroup: any) => {
+        return planGroup.id === planGroupId;
+      }) as PlanGroupType;
+      setPlanGroup(newPlanGroup);
 
-        setClasses(defaultClass);
-      }
+      const plans = newPlanGroup.selectedQuotes;
+      const planIds = plans.map((plan) => plan.id);
+
+      //fetches custom classes and planspecific
+      await fetchAndSetCustomClasses(clientData, planIds);
 
       setLoading(false);
     } catch (error) {
       console.error("Error fetching data:", error);
       alert("Error occurred. Sending you back to home page!");
       router.push("/");
-      // Optionally handle errors, such as setting an error state or showing a notification
     }
   };
 
@@ -109,23 +138,25 @@ export default function CostPage() {
   }
 
   //CALCULATE VARS
-  //If loading is finished planGroup, client, and custom classes should be set, explicit typing
+  //If loading is finished planGroup, planSpecificClassInfo, client, and classes should be set, explicit typing
 
-  const rates = planGroup?.selectedQuotes.map((plan) => {
-    return {
-      [plan.id]: {
-        employee: (plan.data as Json)?.["employee_rate"],
-        spouse: (plan.data as Json)?.["spouse_rate"],
-        child: (plan.data as Json)?.child_rate,
-        family: (plan.data as Json)?.family_rate,
-      },
+  //toggle custom classes (disables default)
+  let defaultOrCustomClasses;
+  if (!isCustomClassesActivated) {
+    const defaultClass: ClassType = {
+      class_name: "Default",
     };
-  });
+    defaultOrCustomClasses = [defaultClass];
+  } else {
+    defaultOrCustomClasses = classes;
+  }
+
+  const plans = (planGroup as PlanGroupType).selectedQuotes;
+  const planIds = plans.map((plan) => plan.id);
 
   return (
     <div className="w-full p-4">
       <div className="flex flex-col">
-        {/* First Collapsible Component */}
         <button
           onClick={() => setIsFirstOpen(!isFirstOpen)}
           className="w-full text-left py-2 px-4 font-semibold rounded-md mb-2"
@@ -134,29 +165,52 @@ export default function CostPage() {
         </button>
         {isFirstOpen && (
           <div className="w-full min-h-[50px] bg-gray-100 p-4 mb-4 rounded-md">
-            {/* Section 1 content goes here */}
+            <CensusDataSection
+              censusData={censusData}
+              setCensusData={setCensusData}
+              onSave={(editedCensusData: CensusDataType) => {
+                handleUpdateCensusData(client as ClientType, editedCensusData);
+              }}
+            />
           </div>
         )}
 
-        {/* Second Collapsible Component */}
         <button
           onClick={() => setIsSecondOpen(!isSecondOpen)}
           className="w-full text-left py-2 px-4 font-semibold rounded-md mb-2"
         >
-          Rates
+          Classes
         </button>
         {isSecondOpen && (
-          <div className="w-full min-h-[50px] bg-gray-100 p-4 mb-4 rounded-md">
-            custom classes toggle
-            {customClasses.length === 0
-              ? {
-                  defaultClass,
-                }
-              : null}
-          </div>
+          <>
+            <button
+              onClick={() => {
+                setIsCustomClassesActivated(!isCustomClassesActivated);
+              }}
+            >
+              Toggle Custom Classes
+            </button>
+            {isCustomClassesActivated && (
+              <div className="w-full min-h-[50px] bg-gray-100 p-4 mb-4 rounded-md">
+                <ClassSection
+                  classes={defaultOrCustomClasses}
+                  handleDeleteCustomClass={handleDeleteCustomClass}
+                  handleAddCustomClass={async (newClassName: string) => {
+                    handleAddCustomClass(
+                      client as ClientType,
+                      planIds,
+                      newClassName,
+                    );
+                  }}
+                  onSave={(editedClass: ClassType) => {
+                    handleUpdateCustomClass(editedClass);
+                  }}
+                />
+              </div>
+            )}
+          </>
         )}
 
-        {/* Third Collapsible Component */}
         <button
           onClick={() => setIsThirdOpen(!isThirdOpen)}
           className="w-full text-left py-2 px-4 font-semibold rounded-md"
@@ -165,16 +219,15 @@ export default function CostPage() {
         </button>
         {isThirdOpen && (
           <div className="w-full min-h-[50px] bg-gray-100 p-4 mb-4 rounded-md">
-            {/* Section 3 content goes here */}
+            <PlanSection
+              plans={plans}
+              classes={defaultOrCustomClasses}
+              isCustomClassesActivated={isCustomClassesActivated}
+              planSpecificClassInfo={planSpecificClassInfo}
+              handleUpdatePlanSpecificClassInfo={handleUpdateCustomClass}
+            />
           </div>
         )}
-      </div>
-      <div className="overflow-auto w-full p-4 rounded-md border border-black">
-        {/* Display content goes here */}
-        <>
-          <div>Employer pays: </div>
-          <div>Employee pays:</div>
-        </>
       </div>
     </div>
   );

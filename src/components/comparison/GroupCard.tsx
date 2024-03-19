@@ -34,13 +34,21 @@ export function GroupCard({
 
   return (
     <div className="flex-col w-fit bg-white h-fit">
-      <div className={`flex flex-col justify-center pt-3 pr-4 items-center border border-b-0 rounded-b-none border-gray-300 rounded-t-md
-      ${plan.selectedQuotes[0].carrier.includes("Anthem") ? "bg-yellow-100/50" :
-        plan.selectedQuotes[0].carrier.includes("United") ? "bg-blue-100/50" :
-        plan.selectedQuotes[0].carrier.includes("Cigna") ? "bg-red-100/50" :
-        plan.selectedQuotes[0].carrier.includes("Aetna") ? "bg-violet-100/50" :
-        "bg-green-100/50"} 
-      `}>
+      <div
+        className={`flex flex-col justify-center pt-3 pr-4 items-center border border-b-0 rounded-b-none border-gray-300 rounded-t-md
+      ${
+        plan.selectedQuotes[0].carrier.includes("Anthem")
+          ? "bg-yellow-100/50"
+          : plan.selectedQuotes[0].carrier.includes("United")
+            ? "bg-blue-100/50"
+            : plan.selectedQuotes[0].carrier.includes("Cigna")
+              ? "bg-red-100/50"
+              : plan.selectedQuotes[0].carrier.includes("Aetna")
+                ? "bg-violet-100/50"
+                : "bg-green-100/50"
+      } 
+      `}
+      >
         {/* <div
           className="w-full flex justify-end"
           onClick={() =>

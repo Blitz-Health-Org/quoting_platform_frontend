@@ -55,7 +55,7 @@ const AddCurrentPlanModal = ({
     event?.preventDefault();
     try {
       const { data: newQuote, error } = await supabase
-        .from("quotes")
+        .from("plans")
         .insert({
           client_id: client.id,
           data: {

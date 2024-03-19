@@ -512,7 +512,7 @@ export type Database = {
           carrier: string | null;
           client_id: number | null;
           created_at: string;
-          data: Json | null;
+          data: Json;
           deductibles: Json | null;
           effective_date: string | null;
           file_name: string | null;

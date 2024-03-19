@@ -14,9 +14,8 @@ import { calculateTotalCost } from "./utils/calculateTotalCost";
 import { MdOutlineArrowDropDown, MdOutlineArrowRight } from "react-icons/md";
 import { max } from "lodash";
 import { QuoteCardContinuousSlider } from "./QuoteCardContinuousSlider";
-import { useContext, useState } from "react";
+import { useState } from "react";
 import { ContinuousSlider } from "./ContributionSlider";
-import { ClientContext } from "@/src/context/ClientContext";
 
 // type QuoteCardProps = {
 //   quote: QuoteType;
@@ -42,22 +41,20 @@ export const QuoteCard = ({
   standardContribution,
   isContributionSettingsExpanded,
 }: QuoteCardProps) => {
-
   const [quoteSpecificContribution, setQuoteSpecificContribution] =
     useState<any>(standardContribution);
-  const { client } = useContext(ClientContext);
-  const calculatedTotalCost = calculateTotalCost(
-    quote.data,
-    quoteSpecificContribution,
-    {
-      employee: (quote.data as any)?.["employee_rate"],
-      child: (quote.data as any)?.["child_rate"],
-      family: (quote.data as any)?.["family_rate"],
-      spouse: (quote.data as any)?.["spouse_rate"],
-    },
-    client,
-    classes,
-  );
+  const calculatedTotalCost = null;
+  // calculateTotalCost(
+  //   plan
+  //   quoteSpecificContribution,
+  //   {
+  //     employee: (quote.data as any)?.["employee_rate"],
+  //     child: (quote.data as any)?.["child_rate"],
+  //     family: (quote.data as any)?.["family_rate"],
+  //     spouse: (quote.data as any)?.["spouse_rate"],
+  //   },
+  //   classes,
+  // );
 
   return (
     <QuoteColumnDisplay
