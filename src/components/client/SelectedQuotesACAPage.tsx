@@ -85,7 +85,7 @@ export const SelectedQuotesACAPage = ({
                 parseValue2(quote.data["deductible"] ?? "0") <=
                   valueDeductible[1] &&
                 parseValue2(quote.data["out_of_pocket_max"] ?? "0") >=
-                (valueOOP[0] || 0) &&
+                  (valueOOP[0] || 0) &&
                 parseValue2(quote.data["out_of_pocket_max"] ?? "0") <=
                   valueOOP[1]
               );
