@@ -58,6 +58,13 @@ export const SelectedQuotesACAPage = ({
             ))}
           </div>
         </div>
+        <p>
+        {quotes.length} - 
+        {valueDeductible[0]} - 
+        {valueOOP[0]}  - 
+        {valueDeductible[1]}  - 
+        {valueOOP[1]} - 
+        </p>
         {quotes.length === 0 ? (
           <div className="flex w-full h-full mb-2 items-center justify-center flex-col">
             <p className="mb-2">No Quotes</p>

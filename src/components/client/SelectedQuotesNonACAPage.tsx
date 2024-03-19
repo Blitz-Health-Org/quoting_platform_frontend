@@ -38,14 +38,6 @@ export const SelectedQuotesNonACAPage = ({
     valueOOP[1] = findMaximumValue("out_of_pocket_max");
   }
 
-  console.log(
-    "for for for",
-    valueOOP[0],
-    valueOOP[1],
-    valueDeductible[0],
-    valueDeductible[1],
-  );
-
   return (
     <>
       <div
@@ -66,6 +58,13 @@ export const SelectedQuotesNonACAPage = ({
             ))}
           </div>
         </div>
+
+        {quotes.length} - 
+        {valueDeductible[0]} - 
+        {valueOOP[0]}  - 
+        {valueDeductible[1]}  - 
+        {valueOOP[1]} - 
+
         {quotes.length === 0 ? (
           <div className="flex w-full mb-2 h-full items-center justify-center flex-col">
             <p className="mb-2">No Quotes</p>
