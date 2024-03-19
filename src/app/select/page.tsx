@@ -8,7 +8,7 @@ import { SnackbarAlert } from "../../components/ui/SnackbarAlert";
 import { supabase } from "../../supabase";
 import { FaRegSave, FaRegStar } from "react-icons/fa";
 import { notFound, useSearchParams } from "next/navigation";
-import { useCallback, useContext, useEffect, useState } from "react";
+import React, { useCallback, useContext, useEffect, useState } from "react";
 import { IoMdArrowBack } from "react-icons/io";
 import { QuoteType } from "@/src/types/custom/Quote";
 import { IconBuilding } from "@tabler/icons-react";
@@ -59,7 +59,7 @@ const planAttributesMapping: {
   { key: "total_employer_cost", label: "Total Cost" },
 ];
 
-const TABS = ["NON-ACA", "ACA"];
+const TABS = ["NON-ACA", "ACA", "Dental", "Vision", "STD", "LTD"];
 
 export type QuoteTypeWithCheckbox = QuoteType & { isSelected: boolean };
 
@@ -431,13 +431,125 @@ export default function SelectQuotes() {
     (quote) => !(quote.data as any)?.["metadata"]?.["is_aca"] === true,
   );
 
+  const parseValue2 = (value: string | undefined): number => {
+    if (value === "0") {
+      return 0;
+    }
+    if (
+      value === undefined ||
+      value === null ||
+      value === "deductible" ||
+      value === "MISSING" ||
+      value === "" ||
+      value.includes("N/A") ||
+      value.includes("/") ||
+      value.includes("+")
+    ) {
+      return 0;
+    }
+
+    // Before cleaning up the value, truncate digits after the decimal point
+    const withoutDecimal = value.split(".")[0];
+
+    // Remove commas, dollar signs, and any periods that might be left
+    const cleanedValue = withoutDecimal.replace(/[,+$]/g, "");
+
+    // If the value is a percentage (contains '%'), remove '%' and convert to a number
+    if (cleanedValue.includes("%")) {
+      return parseFloat(cleanedValue.replace("%", "")) || 0;
+    }
+
+    // If the value is a regular number or a numeric string, convert it to a number
+    return Number(cleanedValue);
+  };
+
+  function findMinimumValue(
+    category: "deductible" | "coinsurance" | "out_of_pocket_max",
+  ) {
+    let specificQuotes = currentTab === "ACA" ? aca_quotes : non_aca_quotes;
+    if (category === "deductible") {
+      return (
+        Math.min(
+          ...specificQuotes.map((quote) =>
+            parseValue2((quote.data as any)?.["deductible"] ?? "0"),
+          ),
+        ) | 0
+      );
+    }
+    // else if (category === "coinsurance") {
+    //   return Math.min(...quotes.map((quote) => parseValue((quote.data as any)?.["coinsurance"] ?? "0"))) | 0;
+    // }
+    else if (category === "out_of_pocket_max") {
+      // if (quotes.every((quote) => (quote.data as any)?.["out_of_pocket_max"] === null)) {
+      //   return 0;
+      // }
+      return (
+        Math.min(
+          ...specificQuotes.map((quote) =>
+            parseValue2((quote.data as any)?.["out_of_pocket_max"] ?? "0"),
+          ),
+        ) | 0
+      );
+    } else {
+      return 0;
+    }
+  }
+
+  function findMaximumValue(
+    category: "deductible" | "coinsurance" | "out_of_pocket_max",
+  ) {
+    let specificQuotes = currentTab === "ACA" ? aca_quotes : non_aca_quotes;
+    if (category === "deductible") {
+      return (
+        Math.max(
+          ...specificQuotes.map((quote) =>
+            parseValue2((quote.data as any)?.["deductible"] ?? "0"),
+          ),
+        ) | 0
+      );
+    }
+    // else if (category === "coinsurance") {
+    //   return Math.max(...quotes.map((quote) => parseInt((quote.data as any)?.["coinsurance"] ?? '0') || 0));
+    // }
+    else if (category === "out_of_pocket_max") {
+      const values = specificQuotes.map((quote) =>
+        parseValue2((quote.data as any)?.["out_of_pocket_max"] ?? "0"),
+      );
+      console.log(values);
+      return Math.max(...values) | 0;
+    }
+    return 10000;
+  }
+
+  const [valueDeductible, setValueDeductible] = React.useState<number[]>([
+    findMinimumValue("deductible"),
+    findMaximumValue("deductible"),
+  ]);
+  // const [valueCoinsurance, setValueCoinsurance] = React.useState<number[]>([20, 37]);
+  const [valueOOP, setValueOOP] = React.useState<number[]>([
+    findMinimumValue("out_of_pocket_max"),
+    findMaximumValue("out_of_pocket_max"),
+  ]);
+
+  useEffect(() => {
+    // Reset valueDeductible and valueOOP when currentTab changes.
+    setValueDeductible([
+      findMinimumValue("deductible"),
+      findMaximumValue("deductible"),
+    ]);
+    setValueOOP([
+      findMinimumValue("out_of_pocket_max"),
+      findMaximumValue("out_of_pocket_max"),
+    ]);
+  }, [currentTab]);
+
   if (!selectedClient) {
     return <></>;
   }
 
   return (
     <>
-      <main className="flex w-full h-full overflow-hidden">
+      <main className="flex w-full h-full overflow-hidden pl-4 md:pl-0 bg-gray-100">
         <Navbar selected="Quotes" />
         <div className="w-full md:w-6/7 flex">
           <div className="h-screen overflow-hidden flex-col w-full bg-gray-100 bg-opacity-50 pl-2 pr-6 pt-5 pb-6 text-gray-700">
@@ -475,17 +587,28 @@ export default function SelectQuotes() {
                 <SelectQuotesHeader
                   search={search}
                   setSearch={setSearch}
-                  quotes={quotes}
+                  quotes={currentTab === "ACA" ? aca_quotes : non_aca_quotes}
                   handleSort={handleSort}
                   setSelectedFilter={setSelectedFilter}
                   handleBusiness={handleBusiness}
                   selectedFilter={selectedFilter}
+                  valueDeductible={valueDeductible}
+                  setValueDeductible={setValueDeductible}
+                  valueOOP={valueOOP}
+                  setValueOOP={setValueOOP}
+                  findMaximumValue={findMaximumValue}
+                  findMinimumValue={findMinimumValue}
+                  currentTab={currentTab}
                   TabHeader={
                     <TabHeader
                       tabs={TABS}
                       titles={[
                         `Non-ACA (${non_aca_quotes.length})`,
                         `ACA (${aca_quotes.length})`,
+                        `Dental`,
+                        `Vision`,
+                        `STD`,
+                        `LTD`,
                       ]}
                       selectedTab={currentTab}
                       setSelectedTab={setCurrentTab}
@@ -501,6 +624,10 @@ export default function SelectQuotes() {
                     handleCheckboxChange={handleCheckboxChange}
                     handleAddNewQuote={handleAddNewQuote}
                     search={search}
+                    valueOOP={valueOOP}
+                    parseValue2={parseValue2}
+                    valueDeductible={valueDeductible}
+                    findMaximumValue={findMaximumValue}
                   />
                 )}
                 {currentTab === "ACA" && (
@@ -511,6 +638,10 @@ export default function SelectQuotes() {
                     handleCheckboxChange={handleCheckboxChange}
                     handleAddNewQuote={handleAddNewQuote}
                     search={search}
+                    valueOOP={valueOOP}
+                    parseValue2={parseValue2}
+                    valueDeductible={valueDeductible}
+                    findMaximumValue={findMaximumValue}
                   />
                 )}
               </div>

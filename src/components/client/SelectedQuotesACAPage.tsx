@@ -13,6 +13,10 @@ type SelectedQuotesNonACAPageProps = {
   handleCheckboxChange: (quoteId: number) => void;
   handleAddNewQuote: (event: any) => void;
   search: string | undefined;
+  valueOOP: number[];
+  valueDeductible: number[];
+  parseValue2: (value: string | undefined) => number;
+  findMaximumValue: any;
 };
 
 export const SelectedQuotesACAPage = ({
@@ -22,7 +26,17 @@ export const SelectedQuotesACAPage = ({
   handleAddNewQuote,
   search,
   entryWidth,
+  valueOOP,
+  valueDeductible,
+  parseValue2,
+  findMaximumValue,
 }: SelectedQuotesNonACAPageProps) => {
+  if (valueDeductible[1] === 0) {
+    valueDeductible[1] = findMaximumValue("deductible");
+  } else if (valueOOP[1] === 0) {
+    valueOOP[1] = findMaximumValue("out_of_pocket_max");
+  }
+
   return (
     <>
       {" "}
@@ -37,11 +51,17 @@ export const SelectedQuotesACAPage = ({
                 className="flex justify-center gap-2 min-w-32"
                 style={{ width: `${entryWidth}px` }}
               >
-                <p>{attribute.label}</p>
+                <p className="max-h-12 text-wrap overflow-hidden">
+                  {attribute.label}
+                </p>
               </div>
             ))}
           </div>
         </div>
+        <p>
+          {quotes.length} -{valueDeductible[0]} -{valueOOP[0]} -
+          {valueDeductible[1]} -{valueOOP[1]} -
+        </p>
         {quotes.length === 0 ? (
           <div className="flex w-full h-full mb-2 items-center justify-center flex-col">
             <p className="mb-2">No Quotes</p>
@@ -61,10 +81,23 @@ export const SelectedQuotesACAPage = ({
                   .toLowerCase()
                   .includes(search.toLowerCase()),
             )
-            .map((quote) => (
+            .filter((quote: any) => {
+              // console.log(parseValue2(quote.data["out_of_pocket_max"] ?? "0"), valueOOP[1])
+              return (
+                parseValue2(quote.data["deductible"] ?? "0") >=
+                  (valueDeductible[0] || 0) &&
+                parseValue2(quote.data["deductible"] ?? "0") <=
+                  valueDeductible[1] &&
+                parseValue2(quote.data["out_of_pocket_max"] ?? "0") >=
+                  (valueOOP[0] || 0) &&
+                parseValue2(quote.data["out_of_pocket_max"] ?? "0") <=
+                  valueOOP[1]
+              );
+            })
+            .map((quote, index) => (
               <div
                 key={quote.id}
-                className={`flex items-center w-fit mb-1 mt-1 py-2 border-b`}
+                className={`flex items-center w-fit ${index % 2 === 0 ? "bg-white" : "bg-gray-100"} py-2 border-b`}
               >
                 <div className="grid-cols-9 w-full flex justify-left text-center w-fit gap-1 h-8 items-center text-sm">
                   {/* Map through the plan attributes for each quote */}
@@ -82,8 +115,7 @@ export const SelectedQuotesACAPage = ({
                             onChange={() => handleCheckboxChange(quote.id)}
                             className="mr-4"
                           />
-                          {(quote as any)[attribute.key] ===
-                          "UnitedHealthcare" ? (
+                          {(quote as any)[attribute.key].includes("United") ? (
                             <Image
                               src="/United.png"
                               alt={`Logo for United`}
@@ -91,8 +123,9 @@ export const SelectedQuotesACAPage = ({
                               height={20}
                               className="mr-2 rounded-md"
                             />
-                          ) : (quote as any)[attribute.key] ===
-                            "Anthem Blue Cross and Blue Shield" ? (
+                          ) : (quote as any)[attribute.key].includes(
+                              "Blue Cross",
+                            ) ? (
                             <Image
                               src="/Anthem.jpeg"
                               alt={`Logo for Anthem / BCBS`}

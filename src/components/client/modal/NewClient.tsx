@@ -190,7 +190,7 @@ export const NewClientModal = ({ onClose, setClients }: any) => {
             <p className="text-2xl">New Client</p>
           </div>
           <button
-            onClick={onClose}
+            onClick={() => onClose()}
             className="text-gray-500 hover:text-gray-700 focus:outline-none"
           >
             <FaX />
@@ -269,7 +269,7 @@ export const NewClientModal = ({ onClose, setClients }: any) => {
             <button
               className="mr-2 outline outline-1 outline-gray-400 px-4 py-1 rounded-sm font-medium hover:outline-gray-500 hover:bg-gray-100"
               type="button"
-              onClick={onClose}
+              onClick={() => onClose()}
             >
               Back
             </button>

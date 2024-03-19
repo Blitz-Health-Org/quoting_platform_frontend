@@ -30,7 +30,7 @@ export const TabHeader = ({
 
   return (
     <div className="relative truncate overflow-x-auto">
-      <div className="flex">
+      <div className="flex overflow-x-auto">
         {tabs.map((tab, index) => (
           <div
             key={index}
@@ -39,8 +39,8 @@ export const TabHeader = ({
                 tabsRef.current[index] = el;
               }
             }} // Assign ref to each tab
-            className={`mx-1 mb-1 text-xs px-3 py-1 cursor-pointer rounded-md
-            ${selectedTab === tab ? "bg-gray-200 border border-gray-300" : "hover:bg-gray-100"}`}
+            className={`mx-1 mb-1 text-xs px-3 py-1 cursor-pointer rounded-md border border-gray-300
+            ${selectedTab === tab ? "bg-gray-200" : "hover:bg-gray-100"}`}
             onClick={() => setSelectedTab(tab)} // Handle tab selection
           >
             {titles[index]}
