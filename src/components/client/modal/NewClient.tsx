@@ -136,6 +136,23 @@ export const NewClientModal = ({ onClose, setClients }: any) => {
     } else {
       console.log("data", newClient);
 
+      const newEmptyCustomClass = {
+        class_name: "default",
+        client_id: newClient.id,
+        is_default: true,
+      };
+  
+
+        const { data: newCreatedEmptyCustomClass, error } = await supabase
+          .from("classes")
+          .insert(newEmptyCustomClass)
+          .select()
+          .single();
+  
+        if (error) {
+          throw error;
+        }
+
       const response = await fetch(
         `${process.env.NEXT_PUBLIC_BACKEND_URL}/create_new_client`,
         {

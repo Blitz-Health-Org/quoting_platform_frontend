@@ -33,13 +33,13 @@ export function calculateTotalCost(
   for (const employerClass of planSpecificClasses) {
     for (const tier of tiers) {
       if (
-        employerClass[tier].contribution_percentage &&
+        employerClass[tier]?.contribution_percentage &&
         rates?.[tier] &&
         employerClass?.[tier].num_lives
       ) {
         totalCost +=
-          employerClass[tier].contribution_percentage *
-          rates[tier] *
+          employerClass[tier]?.contribution_percentage *
+          rates?.[tier] *
           employerClass?.[tier].num_lives *
           0.01;
       }
