@@ -16,6 +16,9 @@ import { PlanSection } from "./components/PlanSection";
 import { ClassSection } from "./components/ClassSection";
 import { QuoteType } from "@/src/types/custom/Quote";
 import { useLocalStorage } from "@/src/utils/useLocalStorage";
+import { Navbar } from "@/src/components/comparison/Navbar";
+import { IconBuilding } from "@tabler/icons-react";
+import { IoMdArrowBack } from "react-icons/io";
 
 export type CensusDataType = {
   employee: {
@@ -87,6 +90,10 @@ export default function CostPage() {
   //rates (plan_group)
   //contribution (classes)
 
+  function sendToSelect() {
+    router.push(`/select?clientId=${client?.id}`);
+  }
+
   useEffect(() => {
     if (loading) {
       fetchData();
@@ -155,7 +162,24 @@ export default function CostPage() {
   const planIds = plans.map((plan) => plan.id);
 
   return (
-    <div className="w-full p-4">
+    <main className="flex w-full h-full overflow-hidden pl-4 md:pl-0 bg-gray-100">
+    <Navbar selected="Quotes" />
+    <div className="w-full md:w-6/7 flex-col h-full overflow-auto p-4">
+    <div className="flex items-center text-sm md:text-base mt-2">
+      <button
+        className="flex items-center"
+        onClick={() => sendToSelect()}
+      >
+        <IoMdArrowBack />
+        <p className="ml-2 mr-2">Clients / </p>
+      </button>
+      <IconBuilding className="h-5 w-5 mr-2" />
+      <p className="mr-2">{client?.name || "Client"}</p>
+      {/* <p className="mr-1">/ Quotes</p>
+  <p className="mr-1 text-gray-400 text-xs">•</p>
+  <p className="text-gray-400">({quotes.length})</p> */}
+    </div>
+    <div className="w-full p-4 bg-white rounded-md mt-4">
       <div className="flex flex-col">
         <button
           onClick={() => setIsFirstOpen(!isFirstOpen)}
@@ -215,7 +239,9 @@ export default function CostPage() {
           onClick={() => setIsThirdOpen(!isThirdOpen)}
           className="w-full text-left py-2 px-4 font-semibold rounded-md"
         >
-          Plans
+          <div className="font-bold text-xl">
+            Plans
+          </div>
         </button>
         {isThirdOpen && (
           <div className="w-full min-h-[50px] bg-gray-100 p-4 mb-4 rounded-md">
@@ -231,5 +257,7 @@ export default function CostPage() {
         )}
       </div>
     </div>
+    </div>
+    </main>
   );
 }
