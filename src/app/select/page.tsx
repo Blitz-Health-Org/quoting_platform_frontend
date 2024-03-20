@@ -141,7 +141,7 @@ export default function SelectQuotes() {
       ),
     );
     const { error } = await supabase
-      .from("plans")
+      .from("quotes")
       .delete()
       .in(
         "id",
@@ -320,7 +320,7 @@ export default function SelectQuotes() {
       [];
 
     const { error } = await supabase
-      .from("plans")
+      .from("quotes")
       .delete()
       .in("id", selectedQuoteIds);
     if (error) {

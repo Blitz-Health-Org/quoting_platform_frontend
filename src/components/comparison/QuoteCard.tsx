@@ -16,6 +16,7 @@ import { max } from "lodash";
 import { QuoteCardContinuousSlider } from "./QuoteCardContinuousSlider";
 import { useState } from "react";
 import { ContinuousSlider } from "./ContributionSlider";
+import { PlanSpecificClassInfoType } from "@/src/types/custom/Class";
 
 // type QuoteCardProps = {
 //   quote: QuoteType;
@@ -27,42 +28,40 @@ import { ContinuousSlider } from "./ContributionSlider";
 export type QuoteCardProps = {
   fieldObject: any;
   quote: any;
-  plan: any;
   classes: any;
   standardContribution: any;
   isContributionSettingsExpanded: any;
+  isEditing?: boolean;
+  planSpecificClassInfo: PlanSpecificClassInfoType
 };
 
 export const QuoteCard = ({
   fieldObject,
   quote,
-  plan,
   classes,
+  planSpecificClassInfo,
   standardContribution,
   isContributionSettingsExpanded,
+  isEditing,
 }: QuoteCardProps) => {
   const [quoteSpecificContribution, setQuoteSpecificContribution] =
     useState<any>(standardContribution);
-  const calculatedTotalCost = null;
-  // calculateTotalCost(
-  //   plan
-  //   quoteSpecificContribution,
-  //   {
-  //     employee: (quote.data as any)?.["employee_rate"],
-  //     child: (quote.data as any)?.["child_rate"],
-  //     family: (quote.data as any)?.["family_rate"],
-  //     spouse: (quote.data as any)?.["spouse_rate"],
-  //   },
-  //   classes,
-  // );
+  // const calculatedTotalCost = null;
+  const calculatedTotalCost = calculateTotalCost(
+    {},
+    quote,
+    planSpecificClassInfo  );
 
   return (
+
     <QuoteColumnDisplay
       field={fieldObject}
+      quoteId = {quote.id}
       quoteData={quote.data}
       isQuoteCard
       initialExpanded
       calculatedTotalCost={calculatedTotalCost}
+      isEditing={isEditing}
       headerComponent={
         isContributionSettingsExpanded && (
           <div className="flex w-full justify-center items-center p-5">

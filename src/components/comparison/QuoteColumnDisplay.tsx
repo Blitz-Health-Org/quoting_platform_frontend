@@ -1,6 +1,7 @@
 import { RecursiveQuoteColumnDisplay } from "./RecursiveQuoteColumnDisplay";
 
 type QuoteColumnDisplayProps = {
+  quoteId?: number;
   field: any;
   initialExpanded: boolean;
   className?: string;
@@ -9,9 +10,11 @@ type QuoteColumnDisplayProps = {
   headerComponent?: React.ReactNode;
   isQuoteCard?: boolean;
   calculatedTotalCost?: any;
+  isEditing?: boolean;
 };
 
 export const QuoteColumnDisplay = ({
+  quoteId,
   field,
   initialExpanded,
   className,
@@ -19,8 +22,10 @@ export const QuoteColumnDisplay = ({
   headerComponent,
   calculatedTotalCost,
   totalCost,
+  isEditing,
   isQuoteCard = false,
 }: QuoteColumnDisplayProps) => {
+
   return (
     <>
       <div
@@ -33,11 +38,13 @@ export const QuoteColumnDisplay = ({
           <div></div>
         )}
         <RecursiveQuoteColumnDisplay
+          quoteId={quoteId}
           field={field}
           calculatedTotalCost={calculatedTotalCost}
           initialExpanded={initialExpanded}
           quoteData={quoteData}
           isQuoteCard={isQuoteCard}
+          isEditing={isEditing}
         />
       </div>
     </>

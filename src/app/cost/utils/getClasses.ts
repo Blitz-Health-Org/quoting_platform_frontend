@@ -1,5 +1,5 @@
 import { Dispatch, SetStateAction } from "react";
-import { ClassType } from "@/src/types/custom/Class";
+import { ClassType, PlanSpecificClassInfoType, PlanSpecificClassType } from "@/src/types/custom/Class";
 import { supabase } from "@/src/supabase";
 import { ClientType } from "@/src/types/custom/Client";
 import { eq } from "lodash";
@@ -9,32 +9,10 @@ import { Json } from "@/src/types/database/database.types";
 import { PlanGroupType } from "@/src/types/custom/PlanGroup";
 import { QuoteType } from "@/src/types/custom/Quote";
 
-export type PlanSpecificClassInfoType = {
-  id: number;
-  plan_id: number;
-  class_id: number;
-  employee: {
-    contribution_percentage: number;
-    num_lives: number;
-  };
-  spouse: {
-    contribution_percentage: number;
-    num_lives: number;
-  };
-  child: {
-    contribution_percentage: number;
-    num_lives: number;
-  };
-  family: {
-    contribution_percentage: number;
-    num_lives: number;
-  };
-};
-
 export function getClasses(
   setClasses: Dispatch<SetStateAction<ClassType[]>>,
   setPlanSpecificClassInfo: Dispatch<
-    SetStateAction<PlanSpecificClassInfoType[]>
+    SetStateAction<PlanSpecificClassInfoType>
   >,
 ) {
   async function fetchAndSetClasses(
@@ -94,6 +72,7 @@ export function getClasses(
     }
 
       if (planSpecificClassMissingList.length > 0) {
+        console.log("MISSING", planSpecificClassMissingList)
 
       const emptyRates = {
         employee: {
@@ -251,7 +230,7 @@ export function getClasses(
   }
 
   async function handleUpdatePlanSpecificClassInfo(
-    customClass: PlanSpecificClassInfoType,
+    customClass: PlanSpecificClassType,
     planId: number,
   ) {
 
@@ -283,12 +262,12 @@ export function getClasses(
   }
 
   async function handleUpdateClass(
-    customClass: ClassType | PlanSpecificClassInfoType,
+    customClass: ClassType | PlanSpecificClassType,
     quoteId?: number,
   ) {
     if (quoteId) {
       handleUpdatePlanSpecificClassInfo(
-        customClass as PlanSpecificClassInfoType,
+        customClass as PlanSpecificClassType,
         quoteId,
       );
     } else {

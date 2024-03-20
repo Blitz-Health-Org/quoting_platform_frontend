@@ -1,24 +1,30 @@
 import { QuoteType } from "@/src/types/custom/Quote";
 import { QuoteCard } from "./QuoteCard";
 import Image from "next/image";
-import { FaStar } from "react-icons/fa";
-import { useState } from "react";
+import { FaEdit, FaSave, FaStar } from "react-icons/fa";
+import { Dispatch, SetStateAction, useState } from "react";
 import { useRecoilState } from "recoil";
 import { contributionSettingsAtom } from "./contributionSettingsAtom";
 import { IoIosSettings } from "react-icons/io";
+import { EditQuoteContext, EditQuoteContextProvider } from "@/src/context/EditQuoteContext";
+import { PlanSpecificClassInfoType } from "@/src/types/custom/Class";
 
 type GroupCardProps = {
   plan: any;
   fieldObject: any;
   classes: any;
   standardContribution: any;
+  clientId: any;
+  planSpecificClassInfo: PlanSpecificClassInfoType
 };
 
 export function GroupCard({
   plan,
   fieldObject,
   classes,
+  planSpecificClassInfo,
   standardContribution,
+  clientId,
 }: GroupCardProps) {
   // const carrierLogos = {
   //   Aetna: AetnaLogo,
@@ -31,11 +37,15 @@ export function GroupCard({
   // };
   const [isContributionSettingsExpanded, setIsContributionSettingsExpanded] =
     useState<boolean>(false);
+    const [isEditing, setIsEditing] = useState<boolean>(false);
+
+
 
   return (
+    // <EditQuoteContextProvider value={{isEditing, quotes: plan.selectedQuotes, clientId}}>
     <div className="flex-col w-fit bg-white mb-4 h-fit rounded-md">
       <div
-        className={`flex flex-col justify-center pt-3 pr-4 items-center border border-b-0 rounded-b-none border-gray-300 rounded-t-md
+        className={`relative flex flex-col justify-center pt-3 pr-4 items-center border border-b-0 rounded-b-none border-gray-300 rounded-t-md
       ${
         plan.selectedQuotes[0].carrier.includes("Anthem")
           ? "bg-yellow-100/50"
@@ -49,6 +59,7 @@ export function GroupCard({
       } 
       `}
       >
+        {/* {isEditing ? <FaSave onClick={() => {setIsEditing(false)}}className='absolute top-0 left-0 ml-3 mt-3'/> : <FaEdit onClick={() => {setIsEditing(true)}}className="absolute top-0 left-0 ml-3 mt-3"/>} */}
         {/* <div
           className="w-full flex justify-end"
           onClick={() =>
@@ -133,10 +144,10 @@ export function GroupCard({
         {plan.selectedQuotes.map((quote: QuoteType) => (
           <QuoteCard
             isContributionSettingsExpanded={isContributionSettingsExpanded}
-            plan={plan}
             quote={quote}
             fieldObject={fieldObject}
             key={quote.id}
+            planSpecificClassInfo={planSpecificClassInfo}
             classes={classes}
             standardContribution={standardContribution}
           />
@@ -150,5 +161,6 @@ export function GroupCard({
         ))}
       </div>
     </div>
+    // </EditQuoteContextProvider>
   );
 }

@@ -1,7 +1,7 @@
 import { CensusDataType } from "@/src/app/cost/page";
-import { PlanSpecificClassInfoType } from "@/src/app/cost/utils/getClasses";
 import { QuoteType } from "@/src/types/custom/Quote";
 import { cleanInput } from "./cleanInput";
+import { PlanSpecificClassInfoType } from "@/src/types/custom/Class";
 
 type RateType = {
   employee: number;
@@ -18,10 +18,11 @@ export function calculateTotalCost(
   // rates: RateType,
   // classes: PlanSpecificClassInfoType[],
   plan: QuoteType,
-  planSpecificClasses: PlanSpecificClassInfoType[],
+  planSpecificClasses: PlanSpecificClassInfoType,
 ): string {
   const tiers: TierType[] = ["employee", "spouse", "family", "child"];
 
+  console.log("PLAN", plan, planSpecificClasses);
   const rates = {
     employee: cleanInput(plan.data.employee_rate as string)[0],
     spouse: cleanInput(plan.data.spouse_rate as string)[0],

@@ -1,6 +1,5 @@
 import { QuoteType } from "@/src/types/custom/Quote";
-import { ClassType } from "@/src/types/custom/Class";
-import { PlanSpecificClassInfoType } from "../utils/getClasses";
+import { ClassType, PlanSpecificClassInfoType, PlanSpecificClassType } from "@/src/types/custom/Class";
 import { cleanInput } from "@/src/components/comparison/utils/cleanInput";
 import {
   TierType,
@@ -11,10 +10,10 @@ type PlanSectionProps = {
   plans: QuoteType[];
   classes: ClassType[];
   isCustomClassesActivated: boolean;
-  planSpecificClassInfo: PlanSpecificClassInfoType[];
+  planSpecificClassInfo: PlanSpecificClassInfoType;
   censusData: CensusDataType;
   handleUpdateClassInfo: (
-    classItem: PlanSpecificClassInfoType,
+    classItem: PlanSpecificClassType,
     planId: number,
   ) => void;
 };
@@ -36,7 +35,7 @@ export const PlanSection = ({
 
   //Default class results not saved (probably bad design but I'm too lazy to populate them into the supabase). planSpecificClassInfo not used without custom classes
   const [editedPlanSpecificClassInfo, setEditedPlanSpecificClassInfo] =
-    useState<PlanSpecificClassInfoType[]>(planSpecificClassInfo);
+    useState<PlanSpecificClassInfoType>(planSpecificClassInfo);
 
   //USED TO UPDATE WHEN ADDING OR DELETING CLASSES, CHECKS IF IDS ARE THE SAME
   const currentClassIdList = classes.map((c) => c.id as number);
@@ -103,7 +102,7 @@ export const PlanSection = ({
                           (planSpecificClassItem) =>
                             planSpecificClassItem.plan_id === plan.id &&
                             planSpecificClassItem.class_id === classItem.id,
-                        ) as PlanSpecificClassInfoType;
+                        ) as PlanSpecificClassType;
 
                       const planSpecificClassId = `${plan.id}-${classItem.id}`;
                       return (
