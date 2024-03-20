@@ -7,6 +7,7 @@ type ClassSectionProps = {
   handleDeleteCustomClass: (customClass: ClassType) => void;
   handleAddCustomClass: (newClassName: string) => void;
   onSave: (editedClass: ClassType) => void; // Assuming an onSave handler for persisting changes
+  isCustomClassesActivated: boolean;
 };
 
 export const ClassSection = ({
@@ -15,6 +16,8 @@ export const ClassSection = ({
   handleAddCustomClass,
   onSave,
 }: ClassSectionProps) => {
+    
+
   const initialEditedClasses = classes.reduce(
     (acc, currentClass) => {
       acc[currentClass.id as number] = currentClass;
@@ -29,7 +32,7 @@ export const ClassSection = ({
     [key: number]: ClassType;
   }>(initialEditedClasses);
 
-  const [newClass, setNewClass] = useState<ClassType>({ class_name: "" });
+  const [newClass, setNewClass] = useState<ClassType>({ class_name: "", is_default: false });
   const [isNewClassBeingCreated, setIsNewClassBeingCreated] =
     useState<boolean>(false);
   const [submitAttempted, setSubmitAttempted] = useState<boolean>(false);
@@ -116,7 +119,7 @@ export const ClassSection = ({
               if (newClass.class_name) {
                 handleAddCustomClass(newClass.class_name);
                 setIsNewClassBeingCreated(false);
-                setNewClass({ class_name: "" });
+                setNewClass({ class_name: "", is_default: false});
                 setSubmitAttempted(false);
               } else {
               }
@@ -127,7 +130,7 @@ export const ClassSection = ({
           <button
             onClick={() => {
               setIsNewClassBeingCreated(false);
-              setNewClass({ class_name: "" });
+              setNewClass({ class_name: "", is_default: false });
               setSubmitAttempted(false);
             }}
           >

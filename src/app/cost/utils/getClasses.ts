@@ -10,6 +10,7 @@ import { PlanGroupType } from "@/src/types/custom/PlanGroup";
 import { QuoteType } from "@/src/types/custom/Quote";
 
 export type PlanSpecificClassInfoType = {
+  id: number;
   plan_id: number;
   class_id: number;
   employee: {
@@ -36,20 +37,20 @@ export function getClasses(
     SetStateAction<PlanSpecificClassInfoType[]>
   >,
 ) {
-  async function fetchAndSetCustomClasses(
+  async function fetchAndSetClasses(
     client: ClientType,
     planIds: number[],
   ) {
     try {
-      const classes = await fetchAndSetClasses(client);
-      await fetchAndSetPlanSpecificClasses(classes, planIds);
+      const classes = await fetchAndSetNonPlanSpecificClassInfo(client);
+      await fetchAndSetPlanSpecificClassInfo(classes, planIds);
     } catch {
       alert("Failed to get classes");
       throw Error;
     }
   }
 
-  async function fetchAndSetClasses(client: ClientType) {
+  async function fetchAndSetNonPlanSpecificClassInfo(client: ClientType) {
     const { data: classData, error: classError } = await supabase
       .from("classes")
       .select("*")
@@ -64,10 +65,12 @@ export function getClasses(
     return classData;
   }
 
-  async function fetchAndSetPlanSpecificClasses(
+  async function fetchAndSetPlanSpecificClassInfo(
     classes: ClassType[],
     planIds: number[],
   ) {
+
+    let data;
     const classIds = classes.map((classItem) => classItem.id);
     const { data: classData, error: classError } = await supabase
       .from("classes_quotes")
@@ -79,17 +82,82 @@ export function getClasses(
       throw classError;
     }
 
-    setPlanSpecificClassInfo(classData);
+    data=classData;
+
+    const planSpecificClassMissingList: [number, number][] = []
+    for (const classId of classIds) {
+      for (const planId of planIds) {
+        if (classId && planId && classData.find(classItem => classItem.class_id === classId && classItem.plan_id === planId) === undefined) {
+          planSpecificClassMissingList.push([classId, planId])
+        } 
+      }
+    }
+
+      if (planSpecificClassMissingList.length > 0) {
+
+      const emptyRates = {
+        employee: {
+          contribution_percentage: 50,
+          num_lives: 0,
+        },
+        spouse: {
+          contribution_percentage: 50,
+          num_lives: 0,
+        },
+        family: {
+          contribution_percentage: 50,
+          num_lives: 0,
+        },
+        child: {
+          contribution_percentage: 50,
+          num_lives: 0,
+        },
+      };
+
+      const { error: planSpecificClassDataError } =
+        await supabase
+          .from("classes_quotes")
+          .insert(
+            planSpecificClassMissingList.map((classPlan) => {
+              return {
+                ...emptyRates,
+                plan_id: classPlan[1],
+                class_id: classPlan[0],
+              };
+            }),
+          )
+          .select();
+
+      if (planSpecificClassDataError) {
+        throw planSpecificClassDataError;
+      }
+
+      const { data: classData, error: classError } = await supabase
+      .from("classes_quotes")
+      .select("*")
+      .in("class_id", classIds)
+      .in("plan_id", planIds);
+
+    if (classError) {
+      throw classError;
+    }
+    data = classData;
+      
+    }
+  
+    setPlanSpecificClassInfo(data);
   }
 
-  async function handleAddCustomClass(
+  async function handleAddClass(
     client: ClientType,
     planIds: number[],
     newClassName: string,
+    isDefault: boolean,
   ) {
     const newEmptyCustomClass = {
       class_name: newClassName,
       client_id: client.id,
+      is_default: isDefault
     };
 
     //update supabase and local
@@ -145,6 +213,7 @@ export function getClasses(
         return [...prev, newCreatedEmptyCustomClass];
       });
 
+
       setPlanSpecificClassInfo((prev) => [...prev, ...planSpecificClassData]);
     } catch {
       alert("Failed to create new class");
@@ -152,11 +221,17 @@ export function getClasses(
     }
   }
 
+  async function handleAddCustomClass(client: ClientType,
+    planIds: number[],
+    newClassName: string) {
+      handleAddClass(client, planIds, newClassName, false);
+    }
+
   async function handleUpdateNonPlanSpecificClassInfo(customClass: ClassType) {
     try {
       const { data: customClassData, error } = await supabase
         .from("classes")
-        .upsert(customClass)
+        .update(customClass)
         .eq("class_id", customClass.id)
         .select()
         .single();
@@ -179,12 +254,13 @@ export function getClasses(
     customClass: PlanSpecificClassInfoType,
     planId: number,
   ) {
+
+    console.log('custom class', customClass)
     try {
       const { data: customClassData, error } = await supabase
         .from("classes_quotes")
         .update(customClass)
-        .eq("plan_id", planId)
-        .eq("class_id", customClass.class_id)
+        .eq("id", customClass.id)
         .select()
         .single();
 
@@ -192,7 +268,6 @@ export function getClasses(
         throw error;
       }
 
-      console.log("customClassData", customClassData);
 
       setPlanSpecificClassInfo((prev) => {
         const filteredPreviousClassInfo = prev.filter(
@@ -207,7 +282,7 @@ export function getClasses(
     }
   }
 
-  async function handleUpdateCustomClass(
+  async function handleUpdateClass(
     customClass: ClassType | PlanSpecificClassInfoType,
     quoteId?: number,
   ) {
@@ -239,14 +314,7 @@ export function getClasses(
       });
 
       setPlanSpecificClassInfo((prev) => {
-        console.log(
-          "LITTLE BALL",
-          prev,
-          customClass,
-          prev.filter((classItem) => {
-            classItem.class_id !== customClass.id;
-          }),
-        );
+        
 
         return prev.filter((classItem) => {
           return classItem.class_id !== customClass.id;
@@ -258,9 +326,9 @@ export function getClasses(
   }
 
   return {
-    fetchAndSetCustomClasses,
+    fetchAndSetClasses,
     handleAddCustomClass,
-    handleUpdateCustomClass,
+    handleUpdateClass,
     handleDeleteCustomClass,
   };
 }

@@ -47,11 +47,18 @@ export default function CostPage() {
   const [isCustomClassesActivated, setIsCustomClassesActivated] =
     useLocalStorage<boolean>("isCustomClassesActivated", false);
   const [classes, setClasses] = useState<ClassType[]>([]);
-  //separating plan-specific info in state because not stored in database
+
+  let defaultOrCustomClasses;
+  if (isCustomClassesActivated) {
+    defaultOrCustomClasses = (classes.filter(classItem => !classItem.is_default))
+} else {
+    defaultOrCustomClasses = (classes.filter(classItem => classItem.is_default))
+}
+
+
   const [planSpecificClassInfo, setPlanSpecificClassInfo] = useState<
     PlanSpecificClassInfoType[]
   >([]);
-  console.log("PLAN PLAN PLAN", planSpecificClassInfo);
   const [censusData, setCensusData] = useState<CensusDataType>({
     employee: {
       num_lives: null,
@@ -74,9 +81,9 @@ export default function CostPage() {
 
   //extracted logic for readability, sets both plan specific and non-planspecific
   const {
-    fetchAndSetCustomClasses,
+    fetchAndSetClasses,
     handleAddCustomClass,
-    handleUpdateCustomClass,
+    handleUpdateClass,
     handleDeleteCustomClass,
   } = getClasses(setClasses, setPlanSpecificClassInfo);
   const { handleUpdateCensusData } = getCensusData(setCensusData);
@@ -123,7 +130,7 @@ export default function CostPage() {
       const planIds = plans.map((plan) => plan.id);
 
       //fetches custom classes and planspecific
-      await fetchAndSetCustomClasses(clientData, planIds);
+      await fetchAndSetClasses(clientData, planIds);
 
       setLoading(false);
     } catch (error) {
@@ -141,15 +148,7 @@ export default function CostPage() {
   //If loading is finished planGroup, planSpecificClassInfo, client, and classes should be set, explicit typing
 
   //toggle custom classes (disables default)
-  let defaultOrCustomClasses;
-  if (!isCustomClassesActivated) {
-    const defaultClass: ClassType = {
-      class_name: "Default",
-    };
-    defaultOrCustomClasses = [defaultClass];
-  } else {
-    defaultOrCustomClasses = classes;
-  }
+
 
   const plans = (planGroup as PlanGroupType).selectedQuotes;
   const planIds = plans.map((plan) => plan.id);
@@ -203,8 +202,9 @@ export default function CostPage() {
                     );
                   }}
                   onSave={(editedClass: ClassType) => {
-                    handleUpdateCustomClass(editedClass);
+                    handleUpdateClass(editedClass);
                   }}
+                  isCustomClassesActivated = {isCustomClassesActivated}
                 />
               </div>
             )}
@@ -225,7 +225,7 @@ export default function CostPage() {
               isCustomClassesActivated={isCustomClassesActivated}
               planSpecificClassInfo={planSpecificClassInfo}
               censusData={client?.census_data as CensusDataType}
-              handleUpdatePlanSpecificClassInfo={handleUpdateCustomClass}
+              handleUpdateClassInfo={handleUpdateClass}
             />
           </div>
         )}

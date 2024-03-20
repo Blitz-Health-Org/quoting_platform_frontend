@@ -13,8 +13,8 @@ type PlanSectionProps = {
   isCustomClassesActivated: boolean;
   planSpecificClassInfo: PlanSpecificClassInfoType[];
   censusData: CensusDataType;
-  handleUpdatePlanSpecificClassInfo: (
-    customClass: PlanSpecificClassInfoType,
+  handleUpdateClassInfo: (
+    classItem: PlanSpecificClassInfoType,
     planId: number,
   ) => void;
 };
@@ -24,51 +24,32 @@ import { CensusDataType } from "../page";
 export const PlanSection = ({
   plans,
   classes,
-  isCustomClassesActivated,
   planSpecificClassInfo,
   censusData,
-  handleUpdatePlanSpecificClassInfo,
+  isCustomClassesActivated,
+  handleUpdateClassInfo,
 }: PlanSectionProps) => {
   const [editedPlanClassId, setEditedPlanClassId] = useState<
     string | undefined
   >(undefined);
-  const [editedPlanSpecificClassInfo, setEditedPlanSpecificClassInfo] =
-    useState<PlanSpecificClassInfoType[]>(
-      isCustomClassesActivated
-        ? planSpecificClassInfo
-        : plans.map((plan) => {
-            return {
-              plan_id: plan.id,
-              class_id: 1,
-              employee: {
-                contribution_percentage: 50,
-                num_lives: censusData.employee.num_lives ?? 0,
-              },
-              spouse: {
-                contribution_percentage: 50,
-                num_lives: censusData.spouse.num_lives ?? 0,
-              },
-              child: {
-                contribution_percentage: 50,
-                num_lives: censusData.child.num_lives ?? 0,
-              },
-              family: {
-                contribution_percentage: 50,
-                num_lives: censusData.family.num_lives ?? 0,
-              },
-            };
-          }),
-    );
 
-  if (
-    isCustomClassesActivated &&
-    !lodash.isEqual(editedPlanSpecificClassInfo, planSpecificClassInfo) &&
-    !editedPlanClassId
-  ) {
+
+  //Default class results not saved (probably bad design but I'm too lazy to populate them into the supabase). planSpecificClassInfo not used without custom classes
+  const [editedPlanSpecificClassInfo, setEditedPlanSpecificClassInfo] =
+    useState<PlanSpecificClassInfoType[]>(planSpecificClassInfo);
+
+  //USED TO UPDATE WHEN ADDING OR DELETING CLASSES, CHECKS IF IDS ARE THE SAME
+  const currentClassIdList = classes.map((c) => c.id as number);
+  const [previousClassIdList, setPreviousClassIdList] =
+    useState<number[]>(currentClassIdList);
+
+
+    console.log("EDIT", editedPlanSpecificClassInfo)
+    console.log('prev', previousClassIdList, currentClassIdList, planSpecificClassInfo)
+  if (!lodash.isEqual(previousClassIdList, currentClassIdList)) {
+    setPreviousClassIdList(currentClassIdList);
     setEditedPlanSpecificClassInfo(planSpecificClassInfo);
   }
-
-  //   const errorMessageMap = {};
 
   const handleInputChange = (
     planId: number,
@@ -77,14 +58,9 @@ export const PlanSection = ({
     field: string,
     value: string,
   ) => {
-    // errorMessageMap[planId][classId][tier][field] = cleanInput(value)[1];
-
     setEditedPlanSpecificClassInfo((currentInfo) =>
       currentInfo.map((info) => {
-        if (
-          info.plan_id === planId &&
-          (!isCustomClassesActivated || info.class_id === classId)
-        ) {
+        if (info.plan_id === planId && info.class_id === classId) {
           return {
             ...info,
             [tier]: {
@@ -97,206 +73,57 @@ export const PlanSection = ({
       }),
     );
   };
+
+  let grandTotalCost = 0.0;
+
   return (
     <div>
       {plans.map((plan) => {
-        const planSpecificClasses = planSpecificClassInfo.filter(
-          (planSpecificClass) => planSpecificClass.plan_id === plan.id,
+        const planSpecificClasses = editedPlanSpecificClassInfo.filter(
+          (planSpecificClass) => {
+            return planSpecificClass.plan_id === plan.id;
+          },
         );
 
         const totalCost = calculateTotalCost({}, plan, planSpecificClasses);
+        grandTotalCost += parseFloat(totalCost);
 
         return (
           <div key={plan.id} className="mb-4 p-4 bg-gray-200 rounded-md">
             {plan.id}
             <h3 className="font-bold mb-2">{plan.data.plan_name as string}</h3>
-            {isCustomClassesActivated ? (
-              <>
-                Classes
-                <div className="border border-black p-4">
-                  {classes.length === 0
-                    ? "None (add a class above)"
-                    : classes.map((classItem) => {
-                        const editedPlanSpecificClass =
-                          editedPlanSpecificClassInfo.find(
-                            (planSpecificClassItem) =>
-                              planSpecificClassItem.plan_id === plan.id &&
-                              planSpecificClassItem.class_id === classItem.id,
-                          ) as PlanSpecificClassInfoType;
+            <>
+              Classes
+              <div className="border border-black p-4">
+                {classes.length === 0
+                  ? "None (add a class above)"
+                  : classes.map((classItem) => {
+                      const editedPlanSpecificClass =
+                        editedPlanSpecificClassInfo.find(
+                          (planSpecificClassItem) =>
+                            planSpecificClassItem.plan_id === plan.id &&
+                            planSpecificClassItem.class_id === classItem.id,
+                        ) as PlanSpecificClassInfoType;
 
-                        const planSpecificClassId = `${plan.id}-${classItem.id}`;
-                        return (
-                          <div
-                            key={classItem.id}
-                            className="mb-4 p-4 bg-gray-200 border border-black rounded-md"
-                          >
-                            {classItem.class_name}
-                            <ul>
-                              {(
-                                [
-                                  "employee",
-                                  "spouse",
-                                  "child",
-                                  "family",
-                                ] as TierType[]
-                              ).map((tier) => {
-                                return (
-                                  <li key={tier}>
-                                    <ul>
-                                      <li>
-                                        {editedPlanClassId ===
-                                        planSpecificClassId ? (
-                                          <>
-                                            <span>
-                                              {tier[0].toUpperCase() +
-                                                tier.slice(1)}{" "}
-                                              Contribution:
-                                            </span>
-                                            <input
-                                              value={
-                                                editedPlanSpecificClass?.[tier]
-                                                  .contribution_percentage
-                                              }
-                                              onChange={(e) =>
-                                                handleInputChange(
-                                                  plan.id,
-                                                  classItem.id as number,
-                                                  tier,
-                                                  "contribution_percentage",
-                                                  e.target.value,
-                                                )
-                                              }
-                                            />
-                                            {/* {errorMessageMap[plan.id][
-                                              classItem.id
-                                            ][tier][
-                                              "contribution_percentage"
-                                            ] && "Please enter a valid input"} */}
-                                          </>
-                                        ) : (
-                                          <span>
-                                            {tier[0].toUpperCase() +
-                                              tier.slice(1)}{" "}
-                                            Contribution:{" "}
-                                            {
-                                              editedPlanSpecificClass?.[tier]
-                                                .contribution_percentage
-                                            }
-                                          </span>
-                                        )}
-                                      </li>
-                                      <li>
-                                        {editedPlanClassId ===
-                                        planSpecificClassId ? (
-                                          <>
-                                            <span>
-                                              No. of{" "}
-                                              {tier[0].toUpperCase() +
-                                                tier.slice(1)}
-                                              :{" "}
-                                            </span>
-                                            <input
-                                              value={
-                                                editedPlanSpecificClass?.[tier]
-                                                  .num_lives
-                                              }
-                                              onChange={(e) =>
-                                                handleInputChange(
-                                                  plan.id,
-                                                  classItem.id as number,
-                                                  tier,
-                                                  "num_lives",
-                                                  e.target.value,
-                                                )
-                                              }
-                                            />
-                                          </>
-                                        ) : (
-                                          <span>
-                                            No. of{" "}
-                                            {tier[0].toUpperCase() +
-                                              tier.slice(1)}
-                                            :{" "}
-                                            {
-                                              editedPlanSpecificClass?.[tier]
-                                                .num_lives
-                                            }
-                                          </span>
-                                        )}
-                                      </li>
-                                    </ul>
-                                  </li>
-                                );
-                              })}
-                            </ul>
-                            {planSpecificClassId === editedPlanClassId ? (
-                              <button
-                                onClick={() => {
-                                  if (isCustomClassesActivated) {
-                                    handleUpdatePlanSpecificClassInfo(
-                                      editedPlanSpecificClass,
-                                      plan.id,
-                                    );
-                                  }
-                                  setEditedPlanClassId(undefined);
-                                }}
-                              >
-                                Save
-                              </button>
-                            ) : (
-                              <button
-                                onClick={() =>
-                                  setEditedPlanClassId(
-                                    `${plan.id}-${classItem.id}`,
-                                  )
-                                }
-                              >
-                                Edit{" "}
-                              </button>
-                            )}
-                            {planSpecificClassId === editedPlanClassId && (
-                              <button
-                                onClick={() => setEditedPlanClassId(undefined)}
-                              >
-                                Cancel
-                              </button>
-                            )}
-                          </div>
-                        );
-                      })}
-                </div>
-              </>
-            ) : (
-              <>
-                Classes
-                <div className="border border-black p-4">
-                  {classes.length === 0
-                    ? "None (add a class above)"
-                    : classes.map((classItem) => {
-                        const editedPlanSpecificClass =
-                          editedPlanSpecificClassInfo.find(
-                            (planSpecificClassItem) =>
-                              planSpecificClassItem.plan_id === plan.id,
-                          ) as PlanSpecificClassInfoType;
-
-                        const planSpecificClassId = `${plan.id}-${classItem.id}`;
-
-                        return (
-                          <div
-                            key={classItem.id}
-                            className="mb-4 p-4 bg-gray-200 border border-black rounded-md"
-                          >
-                            <ul>
-                              {(
-                                [
-                                  "employee",
-                                  "spouse",
-                                  "child",
-                                  "family",
-                                ] as TierType[]
-                              ).map((tier) => {
-                                return (
-                                  <li key={tier}>
+                      const planSpecificClassId = `${plan.id}-${classItem.id}`;
+                      return (
+                        <div
+                          key={classItem.id}
+                          className="mb-4 p-4 bg-gray-200 border border-black rounded-md"
+                        >
+                          {isCustomClassesActivated && classItem.class_name}
+                          <ul>
+                            {(
+                              [
+                                "employee",
+                                "spouse",
+                                "child",
+                                "family",
+                              ] as TierType[]
+                            ).map((tier) => {
+                              return (
+                                <li key={tier}>
+                                  <ul>
                                     <li>
                                       {editedPlanClassId ===
                                       planSpecificClassId ? (
@@ -321,6 +148,11 @@ export const PlanSection = ({
                                               )
                                             }
                                           />
+                                          {/* {errorMessageMap[plan.id][
+                                              classItem.id
+                                            ][tier][
+                                              "contribution_percentage"
+                                            ] && "Please enter a valid input"} */}
                                         </>
                                       ) : (
                                         <span>
@@ -334,52 +166,109 @@ export const PlanSection = ({
                                         </span>
                                       )}
                                     </li>
-                                  </li>
-                                );
-                              })}
-                            </ul>
-                            {planSpecificClassId === editedPlanClassId ? (
-                              <button
-                                onClick={() => {
-                                  console.log(
-                                    "eiojeoiwjf",
-                                    isCustomClassesActivated,
-                                  );
-                                  if (isCustomClassesActivated) {
-                                    handleUpdatePlanSpecificClassInfo(
-                                      editedPlanSpecificClass,
-                                      plan.id,
-                                    );
-                                  }
-                                  setEditedPlanClassId(undefined);
-                                }}
-                              >
-                                Save
-                              </button>
-                            ) : (
-                              <button
-                                onClick={() =>
-                                  setEditedPlanClassId(
-                                    `${plan.id}-${classItem.id}`,
-                                  )
+                                    {isCustomClassesActivated && (
+                                    <li>
+                                      {editedPlanClassId ===
+                                      planSpecificClassId ? (
+                                        <>
+                                          <span>
+                                            No. of{" "}
+                                            {tier[0].toUpperCase() +
+                                              tier.slice(1)}
+                                            :{" "}
+                                          </span>
+                                          <input
+                                            value={
+                                              editedPlanSpecificClass?.[tier]
+                                                .num_lives
+                                            }
+                                            onChange={(e) =>
+                                              handleInputChange(
+                                                plan.id,
+                                                classItem.id as number,
+                                                tier,
+                                                "num_lives",
+                                                e.target.value,
+                                              )
+                                            }
+                                          />
+                                        </>
+                                      ) : (
+                                        <span>
+                                          No. of{" "}
+                                          {tier[0].toUpperCase() +
+                                            tier.slice(1)}
+                                          :{" "}
+                                          {
+                                            editedPlanSpecificClass?.[tier]
+                                              .num_lives
+                                          }
+                                        </span>
+                                      )}
+                                    </li>
+                                    )}
+                                  </ul>
+                                </li>
+                              );
+                            })}
+                          </ul>
+                          {planSpecificClassId === editedPlanClassId ? (
+                            <button
+                              onClick={() => {
+                                const [
+                                  cleanedEditedPlanSpecificClass,
+                                  parseSucceeded,
+                                ] = cleanInput({
+                                  employee: editedPlanSpecificClass.employee,
+                                  spouse: editedPlanSpecificClass.spouse,
+                                  family: editedPlanSpecificClass.family,
+                                  child: editedPlanSpecificClass.child,
+                                });
+                                if (!parseSucceeded) {
+                                  alert("Invalid Input. Please re-enter");
+                                  return;
                                 }
-                              >
-                                Edit{" "}
-                              </button>
-                            )}
-                            {planSpecificClassId === editedPlanClassId && (
-                              <button
-                                onClick={() => setEditedPlanClassId(undefined)}
-                              >
-                                Cancel
-                              </button>
-                            )}
-                          </div>
-                        );
-                      })}
-                </div>
-              </>
-            )}
+
+                                handleUpdateClassInfo(
+                                  {
+                                    ...editedPlanSpecificClass,
+                                    ...cleanedEditedPlanSpecificClass,
+                                  },
+                                  plan.id,
+                                );
+                                setEditedPlanClassId(undefined);
+                              }}
+                            >
+                              Save
+                            </button>
+                          ) : (
+                            <button
+                              onClick={() =>
+                                setEditedPlanClassId(
+                                  `${plan.id}-${classItem.id}`,
+                                )
+                              }
+                            >
+                              Edit{" "}
+                            </button>
+                          )}
+                          {planSpecificClassId === editedPlanClassId && (
+                            <button
+                              onClick={() => {
+                                setEditedPlanClassId(undefined);
+                                setEditedPlanSpecificClassInfo(
+                                  planSpecificClassInfo,
+                                );
+                              }}
+                            >
+                              Cancel
+                            </button>
+                          )}
+                        </div>
+                      );
+                    })}
+              </div>
+            </>
             Plan Rates
             <ul>
               <li>
@@ -400,6 +289,7 @@ export const PlanSection = ({
           </div>
         );
       })}
+      <strong>Grand Total Cost: {grandTotalCost}</strong>
     </div>
   );
 };

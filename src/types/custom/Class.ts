@@ -2,6 +2,7 @@ export type ClassType = {
   id?: number;
   client_id?: number;
   class_name: string;
+  is_default: boolean;
 };
 
 export type PlanSpecificClassType = {
