@@ -94,6 +94,9 @@ dependencies:
   react-error-boundary:
     specifier: ^4.0.12
     version: 4.0.12(react@18.2.0)
+  react-excel-workbook:
+    specifier: ^0.0.4
+    version: 0.0.4(react-dom@18.2.0)(react@18.2.0)
   react-hot-toast:
     specifier: ^2.4.1
     version: 2.4.1(react-dom@18.2.0)(react@18.2.0)
@@ -1687,6 +1690,15 @@ packages:
     hasBin: true
     dev: true
 
+  /adler-32@1.1.0:
+    resolution: {integrity: sha512-lRKKX9RZQBPy6CrdUqiDUsxVcZujjbkkUg++0zLLyi0EwRui+aFyEDJBXRXCqwp+pmmybdZgBNHxOAOQcgdJYg==}
+    engines: {node: '>=0.8'}
+    hasBin: true
+    dependencies:
+      exit-on-epipe: 1.0.1
+      printj: 1.1.2
+    dev: false
+
   /agent-base@6.0.2:
     resolution: {integrity: sha512-RZNwNclF7+MS/8bDg70amg32dyeZGZxiDuQmZxKLAlQjr3jGyLx+4Kkk58UO7D2QdgFIQCovuSuZESne6RG6XQ==}
     engines: {node: '>= 6.0.0'}
@@ -2063,6 +2075,15 @@ packages:
       lodash: 4.17.21
     dev: true
 
+  /cfb@0.12.1:
+    resolution: {integrity: sha512-cP+4A0tTqtyza5gJwNwDetZ8FPjl0gPLE7mIxGKyUzOS6HkM23WaAWW/l3t7jIQSMqVXroa09Ey0lo7gV8LNxw==}
+    engines: {node: '>=0.8'}
+    hasBin: true
+    dependencies:
+      commander: 2.11.0
+      printj: 1.1.2
+    dev: false
+
   /chalk@2.4.2:
     resolution: {integrity: sha512-Mti+f9lpJNcwF4tWV8/OrTTtF1gZi+f8FqlyAdouralcFWFQWF2+NgCHShjkCb+IFBLq9buZwE1xckQU4peSuQ==}
     engines: {node: '>=4'}
@@ -2128,6 +2149,16 @@ packages:
     engines: {node: ^14.17.0 || ^16.13.0 || >=18.0.0}
     dev: true
 
+  /codepage@1.10.2:
+    resolution: {integrity: sha512-JzhJ7nYua7rMcJ6I4Cw4h1w7aN/1f5qAQb//QSAaTjTVjEEZ1mBicBWTPLf6RiaBn4dpbEFwqGBoEekOHx9K2Q==}
+    engines: {node: '>=0.8'}
+    hasBin: true
+    dependencies:
+      commander: 2.11.0
+      exit-on-epipe: 1.0.1
+      voc: 1.0.0
+    dev: false
+
   /color-convert@1.9.3:
     resolution: {integrity: sha512-QfAUtd+vFdAtFQcC8CCyYt1fYWxSqAiK2cSD6zDB8N3cpsEBAvRxp9zOGg6G/SHHJYAT88/az/IuDGALsNVbGg==}
     dependencies:
@@ -2167,6 +2198,10 @@ packages:
     dependencies:
       color-convert: 2.0.1
       color-string: 1.9.1
+    dev: false
+
+  /commander@2.11.0:
+    resolution: {integrity: sha512-b0553uYA5YAEGgyYIGYROzKQ7X5RAqedkfjiZxwi0kL1g3bOaBNNZfYkzt/CL0umgD5wc9Jec2FbB98CjkMRvQ==}
     dev: false
 
   /commander@4.1.1:
@@ -2223,6 +2258,15 @@ packages:
       parse-json: 5.2.0
       path-type: 4.0.0
       yaml: 1.10.2
+    dev: false
+
+  /crc-32@1.1.1:
+    resolution: {integrity: sha512-DWXuRN3Wtu43YRfYZ9r17720WZqM0caEjIfT6Dk1J/3sAxIyyXbUWqIACbz3cjV8l7guJRW+9pZlYMluKJ69wg==}
+    engines: {node: '>=0.8'}
+    hasBin: true
+    dependencies:
+      exit-on-epipe: 1.0.1
+      printj: 1.1.2
     dev: false
 
   /cross-fetch@3.1.8:
@@ -2945,6 +2989,11 @@ packages:
     resolution: {integrity: sha512-Z+ktTxTwv9ILfgKCk32OX3n/doe+OcLTRtqK9pcL+JsP3J1/VW8Uvl4ZjLlKqeW4rzK4oesDOGMEMRIZqtP4Iw==}
     dev: false
 
+  /exit-on-epipe@1.0.1:
+    resolution: {integrity: sha512-h2z5mrROTxce56S+pnvAV890uu7ls7f1kEvVGJbw1OlFH3/mlJ5bkXu0KRyW94v37zzHPiUd55iLn3DA7TjWpw==}
+    engines: {node: '>=0.8'}
+    dev: false
+
   /extend@3.0.2:
     resolution: {integrity: sha512-fjquC59cD7CyW6urNXK0FBufkZcoiGG80wTuPujX590cB5Ttln20E2UB4S/WARVqhXffZl2LNgS+gQdPIIim/g==}
     dev: false
@@ -2998,6 +3047,10 @@ packages:
     dependencies:
       flat-cache: 3.2.0
     dev: true
+
+  /file-saver@1.3.8:
+    resolution: {integrity: sha512-spKHSBQIxxS81N/O21WmuXA2F6wppUCsutpzenOeZzOCCJ5gEfcbqJP983IrpLXzYmXnMUa6J03SubcNPdKrlg==}
+    dev: false
 
   /file-selector@0.6.0:
     resolution: {integrity: sha512-QlZ5yJC0VxHxQQsQhXvBaC7VRJ2uaxTf+Tfpu4Z/OcVQJVpZO+DGU0rkoVW5ce2SccxugvpBJoMvUs59iILYdw==}
@@ -3070,6 +3123,11 @@ packages:
     dependencies:
       fetch-blob: 3.2.0
     dev: true
+
+  /frac@1.1.2:
+    resolution: {integrity: sha512-w/XBfkibaTl3YDqASwfDUqkna4Z2p9cFSr1aHDt0WoMTECnRfBOv2WArlZILlqgWlmdIlALXGpM2AOhEk5W3IA==}
+    engines: {node: '>=0.8'}
+    dev: false
 
   /fraction.js@4.3.7:
     resolution: {integrity: sha512-ZsDfxO51wGAXREY55a7la9LScWpwv9RxIrYABrlvOFBlH/ShPnrtsXeuUIfXKKOVicNxQ+o8JTbJvjS4M89yew==}
@@ -4470,6 +4528,12 @@ packages:
     hasBin: true
     dev: true
 
+  /printj@1.1.2:
+    resolution: {integrity: sha512-zA2SmoLaxZyArQTOPj5LXecR+RagfPSU5Kw1qP+jkWeNlrq+eJZyY2oS68SU1Z/7/myXM4lo9716laOFAVStCQ==}
+    engines: {node: '>=0.8'}
+    hasBin: true
+    dev: false
+
   /process-nextick-args@2.0.1:
     resolution: {integrity: sha512-3ouUOpQhtgrbOa17J7+uxOTpITYWaGP7/AhoR3+A+/1e9skrzelGi/dXzEYyvbxubEF6Wn2ypscTKiKJFFn1ag==}
     dev: false
@@ -4547,6 +4611,19 @@ packages:
     dependencies:
       '@babel/runtime': 7.23.9
       react: 18.2.0
+    dev: false
+
+  /react-excel-workbook@0.0.4(react-dom@18.2.0)(react@18.2.0):
+    resolution: {integrity: sha512-llZKbCGoJ2gauBySZ/IAZdcfR79/nStz6aapaWN85gpfscNH7t6nExCPPPFcXIOSjHICOG0yMns21zsZqFQ5pw==}
+    peerDependencies:
+      prop-types: ^15.0.0
+      react: ^15.0.0
+      react-dom: ^15.0.0
+    dependencies:
+      file-saver: 1.3.8
+      react: 18.2.0
+      react-dom: 18.2.0(react@18.2.0)
+      xlsx: 0.10.9
     dev: false
 
   /react-hot-toast@2.4.1(react-dom@18.2.0)(react@18.2.0):
@@ -5106,6 +5183,14 @@ packages:
     engines: {node: '>=0.10.0'}
     dev: false
 
+  /ssf@0.10.3:
+    resolution: {integrity: sha512-pRuUdW0WwyB2doSqqjWyzwCD6PkfxpHAHdZp39K3dp/Hq7f+xfMwNAWIi16DyrRg4gg9c/RvLYkJTSawTPTm1w==}
+    engines: {node: '>=0.8'}
+    hasBin: true
+    dependencies:
+      frac: 1.1.2
+    dev: false
+
   /streamsearch@1.1.0:
     resolution: {integrity: sha512-Mcc5wHehp9aXz1ax6bZUyY5afg9u2rv5cqQI3mRrYkGC8rW2hM02jWuwjtL++LS5qinSyhj2QfLyNsuc+VsExg==}
     engines: {node: '>=10.0.0'}
@@ -5617,6 +5702,12 @@ packages:
       util-deprecate: 1.0.2
     dev: false
 
+  /voc@1.0.0:
+    resolution: {integrity: sha512-mQwxWlK+zosxxDTqiFb9ZQBNgd794scgkhVwca7h9sEhvA52f3VzbOK+TOWeS8eSrFXnfuKrxElSPc5oLAetfw==}
+    engines: {node: '>=0.8'}
+    hasBin: true
+    dev: false
+
   /warning@4.0.3:
     resolution: {integrity: sha512-rpJyN222KWIvHJ/F53XSZv0Zl/accqHR8et1kpaMTD/fLCRxtV8iX8czMzY7sVZupTI3zcUTg8eycS2kNF9l6w==}
     dependencies:
@@ -5753,6 +5844,21 @@ packages:
         optional: true
       utf-8-validate:
         optional: true
+    dev: false
+
+  /xlsx@0.10.9:
+    resolution: {integrity: sha512-XZrdkPmoZt8qPpVmuKNe7EYXyckvBArwFI7SMKiqdXz9ZAXRWx6EFMKpGTyiKklPzRsm2n4cmzADinPIlPi1Jg==}
+    engines: {node: '>=0.8'}
+    deprecated: this version is no longer supported.  More info at https://cdn.sheetjs.com/xlsx/
+    hasBin: true
+    dependencies:
+      adler-32: 1.1.0
+      cfb: 0.12.1
+      codepage: 1.10.2
+      commander: 2.11.0
+      crc-32: 1.1.1
+      exit-on-epipe: 1.0.1
+      ssf: 0.10.3
     dev: false
 
   /xmlcreate@2.0.4:

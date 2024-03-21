@@ -135,11 +135,11 @@ export const AddQuote = ({
       });
       return;
     } else {
-      setSnackbar({
-        open: true,
-        message: `Your files are uploading! They can take 2-5 minutes to populate based on size and existing backlog.`,
-        severity: "success",
-      });
+      // setSnackbar({
+      //   open: true,
+      //   message: `Your files are uploading! They can take 2-5 minutes to populate based on size and existing backlog.`,
+      //   severity: "success",
+      // });
     }
 
     try {

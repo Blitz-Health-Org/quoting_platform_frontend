@@ -23,24 +23,31 @@ export function calculateTotalCost(
   const tiers: TierType[] = ["employee", "spouse", "family", "child"];
 
   console.log("PLAN", plan, planSpecificClasses);
-  const rates = {
+  const initialRates = {
     employee: cleanInput(plan.data.employee_rate as string)[0],
     spouse: cleanInput(plan.data.spouse_rate as string)[0],
     child: cleanInput(plan.data.child_rate as string)[0],
     family: cleanInput(plan.data.family_rate as string)[0],
   };
 
+  const componentRates = {
+    employee: initialRates.employee,
+    spouse: initialRates.spouse - initialRates.employee,
+    child: initialRates.child - initialRates.employee,
+    family: initialRates.family - initialRates.employee
+  }
+
   let totalCost = 0.0;
   for (const employerClass of planSpecificClasses) {
     for (const tier of tiers) {
       if (
         employerClass[tier]?.contribution_percentage &&
-        rates?.[tier] &&
+        componentRates?.[tier] &&
         employerClass?.[tier].num_lives
       ) {
         totalCost +=
           employerClass[tier]?.contribution_percentage *
-          rates?.[tier] *
+          componentRates?.[tier] *
           employerClass?.[tier].num_lives *
           0.01;
       }

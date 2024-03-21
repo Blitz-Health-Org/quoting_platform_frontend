@@ -16,6 +16,38 @@ import { PlanSection } from "./components/PlanSection";
 import { ClassSection } from "./components/ClassSection";
 import { QuoteType } from "@/src/types/custom/Quote";
 import { useLocalStorage } from "@/src/utils/useLocalStorage";
+import Workbook from 'react-excel-workbook'
+
+const data1 = [
+  {
+    foo: '123',
+    bar: '456',
+    baz: '789'
+  },
+  {
+    foo: 'abc',
+    bar: 'dfg',
+    baz: 'hij'
+  },
+  {
+    foo: 'aaa',
+    bar: 'bbb',
+    baz: 'ccc'
+  }
+]
+ 
+const data2 = [
+  {
+    aaa: 1,
+    bbb: 2,
+    ccc: 3
+  },
+  {
+    aaa: 4,
+    bbb: 5,
+    ccc: 6
+  }
+]
 
 export type CensusDataType = {
   employee: {
@@ -140,6 +172,10 @@ export default function CostPage() {
     }
   };
 
+  function handleExportRateSheetToExcel() {
+
+  }
+
   if (loading) {
     return <></>;
   }
@@ -155,6 +191,18 @@ export default function CostPage() {
 
   return (
     <div className="w-full p-4">
+      <div className="row text-center" style={{marginTop: '100px'}}>
+    <Workbook filename={`rate_sheet_${(planGroup as PlanGroupType).name}.xlsx`} element={<button>Export To Excel</button>}>
+      <Workbook.Sheet data={data1} name="Sheet A">
+        <Workbook.Column label="Foo" value="foo"/>
+        <Workbook.Column label="Bar" value="bar"/>
+      </Workbook.Sheet>
+      <Workbook.Sheet data={data2} name="Another sheet">
+        <Workbook.Column label="Double aaa" value={(row: any) => row.aaa * 2}/>
+        <Workbook.Column label="Cubed ccc " value={(row: any) => Math.pow(row.ccc, 3)}/>
+      </Workbook.Sheet>
+    </Workbook>
+  </div>
       <div className="flex flex-col">
         <button
           onClick={() => setIsFirstOpen(!isFirstOpen)}

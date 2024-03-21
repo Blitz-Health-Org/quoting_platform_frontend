@@ -274,11 +274,11 @@ export const PlanSection = ({
                 Employee rate: {plan.data.employee_rate as string | undefined}
               </li>
               <li>
-                Spouse rate: {plan.data.spouse_rate as string | undefined}
+                Employee + Spouse rate: {plan.data.spouse_rate as string | undefined}
               </li>
-              <li>Child rate: {plan.data.child_rate as string | undefined}</li>
+              <li>Employee + Child rate: {plan.data.child_rate as string | undefined}</li>
               <li>
-                Family rate: {plan.data.family_rate as string | undefined}
+                Employee + Family rate: {plan.data.family_rate as string | undefined}
               </li>
             </ul>
             <div className="mt-4">

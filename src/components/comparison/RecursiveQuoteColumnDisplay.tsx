@@ -173,7 +173,7 @@ export const RecursiveQuoteColumnDisplay = ({
     );
   };
 
-  if (field.isVisible === false) return <></>;
+  if (field?.isVisible === false) return <></>;
 
 
   if (["string", "number", "boolean"].includes(field.type)) {

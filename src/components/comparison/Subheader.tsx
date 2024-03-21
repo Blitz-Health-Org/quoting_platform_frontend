@@ -56,10 +56,10 @@ export const Subheader: React.FC<SubheaderProps> = ({
 
 
   const handleCompareCostsClick = () => {
-    // router.push(
-    //   `/cost?clientId=${client.id}&planId=${client.connected_plans[0].id}`,
-    // );
-    handleBusiness(1);
+    router.push(
+      `/cost?clientId=${client.id}&planId=${client.connected_plans[0].id}`,
+    );
+    // handleBusiness(1);
   }
 
   return (
