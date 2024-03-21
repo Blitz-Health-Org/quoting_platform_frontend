@@ -21,7 +21,7 @@ export function getClasses(
   ) {
     try {
       const classes = await fetchAndSetNonPlanSpecificClassInfo(client);
-      await fetchAndSetPlanSpecificClassInfo(classes, planIds);
+      await fetchAndSetPlanSpecificClassInfo(classes, planIds, client);
     } catch {
       alert("Failed to get classes");
       throw Error;
@@ -46,6 +46,7 @@ export function getClasses(
   async function fetchAndSetPlanSpecificClassInfo(
     classes: ClassType[],
     planIds: number[],
+    client: ClientType,
   ) {
 
     let data;

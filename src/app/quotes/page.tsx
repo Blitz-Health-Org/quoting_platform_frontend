@@ -22,6 +22,7 @@ import { ClientContext } from "@/src/context/ClientContext";
 import { PlanSpecificClassInfoType } from "@/src/types/custom/Class";
 import { getClasses } from "../cost/utils/getClasses";
 import { ClassType } from "@/src/types/custom/Class";
+import { PlanGroupType } from "@/src/types/custom/PlanGroup";
 
 type QuotingPageProps = {
   client: ClientType;
@@ -202,6 +203,11 @@ export default function QuotingPage() {
           setPlans(newPlans);
         }
 
+        newPlans = newPlans.reduce((acc: QuoteType[], newPlan: PlanGroupType) => {
+          // Append each selectedQuotes list to the accumulator
+          return acc.concat(newPlan.selectedQuotes);
+        }, []);
+        
         fetchAndSetClasses(clientData, newPlans.map((plan: any) => plan.id));
       }
 
@@ -349,6 +355,11 @@ export default function QuotingPage() {
     };
   }
 
+
+  if (!classes || !planSpecificClassInfo) {
+    return <></>
+  }
+  
   return (
     <ClientContext.Provider value={client}>
       <div className="bg-gray-100 w-full h-screen">
@@ -374,13 +385,13 @@ export default function QuotingPage() {
                   plans.map((plan: any) => (
 
                     <GroupCard
-                     planSpecificClassInfo={planSpecificClassInfo.filter(classItem => classItem.plan_id === plan.id)}
                       key={plan.key}
                       plan={plan}
                       fieldObject={quoteSchema}
                       classes={classes}
                       standardContribution={standardContribution}
                       clientId={client?.id}
+                      planSpecificClassInfo={planSpecificClassInfo}
                     />
                   ))
                 ) : (

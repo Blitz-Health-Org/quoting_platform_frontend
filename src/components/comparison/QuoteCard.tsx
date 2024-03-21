@@ -39,18 +39,26 @@ export const QuoteCard = ({
   fieldObject,
   quote,
   classes,
-  planSpecificClassInfo,
   standardContribution,
   isContributionSettingsExpanded,
   isEditing,
+  planSpecificClassInfo
 }: QuoteCardProps) => {
   const [quoteSpecificContribution, setQuoteSpecificContribution] =
     useState<any>(standardContribution);
   // const calculatedTotalCost = null;
-  const calculatedTotalCost = calculateTotalCost(
-    {},
-    quote,
-    planSpecificClassInfo  );
+
+
+  const planSpecificClasses = planSpecificClassInfo.filter(classItem => classItem.plan_id === quote.id);
+  // const calculatedTotalCost = calculateTotalCost(
+  //   {},
+  //   quote,
+  //   planSpecificClasses);
+
+  console.log("QUOTE QUOTE QUOTE", quote)
+  const calculatedTotalCost = quote.data.total_employer_cost
+
+  
 
   return (
 

@@ -15,15 +15,15 @@ type GroupCardProps = {
   classes: any;
   standardContribution: any;
   clientId: any;
-  planSpecificClassInfo: PlanSpecificClassInfoType
+  planSpecificClassInfo: any;
 };
 
 export function GroupCard({
   plan,
   fieldObject,
   classes,
-  planSpecificClassInfo,
   standardContribution,
+  planSpecificClassInfo,
   clientId,
 }: GroupCardProps) {
   // const carrierLogos = {
