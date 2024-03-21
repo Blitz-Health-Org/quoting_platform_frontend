@@ -19,11 +19,10 @@ import { GroupCard } from "@/src/components/comparison/GroupCard";
 import { SnackBarContext } from "@/src/context/SnackBarContext";
 import { QuoteSchemaContext } from "@/src/context/QuoteSchemaContext";
 import { ClientContext } from "@/src/context/ClientContext";
-
-type ClassType = {
-  name: string;
-  data: Record<string, any>;
-};
+import { PlanSpecificClassInfoType } from "@/src/types/custom/Class";
+import { getClasses } from "../cost/utils/getClasses";
+import { ClassType } from "@/src/types/custom/Class";
+import { PlanGroupType } from "@/src/types/custom/PlanGroup";
 
 type QuotingPageProps = {
   client: ClientType;
@@ -34,8 +33,10 @@ export default function QuotingPage() {
   const [quotes, setQuotes] = useState<QuoteType[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [classes, setClasses] = useState<ClassType[]>([]);
+  const [planSpecificClassInfo, setPlanSpecificClassInfo] = useState<PlanSpecificClassInfoType>([])
   const [plans, setPlans] = useState<any>([]);
-  console.log("PLANS IN QUOTING PAGE", plans);
+
+  const {fetchAndSetClasses} = getClasses(setClasses, setPlanSpecificClassInfo)
 
   const [standardContribution, setStandardContribution] = useState<any>({
     name: "Standard Contribution",
@@ -189,17 +190,28 @@ export default function QuotingPage() {
         );
 
         // If a current plan is found and it's not the first element, move it to the front
+        let newPlans;
         if (currentPlanIndex > 0) {
-          const newPlans = [...clientData.connected_plans];
+          newPlans = [...clientData.connected_plans];
           const [currentPlan] = newPlans.splice(currentPlanIndex, 1);
           newPlans.unshift(currentPlan);
           setPlans(newPlans);
         } else {
           console.log("should fire", clientData);
           // Else just set the plans normally
-          setPlans(clientData.connected_plans);
+          newPlans = clientData.connected_plans
+          setPlans(newPlans);
         }
+
+        newPlans = newPlans.reduce((acc: QuoteType[], newPlan: PlanGroupType) => {
+          // Append each selectedQuotes list to the accumulator
+          return acc.concat(newPlan.selectedQuotes);
+        }, []);
+        
+        fetchAndSetClasses(clientData, newPlans.map((plan: any) => plan.id));
       }
+
+
 
       const scopedPlans = clientData.connected_plans;
 
@@ -237,10 +249,6 @@ export default function QuotingPage() {
         },
       });
 
-      if (clientData?.classes_contributions) {
-        console.log("helllo????");
-        setClasses(clientData.classes_contributions as any);
-      }
 
       setLoading(false);
     } catch (error) {
@@ -347,6 +355,11 @@ export default function QuotingPage() {
     };
   }
 
+
+  if (!classes || !planSpecificClassInfo) {
+    return <></>
+  }
+  
   return (
     <ClientContext.Provider value={client}>
       <div className="bg-gray-100 w-full h-screen">
@@ -370,12 +383,15 @@ export default function QuotingPage() {
                 </div>
                 {plans.length > 0 ? (
                   plans.map((plan: any) => (
+
                     <GroupCard
                       key={plan.key}
                       plan={plan}
                       fieldObject={quoteSchema}
                       classes={classes}
                       standardContribution={standardContribution}
+                      clientId={client?.id}
+                      planSpecificClassInfo={planSpecificClassInfo}
                     />
                   ))
                 ) : (
@@ -388,7 +404,7 @@ export default function QuotingPage() {
           </div>
         </div>
       </div>
-      <ContributionPane
+        <ContributionPane
         paneState={paneState}
         setPaneState={setPaneState}
         classes={classes}

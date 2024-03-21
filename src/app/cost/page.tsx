@@ -2,7 +2,7 @@
 
 import { ClientType } from "@/src/types/custom/Client";
 import { PlanGroupType } from "@/src/types/custom/PlanGroup";
-import { ClassType } from "@/src/types/custom/Class";
+import { ClassType, PlanSpecificClassInfoType } from "@/src/types/custom/Class";
 import { supabase } from "@/src/supabase";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
@@ -10,7 +10,7 @@ import { calculateTotalCost } from "@/src/components/comparison/utils/calculateT
 import { Json } from "@/src/types/database/database.types";
 import { cleanInput } from "@/src/components/comparison/utils/cleanInput";
 import { getCensusData } from "./utils/getCensusData";
-import { PlanSpecificClassInfoType, getClasses } from "./utils/getClasses";
+import { getClasses } from "./utils/getClasses";
 import { CensusDataSection } from "./components/CensusDataSection";
 import { PlanSection } from "./components/PlanSection";
 import { ClassSection } from "./components/ClassSection";
@@ -60,7 +60,7 @@ export default function CostPage() {
 
 
   const [planSpecificClassInfo, setPlanSpecificClassInfo] = useState<
-    PlanSpecificClassInfoType[]
+    PlanSpecificClassInfoType
   >([]);
   const [censusData, setCensusData] = useState<CensusDataType>({
     employee: {

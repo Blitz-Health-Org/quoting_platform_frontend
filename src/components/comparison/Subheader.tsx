@@ -54,7 +54,6 @@ export const Subheader: React.FC<SubheaderProps> = ({
     return;
   };
 
-  console.log("client", client);
 
   const handleCompareCostsClick = () => {
     router.push(
