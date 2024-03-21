@@ -1,6 +1,7 @@
 import React, { Dispatch, SetStateAction, useState } from "react";
 import { ClassType } from "@/src/types/custom/Class";
 import lodash from "lodash";
+import { MdEdit, MdDelete, MdSave } from "react-icons/md";
 
 type ClassSectionProps = {
   classes: ClassType[];
@@ -69,18 +70,21 @@ export const ClassSection = ({
   return (
     <div>
       {classes.map((classItem) => (
-        <div key={classItem.id} className="mb-4 p-2 rounded">
+        <div key={classItem.id} className="mb-2 px-2 py-1 rounded flex justify-between outline outline-1 outline-gray-200 bg-gray-100/20">
+          <div>
           {classItem.id === editClassId ? (
             <input
               onChange={(e) =>
                 handleChange(classItem.id as number, e.target.value)
               }
+              className="w-4/5"
               value={editedClasses[classItem.id as number]?.class_name}
-              className="font-bold"
             />
           ) : (
-            <span>{editedClasses[classItem.id as number]?.class_name}</span>
+            <p>{editedClasses[classItem.id as number]?.class_name}</p>
           )}
+          </div>
+          <div className="flex items-center gap-1">
           {editClassId === classItem.id ? (
             <button
               onClick={() => {
@@ -89,14 +93,17 @@ export const ClassSection = ({
                 }
               }}
             >
-              Save
+              <MdSave/>
             </button>
           ) : (
-            <button onClick={() => handleEdit(classItem.id!)}>Edit</button>
+            <button onClick={() => handleEdit(classItem.id!)}>
+              <MdEdit/>
+            </button>
           )}
           <button onClick={() => handleDeleteCustomClass(classItem)}>
-            Delete Custom Class
+            <MdDelete/>
           </button>
+        </div>
         </div>
       ))}
       {isNewClassBeingCreated && (
@@ -140,8 +147,10 @@ export const ClassSection = ({
       ) : (
         <button
           onClick={() => setIsNewClassBeingCreated(!isNewClassBeingCreated)}
-        >
-          Add Custom Class
+          className="flex items-center gap-2 outline outline-1 outline-gray-200 px-2 py-1 w-full justify-center rounded-sm bg-gray-100/20 hover:bg-gray-100/50"
+          >
+          <p>+</p>
+          <p>Add Custom Class</p>
         </button>
       )}
       {submitAttempted && (

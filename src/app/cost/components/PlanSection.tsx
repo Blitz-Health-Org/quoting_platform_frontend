@@ -92,6 +92,21 @@ export const PlanSection = ({
           <div key={plan.id} className="mb-4 p-4 bg-gray-200 rounded-md">
             {plan.id}
             <h3 className="font-bold mb-2">{plan.data.plan_name as string}</h3>
+            
+            Plan Rates
+            <ul>
+              <li>
+                Employee rate: {plan.data.employee_rate as string | undefined}
+              </li>
+              <li>
+                Spouse rate: {plan.data.spouse_rate as string | undefined}
+              </li>
+              <li>Child rate: {plan.data.child_rate as string | undefined}</li>
+              <li>
+                Family rate: {plan.data.family_rate as string | undefined}
+              </li>
+            </ul>
+            
             <>
               Classes
               <div className="border border-black p-4">
@@ -269,19 +284,6 @@ export const PlanSection = ({
                     })}
               </div>
             </>
-            Plan Rates
-            <ul>
-              <li>
-                Employee rate: {plan.data.employee_rate as string | undefined}
-              </li>
-              <li>
-                Spouse rate: {plan.data.spouse_rate as string | undefined}
-              </li>
-              <li>Child rate: {plan.data.child_rate as string | undefined}</li>
-              <li>
-                Family rate: {plan.data.family_rate as string | undefined}
-              </li>
-            </ul>
             <div className="mt-4">
               <strong>Total Cost: </strong>
               {totalCost}
