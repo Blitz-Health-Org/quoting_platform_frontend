@@ -552,7 +552,7 @@ export default function SelectQuotes() {
       <main className="flex w-full h-full overflow-hidden pl-4 md:pl-0 bg-gray-100">
         <Navbar selected="Quotes" />
         <div className="w-full md:w-6/7 flex">
-          <div className="h-screen overflow-hidden flex-col w-full bg-gray-100 bg-opacity-50 pl-2 pr-6 pt-5 pb-6 text-gray-700">
+          <div className="h-screen overflow-x-scroll flex-col w-full bg-gray-100 bg-opacity-50 pl-2 pr-6 pt-5 pb-6 text-gray-700">
             <div className="flex w-full items-center mb-4 mt-1 justify-between">
               <div className="flex items-center text-sm md:text-base">
                 <button
