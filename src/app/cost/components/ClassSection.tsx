@@ -17,8 +17,6 @@ export const ClassSection = ({
   handleAddCustomClass,
   onSave,
 }: ClassSectionProps) => {
-    
-
   const initialEditedClasses = classes.reduce(
     (acc, currentClass) => {
       acc[currentClass.id as number] = currentClass;
@@ -33,7 +31,10 @@ export const ClassSection = ({
     [key: number]: ClassType;
   }>(initialEditedClasses);
 
-  const [newClass, setNewClass] = useState<ClassType>({ class_name: "", is_default: false });
+  const [newClass, setNewClass] = useState<ClassType>({
+    class_name: "",
+    is_default: false,
+  });
   const [isNewClassBeingCreated, setIsNewClassBeingCreated] =
     useState<boolean>(false);
   const [submitAttempted, setSubmitAttempted] = useState<boolean>(false);
@@ -70,40 +71,43 @@ export const ClassSection = ({
   return (
     <div>
       {classes.map((classItem) => (
-        <div key={classItem.id} className="mb-2 px-2 py-1 rounded flex justify-between outline outline-1 outline-gray-200 bg-gray-100/20">
+        <div
+          key={classItem.id}
+          className="mb-2 px-2 py-1 rounded flex justify-between outline outline-1 outline-gray-200 bg-gray-100/20"
+        >
           <div>
-          {classItem.id === editClassId ? (
-            <input
-              onChange={(e) =>
-                handleChange(classItem.id as number, e.target.value)
-              }
-              className="w-4/5"
-              value={editedClasses[classItem.id as number]?.class_name}
-            />
-          ) : (
-            <p>{editedClasses[classItem.id as number]?.class_name}</p>
-          )}
+            {classItem.id === editClassId ? (
+              <input
+                onChange={(e) =>
+                  handleChange(classItem.id as number, e.target.value)
+                }
+                className="w-4/5"
+                value={editedClasses[classItem.id as number]?.class_name}
+              />
+            ) : (
+              <p>{editedClasses[classItem.id as number]?.class_name}</p>
+            )}
           </div>
           <div className="flex items-center gap-1">
-          {editClassId === classItem.id ? (
-            <button
-              onClick={() => {
-                if (classItem.class_name) {
-                  handleSave(classItem.id!);
-                }
-              }}
-            >
-              <MdSave/>
+            {editClassId === classItem.id ? (
+              <button
+                onClick={() => {
+                  if (classItem.class_name) {
+                    handleSave(classItem.id!);
+                  }
+                }}
+              >
+                <MdSave />
+              </button>
+            ) : (
+              <button onClick={() => handleEdit(classItem.id!)}>
+                <MdEdit />
+              </button>
+            )}
+            <button onClick={() => handleDeleteCustomClass(classItem)}>
+              <MdDelete />
             </button>
-          ) : (
-            <button onClick={() => handleEdit(classItem.id!)}>
-              <MdEdit/>
-            </button>
-          )}
-          <button onClick={() => handleDeleteCustomClass(classItem)}>
-            <MdDelete/>
-          </button>
-        </div>
+          </div>
         </div>
       ))}
       {isNewClassBeingCreated && (
@@ -126,7 +130,7 @@ export const ClassSection = ({
               if (newClass.class_name) {
                 handleAddCustomClass(newClass.class_name);
                 setIsNewClassBeingCreated(false);
-                setNewClass({ class_name: "", is_default: false});
+                setNewClass({ class_name: "", is_default: false });
                 setSubmitAttempted(false);
               } else {
               }
@@ -148,7 +152,7 @@ export const ClassSection = ({
         <button
           onClick={() => setIsNewClassBeingCreated(!isNewClassBeingCreated)}
           className="flex items-center gap-2 outline outline-1 outline-gray-200 px-2 py-1 w-full justify-center rounded-sm bg-gray-100/20 hover:bg-gray-100/50"
-          >
+        >
           <p>+</p>
           <p>Add Custom Class</p>
         </button>

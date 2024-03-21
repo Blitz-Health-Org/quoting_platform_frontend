@@ -18,7 +18,13 @@ import { QuoteType } from "@/src/types/custom/Quote";
 import { useLocalStorage } from "@/src/utils/useLocalStorage";
 import { Navbar } from "@/src/components/comparison/Navbar";
 import { IconBuilding } from "@tabler/icons-react";
-import { IoIosArrowDown, IoIosArrowUp, IoMdArrowBack, IoMdEye, IoMdEyeOff} from "react-icons/io";
+import {
+  IoIosArrowDown,
+  IoIosArrowUp,
+  IoMdArrowBack,
+  IoMdEye,
+  IoMdEyeOff,
+} from "react-icons/io";
 
 export type CensusDataType = {
   employee: {
@@ -53,15 +59,17 @@ export default function CostPage() {
 
   let defaultOrCustomClasses;
   if (isCustomClassesActivated) {
-    defaultOrCustomClasses = (classes.filter(classItem => !classItem.is_default))
-} else {
-    defaultOrCustomClasses = (classes.filter(classItem => classItem.is_default))
-}
+    defaultOrCustomClasses = classes.filter(
+      (classItem) => !classItem.is_default,
+    );
+  } else {
+    defaultOrCustomClasses = classes.filter(
+      (classItem) => classItem.is_default,
+    );
+  }
 
-
-  const [planSpecificClassInfo, setPlanSpecificClassInfo] = useState<
-    PlanSpecificClassInfoType
-  >([]);
+  const [planSpecificClassInfo, setPlanSpecificClassInfo] =
+    useState<PlanSpecificClassInfoType>([]);
   const [censusData, setCensusData] = useState<CensusDataType>({
     employee: {
       num_lives: null,
@@ -156,123 +164,115 @@ export default function CostPage() {
 
   //toggle custom classes (disables default)
 
-
   const plans = (planGroup as PlanGroupType).selectedQuotes;
   const planIds = plans.map((plan) => plan.id);
 
   return (
     <main className="flex w-full h-screen overflow-hidden pl-4 md:pl-0 bg-gray-100">
-    <Navbar selected="Quotes" />
-    <div className="w-full md:w-6/7 flex-col h-full overflow-auto p-4">
-    <div className="flex items-center text-sm md:text-base mt-2">
-      <button
-        className="flex items-center"
-        onClick={() => sendToSelect()}
-      >
-        <IoMdArrowBack />
-        <p className="ml-2 mr-2">Clients / Cost Breakdown /</p>
-      </button>
-      <IconBuilding className="h-5 w-5 mr-2" />
-      <p className="mr-2">{client?.name || "Client"}</p>
-      {/* <p className="mr-1">/ Quotes</p>
+      <Navbar selected="Quotes" />
+      <div className="w-full md:w-6/7 flex-col overflow-auto h-full p-4">
+        <div className="flex items-center text-sm md:text-base mt-2">
+          <button className="flex items-center" onClick={() => sendToSelect()}>
+            <IoMdArrowBack />
+            <p className="ml-2 mr-2">Clients / Cost Breakdown /</p>
+          </button>
+          <IconBuilding className="h-5 w-5 mr-2" />
+          <p className="mr-2">{client?.name || "Client"}</p>
+          {/* <p className="mr-1">/ Quotes</p>
   <p className="mr-1 text-gray-400 text-xs">•</p>
   <p className="text-gray-400">({quotes.length})</p> */}
-    </div>
-    <div className="w-full p-4 bg-white outline outline-1 outline-gray-200 rounded-md mt-4">
-      <div className="flex gap-4">
-
-      <div className="flex flex-col w-1/5">
-        <div>
-        <button
-          onClick={() => setIsFirstOpen(!isFirstOpen)}
-          className="w-full flex justify-between items-center py-2 font-semibold rounded-md mb-2"
-        >
-          <p>Census</p>
-          {isFirstOpen ? <IoIosArrowDown/> : <IoIosArrowUp/>} 
-        </button>
-        {isFirstOpen && (
-          <div className="w-full min-h-[50px] mb-4 rounded-md">
-            <CensusDataSection
-              censusData={censusData}
-              setCensusData={setCensusData}
-              onSave={(editedCensusData: CensusDataType) => {
-                handleUpdateCensusData(client as ClientType, editedCensusData);
-              }}
-            />
-          </div>
-        )}
         </div>
+        <div className="w-full p-4 bg-white outline outline-1 outline-gray-200 rounded-md mt-4">
+          <div className="flex gap-4">
+            <div className="flex flex-col w-1/5">
+              <div>
+                <button
+                  onClick={() => setIsFirstOpen(!isFirstOpen)}
+                  className="w-full flex justify-between items-center py-2 font-semibold rounded-md mb-2"
+                >
+                  <p>Census</p>
+                  {isFirstOpen ? <IoIosArrowDown /> : <IoIosArrowUp />}
+                </button>
+                {isFirstOpen && (
+                  <div className="w-full min-h-[50px] mb-4 rounded-md">
+                    <CensusDataSection
+                      censusData={censusData}
+                      setCensusData={setCensusData}
+                      onSave={(editedCensusData: CensusDataType) => {
+                        handleUpdateCensusData(
+                          client as ClientType,
+                          editedCensusData,
+                        );
+                      }}
+                    />
+                  </div>
+                )}
+              </div>
 
-        <div>
-        <button
-          onClick={() => setIsSecondOpen(!isSecondOpen)}
-          className="w-full flex justify-between text-left py-2 font-semibold rounded-md mb-2"
-        >
-          <p>Classes</p>
-          {isSecondOpen ? <IoIosArrowDown/> : <IoIosArrowUp/>} 
-        </button>
-        {isSecondOpen && (
-          <>
-            {isCustomClassesActivated && (
-              <div className="w-full min-h-[50px] mb-2 rounded-md">
-                <ClassSection
+              <div>
+                <button
+                  onClick={() => setIsSecondOpen(!isSecondOpen)}
+                  className="w-full flex justify-between text-left py-2 font-semibold rounded-md mb-2"
+                >
+                  <p>Classes</p>
+                  {isSecondOpen ? <IoIosArrowDown /> : <IoIosArrowUp />}
+                </button>
+                {isSecondOpen && (
+                  <>
+                    {isCustomClassesActivated && (
+                      <div className="w-full min-h-[50px] mb-2 rounded-md">
+                        <ClassSection
+                          classes={defaultOrCustomClasses}
+                          handleDeleteCustomClass={handleDeleteCustomClass}
+                          handleAddCustomClass={async (
+                            newClassName: string,
+                          ) => {
+                            handleAddCustomClass(
+                              client as ClientType,
+                              planIds,
+                              newClassName,
+                            );
+                          }}
+                          onSave={(editedClass: ClassType) => {
+                            handleUpdateClass(editedClass);
+                          }}
+                          isCustomClassesActivated={isCustomClassesActivated}
+                        />
+                      </div>
+                    )}
+                    <button
+                      className="flex items-center gap-2 outline outline-1 outline-gray-200 px-2 py-1 w-full justify-center rounded-sm bg-gray-100/20 hover:bg-gray-100/50"
+                      onClick={() => {
+                        setIsCustomClassesActivated(!isCustomClassesActivated);
+                      }}
+                    >
+                      {isCustomClassesActivated ? <IoMdEyeOff /> : <IoMdEye />}
+                      {isCustomClassesActivated ? (
+                        <p>Disable Classes</p>
+                      ) : (
+                        <p>Enable Classes</p>
+                      )}
+                    </button>
+                  </>
+                )}
+              </div>
+            </div>
+
+            <div className="w-4/5">
+              <div className="w-full px-4 py-2 mb-4 rounded-md">
+                <PlanSection
+                  plans={plans}
                   classes={defaultOrCustomClasses}
-                  handleDeleteCustomClass={handleDeleteCustomClass}
-                  handleAddCustomClass={async (newClassName: string) => {
-                    handleAddCustomClass(
-                      client as ClientType,
-                      planIds,
-                      newClassName,
-                    );
-                  }}
-                  onSave={(editedClass: ClassType) => {
-                    handleUpdateClass(editedClass);
-                  }}
-                  isCustomClassesActivated = {isCustomClassesActivated}
+                  isCustomClassesActivated={isCustomClassesActivated}
+                  planSpecificClassInfo={planSpecificClassInfo}
+                  censusData={client?.census_data as CensusDataType}
+                  handleUpdateClassInfo={handleUpdateClass}
                 />
               </div>
-            )}
-            <button
-              className="flex items-center gap-2 outline outline-1 outline-gray-200 px-2 py-1 w-full justify-center rounded-sm bg-gray-100/20 hover:bg-gray-100/50"
-              onClick={() => {
-                setIsCustomClassesActivated(!isCustomClassesActivated);
-              }}
-            >
-              {isCustomClassesActivated ? <IoMdEyeOff /> : <IoMdEye/>}
-              {isCustomClassesActivated ? <p>Disable Classes</p> : <p>Enable Classes</p>}
-            </button>
-          </>
-        )}
+            </div>
+          </div>
         </div>
-        </div>
-
-        <div className="w-4/5">
-        <button
-          onClick={() => setIsThirdOpen(!isThirdOpen)}
-          className="w-full text-left py-2 px-4 font-semibold rounded-md"
-        >
-          <div className="font-bold text-xl">
-            Plans
-          </div>
-        </button>
-        {isThirdOpen && (
-          <div className="w-full min-h-[50px] bg-gray-100 p-4 mb-4 rounded-md">
-            <PlanSection
-              plans={plans}
-              classes={defaultOrCustomClasses}
-              isCustomClassesActivated={isCustomClassesActivated}
-              planSpecificClassInfo={planSpecificClassInfo}
-              censusData={client?.census_data as CensusDataType}
-              handleUpdateClassInfo={handleUpdateClass}
-            />
-          </div>
-        )}
-
-          </div>
-
       </div>
-    </div>
-    </div>
     </main>
   );
 }

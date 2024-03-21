@@ -32,7 +32,7 @@ export type QuoteCardProps = {
   standardContribution: any;
   isContributionSettingsExpanded: any;
   isEditing?: boolean;
-  planSpecificClassInfo: PlanSpecificClassInfoType
+  planSpecificClassInfo: PlanSpecificClassInfoType;
 };
 
 export const QuoteCard = ({
@@ -42,29 +42,27 @@ export const QuoteCard = ({
   standardContribution,
   isContributionSettingsExpanded,
   isEditing,
-  planSpecificClassInfo
+  planSpecificClassInfo,
 }: QuoteCardProps) => {
   const [quoteSpecificContribution, setQuoteSpecificContribution] =
     useState<any>(standardContribution);
   // const calculatedTotalCost = null;
 
-
-  const planSpecificClasses = planSpecificClassInfo.filter(classItem => classItem.plan_id === quote.id);
+  const planSpecificClasses = planSpecificClassInfo.filter(
+    (classItem) => classItem.plan_id === quote.id,
+  );
   // const calculatedTotalCost = calculateTotalCost(
   //   {},
   //   quote,
   //   planSpecificClasses);
 
-  console.log("QUOTE QUOTE QUOTE", quote)
-  const calculatedTotalCost = quote.data.total_employer_cost
-
-  
+  console.log("QUOTE QUOTE QUOTE", quote);
+  const calculatedTotalCost = quote.data.total_employer_cost;
 
   return (
-
     <QuoteColumnDisplay
       field={fieldObject}
-      quoteId = {quote.id}
+      quoteId={quote.id}
       quoteData={quote.data}
       isQuoteCard
       initialExpanded

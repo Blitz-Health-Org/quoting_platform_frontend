@@ -6,7 +6,10 @@ import { Dispatch, SetStateAction, useState } from "react";
 import { useRecoilState } from "recoil";
 import { contributionSettingsAtom } from "./contributionSettingsAtom";
 import { IoIosSettings } from "react-icons/io";
-import { EditQuoteContext, EditQuoteContextProvider } from "@/src/context/EditQuoteContext";
+import {
+  EditQuoteContext,
+  EditQuoteContextProvider,
+} from "@/src/context/EditQuoteContext";
 import { PlanSpecificClassInfoType } from "@/src/types/custom/Class";
 
 type GroupCardProps = {
@@ -37,9 +40,7 @@ export function GroupCard({
   // };
   const [isContributionSettingsExpanded, setIsContributionSettingsExpanded] =
     useState<boolean>(false);
-    const [isEditing, setIsEditing] = useState<boolean>(false);
-
-
+  const [isEditing, setIsEditing] = useState<boolean>(false);
 
   return (
     // <EditQuoteContextProvider value={{isEditing, quotes: plan.selectedQuotes, clientId}}>

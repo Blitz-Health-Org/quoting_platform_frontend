@@ -33,10 +33,14 @@ export default function QuotingPage() {
   const [quotes, setQuotes] = useState<QuoteType[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [classes, setClasses] = useState<ClassType[]>([]);
-  const [planSpecificClassInfo, setPlanSpecificClassInfo] = useState<PlanSpecificClassInfoType>([])
+  const [planSpecificClassInfo, setPlanSpecificClassInfo] =
+    useState<PlanSpecificClassInfoType>([]);
   const [plans, setPlans] = useState<any>([]);
 
-  const {fetchAndSetClasses} = getClasses(setClasses, setPlanSpecificClassInfo)
+  const { fetchAndSetClasses } = getClasses(
+    setClasses,
+    setPlanSpecificClassInfo,
+  );
 
   const [standardContribution, setStandardContribution] = useState<any>({
     name: "Standard Contribution",
@@ -199,19 +203,23 @@ export default function QuotingPage() {
         } else {
           console.log("should fire", clientData);
           // Else just set the plans normally
-          newPlans = clientData.connected_plans
+          newPlans = clientData.connected_plans;
           setPlans(newPlans);
         }
 
-        newPlans = newPlans.reduce((acc: QuoteType[], newPlan: PlanGroupType) => {
-          // Append each selectedQuotes list to the accumulator
-          return acc.concat(newPlan.selectedQuotes);
-        }, []);
-        
-        fetchAndSetClasses(clientData, newPlans.map((plan: any) => plan.id));
+        newPlans = newPlans.reduce(
+          (acc: QuoteType[], newPlan: PlanGroupType) => {
+            // Append each selectedQuotes list to the accumulator
+            return acc.concat(newPlan.selectedQuotes);
+          },
+          [],
+        );
+
+        fetchAndSetClasses(
+          clientData,
+          newPlans.map((plan: any) => plan.id),
+        );
       }
-
-
 
       const scopedPlans = clientData.connected_plans;
 
@@ -248,7 +256,6 @@ export default function QuotingPage() {
           },
         },
       });
-
 
       setLoading(false);
     } catch (error) {
@@ -355,11 +362,10 @@ export default function QuotingPage() {
     };
   }
 
-
   if (!classes || !planSpecificClassInfo) {
-    return <></>
+    return <></>;
   }
-  
+
   return (
     <ClientContext.Provider value={client}>
       <div className="bg-gray-100 w-full h-screen">
@@ -383,7 +389,6 @@ export default function QuotingPage() {
                 </div>
                 {plans.length > 0 ? (
                   plans.map((plan: any) => (
-
                     <GroupCard
                       key={plan.key}
                       plan={plan}
@@ -404,7 +409,7 @@ export default function QuotingPage() {
           </div>
         </div>
       </div>
-        <ContributionPane
+      <ContributionPane
         paneState={paneState}
         setPaneState={setPaneState}
         classes={classes}

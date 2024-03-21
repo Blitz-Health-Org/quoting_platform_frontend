@@ -280,13 +280,15 @@ const SelectSidebar = ({
                 placeholder="Enter New Plan Name"
                 value={newPlanName}
                 onChange={(e) => setNewPlanName(e.target.value)}
-                className="py-1 px-4 text-sm outline outline-1 outline-gray-300 rounded-md w-7/8 hover:cursor-pointer focus:cursor-auto hover:outline-gray-400"
+                className="py-1 px-4 text-sm outline outline-1 outline-gray-300 rounded-md hover:cursor-pointer focus:cursor-auto hover:outline-gray-400"
+                style={{ width: "180px" }} // Set width to 42 pixels
               />
               <button
                 onClick={handleAddPlan}
                 data-tooltip-id="my-tooltip"
                 data-tooltip-content="New Plan"
-                className="sb-button outline outline-1 outline-gray-300 rounded-md px-0.5 hover:outline-gray-400 w-1/8"
+                className="sb-button outline outline-1 outline-gray-300 rounded-md px-0.5 hover:outline-gray-400 flex justify-center items-center"
+                style={{ width: "35px" }} // Set width to 42 pixels
               >
                 <IoIosAdd className="h-6 w-6 text-gray-700" />
               </button>

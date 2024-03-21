@@ -37,10 +37,9 @@ export const RecursiveQuoteColumnDisplay = ({
   isQuoteCard = false,
   alternateColor = false,
   isEditing,
-  quoteId
+  quoteId,
 }: RecursiveQuoteColumnDisplayProps) => {
   const [fieldState, setFieldState] = useRecoilState(fieldsFamilyState(path));
-
 
   if (fieldState === null) {
     setFieldState({ isExpanded: initialExpanded });
@@ -56,27 +55,29 @@ export const RecursiveQuoteColumnDisplay = ({
     quoteData,
     alternateColor = false,
     // isEditing,
-    path
+    path,
   }: HeaderLabelProps) => {
     const [editedData, setEditedData] = useState(quoteData);
 
     // const {isEditing, setEditedQuotes} = useContext(EditQuoteContext)
 
-    const fieldPath = path.slice(5).split('/')
+    const fieldPath = path.slice(5).split("/");
 
     function updateNestedField(obj: any, path: any, newValue: any): any {
       if (path.length === 0) {
         return newValue;
       }
-    
+
       const [firstPath, ...restPath] = path;
       return {
         ...obj,
-        [firstPath]: updateNestedField(obj[firstPath] || {}, restPath, newValue),
+        [firstPath]: updateNestedField(
+          obj[firstPath] || {},
+          restPath,
+          newValue,
+        ),
       };
     }
-    
-    
 
     return (
       <div
@@ -124,7 +125,9 @@ export const RecursiveQuoteColumnDisplay = ({
             // });
               
             // }}/> : */}
-             <p className={`break-all font-semibold max-w-64`}> {["string", "number", "boolean"].includes(field.type) ? (
+          <p className={`break-all font-semibold max-w-64`}>
+            {" "}
+            {["string", "number", "boolean"].includes(field.type) ? (
               isQuoteCard ? (
                 editedData !== null && editedData !== undefined ? (
                   editedData
@@ -139,9 +142,9 @@ export const RecursiveQuoteColumnDisplay = ({
             ) : (
               field?.label
             )}
-            </p>
-            {/* // } */}
-            
+          </p>
+          {/* // } */}
+
           {field.type === "object" &&
             (isExpanded ? (
               <div className="pr-2">
@@ -174,7 +177,6 @@ export const RecursiveQuoteColumnDisplay = ({
   };
 
   if (field.isVisible === false) return <></>;
-
 
   if (["string", "number", "boolean"].includes(field.type)) {
     return (

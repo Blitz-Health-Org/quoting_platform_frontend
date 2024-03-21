@@ -29,13 +29,16 @@ export const CensusDataSection = ({
   return (
     <div>
       {(["employee", "spouse", "family", "child"] as TierType[]).map((tier) => (
-        <div className="bg-gray-100/20 outline outline-1 outline-gray-300 px-2 py-1 my-2 rounded-sm" key={tier}>
+        <div
+          className="bg-gray-100/20 outline outline-1 outline-gray-300 px-2 py-1 my-2 rounded-sm"
+          key={tier}
+        >
           {editMode ? (
             <div className="flex gap-2 items-center">
               <div>{tier}</div>
               <input
                 type="number"
-                className="px-2 w-12 outline outline-1 outline-gray-200"
+                className="px-2 w-4/5 outline outline-1 outline-gray-200"
                 value={editedCensusData[tier].num_lives ?? undefined}
                 onChange={(e) =>
                   handleChange(
@@ -73,8 +76,11 @@ export const CensusDataSection = ({
           </button> */}
         </div>
       ) : (
-        <button onClick={() => setEditMode(!editMode)} className="flex w-full outline outline-1 bg-gray-100/20 hover:bg-gray-100/50 outline-gray-200 justify-center rounded-sm px-2 py-1 gap-2 items-center">
-          <MdEdit/>
+        <button
+          onClick={() => setEditMode(!editMode)}
+          className="flex w-full outline outline-1 bg-gray-100/20 hover:bg-gray-100/50 outline-gray-200 justify-center rounded-sm px-2 py-1 gap-2 items-center"
+        >
+          <MdEdit />
           <p>Edit</p>
         </button>
       )}

@@ -12,7 +12,7 @@ import { useRouter } from "next/navigation";
 import { UserContext } from "@/src/context/UserContext";
 import TabHeader from "../../ui/TabHeader";
 
-const TABS=['Medical', 'Ancillary']
+const TABS = ["Medical", "Ancillary"];
 
 type AddQuoteProps = {
   onClose: () => void;
@@ -44,7 +44,7 @@ export const AddQuote = ({
   const [customRange, setCustomRange] = useState("");
   const [isRangeValid, setIsRangeValid] = useState(true);
   const [rangeSelection, setRangeSelection] = useState("all"); // Dropdown selection state
-  const [currentTab, setCurrentTab] = useState<string>("Medical")
+  const [currentTab, setCurrentTab] = useState<string>("Medical");
 
   const {
     userId: [userId],
@@ -331,116 +331,115 @@ export const AddQuote = ({
           </button>
         </div>
         <TabHeader
-                      tabs={TABS}
-                      titles={[
-                        'Medical',
-                        'Ancillary'
-                      ]}
-                      selectedTab={currentTab}
-                      setSelectedTab={setCurrentTab}
-                    />
-        {currentTab === 'Medical' && <><div className="flex flex-col">
-          <label className="mr-2 text-sm mb-1">Carrier</label>
-          <select
-            className="bg-gray-100 hover:cursor-pointer hover:outline-gray-400 outline outline-1 outline-gray-400/80 rounded-sm px-2 py-1"
-            name="plan"
-            id="plan"
-            onChange={(e) => {
-              console.log("e", e.target.value);
-              setSelectedPlan(e.target.value);
-            }}
-          >
-            <option value="bcbs_tx_aca">BCBS TX ACA</option>
-            <option value="aetna">Aetna</option>
-            <option value="chamber_smart">Chamber Smart</option>
-            <option value="anthem">Anthem</option>
-            <option value="uhc_aca">UHC ACA</option>
-            <option value="uhc_lf">UHC Level Funded</option>
-            <option value="cigna">Cigna</option>
-            <option value="bcbs_mt">BCBS Montana</option>
-            <option value="other">Other</option>
-          </select>
-        </div>
-        <div className="flex flex-col items-start justify-center w-full my-1 gap-1 mb-2">
-          <p className="mr-2 text-sm mt-2">Page Range</p>
-          <div className="flex gap-2 w-full">
-            <select
-              className="bg-gray-100 px-2 rounded-sm w-full drop-shadow-sm outline outline-1 h-8 outline-gray-400/80 hover:outline-gray-400"
-              value={rangeSelection}
-              onChange={(e) => {
-                setRangeSelection(e.target.value);
-              }}
-            >
-              <option value="all" className="w-full">
-                All
-              </option>
-              <option value="custom" className="w-1/2">
-                Custom
-              </option>
-            </select>
-            {rangeSelection === "custom" && (
-              <>
-                <input
-                  type="text"
-                  className="bg-gray-100 px-2 h-8 drop-shadow-sm outline outline-1 outline-gray-400/80 hover:outline-gray-400 text-sm rounded-sm w-full"
-                  placeholder="e.g., 1-5, 8, 11-13"
-                  onChange={(e) => {
-                    if (e.target.value && e.target.value.trim()) {
-                      const newValue = e.target.value.trim();
-                      setCustomRange(newValue);
-                      validateCustomRange(newValue);
-                    }
-                  }}
-                />
-              </>
-            )}
-          </div>
-        </div>
-        {rangeSelection === "custom" && !isRangeValid && (
-          <div className="text-red-500 text-xs mb-4">
-            Please enter a valid range format (e.g., 1-5, 8, 11-13).
-          </div>
-        )}
-        <div className="modal-body">
-          {/* File Upload Section */}
-          <form
-            onSubmit={(e) => {
-              e.preventDefault(); // Prevent the default form submission
-              setIsProcessing(true);
-              if (rangeSelection === "all") {
-                handleUpload();
-              } else {
-                const ranges = validateCustomRange(customRange);
-                if (!isProcessing && ranges.length) {
-                  handleUpload(ranges as number[][]); // Proceed with uploading
-                }
-              }
-            }}
-          >
-            <div className="flex flex-col items-center justify-center cursor-pointer">
-              <div
-                {...getRootProps()}
-                className={`p-6 mb-2 mt-2 drop-shadow-sm outline outline-1 outline-gray-400/80 hover:outline-gray-400 w-full ${
-                  isDragActive ? "bg-gray-200/50" : "bg-gray-100/50"
-                }`}
-                style={{ borderRadius: "0.25rem" }}
+          tabs={TABS}
+          titles={["Medical", "Ancillary"]}
+          selectedTab={currentTab}
+          setSelectedTab={setCurrentTab}
+        />
+        {currentTab === "Medical" && (
+          <>
+            <div className="flex flex-col">
+              <label className="mr-2 text-sm mb-1">Carrier</label>
+              <select
+                className="bg-gray-100 hover:cursor-pointer hover:outline-gray-400 outline outline-1 outline-gray-400/80 rounded-sm px-2 py-1"
+                name="plan"
+                id="plan"
+                onChange={(e) => {
+                  console.log("e", e.target.value);
+                  setSelectedPlan(e.target.value);
+                }}
               >
-                <div className="flex items-center justify-center mb-4">
-                  <MdUpload className="h-8 w-8" />
-                </div>
-                <input {...getInputProps()} />
-                <h1 className="text-lg mb-4 text-center">
-                  {isDragActive
-                    ? "Drop the files here"
-                    : "Select or Drag-In Quotes"}
-                </h1>
-                {file && (
-                  <div className="text-center mb-4">
-                    <p className="truncate">{file.name}</p>
-                  </div>
+                <option value="bcbs_tx_aca">BCBS TX ACA</option>
+                <option value="aetna">Aetna</option>
+                <option value="chamber_smart">Chamber Smart</option>
+                <option value="anthem">Anthem</option>
+                <option value="uhc_aca">UHC ACA</option>
+                <option value="uhc_lf">UHC Level Funded</option>
+                <option value="cigna">Cigna</option>
+                <option value="bcbs_mt">BCBS Montana</option>
+                <option value="other">Other</option>
+              </select>
+            </div>
+            <div className="flex flex-col items-start justify-center w-full my-1 gap-1 mb-2">
+              <p className="mr-2 text-sm mt-2">Page Range</p>
+              <div className="flex gap-2 w-full">
+                <select
+                  className="bg-gray-100 px-2 rounded-sm w-full drop-shadow-sm outline outline-1 h-8 outline-gray-400/80 hover:outline-gray-400"
+                  value={rangeSelection}
+                  onChange={(e) => {
+                    setRangeSelection(e.target.value);
+                  }}
+                >
+                  <option value="all" className="w-full">
+                    All
+                  </option>
+                  <option value="custom" className="w-1/2">
+                    Custom
+                  </option>
+                </select>
+                {rangeSelection === "custom" && (
+                  <>
+                    <input
+                      type="text"
+                      className="bg-gray-100 px-2 h-8 drop-shadow-sm outline outline-1 outline-gray-400/80 hover:outline-gray-400 text-sm rounded-sm w-full"
+                      placeholder="e.g., 1-5, 8, 11-13"
+                      onChange={(e) => {
+                        if (e.target.value && e.target.value.trim()) {
+                          const newValue = e.target.value.trim();
+                          setCustomRange(newValue);
+                          validateCustomRange(newValue);
+                        }
+                      }}
+                    />
+                  </>
                 )}
               </div>
-              {/* <div className="flex items-center my-4 gap-3">
+            </div>
+            {rangeSelection === "custom" && !isRangeValid && (
+              <div className="text-red-500 text-xs mb-4">
+                Please enter a valid range format (e.g., 1-5, 8, 11-13).
+              </div>
+            )}
+            <div className="modal-body">
+              {/* File Upload Section */}
+              <form
+                onSubmit={(e) => {
+                  e.preventDefault(); // Prevent the default form submission
+                  setIsProcessing(true);
+                  if (rangeSelection === "all") {
+                    handleUpload();
+                  } else {
+                    const ranges = validateCustomRange(customRange);
+                    if (!isProcessing && ranges.length) {
+                      handleUpload(ranges as number[][]); // Proceed with uploading
+                    }
+                  }
+                }}
+              >
+                <div className="flex flex-col items-center justify-center cursor-pointer">
+                  <div
+                    {...getRootProps()}
+                    className={`p-6 mb-2 mt-2 drop-shadow-sm outline outline-1 outline-gray-400/80 hover:outline-gray-400 w-full ${
+                      isDragActive ? "bg-gray-200/50" : "bg-gray-100/50"
+                    }`}
+                    style={{ borderRadius: "0.25rem" }}
+                  >
+                    <div className="flex items-center justify-center mb-4">
+                      <MdUpload className="h-8 w-8" />
+                    </div>
+                    <input {...getInputProps()} />
+                    <h1 className="text-lg mb-4 text-center">
+                      {isDragActive
+                        ? "Drop the files here"
+                        : "Select or Drag-In Quotes"}
+                    </h1>
+                    {file && (
+                      <div className="text-center mb-4">
+                        <p className="truncate">{file.name}</p>
+                      </div>
+                    )}
+                  </div>
+                  {/* <div className="flex items-center my-4 gap-3">
                 <p>Page Range:</p>
                 <select
                   className="outline outline-1 outline-gray-300 rounded-sm"
@@ -475,123 +474,127 @@ export const AddQuote = ({
                 </div>
               )} */}
 
-              <button
-                type="submit"
-                className="w-full bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700 focus:outline-none cursor-pointer mt-1"
-              >
-                Upload
-              </button>
+                  <button
+                    type="submit"
+                    className="w-full bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700 focus:outline-none cursor-pointer mt-1"
+                  >
+                    Upload
+                  </button>
 
-              <p className="text-xs text-center text-gray-700 mb-1 mt-3">
-                We use bank-level security to encrypt and process your
-                statements. For more information about our privacy
-                measures,&nbsp;
-                <a
-                  className="text-slate-900 underline"
-                  href="mailto:founders@tryblitz.ai?subject=Security%20Inquiry"
-                >
-                  email us
-                </a>
-                .
-              </p>
-            </div>
-          </form>
-        </div></>}
-        {currentTab === "Ancillary" && <><div className="flex flex-col">
-          <label className="mr-2 text-sm mb-1">Carrier</label>
-          <select
-            className="bg-gray-100 hover:cursor-pointer hover:outline-gray-400 outline outline-1 outline-gray-400/80 rounded-sm px-2 py-1"
-            name="plan"
-            id="plan"
-            onChange={(e) => {
-              console.log("e", e.target.value);
-              setSelectedPlan(e.target.value);
-            }}
-          >
-            <option value="principal_ancillary">Principal</option>
-            <option value="other_ancillary">Other</option>
-          </select>
-        </div>
-        <div className="flex flex-col items-start justify-center w-full my-1 gap-1 mb-2">
-          <p className="mr-2 text-sm mt-2">Page Range</p>
-          <div className="flex gap-2 w-full">
-            <select
-              className="bg-gray-100 px-2 rounded-sm w-full drop-shadow-sm outline outline-1 h-8 outline-gray-400/80 hover:outline-gray-400"
-              value={rangeSelection}
-              onChange={(e) => {
-                setRangeSelection(e.target.value);
-              }}
-            >
-              <option value="all" className="w-full">
-                All
-              </option>
-              <option value="custom" className="w-1/2">
-                Custom
-              </option>
-            </select>
-            {rangeSelection === "custom" && (
-              <>
-                <input
-                  type="text"
-                  className="bg-gray-100 px-2 h-8 drop-shadow-sm outline outline-1 outline-gray-400/80 hover:outline-gray-400 text-sm rounded-sm w-full"
-                  placeholder="e.g., 1-5, 8, 11-13"
-                  onChange={(e) => {
-                    if (e.target.value && e.target.value.trim()) {
-                      const newValue = e.target.value.trim();
-                      setCustomRange(newValue);
-                      validateCustomRange(newValue);
-                    }
-                  }}
-                />
-              </>
-            )}
-          </div>
-        </div>
-        {rangeSelection === "custom" && !isRangeValid && (
-          <div className="text-red-500 text-xs mb-4">
-            Please enter a valid range format (e.g., 1-5, 8, 11-13).
-          </div>
-        )}
-        <div className="modal-body">
-          {/* File Upload Section */}
-          <form
-            onSubmit={(e) => {
-              e.preventDefault(); // Prevent the default form submission
-              setIsProcessing(true);
-              if (rangeSelection === "all") {
-                handleUpload();
-              } else {
-                const ranges = validateCustomRange(customRange);
-                if (!isProcessing && ranges.length) {
-                  handleUpload(ranges as number[][]); // Proceed with uploading
-                }
-              }
-            }}
-          >
-            <div className="flex flex-col items-center justify-center cursor-pointer">
-              <div
-                {...getRootProps()}
-                className={`p-6 mb-2 mt-2 drop-shadow-sm outline outline-1 outline-gray-400/80 hover:outline-gray-400 w-full ${
-                  isDragActive ? "bg-gray-200/50" : "bg-gray-100/50"
-                }`}
-                style={{ borderRadius: "0.25rem" }}
-              >
-                <div className="flex items-center justify-center mb-4">
-                  <MdUpload className="h-8 w-8" />
+                  <p className="text-xs text-center text-gray-700 mb-1 mt-3">
+                    We use bank-level security to encrypt and process your
+                    statements. For more information about our privacy
+                    measures,&nbsp;
+                    <a
+                      className="text-slate-900 underline"
+                      href="mailto:founders@tryblitz.ai?subject=Security%20Inquiry"
+                    >
+                      email us
+                    </a>
+                    .
+                  </p>
                 </div>
-                <input {...getInputProps()} />
-                <h1 className="text-lg mb-4 text-center">
-                  {isDragActive
-                    ? "Drop the files here"
-                    : "Select or Drag-In Quotes"}
-                </h1>
-                {file && (
-                  <div className="text-center mb-4">
-                    <p className="truncate">{file.name}</p>
-                  </div>
+              </form>
+            </div>
+          </>
+        )}
+        {currentTab === "Ancillary" && (
+          <>
+            <div className="flex flex-col">
+              <label className="mr-2 text-sm mb-1">Carrier</label>
+              <select
+                className="bg-gray-100 hover:cursor-pointer hover:outline-gray-400 outline outline-1 outline-gray-400/80 rounded-sm px-2 py-1"
+                name="plan"
+                id="plan"
+                onChange={(e) => {
+                  console.log("e", e.target.value);
+                  setSelectedPlan(e.target.value);
+                }}
+              >
+                <option value="principal_ancillary">Principal</option>
+                <option value="other_ancillary">Other</option>
+              </select>
+            </div>
+            <div className="flex flex-col items-start justify-center w-full my-1 gap-1 mb-2">
+              <p className="mr-2 text-sm mt-2">Page Range</p>
+              <div className="flex gap-2 w-full">
+                <select
+                  className="bg-gray-100 px-2 rounded-sm w-full drop-shadow-sm outline outline-1 h-8 outline-gray-400/80 hover:outline-gray-400"
+                  value={rangeSelection}
+                  onChange={(e) => {
+                    setRangeSelection(e.target.value);
+                  }}
+                >
+                  <option value="all" className="w-full">
+                    All
+                  </option>
+                  <option value="custom" className="w-1/2">
+                    Custom
+                  </option>
+                </select>
+                {rangeSelection === "custom" && (
+                  <>
+                    <input
+                      type="text"
+                      className="bg-gray-100 px-2 h-8 drop-shadow-sm outline outline-1 outline-gray-400/80 hover:outline-gray-400 text-sm rounded-sm w-full"
+                      placeholder="e.g., 1-5, 8, 11-13"
+                      onChange={(e) => {
+                        if (e.target.value && e.target.value.trim()) {
+                          const newValue = e.target.value.trim();
+                          setCustomRange(newValue);
+                          validateCustomRange(newValue);
+                        }
+                      }}
+                    />
+                  </>
                 )}
               </div>
-              {/* <div className="flex items-center my-4 gap-3">
+            </div>
+            {rangeSelection === "custom" && !isRangeValid && (
+              <div className="text-red-500 text-xs mb-4">
+                Please enter a valid range format (e.g., 1-5, 8, 11-13).
+              </div>
+            )}
+            <div className="modal-body">
+              {/* File Upload Section */}
+              <form
+                onSubmit={(e) => {
+                  e.preventDefault(); // Prevent the default form submission
+                  setIsProcessing(true);
+                  if (rangeSelection === "all") {
+                    handleUpload();
+                  } else {
+                    const ranges = validateCustomRange(customRange);
+                    if (!isProcessing && ranges.length) {
+                      handleUpload(ranges as number[][]); // Proceed with uploading
+                    }
+                  }
+                }}
+              >
+                <div className="flex flex-col items-center justify-center cursor-pointer">
+                  <div
+                    {...getRootProps()}
+                    className={`p-6 mb-2 mt-2 drop-shadow-sm outline outline-1 outline-gray-400/80 hover:outline-gray-400 w-full ${
+                      isDragActive ? "bg-gray-200/50" : "bg-gray-100/50"
+                    }`}
+                    style={{ borderRadius: "0.25rem" }}
+                  >
+                    <div className="flex items-center justify-center mb-4">
+                      <MdUpload className="h-8 w-8" />
+                    </div>
+                    <input {...getInputProps()} />
+                    <h1 className="text-lg mb-4 text-center">
+                      {isDragActive
+                        ? "Drop the files here"
+                        : "Select or Drag-In Quotes"}
+                    </h1>
+                    {file && (
+                      <div className="text-center mb-4">
+                        <p className="truncate">{file.name}</p>
+                      </div>
+                    )}
+                  </div>
+                  {/* <div className="flex items-center my-4 gap-3">
                 <p>Page Range:</p>
                 <select
                   className="outline outline-1 outline-gray-300 rounded-sm"
@@ -626,28 +629,30 @@ export const AddQuote = ({
                 </div>
               )} */}
 
-              <button
-                type="submit"
-                className="w-full bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700 focus:outline-none cursor-pointer mt-1"
-              >
-                Upload
-              </button>
+                  <button
+                    type="submit"
+                    className="w-full bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700 focus:outline-none cursor-pointer mt-1"
+                  >
+                    Upload
+                  </button>
 
-              <p className="text-xs text-center text-gray-700 mb-1 mt-3">
-                We use bank-level security to encrypt and process your
-                statements. For more information about our privacy
-                measures,&nbsp;
-                <a
-                  className="text-slate-900 underline"
-                  href="mailto:founders@tryblitz.ai?subject=Security%20Inquiry"
-                >
-                  email us
-                </a>
-                .
-              </p>
+                  <p className="text-xs text-center text-gray-700 mb-1 mt-3">
+                    We use bank-level security to encrypt and process your
+                    statements. For more information about our privacy
+                    measures,&nbsp;
+                    <a
+                      className="text-slate-900 underline"
+                      href="mailto:founders@tryblitz.ai?subject=Security%20Inquiry"
+                    >
+                      email us
+                    </a>
+                    .
+                  </p>
+                </div>
+              </form>
             </div>
-          </form>
-        </div></>}
+          </>
+        )}
       </div>
     </div>
   );
