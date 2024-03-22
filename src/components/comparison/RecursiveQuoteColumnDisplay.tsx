@@ -103,10 +103,10 @@ export const RecursiveQuoteColumnDisplay = ({
           className={`w-full border-gray-300 ${field.label === "Plan Name" && isQuoteCard ? "border-t-0" : ""}`}
         ></hr>
         <div
-          className={`w-full flex items-center ${hiddenFields.includes(field.label) && "bg-gray-200 text-gray-500 outline-none"} ${isQuoteCard ? "justify-center" : "justify-start"} h-10 w-full overflow-x-scroll text-nowrap px-3`}
+          className={`w-full flex items-center ${hiddenFields.includes(field.label) && "bg-gray-200 text-gray-500 outline-none"} ${isQuoteCard ? "justify-center" : "justify-start"} h-10 w-full overflow-x-auto text-nowrap px-3`}
         >
 
-{field.type === "object" ? (
+          {field.type === "object" ? (
             isExpanded ? (
               <div className="pr-2">
                 <MdOutlineArrowDropDown
