@@ -691,6 +691,7 @@ export default function SelectQuotes() {
                     valueDeductible={valueDeductible}
                     valueEmployeeRate={valueEmployeeRate}
                     findMaximumValue={findMaximumValue}
+                    findMinimumValue={findMinimumValue}
                   />
                 )}
                 {currentTab === "ACA" && (

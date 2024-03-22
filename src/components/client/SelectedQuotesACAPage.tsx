@@ -35,9 +35,9 @@ export const SelectedQuotesACAPage = ({
 }: SelectedQuotesNonACAPageProps) => {
   if (valueDeductible[1] === 0) {
     valueDeductible[1] = findMaximumValue("deductible");
-  } else if (valueOOP[1] === 0) {
+  } if (valueOOP[1] === 0) {
     valueOOP[1] = findMaximumValue("out_of_pocket_max");
-  } else if (valueEmployeeRate[1] === 0) {
+  } if (valueEmployeeRate[1] === 0) {
     valueOOP[1] = findMaximumValue("employee_rate");
   }
 

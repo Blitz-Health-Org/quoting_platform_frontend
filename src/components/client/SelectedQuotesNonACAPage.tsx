@@ -19,6 +19,7 @@ type SelectedQuotesNonACAPageProps = {
   valueEmployeeRate: any;
   parseValue2: (value: string | undefined) => number;
   findMaximumValue: any;
+  findMinimumValue: any;
 };
 
 export const SelectedQuotesNonACAPage = ({
@@ -33,13 +34,16 @@ export const SelectedQuotesNonACAPage = ({
   valueEmployeeRate,
   parseValue2,
   findMaximumValue,
+  findMinimumValue
 }: SelectedQuotesNonACAPageProps) => {
   if (valueDeductible[1] === 0) {
     valueDeductible[1] = findMaximumValue("deductible");
-  } else if (valueOOP[1] === 0) {
+  } if (valueOOP[1] === 0) {
     valueOOP[1] = findMaximumValue("out_of_pocket_max");
-  } else if (valueEmployeeRate[1] === 0) {
+  } if (valueEmployeeRate[1] === 0) {
     valueEmployeeRate[1] = findMaximumValue("employee_rate");
+  } if (valueEmployeeRate[0] === 0) {
+    valueEmployeeRate[0] = findMinimumValue("employee_rate");
   }
 
   return (
