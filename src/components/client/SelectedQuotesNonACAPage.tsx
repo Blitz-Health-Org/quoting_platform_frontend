@@ -36,8 +36,7 @@ export const SelectedQuotesNonACAPage = ({
 }: SelectedQuotesNonACAPageProps) => {
   if (valueDeductible[1] === 0) {
     valueDeductible[1] = findMaximumValue("deductible");
-  }
-  if (valueOOP[1] === 0) {
+  } if (valueOOP[1] === 0) {
     valueOOP[1] = findMaximumValue("out_of_pocket_max");
   } else if (valueEmployeeRate[1] === 0) {
     valueEmployeeRate[1] = findMaximumValue("employee_rate");
@@ -88,13 +87,17 @@ export const SelectedQuotesNonACAPage = ({
               // console.log(parseValue2(quote.data["out_of_pocket_max"] ?? "0"), valueOOP[1])
               return (
                 parseValue2(quote.data["deductible"] ?? "0") >=
-                  valueDeductible[0] &&
+                  (valueDeductible[0] || 0) &&
                 parseValue2(quote.data["deductible"] ?? "0") <=
                   valueDeductible[1] &&
                 parseValue2(quote.data["out_of_pocket_max"] ?? "0") >=
-                  valueOOP[0] &&
+                  (valueOOP[0] || 0) &&
                 parseValue2(quote.data["out_of_pocket_max"] ?? "0") <=
-                  valueOOP[1]
+                  valueOOP[1] &&
+                parseValue2(quote.data["employee_rate"] ?? "0") >=
+                  (valueEmployeeRate[0] || 0) &&
+                parseValue2(quote.data["employee_rate"] ?? "0") <=
+                  valueEmployeeRate[1]
               );
             })
             .map((quote, index) => (

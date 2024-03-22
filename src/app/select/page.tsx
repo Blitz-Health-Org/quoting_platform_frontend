@@ -520,25 +520,21 @@ export default function SelectQuotes() {
     ) {
       return 0;
     }
-
     // Before cleaning up the value, truncate digits after the decimal point
-    const withoutDecimal = value.split(".")[0];
-
+    const withoutParenthesis = value.split("(")[0];
+    const withoutDecimal = withoutParenthesis.split(".")[0];
     // Remove commas, dollar signs, and any periods that might be left
     const cleanedValue = withoutDecimal.replace(/[,+$]/g, "");
-
     // If the value is a percentage (contains '%'), remove '%' and convert to a number
     if (cleanedValue.includes("%")) {
       return parseFloat(cleanedValue.replace("%", "")) || 0;
     }
-
     // If the value is a regular number or a numeric string, convert it to a number
     return Number(cleanedValue);
   };
 
   function findMinimumValue(category: string) {
     let specificQuotes = currentTab === "ACA" ? aca_quotes : non_aca_quotes;
-
     if (category === "employee_rate") {
       console.log(
         "oijowiej",
@@ -556,7 +552,6 @@ export default function SelectQuotes() {
         ),
       ) | 0
     );
-
     // else if (category === "coinsurance") {
     //   return Math.min(...quotes.map((quote) => parseValue((quote.data as any)?.["coinsurance"] ?? "0"))) | 0;
     // }
@@ -710,9 +705,7 @@ export default function SelectQuotes() {
                     parseValue2={parseValue2}
                     valueDeductible={valueDeductible}
                     valueEmployeeRate={valueEmployeeRate}
-                    setValueEmployeeRate={setValueEmployeeRate}
-                    findMaximumValue={findMaximumValue}
-                  />
+                    findMaximumValue={findMaximumValue}                  />
                 )}
               </div>
             </div>

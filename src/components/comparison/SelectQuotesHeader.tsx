@@ -101,6 +101,10 @@ export default function SelectQuotesHeader({
         value: findMinimumValue("employee_rate"),
         label: `$${findMinimumValue("employee_rate")}`,
       },
+      {
+        value: findMaximumValue("employee_rate"),
+        label: `$${findMaximumValue("employee_rate")}`,
+      },
     ],
     // coinsurance: [{value: minimumCoinsurance, label: `$${minimumCoinsurance}`}, {value: maximumCoinsurance, label: `$${maximumCoinsurance}`}],
     out_of_pocket_max: [
@@ -126,20 +130,6 @@ export default function SelectQuotesHeader({
       setValueEmployeeRate(newValue as number[]);
     }
   };
-
-  function chooseValue(category: string) {
-    if (category === "deductible") {
-      return valueDeductible;
-    }
-    // else if (category === "coinsurance") {
-    //   return valueCoinsurance;
-    // }
-    else if (category === "out_of_pocket_max") {
-      return valueOOP;
-    } else if (category === "employee_rate") {
-      return valueEmployeeRate;
-    }
-  }
 
   function valuetext(value: number) {
     return `$${value}`;
@@ -230,13 +220,13 @@ export default function SelectQuotesHeader({
                                   chooseMinimumValue(
                                     option.value as
                                       | "deductible"
-                                      | "coinsurance"
+                                      | "employee_rate"
                                       | "out_of_pocket_max",
                                   ),
                                   chooseMaximumValue(
                                     option.value as
                                       | "deductible"
-                                      | "coinsurance"
+                                      | "employee_rate"
                                       | "out_of_pocket_max",
                                   ),
                                 ]}
@@ -252,13 +242,13 @@ export default function SelectQuotesHeader({
                                 min={chooseMinimumValue(
                                   option.value as
                                     | "deductible"
-                                    | "coinsurance"
+                                    | "employee_rate"
                                     | "out_of_pocket_max",
                                 )}
                                 max={chooseMaximumValue(
                                   option.value as
                                     | "deductible"
-                                    | "coinsurance"
+                                    | "employee_rate"
                                     | "out_of_pocket_max",
                                 )}
                                 marks={

@@ -15,10 +15,9 @@ type SelectedQuotesNonACAPageProps = {
   search: string | undefined;
   valueOOP: number[];
   valueDeductible: number[];
-  valueEmployeeRate: any;
-  setValueEmployeeRate: any;
   parseValue2: (value: string | undefined) => number;
   findMaximumValue: any;
+  valueEmployeeRate: any;
 };
 
 export const SelectedQuotesACAPage = ({
@@ -30,17 +29,16 @@ export const SelectedQuotesACAPage = ({
   entryWidth,
   valueOOP,
   valueDeductible,
-  valueEmployeeRate,
-  setValueEmployeeRate,
   parseValue2,
   findMaximumValue,
+  valueEmployeeRate,
 }: SelectedQuotesNonACAPageProps) => {
   if (valueDeductible[1] === 0) {
     valueDeductible[1] = findMaximumValue("deductible");
   } else if (valueOOP[1] === 0) {
     valueOOP[1] = findMaximumValue("out_of_pocket_max");
   } else if (valueEmployeeRate[1] === 0) {
-    valueEmployeeRate[1] = findMaximumValue("employee_rate");
+    valueOOP[1] = findMaximumValue("employee_rate");
   }
 
   return (
@@ -97,7 +95,11 @@ export const SelectedQuotesACAPage = ({
                 parseValue2(quote.data["out_of_pocket_max"] ?? "0") >=
                   (valueOOP[0] || 0) &&
                 parseValue2(quote.data["out_of_pocket_max"] ?? "0") <=
-                  valueOOP[1]
+                  valueOOP[1] &&
+                parseValue2(quote.data["employee_rate"] ?? "0") >=
+                  (valueEmployeeRate[0] || 0) &&
+                parseValue2(quote.data["employee_rate"] ?? "0") <=
+                  valueEmployeeRate[1]
               );
             })
             .map((quote, index) => (
