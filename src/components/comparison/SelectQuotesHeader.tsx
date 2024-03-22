@@ -22,6 +22,8 @@ type SelectQuotesHeaderProps = {
   TabHeader: React.ReactNode;
   valueDeductible: any;
   setValueDeductible: any;
+  valueEmployeeRate: any;
+  setValueEmployeeRate: any;
   valueOOP: any;
   setValueOOP: any;
   findMinimumValue: any;
@@ -40,6 +42,8 @@ export default function SelectQuotesHeader({
   TabHeader,
   valueDeductible,
   setValueDeductible,
+  valueEmployeeRate,
+  setValueEmployeeRate,
   valueOOP,
   setValueOOP,
   findMinimumValue,
@@ -92,6 +96,12 @@ export default function SelectQuotesHeader({
         label: `$${findMaximumValue("deductible")}`,
       },
     ],
+    employee_rate: [
+      {
+        value: findMinimumValue("employee_rate"),
+        label: `$${findMinimumValue("employee_rate")}`,
+      },
+    ],
     // coinsurance: [{value: minimumCoinsurance, label: `$${minimumCoinsurance}`}, {value: maximumCoinsurance, label: `$${maximumCoinsurance}`}],
     out_of_pocket_max: [
       { value: minimumOOP, label: `$${minimumOOP}` },
@@ -112,6 +122,8 @@ export default function SelectQuotesHeader({
     // }
     else if (category === "out_of_pocket_max") {
       setValueOOP(newValue as number[]);
+    } else if (category === "employee_rate") {
+      setValueEmployeeRate(newValue as number[]);
     }
   };
 
@@ -124,6 +136,8 @@ export default function SelectQuotesHeader({
     // }
     else if (category === "out_of_pocket_max") {
       return valueOOP;
+    } else if (category === "employee_rate") {
+      return valueEmployeeRate;
     }
   }
 
@@ -160,6 +174,7 @@ export default function SelectQuotesHeader({
   }
 
   const shouldDisplayOption = (option: any) => {
+    console.log("OPTION", option);
     const minValue = chooseMinimumValue(option.value);
     const maxValue = chooseMaximumValue(option.value);
     console.log(option, "should or should not display", minValue, maxValue);
@@ -227,10 +242,7 @@ export default function SelectQuotesHeader({
                                 ]}
                                 onChange={(event, newValue) =>
                                   handleChange(
-                                    option.value as
-                                      | "deductible"
-                                      | "coinsurance"
-                                      | "out_of_pocket_max",
+                                    option.value as string,
                                     event,
                                     newValue,
                                   )

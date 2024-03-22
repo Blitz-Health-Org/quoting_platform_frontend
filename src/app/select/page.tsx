@@ -562,30 +562,19 @@ export default function SelectQuotes() {
     // }
   }
 
-  function findMaximumValue(
-    category: "deductible" | "coinsurance" | "out_of_pocket_max",
-  ) {
+  function findMaximumValue(category: string) {
     let specificQuotes = currentTab === "ACA" ? aca_quotes : non_aca_quotes;
-    if (category === "deductible") {
-      return (
-        Math.max(
-          ...specificQuotes.map((quote) =>
-            parseValue2((quote.data as any)?.["deductible"] ?? "0"),
-          ),
-        ) | 0
-      );
-    }
+
+    return (
+      Math.max(
+        ...specificQuotes.map((quote) =>
+          parseValue2((quote.data as any)?.[category] ?? "0"),
+        ),
+      ) | 0
+    );
     // else if (category === "coinsurance") {
     //   return Math.max(...quotes.map((quote) => parseInt((quote.data as any)?.["coinsurance"] ?? '0') || 0));
     // }
-    else if (category === "out_of_pocket_max") {
-      const values = specificQuotes.map((quote) =>
-        parseValue2((quote.data as any)?.["out_of_pocket_max"] ?? "0"),
-      );
-      console.log(values);
-      return Math.max(...values) | 0;
-    }
-    return 10000;
   }
 
   const [valueDeductible, setValueDeductible] = React.useState<number[]>([
@@ -598,6 +587,11 @@ export default function SelectQuotes() {
     findMaximumValue("out_of_pocket_max"),
   ]);
 
+  const [valueEmployeeRate, setValueEmployeeRate] = React.useState<number[]>([
+    findMinimumValue("employee_rate"),
+    findMaximumValue("employee_rate"),
+  ]);
+
   useEffect(() => {
     // Reset valueDeductible and valueOOP when currentTab changes.
     setValueDeductible([
@@ -607,6 +601,10 @@ export default function SelectQuotes() {
     setValueOOP([
       findMinimumValue("out_of_pocket_max"),
       findMaximumValue("out_of_pocket_max"),
+    ]);
+    setValueEmployeeRate([
+      findMinimumValue("employee_rate"),
+      findMaximumValue("employee_rate"),
     ]);
   }, [currentTab]);
 
@@ -661,6 +659,8 @@ export default function SelectQuotes() {
                   selectedFilter={selectedFilter}
                   valueDeductible={valueDeductible}
                   setValueDeductible={setValueDeductible}
+                  valueEmployeeRate={valueEmployeeRate}
+                  setValueEmployeeRate={setValueEmployeeRate}
                   valueOOP={valueOOP}
                   setValueOOP={setValueOOP}
                   findMaximumValue={findMaximumValue}
@@ -694,6 +694,7 @@ export default function SelectQuotes() {
                     valueOOP={valueOOP}
                     parseValue2={parseValue2}
                     valueDeductible={valueDeductible}
+                    valueEmployeeRate={valueEmployeeRate}
                     findMaximumValue={findMaximumValue}
                   />
                 )}
@@ -708,6 +709,8 @@ export default function SelectQuotes() {
                     valueOOP={valueOOP}
                     parseValue2={parseValue2}
                     valueDeductible={valueDeductible}
+                    valueEmployeeRate={valueEmployeeRate}
+                    setValueEmployeeRate={setValueEmployeeRate}
                     findMaximumValue={findMaximumValue}
                   />
                 )}

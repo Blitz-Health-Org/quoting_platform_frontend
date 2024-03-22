@@ -7,7 +7,6 @@ import { PlanGroupContext } from "@/src/context/PlanGroupContext";
 import { ClientContext } from "@/src/context/ClientContext";
 import { IoMdEye, IoMdEyeOff } from "react-icons/io";
 
-
 type RecursiveQuoteColumnDisplayProps = {
   field: any;
   initialExpanded?: boolean;
@@ -143,7 +142,7 @@ export const RecursiveQuoteColumnDisplay = ({
                     setHiddenFields([...hiddenFields, field.label]);
                   }}
                 >
-                  <IoMdEye/>
+                  <IoMdEye />
                 </button>
               </div>
             ) : (
@@ -157,7 +156,7 @@ export const RecursiveQuoteColumnDisplay = ({
                     );
                   }}
                 >
-                  <IoMdEyeOff/>
+                  <IoMdEyeOff />
                 </button>
               </div>
             ))
@@ -226,7 +225,6 @@ export const RecursiveQuoteColumnDisplay = ({
               )}
             </p>
           )}
-
         </div>
       </div>
     );
