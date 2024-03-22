@@ -7,7 +7,6 @@ import { PlanGroupContext } from "@/src/context/PlanGroupContext";
 import { ClientContext } from "@/src/context/ClientContext";
 import { IoMdEye, IoMdEyeOff } from "react-icons/io";
 
-
 type RecursiveQuoteColumnDisplayProps = {
   field: any;
   initialExpanded?: boolean;
@@ -105,8 +104,7 @@ export const RecursiveQuoteColumnDisplay = ({
         <div
           className={`w-full flex items-center ${hiddenFields.includes(field.label) && "bg-gray-200 text-gray-500 outline-none"} ${isQuoteCard ? "justify-center" : "justify-start"} h-10 w-full overflow-x-scroll text-nowrap px-3`}
         >
-
-{field.type === "object" ? (
+          {field.type === "object" ? (
             isExpanded ? (
               <div className="pr-2">
                 <MdOutlineArrowDropDown
@@ -143,7 +141,7 @@ export const RecursiveQuoteColumnDisplay = ({
                     setHiddenFields([...hiddenFields, field.label]);
                   }}
                 >
-                  <IoMdEye/>
+                  <IoMdEye />
                 </button>
               </div>
             ) : (
@@ -157,7 +155,7 @@ export const RecursiveQuoteColumnDisplay = ({
                     );
                   }}
                 >
-                  <IoMdEyeOff/>
+                  <IoMdEyeOff />
                 </button>
               </div>
             ))
@@ -226,7 +224,6 @@ export const RecursiveQuoteColumnDisplay = ({
               )}
             </p>
           )}
-
         </div>
       </div>
     );
