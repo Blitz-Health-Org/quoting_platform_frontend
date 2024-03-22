@@ -5,6 +5,8 @@ import { MdOutlineArrowDropDown } from "react-icons/md";
 import { useRecoilState } from "recoil";
 import { PlanGroupContext } from "@/src/context/PlanGroupContext";
 import { ClientContext } from "@/src/context/ClientContext";
+import { IoMdEye, IoMdEyeOff } from "react-icons/io";
+
 
 type RecursiveQuoteColumnDisplayProps = {
   field: any;
@@ -103,9 +105,67 @@ export const RecursiveQuoteColumnDisplay = ({
         <div
           className={`w-full flex items-center ${hiddenFields.includes(field.label) && "bg-gray-200 text-gray-500 outline-none"} ${isQuoteCard ? "justify-center" : "justify-start"} h-10 w-full overflow-x-scroll text-nowrap px-3`}
         >
+
+{field.type === "object" ? (
+            isExpanded ? (
+              <div className="pr-2">
+                <MdOutlineArrowDropDown
+                  onClick={() => {
+                    setFieldState((prev: { isExpanded: boolean }) => {
+                      return {
+                        isExpanded: !prev.isExpanded,
+                      };
+                    });
+                  }}
+                />
+              </div>
+            ) : (
+              <div className="pr-2">
+                <MdOutlineArrowRight
+                  onClick={() => {
+                    setFieldState((prev: { isExpanded: boolean }) => {
+                      return {
+                        isExpanded: !prev.isExpanded,
+                      };
+                    });
+                  }}
+                />
+              </div>
+            )
+          ) : (
+            !sharingId &&
+            !isQuoteCard &&
+            (!hiddenFields.includes(field.label) ? (
+              <div className="pr-2 flex items-center">
+                <button
+                  onClick={() => {
+                    console.log("AYO");
+                    setHiddenFields([...hiddenFields, field.label]);
+                  }}
+                >
+                  <IoMdEye/>
+                </button>
+              </div>
+            ) : (
+              <div className="pr-2 flex items-center">
+                <button
+                  onClick={() => {
+                    setHiddenFields(
+                      hiddenFields.filter(
+                        (label: string) => label !== field.label,
+                      ),
+                    );
+                  }}
+                >
+                  <IoMdEyeOff/>
+                </button>
+              </div>
+            ))
+          )}
+
           {isEditing ? (
             <input
-              className={`break-all font-semibold max-w-64 ${isQuoteCard && "border border-black"} `}
+              className={`break-all font-semibold w-32 text-center ${isQuoteCard && "border border-gray-300 rounded-sm w-fit"} `}
               value={
                 ["string", "number", "boolean"].includes(field.type) ? (
                   isQuoteCard ? (
@@ -167,62 +227,6 @@ export const RecursiveQuoteColumnDisplay = ({
             </p>
           )}
 
-          {field.type === "object" ? (
-            isExpanded ? (
-              <div className="pr-2">
-                <MdOutlineArrowDropDown
-                  onClick={() => {
-                    setFieldState((prev: { isExpanded: boolean }) => {
-                      return {
-                        isExpanded: !prev.isExpanded,
-                      };
-                    });
-                  }}
-                />
-              </div>
-            ) : (
-              <div className="pr-2">
-                <MdOutlineArrowRight
-                  onClick={() => {
-                    setFieldState((prev: { isExpanded: boolean }) => {
-                      return {
-                        isExpanded: !prev.isExpanded,
-                      };
-                    });
-                  }}
-                />
-              </div>
-            )
-          ) : (
-            !sharingId &&
-            !isQuoteCard &&
-            (!hiddenFields.includes(field.label) ? (
-              <div className="pr-2">
-                <button
-                  onClick={() => {
-                    console.log("AYO");
-                    setHiddenFields([...hiddenFields, field.label]);
-                  }}
-                >
-                  Hide
-                </button>
-              </div>
-            ) : (
-              <div className="pr-2">
-                <button
-                  onClick={() => {
-                    setHiddenFields(
-                      hiddenFields.filter(
-                        (label: string) => label !== field.label,
-                      ),
-                    );
-                  }}
-                >
-                  Show
-                </button>
-              </div>
-            ))
-          )}
         </div>
       </div>
     );
