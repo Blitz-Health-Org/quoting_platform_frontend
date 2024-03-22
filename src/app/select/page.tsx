@@ -706,7 +706,9 @@ export default function SelectQuotes() {
                     parseValue2={parseValue2}
                     valueDeductible={valueDeductible}
                     valueEmployeeRate={valueEmployeeRate}
-                    findMaximumValue={findMaximumValue}                  />
+                    findMaximumValue={findMaximumValue}  
+                    findMinimumValue={findMinimumValue}
+                    />
                 )}
               </div>
             </div>
