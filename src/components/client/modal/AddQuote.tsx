@@ -11,6 +11,7 @@ import { SnackBarContext } from "@/src/context/SnackBarContext";
 import { useRouter } from "next/navigation";
 import { UserContext } from "@/src/context/UserContext";
 import TabHeader from "../../ui/TabHeader";
+import router from "next/router";
 
 const TABS = ["Medical", "Ancillary"];
 
@@ -40,30 +41,31 @@ export const AddQuote = ({
   const { setSnackbar } = useContext(SnackBarContext);
   const [file, setFile] = useState<File | null>(null);
   const [selectedPlan, setSelectedPlan] = useState<string>("bcbs_tx_aca");
-  const [prevSelectedPlan, setPrevSelctedPlan] = useState<string>(selectedPlan);
-
-  if (
-    prevSelectedPlan !== selectedPlan &&
-    selectedPlan === "principal_ancillary"
-  ) {
-    setSelectedPlan("principal_ancillary");
-  }
-
-  if (selectedPlan === "bcbs_tx_aca") {
-    setSelectedPlan("bcbs_tx_aca");
-  }
 
   const [isProcessing, setIsProcessing] = useState<boolean>(false);
   const [customRange, setCustomRange] = useState("");
   const [isRangeValid, setIsRangeValid] = useState(true);
   const [rangeSelection, setRangeSelection] = useState("all"); // Dropdown selection state
   const [currentTab, setCurrentTab] = useState<string>("Medical");
+  const [prevCurrentTab, setPrevCurrentTab] = useState<string>(currentTab);
+
+  if (prevCurrentTab !== currentTab) {
+    setPrevCurrentTab(currentTab);
+
+    if (currentTab === "Medical") {
+      setSelectedPlan("bcbs_tx_aca");
+    }
+
+    if (currentTab === "Ancillary") {
+      setSelectedPlan("principal_ancillary");
+    }
+  }
+
+  console.log("selectedPlan", selectedPlan);
 
   const {
     userId: [userId],
   } = useContext(UserContext);
-
-  console.log(client);
 
   const onDrop = (acceptedFiles: File[]) => {
     setFile(acceptedFiles[0]);

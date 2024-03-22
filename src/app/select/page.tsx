@@ -227,7 +227,7 @@ export default function SelectQuotes() {
     [],
   );
 
-  const [currentTab, setCurrentTab] = useState<string>("NON-ACA");
+  const [currentTab, setCurrentTab] = useState<string>("Updated");
   const [search, setSearch] = useState<string | undefined>();
 
   const [sortOption, setSortOption] = useState("deductible"); // Initial sorting optio
@@ -688,7 +688,7 @@ export default function SelectQuotes() {
                   }
                 />
 
-                {currentTab === "NON-ACA" && (
+                {currentTab === "Updated" && (
                   <SelectedQuotesNonACAPage
                     quotes={non_aca_quotes}
                     planAttributesMapping={planAttributesMapping}
