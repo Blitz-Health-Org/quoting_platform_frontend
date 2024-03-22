@@ -29,6 +29,7 @@ import { SelectedQuotesNonACAPage } from "@/src/components/client/SelectedQuotes
 import TabHeader from "@/src/components/ui/TabHeader";
 import { ActionBar } from "./ActionBar";
 import router from "next/router";
+import { min } from "lodash";
 
 const planAttributesMapping: {
   key: string;
@@ -535,36 +536,30 @@ export default function SelectQuotes() {
     return Number(cleanedValue);
   };
 
-  function findMinimumValue(
-    category: "deductible" | "coinsurance" | "out_of_pocket_max",
-  ) {
+  function findMinimumValue(category: string) {
     let specificQuotes = currentTab === "ACA" ? aca_quotes : non_aca_quotes;
-    if (category === "deductible") {
-      return (
+
+    if (category === "employee_rate") {
+      console.log(
+        "oijowiej",
         Math.min(
           ...specificQuotes.map((quote) =>
-            parseValue2((quote.data as any)?.["deductible"] ?? "0"),
+            parseValue2((quote.data as any)?.[category] ?? "0"),
           ),
-        ) | 0
+        ) | 0,
       );
     }
+    return (
+      Math.min(
+        ...specificQuotes.map((quote) =>
+          parseValue2((quote.data as any)?.[category] ?? "0"),
+        ),
+      ) | 0
+    );
+
     // else if (category === "coinsurance") {
     //   return Math.min(...quotes.map((quote) => parseValue((quote.data as any)?.["coinsurance"] ?? "0"))) | 0;
     // }
-    else if (category === "out_of_pocket_max") {
-      // if (quotes.every((quote) => (quote.data as any)?.["out_of_pocket_max"] === null)) {
-      //   return 0;
-      // }
-      return (
-        Math.min(
-          ...specificQuotes.map((quote) =>
-            parseValue2((quote.data as any)?.["out_of_pocket_max"] ?? "0"),
-          ),
-        ) | 0
-      );
-    } else {
-      return 0;
-    }
   }
 
   function findMaximumValue(
