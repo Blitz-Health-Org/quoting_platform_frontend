@@ -52,6 +52,7 @@ export default function SelectQuotesHeader({
   const sortingOptions = [
     { label: "Deductible", value: "deductible" },
     { label: "Coinsurance", value: "coinsurance" },
+    { label: "Employee Only Rate", value: "employee_rate" },
     { label: "Out of Pocket", value: "out_of_pocket_max" },
     // Add more sorting options as needed
   ];
@@ -59,51 +60,37 @@ export default function SelectQuotesHeader({
   const filterOptions = [
     { label: "Deductible", value: "deductible" },
     // { label: "Coinsurance", value: "coinsurance" },
+    { label: "Employee Only Rate", value: "employee_rate" },
     { label: "Out of Pocket", value: "out_of_pocket_max" },
     // Add more sorting options as needed
   ];
 
-  const minimumDeductible = findMinimumValue("deductible");
-  const maximumDeductible = findMaximumValue("deductible");
   // const minimumCoinsurance = findMinimumValue("coinsurance")
   // const maximumCoinsurance = findMaximumValue("coinsurance")
   const minimumOOP = findMinimumValue("out_of_pocket_max");
   const maximumOOP = findMaximumValue("out_of_pocket_max");
 
   function chooseMinimumValue(category: string) {
-    if (category === "deductible") {
-      return minimumDeductible;
-    }
-    // else if (category === "coinsurance") {
-    //   return minimumCoinsurance;
-    // }
-    else if (category === "out_of_pocket_max") {
-      return minimumOOP;
-    } else {
-      console.log("Something shouldn't be happening");
-      return 0;
-    }
+    return findMinimumValue(category);
   }
+  // else if (category === "coinsurance") {
+  //   return minimumCoinsurance;
+  // }
 
   function chooseMaximumValue(category: string) {
-    if (category === "deductible") {
-      return maximumDeductible;
-    }
-    // else if (category === "coinsurance") {
-    //   return maximumCoinsurance;
-    // }
-    else if (category === "out_of_pocket_max") {
-      return maximumOOP;
-    } else {
-      console.log("Something shouldn't be happening");
-      return 0;
-    }
+    return findMaximumValue(category);
   }
 
   const marks = {
     deductible: [
-      { value: minimumDeductible, label: `$${minimumDeductible}` },
-      { value: maximumDeductible, label: `$${maximumDeductible}` },
+      {
+        value: findMinimumValue("deductible"),
+        label: `$${findMinimumValue("deductible")}`,
+      },
+      {
+        value: findMaximumValue("deductible"),
+        label: `$${findMaximumValue("deductible")}`,
+      },
     ],
     // coinsurance: [{value: minimumCoinsurance, label: `$${minimumCoinsurance}`}, {value: maximumCoinsurance, label: `$${maximumCoinsurance}`}],
     out_of_pocket_max: [
