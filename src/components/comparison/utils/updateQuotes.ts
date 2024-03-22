@@ -1,36 +1,42 @@
 import { supabase } from "@/src/supabase";
 import { QuoteType } from "@/src/types/custom/Quote";
 
-export async function handleUpdateQuotes(updatedQuotes: QuoteType[], clientId: number) {
-    try {
-        console.log("EHLOOOO???", updatedQuotes)
-        // Map each updatedQuote to a promise that performs the update operation
-        const updatePromises = updatedQuotes.map((quote) =>
-            supabase
-                .from('quotes')
-                .update({ data: quote.data }) // Ensure quote.data contains the updated data
-                .eq('id', quote.id) // Ensure quote.id is the unique identifier for the quote
-                .select()
-        );
+export async function handleUpdateQuotes(
+  updatedQuotes: QuoteType[],
+  clientId: number,
+  planId: number,
+  fetchClientAndQuotes: any,
+) {
+  const { data: client, error: clientError } = await supabase
+    .from("clients")
+    .select()
+    .eq("id", clientId)
+    .single();
 
-        // Wait for all update operations to complete
-        const results = await Promise.all(updatePromises);
+  if (clientError) {
+    console.error("Error fetching client from Supabase:", clientError);
+    throw clientError;
+  }
 
-        // Check for any errors in the results
-        const errors = results.filter(result => result.error);
-
-        const {error } = await supabase.from('clients').update({connected_plans: updatedQuotes}).eq('id', clientId).select().single();
-
-        if (error) {throw error};
-
-        if (errors.length > 0) {
-            // Handle the case where one or more updates failed
-            throw new Error(`Failed to update ${errors.length} quotes.`);
-        }
-
-        return { success: true };
-    } catch (error) {
-        console.error("Error updating quotes:", error);
-        return { success: false, error: error };
+  const newConnectedPlans = client.connected_plans.map((plan: any) => {
+    if (plan.id === planId) {
+      return { ...plan, selectedQuotes: updatedQuotes };
+    } else {
+      return plan;
     }
+  });
+
+  const { data, error } = await supabase
+    .from("clients") // Replace 'your_table_name' with your actual table name
+    .update({ connected_plans: newConnectedPlans }) // 'plans' is the array to insert into the 'connected_plans' column
+    .match({ id: clientId }); // Assuming 'selectedClient.id' is the primary key of the row you want to update
+
+  if (error) {
+    console.error("Error updating connected plans in Supabase:", error);
+    return { success: false, error };
+  }
+  console.log("Connected plans updated successfully:", data);
+  fetchClientAndQuotes(clientId);
+
+  return { success: true, data };
 }

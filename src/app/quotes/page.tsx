@@ -18,7 +18,7 @@ import ContributionPane from "@/src/components/comparison/ContributionPane";
 import { GroupCard } from "@/src/components/comparison/GroupCard";
 import { SnackBarContext } from "@/src/context/SnackBarContext";
 import { QuoteSchemaContext } from "@/src/context/QuoteSchemaContext";
-import { ClientContext } from "@/src/context/ClientContext";
+import { ClientContextProvider } from "@/src/context/ClientContext";
 import { PlanSpecificClassInfoType } from "@/src/types/custom/Class";
 import { getClasses } from "../cost/utils/getClasses";
 import { ClassType } from "@/src/types/custom/Class";
@@ -33,10 +33,14 @@ export default function QuotingPage() {
   const [quotes, setQuotes] = useState<QuoteType[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [classes, setClasses] = useState<ClassType[]>([]);
-  const [planSpecificClassInfo, setPlanSpecificClassInfo] = useState<PlanSpecificClassInfoType>([])
+  const [planSpecificClassInfo, setPlanSpecificClassInfo] =
+    useState<PlanSpecificClassInfoType>([]);
   const [plans, setPlans] = useState<any>([]);
 
-  const {fetchAndSetClasses} = getClasses(setClasses, setPlanSpecificClassInfo)
+  const { fetchAndSetClasses } = getClasses(
+    setClasses,
+    setPlanSpecificClassInfo,
+  );
 
   const [standardContribution, setStandardContribution] = useState<any>({
     name: "Standard Contribution",
@@ -69,6 +73,8 @@ export default function QuotingPage() {
   const { setSnackbar } = useContext(SnackBarContext);
 
   const searchParams = useSearchParams();
+
+  const sharingId = searchParams.get("sharing");
 
   const handleDownloadCSV = (index: any) => {
     setSnackbar({
@@ -199,20 +205,23 @@ export default function QuotingPage() {
         } else {
           console.log("should fire", clientData);
           // Else just set the plans normally
-          newPlans = clientData.connected_plans
+          newPlans = clientData.connected_plans;
           setPlans(newPlans);
         }
 
-        newPlans = newPlans.reduce((acc: QuoteType[], newPlan: PlanGroupType) => {
-          // Append each selectedQuotes list to the accumulator
-          return acc.concat(newPlan.selectedQuotes);
-        }, []);
-        
-        fetchAndSetClasses(clientData, newPlans.map((plan: any) => plan.id));
+        newPlans = newPlans.reduce(
+          (acc: QuoteType[], newPlan: PlanGroupType) => {
+            // Append each selectedQuotes list to the accumulator
+            return acc.concat(newPlan.selectedQuotes);
+          },
+          [],
+        );
+
+        fetchAndSetClasses(
+          clientData,
+          newPlans.map((plan: any) => plan.id),
+        );
       }
-
-
-
       const scopedPlans = clientData.connected_plans;
 
       setStandardContribution({
@@ -248,7 +257,6 @@ export default function QuotingPage() {
           },
         },
       });
-
 
       setLoading(false);
     } catch (error) {
@@ -355,26 +363,35 @@ export default function QuotingPage() {
     };
   }
 
-
   if (!classes || !planSpecificClassInfo) {
-    return <></>
+    return <></>;
   }
-  
+
   return (
-    <ClientContext.Provider value={client}>
+    <ClientContextProvider
+      value={{
+        client: client as ClientType,
+        sharingId,
+        hiddenComparisonFields: (client as any).hidden_comparison_fields,
+      }}
+    >
       <div className="bg-gray-100 w-full h-screen">
         <div className="w-full overflow-x-hidden h-full bg-gray-100 flex flex-col">
           <Fullheader clientName={client?.name || "N/A"} />
           <div className="bg-gray-100 border border-gray-200 border-b-0 px-6 py-2 mt-2 flex flex-col h-full">
-            <Subheader
-              client={client}
-              setStandardContribution={setStandardContribution}
-              isPaneOpen={paneState.isPaneOpen}
-              onPaneToggle={handlePaneToggle}
-              copyUrlToClipboard={copyUrlToClipboard}
-              handleDownloadCSV={handleDownloadCSV}
-              plans={plans}
-            />
+            {!sharingId ? (
+              <Subheader
+                client={client}
+                setStandardContribution={setStandardContribution}
+                isPaneOpen={paneState.isPaneOpen}
+                onPaneToggle={handlePaneToggle}
+                copyUrlToClipboard={copyUrlToClipboard}
+                handleDownloadCSV={handleDownloadCSV}
+                plans={plans}
+              />
+            ) : (
+              <div className="h-20"></div>
+            )}
 
             <div className="p-0.5 flex-grow w-full">
               <div className="h-full flex gap-2 overflow-auto">
@@ -383,7 +400,6 @@ export default function QuotingPage() {
                 </div>
                 {plans.length > 0 ? (
                   plans.map((plan: any) => (
-
                     <GroupCard
                       key={plan.key}
                       plan={plan}
@@ -392,6 +408,7 @@ export default function QuotingPage() {
                       standardContribution={standardContribution}
                       clientId={client?.id}
                       planSpecificClassInfo={planSpecificClassInfo}
+                      fetchClientAndQuotes={fetchClientAndQuotes}
                     />
                   ))
                 ) : (
@@ -404,7 +421,7 @@ export default function QuotingPage() {
           </div>
         </div>
       </div>
-        <ContributionPane
+      <ContributionPane
         paneState={paneState}
         setPaneState={setPaneState}
         classes={classes}
@@ -414,6 +431,6 @@ export default function QuotingPage() {
         standardContribution={standardContribution}
         setStandardContribution={setStandardContribution}
       />
-    </ClientContext.Provider>
+    </ClientContextProvider>
   );
 }

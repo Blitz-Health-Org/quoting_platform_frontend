@@ -28,23 +28,10 @@ import { SelectedQuotesACAPage } from "@/src/components/client/SelectedQuotesACA
 import { SelectedQuotesNonACAPage } from "@/src/components/client/SelectedQuotesNonACAPage";
 import TabHeader from "@/src/components/ui/TabHeader";
 import { ActionBar } from "./ActionBar";
-
-export interface PlanAttributes {
-  isCurrentPlan: boolean;
-  plan_id: string;
-  carrier: string;
-  plan_name: string;
-  plan_type: string;
-  office_copay_pcp: string;
-  deductible: string;
-  coinsurance: string;
-  out_of_pocket_max: string;
-  additional_copay: string;
-  total_employer_cost: string;
-}
+import router from "next/router";
 
 const planAttributesMapping: {
-  key: keyof PlanAttributes;
+  key: string;
   label: string;
   alternateKey?: string;
 }[] = [
@@ -54,12 +41,13 @@ const planAttributesMapping: {
   { key: "coinsurance", label: "Coinsurance (In-Network)" },
   { key: "out_of_pocket_max", label: "Out of Pocket (Individual)" },
   { key: "office_copay_pcp", label: "Office Copay" },
+  { key: "employee_rate", label: "Employee Only Rate" },
   // { key: "plan_type", label: "Network" },
   // { key: "additional_copay", label: "Additional Copays (ER / Imaging / OP / IP)", },
   { key: "total_employer_cost", label: "Total Cost" },
 ];
 
-const TABS = ["NON-ACA", "ACA", "Dental", "Vision", "STD", "LTD"];
+const TABS = ["Updated", "ACA", "Dental", "Vision", "STD", "LTD"];
 
 export type QuoteTypeWithCheckbox = QuoteType & { isSelected: boolean };
 
@@ -130,6 +118,82 @@ export default function SelectQuotes() {
     });
   };
 
+  async function setCurrentPlan() {
+    const currentPlan = plans.find((plan) => plan.isCurrentPlan);
+    if (currentPlan) {
+      const updatedPlans = plans.map((plan) =>
+        plan.id === currentPlan.id
+          ? {
+              ...currentPlan,
+              selectedQuotes: [
+                ...currentPlan.selectedQuotes,
+                ...selectedQuotes,
+              ],
+            }
+          : plan,
+      );
+      const { success } = await updateConnectedPlans(updatedPlans);
+      if (success) {
+        setPlans(updatedPlans);
+      } else {
+        alert("Upload failed");
+        return;
+      }
+      handleClearCheckboxes();
+    } else {
+      createNewPlanAndAddSelectedQuotes(true);
+    }
+  }
+
+  const comparison_created_false = async () => {
+    const { data, error } = await supabase
+      .from("clients") // Replace 'your_table_name' with your actual table name
+      .update({ comparison_created: false }) // 'plans' is the array to insert into the 'connected_plans' column
+      .match({ id: selectedClient.id }); // Assuming 'selectedClient.id' is the primary key of the row you want to update
+
+    if (error) {
+      console.error("Error updating connected plans in Supabase:", error);
+      return { success: false, error };
+    }
+
+    console.log("Connected plans updated successfully:", data);
+    return { success: true, data };
+  };
+
+  const updateConnectedPlans = async (updatedPlans: any) => {
+    if (updatedPlans.length === 0) {
+      comparison_created_false();
+    }
+    const { data, error } = await supabase
+      .from("clients") // Replace 'your_table_name' with your actual table name
+      .update({ connected_plans: updatedPlans }) // 'plans' is the array to insert into the 'connected_plans' column
+      .match({ id: selectedClient.id }); // Assuming 'selectedClient.id' is the primary key of the row you want to update
+    if (error) {
+      console.error("Error updating connected plans in Supabase:", error);
+      return { success: false, error };
+    }
+    console.log("Connected plans updated successfully:", data);
+
+    return { success: true, data };
+  };
+
+  const createNewPlanAndAddSelectedQuotes = (isCurrentPlan = false) => {
+    console.log("running create new plan and add selected qutoes");
+    const newPlan = {
+      id: Date.now(),
+      isCurrentPlan: false,
+      name: `Option #${plans.length + 1}`,
+      selectedQuotes: selectedQuotes,
+    };
+    setPlans([...plans, newPlan]);
+    handleClearCheckboxes();
+    setSnackbar({
+      open: true,
+      message: "Plan added! Make sure to save your changes.",
+      severity: "success",
+    });
+  };
+
   async function deleteQuotes() {
     console.log("DELETE", quotes, selectedQuotes);
     setQuotes(
@@ -173,23 +237,6 @@ export default function SelectQuotes() {
     innerWidth / planAttributesMapping.length,
   );
 
-  const createNewPlanAndAddSelectedQuotes = () => {
-    console.log("running create new plan and add selected qutoes");
-    const newPlan = {
-      id: Date.now(),
-      isCurrentPlan: false,
-      name: `Plan #${plans.length + 1}`,
-      selectedQuotes: selectedQuotes,
-    };
-    setPlans([...plans, newPlan]);
-    handleClearCheckboxes();
-    setSnackbar({
-      open: true,
-      message: "Plan added! Make sure to save your changes.",
-      severity: "success",
-    });
-  };
-
   const actionBarEntries = [
     {
       label: "Delete",
@@ -197,7 +244,11 @@ export default function SelectQuotes() {
       //TODO: add icon here
     },
     {
-      label: "Add to New Plan",
+      label: "Set as Current Plan Option",
+      onClick: setCurrentPlan,
+    },
+    {
+      label: "Add to New Option",
       onClick: createNewPlanAndAddSelectedQuotes,
     },
   ];
@@ -424,12 +475,33 @@ export default function SelectQuotes() {
     router.push(`/`);
   };
 
-  const aca_quotes = quotes.filter(
+  let aca_quotes = quotes.filter(
     (quote) => (quote.data as any)?.["metadata"]?.["is_aca"] === true,
   );
-  const non_aca_quotes = quotes.filter(
+
+  let non_aca_quotes = quotes.filter(
     (quote) => !(quote.data as any)?.["metadata"]?.["is_aca"] === true,
   );
+
+  const currentPlan = plans.find((plan) => plan.isCurrentPlan);
+
+  if (currentPlan) {
+    const currentPlanQuotes = currentPlan.selectedQuotes;
+    aca_quotes = aca_quotes.sort((quoteA, quoteB) => {
+      if (currentPlanQuotes.map((quote) => quote.id).includes(quoteA.id)) {
+        return -1;
+      } else {
+        return 1;
+      }
+    });
+    non_aca_quotes = non_aca_quotes.sort((quoteA, quoteB) => {
+      if (currentPlanQuotes.map((quote) => quote.id).includes(quoteA.id)) {
+        return -1;
+      } else {
+        return 1;
+      }
+    });
+  }
 
   const parseValue2 = (value: string | undefined): number => {
     if (value === "0") {
@@ -549,10 +621,10 @@ export default function SelectQuotes() {
 
   return (
     <>
-      <main className="flex w-full h-full overflow-hidden pl-4 md:pl-0 bg-gray-100">
+      <main className="flex w-full h-full overflow-x-scroll pl-4 md:pl-0 bg-gray-100">
         <Navbar selected="Quotes" />
         <div className="w-full md:w-6/7 flex">
-          <div className="h-screen overflow-hidden flex-col w-full bg-gray-100 bg-opacity-50 pl-2 pr-6 pt-5 pb-6 text-gray-700">
+          <div className="h-screen overflow-x-scroll flex-col w-full bg-gray-100 bg-opacity-50 pl-2 pr-6 pt-5 pb-6 text-gray-700">
             <div className="flex w-full items-center mb-4 mt-1 justify-between">
               <div className="flex items-center text-sm md:text-base">
                 <button
@@ -582,7 +654,7 @@ export default function SelectQuotes() {
               </div>
             </div>
 
-            <div className="rounded-md w-full flex-col overflow-x-hidden h-full overflow-y-scroll bg-white outline outline-1 outline-gray-200">
+            <div className="rounded-md w-full flex-col overflow-x-scroll h-full overflow-y-scroll bg-white outline outline-1 outline-gray-200">
               <div className="py-2 px-4 h-full">
                 <SelectQuotesHeader
                   search={search}
@@ -603,7 +675,7 @@ export default function SelectQuotes() {
                     <TabHeader
                       tabs={TABS}
                       titles={[
-                        `Non-ACA (${non_aca_quotes.length})`,
+                        `Updated (${non_aca_quotes.length})`,
                         `ACA (${aca_quotes.length})`,
                         `Dental`,
                         `Vision`,

@@ -16,38 +16,47 @@ import { PlanSection } from "./components/PlanSection";
 import { ClassSection } from "./components/ClassSection";
 import { QuoteType } from "@/src/types/custom/Quote";
 import { useLocalStorage } from "@/src/utils/useLocalStorage";
-import Workbook from 'react-excel-workbook'
+// import Workbook from "react-excel-workbook";
+import { Navbar } from "@/src/components/comparison/Navbar";
+import { IconBuilding } from "@tabler/icons-react";
+import {
+  IoMdArrowBack,
+  IoIosArrowDown,
+  IoIosArrowUp,
+  IoMdEyeOff,
+  IoMdEye,
+} from "react-icons/io";
 
 const data1 = [
   {
-    foo: '123',
-    bar: '456',
-    baz: '789'
+    foo: "123",
+    bar: "456",
+    baz: "789",
   },
   {
-    foo: 'abc',
-    bar: 'dfg',
-    baz: 'hij'
+    foo: "abc",
+    bar: "dfg",
+    baz: "hij",
   },
   {
-    foo: 'aaa',
-    bar: 'bbb',
-    baz: 'ccc'
-  }
-]
- 
+    foo: "aaa",
+    bar: "bbb",
+    baz: "ccc",
+  },
+];
+
 const data2 = [
   {
     aaa: 1,
     bbb: 2,
-    ccc: 3
+    ccc: 3,
   },
   {
     aaa: 4,
     bbb: 5,
-    ccc: 6
-  }
-]
+    ccc: 6,
+  },
+];
 
 export type CensusDataType = {
   employee: {
@@ -82,15 +91,17 @@ export default function CostPage() {
 
   let defaultOrCustomClasses;
   if (isCustomClassesActivated) {
-    defaultOrCustomClasses = (classes.filter(classItem => !classItem.is_default))
-} else {
-    defaultOrCustomClasses = (classes.filter(classItem => classItem.is_default))
-}
+    defaultOrCustomClasses = classes.filter(
+      (classItem) => !classItem.is_default,
+    );
+  } else {
+    defaultOrCustomClasses = classes.filter(
+      (classItem) => classItem.is_default,
+    );
+  }
 
-
-  const [planSpecificClassInfo, setPlanSpecificClassInfo] = useState<
-    PlanSpecificClassInfoType
-  >([]);
+  const [planSpecificClassInfo, setPlanSpecificClassInfo] =
+    useState<PlanSpecificClassInfoType>([]);
   const [censusData, setCensusData] = useState<CensusDataType>({
     employee: {
       num_lives: null,
@@ -125,6 +136,10 @@ export default function CostPage() {
   //num_lives (census data)
   //rates (plan_group)
   //contribution (classes)
+
+  function sendToSelect() {
+    router.push(`/select?clientId=${client?.id}`);
+  }
 
   useEffect(() => {
     if (loading) {
@@ -172,9 +187,7 @@ export default function CostPage() {
     }
   };
 
-  function handleExportRateSheetToExcel() {
-
-  }
+  function handleExportRateSheetToExcel() {}
 
   if (loading) {
     return <></>;
@@ -185,12 +198,12 @@ export default function CostPage() {
 
   //toggle custom classes (disables default)
 
-
   const plans = (planGroup as PlanGroupType).selectedQuotes;
   const planIds = plans.map((plan) => plan.id);
 
   return (
-    <div className="w-full p-4">
+    <main className="flex w-full h-screen overflow-hidden pl-4 md:pl-0 bg-gray-100">
+      {/* <div className="w-full p-4">
       <div className="row text-center" style={{marginTop: '100px'}}>
     <Workbook filename={`rate_sheet_${(planGroup as PlanGroupType).name}.xlsx`} element={<button>Export To Excel</button>}>
       <Workbook.Sheet data={data1} name="Sheet A">
@@ -220,64 +233,113 @@ export default function CostPage() {
               }}
             />
           </div>
-        )}
+        )} */}
+      <Navbar selected="Quotes" />
+      <div className="w-full md:w-6/7 flex-col overflow-auto h-full p-4">
+        <div className="flex items-center text-sm md:text-base mt-2">
+          <button className="flex items-center" onClick={() => sendToSelect()}>
+            <IoMdArrowBack />
+            <p className="ml-2 mr-2">Clients / Cost Breakdown /</p>
+          </button>
+          <IconBuilding className="h-5 w-5 mr-2" />
+          <p className="mr-2">{client?.name || "Client"}</p>
+          {/* <p className="mr-1">/ Quotes</p>
+  <p className="mr-1 text-gray-400 text-xs">•</p>
+  <p className="text-gray-400">({quotes.length})</p> */}
+        </div>
+        <div className="w-full p-4 bg-white outline outline-1 outline-gray-200 rounded-md mt-4">
+          <div className="flex gap-4">
+            <div className="flex flex-col w-1/5">
+              <div>
+                <button
+                  onClick={() => setIsFirstOpen(!isFirstOpen)}
+                  className="w-full flex justify-between items-center py-2 font-semibold rounded-md mb-2"
+                >
+                  <p>Census</p>
+                  {isFirstOpen ? <IoIosArrowDown /> : <IoIosArrowUp />}
+                </button>
+                {isFirstOpen && (
+                  <div className="w-full min-h-[50px] mb-4 rounded-md">
+                    <CensusDataSection
+                      censusData={censusData}
+                      setCensusData={setCensusData}
+                      onSave={(editedCensusData: CensusDataType) => {
+                        handleUpdateCensusData(
+                          client as ClientType,
+                          editedCensusData,
+                        );
+                      }}
+                    />
+                  </div>
+                )}
+              </div>
 
-        <button
-          onClick={() => setIsSecondOpen(!isSecondOpen)}
-          className="w-full text-left py-2 px-4 font-semibold rounded-md mb-2"
-        >
-          Classes
-        </button>
-        {isSecondOpen && (
-          <>
-            <button
-              onClick={() => {
-                setIsCustomClassesActivated(!isCustomClassesActivated);
-              }}
-            >
-              Toggle Custom Classes
-            </button>
-            {isCustomClassesActivated && (
-              <div className="w-full min-h-[50px] bg-gray-100 p-4 mb-4 rounded-md">
-                <ClassSection
+              <div>
+                <button
+                  onClick={() => setIsSecondOpen(!isSecondOpen)}
+                  className="w-full flex justify-between text-left py-2 font-semibold rounded-md mb-2"
+                >
+                  <p>Classes</p>
+                  {isSecondOpen ? <IoIosArrowDown /> : <IoIosArrowUp />}
+                </button>
+                {isSecondOpen && (
+                  <>
+                    {isCustomClassesActivated && (
+                      <div className="w-full min-h-[50px] mb-2 rounded-md">
+                        <ClassSection
+                          classes={defaultOrCustomClasses}
+                          handleDeleteCustomClass={handleDeleteCustomClass}
+                          handleAddCustomClass={async (
+                            newClassName: string,
+                          ) => {
+                            handleAddCustomClass(
+                              client as ClientType,
+                              planIds,
+                              newClassName,
+                            );
+                          }}
+                          onSave={(editedClass: ClassType) => {
+                            handleUpdateClass(editedClass);
+                          }}
+                          isCustomClassesActivated={isCustomClassesActivated}
+                        />
+                      </div>
+                    )}
+                    <button
+                      className="flex items-center gap-2 outline outline-1 outline-gray-200 px-2 py-1 w-full justify-center rounded-sm bg-gray-100/20 hover:bg-gray-100/50"
+                      onClick={() => {
+                        setIsCustomClassesActivated(!isCustomClassesActivated);
+                      }}
+                    >
+                      {isCustomClassesActivated ? <IoMdEyeOff /> : <IoMdEye />}
+                      {isCustomClassesActivated ? (
+                        <p>Disable Classes</p>
+                      ) : (
+                        <p>Enable Classes</p>
+                      )}
+                    </button>
+                  </>
+                )}
+              </div>
+            </div>
+
+            <div className="w-4/5">
+              <div className="w-full px-4 py-2 mb-4 rounded-md">
+                <PlanSection
+                  plans={plans}
                   classes={defaultOrCustomClasses}
-                  handleDeleteCustomClass={handleDeleteCustomClass}
-                  handleAddCustomClass={async (newClassName: string) => {
-                    handleAddCustomClass(
-                      client as ClientType,
-                      planIds,
-                      newClassName,
-                    );
-                  }}
-                  onSave={(editedClass: ClassType) => {
-                    handleUpdateClass(editedClass);
-                  }}
-                  isCustomClassesActivated = {isCustomClassesActivated}
+                  isCustomClassesActivated={isCustomClassesActivated}
+                  planSpecificClassInfo={planSpecificClassInfo}
+                  censusData={client?.census_data as CensusDataType}
+                  handleUpdateClassInfo={handleUpdateClass}
                 />
               </div>
-            )}
-          </>
-        )}
-
-        <button
-          onClick={() => setIsThirdOpen(!isThirdOpen)}
-          className="w-full text-left py-2 px-4 font-semibold rounded-md"
-        >
-          Plans
-        </button>
-        {isThirdOpen && (
-          <div className="w-full min-h-[50px] bg-gray-100 p-4 mb-4 rounded-md">
-            <PlanSection
-              plans={plans}
-              classes={defaultOrCustomClasses}
-              isCustomClassesActivated={isCustomClassesActivated}
-              planSpecificClassInfo={planSpecificClassInfo}
-              censusData={client?.census_data as CensusDataType}
-              handleUpdateClassInfo={handleUpdateClass}
-            />
+            </div>
           </div>
-        )}
+        </div>
       </div>
-    </div>
+      {/* </div>
+      </div> */}
+    </main>
   );
 }

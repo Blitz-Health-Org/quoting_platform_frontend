@@ -3,7 +3,8 @@ import { useContext, useState } from "react";
 import { MdOutlineArrowRight } from "react-icons/md";
 import { MdOutlineArrowDropDown } from "react-icons/md";
 import { useRecoilState } from "recoil";
-import { EditQuoteContext } from "@/src/context/EditQuoteContext";
+import { PlanGroupContext } from "@/src/context/PlanGroupContext";
+import { ClientContext } from "@/src/context/ClientContext";
 
 type RecursiveQuoteColumnDisplayProps = {
   field: any;
@@ -37,10 +38,9 @@ export const RecursiveQuoteColumnDisplay = ({
   isQuoteCard = false,
   alternateColor = false,
   isEditing,
-  quoteId
+  quoteId,
 }: RecursiveQuoteColumnDisplayProps) => {
   const [fieldState, setFieldState] = useRecoilState(fieldsFamilyState(path));
-
 
   if (fieldState === null) {
     setFieldState({ isExpanded: initialExpanded });
@@ -56,27 +56,38 @@ export const RecursiveQuoteColumnDisplay = ({
     quoteData,
     alternateColor = false,
     // isEditing,
-    path
+    path,
   }: HeaderLabelProps) => {
     const [editedData, setEditedData] = useState(quoteData);
 
-    // const {isEditing, setEditedQuotes} = useContext(EditQuoteContext)
+    const { isEditing, setEditedQuotes } = useContext(PlanGroupContext);
 
-    const fieldPath = path.slice(5).split('/')
+    const { hiddenComparisonFields, sharingId } = useContext(ClientContext);
+    console.log("SHARING IN LABEL", sharingId);
+
+    const [hiddenFields, setHiddenFields] = hiddenComparisonFields;
+
+    const fieldPath = path.slice(5).split("/");
 
     function updateNestedField(obj: any, path: any, newValue: any): any {
       if (path.length === 0) {
         return newValue;
       }
-    
+
       const [firstPath, ...restPath] = path;
       return {
         ...obj,
-        [firstPath]: updateNestedField(obj[firstPath] || {}, restPath, newValue),
+        [firstPath]: updateNestedField(
+          obj[firstPath] || {},
+          restPath,
+          newValue,
+        ),
       };
     }
-    
-    
+
+    if (sharingId && hiddenFields.includes(field.label)) {
+      return <></>;
+    }
 
     return (
       <div
@@ -90,60 +101,74 @@ export const RecursiveQuoteColumnDisplay = ({
           className={`w-full border-gray-300 ${field.label === "Plan Name" && isQuoteCard ? "border-t-0" : ""}`}
         ></hr>
         <div
-          className={`w-full flex items-center ${isQuoteCard ? "justify-center" : "justify-start"} h-10 w-full overflow-x-scroll text-nowrap px-3`}
+          className={`w-full flex items-center ${hiddenFields.includes(field.label) && "bg-gray-200 text-gray-500 outline-none"} ${isQuoteCard ? "justify-center" : "justify-start"} h-10 w-full overflow-x-scroll text-nowrap px-3`}
         >
-          {/* {isEditing ? <input className={`break-all font-semibold max-w-64 ${isQuoteCard && 'border border-black'}`} value = {["string", "number", "boolean"].includes(field.type) ? (
-              isQuoteCard ? (
-                editedData !== null && editedData !== undefined ? (
-                  editedData
+          {isEditing ? (
+            <input
+              className={`break-all font-semibold max-w-64 ${isQuoteCard && "border border-black"} `}
+              value={
+                ["string", "number", "boolean"].includes(field.type) ? (
+                  isQuoteCard ? (
+                    editedData !== null && editedData !== undefined ? (
+                      editedData
+                    ) : (
+                      "N/A"
+                    )
+                  ) : field?.label ? (
+                    field?.label
+                  ) : (
+                    <></>
+                  )
                 ) : (
-                  "N/A"
+                  field?.label
                 )
-              ) : field?.label ? (
-                field?.label
-              ) : (
-                <></>
-              )
-            ) : (
-              field?.label
-            )} 
-            // onChange = {(e) => {setEditedData(e.target.value); setEditedQuotes((prev: any) => {
-            //   return prev.map((quote: any) => {
-            //     if (quote.id !== quoteId) {
-            //       // If it's not the quote we want to update, return it unchanged
-            //       return quote;
-            //     } else {
-            //       // If it is the quote we want to update, use updateNestedField
-            //       // to produce a new quote object with the updated field
-            //       return {
-            //         ...quote,
-            //         data: updateNestedField(quote.data, fieldPath, e.target.value),
-            //       };
-            //     }
-            //   });
-            // });
-              
-            // }}/> : */}
-             <p className={`break-all font-semibold max-w-64`}> {["string", "number", "boolean"].includes(field.type) ? (
-              isQuoteCard ? (
-                editedData !== null && editedData !== undefined ? (
-                  editedData
+              }
+              onChange={(e) => {
+                setEditedData(e.target.value);
+                setEditedQuotes((prev: any) => {
+                  return prev.map((quote: any) => {
+                    if (quote.id !== quoteId) {
+                      // If it's not the quote we want to update, return it unchanged
+                      return quote;
+                    } else {
+                      // If it is the quote we want to update, use updateNestedField
+                      // to produce a new quote object with the updated field
+                      return {
+                        ...quote,
+                        data: updateNestedField(
+                          quote.data,
+                          fieldPath,
+                          e.target.value,
+                        ),
+                      };
+                    }
+                  });
+                });
+              }}
+            />
+          ) : (
+            <p className={`break-all font-semibold max-w-64`}>
+              {" "}
+              {["string", "number", "boolean"].includes(field.type) ? (
+                isQuoteCard ? (
+                  editedData !== null && editedData !== undefined ? (
+                    editedData
+                  ) : (
+                    "N/A"
+                  )
+                ) : field?.label ? (
+                  field?.label
                 ) : (
-                  "N/A"
+                  <></>
                 )
-              ) : field?.label ? (
-                field?.label
               ) : (
-                <></>
-              )
-            ) : (
-              field?.label
-            )}
+                field?.label
+              )}
             </p>
-            {/* // } */}
-            
-          {field.type === "object" &&
-            (isExpanded ? (
+          )}
+
+          {field.type === "object" ? (
+            isExpanded ? (
               <div className="pr-2">
                 <MdOutlineArrowDropDown
                   onClick={() => {
@@ -167,14 +192,43 @@ export const RecursiveQuoteColumnDisplay = ({
                   }}
                 />
               </div>
-            ))}
+            )
+          ) : (
+            !sharingId &&
+            !isQuoteCard &&
+            (!hiddenFields.includes(field.label) ? (
+              <div className="pr-2">
+                <button
+                  onClick={() => {
+                    console.log("AYO");
+                    setHiddenFields([...hiddenFields, field.label]);
+                  }}
+                >
+                  Hide
+                </button>
+              </div>
+            ) : (
+              <div className="pr-2">
+                <button
+                  onClick={() => {
+                    setHiddenFields(
+                      hiddenFields.filter(
+                        (label: string) => label !== field.label,
+                      ),
+                    );
+                  }}
+                >
+                  Show
+                </button>
+              </div>
+            ))
+          )}
         </div>
       </div>
     );
   };
 
   if (field?.isVisible === false) return <></>;
-
 
   if (["string", "number", "boolean"].includes(field.type)) {
     return (

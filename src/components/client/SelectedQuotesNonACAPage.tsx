@@ -42,7 +42,7 @@ export const SelectedQuotesNonACAPage = ({
   return (
     <>
       <div
-        className={`w-full overflow-x-scroll ${quotes.length <= 5 ? "h-full" : "h-fit"} pb-12`}
+        className={`w-full overflow-x-auto ${quotes.length <= 5 ? "h-full" : "h-fit"} pb-12`}
       >
         <div className="flex py-2 w-fit border-b">
           <div className="grid-cols-9 flex justify-left text-center w-fit gap-1 h-10 font-bold items-start text-wrap text-sm">

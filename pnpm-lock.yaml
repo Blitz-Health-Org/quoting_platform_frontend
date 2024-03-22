@@ -34,6 +34,12 @@ dependencies:
   '@supabase/supabase-js':
     specifier: ^2.39.3
     version: 2.39.3
+  '@syncfusion/ej2-navigations':
+    specifier: ^25.1.35
+    version: 25.1.35
+  '@syncfusion/ej2-react-grids':
+    specifier: ^25.1.35
+    version: 25.1.35
   '@tabler/icons-react':
     specifier: ^2.47.0
     version: 2.47.0(react@18.2.0)
@@ -94,9 +100,6 @@ dependencies:
   react-error-boundary:
     specifier: ^4.0.12
     version: 4.0.12(react@18.2.0)
-  react-excel-workbook:
-    specifier: ^0.0.4
-    version: 0.0.4(react-dom@18.2.0)(react@18.2.0)
   react-hot-toast:
     specifier: ^2.4.1
     version: 2.4.1(react-dom@18.2.0)(react@18.2.0)
@@ -1387,6 +1390,159 @@ packages:
       tslib: 2.6.2
     dev: false
 
+  /@syncfusion/ej2-base@25.1.35:
+    resolution: {integrity: sha512-eH/zLft7j5jhbNquVNcKoDmlx+ZU/77mHAJwpG9Ad4+C/+7UcWlIi/RDORJ0QreosZM4gMyCYzxDAZ5QOI3txw==}
+    hasBin: true
+    dependencies:
+      '@syncfusion/ej2-icons': 25.1.35
+    dev: false
+
+  /@syncfusion/ej2-buttons@25.1.35:
+    resolution: {integrity: sha512-4a3+OAkHdaJTxRd/QJln7PglxDeRa9yGpnuFUDOUaA0sf7gvBKumBg5JP1llSpblKaK7JSRs42QOL/EG/d075g==}
+    dependencies:
+      '@syncfusion/ej2-base': 25.1.35
+    dev: false
+
+  /@syncfusion/ej2-calendars@25.1.35:
+    resolution: {integrity: sha512-S/MaJ/Pb62rfRIwU2kFV+2nZ5+TwEr5LbHRp+3sR+u786MiNqla4O7StK7LfEluxGpFVQGPRyRkx77wC5FfBbg==}
+    dependencies:
+      '@syncfusion/ej2-base': 25.1.35
+      '@syncfusion/ej2-buttons': 25.1.35
+      '@syncfusion/ej2-inputs': 25.1.35
+      '@syncfusion/ej2-lists': 25.1.35
+      '@syncfusion/ej2-popups': 25.1.35
+    dev: false
+
+  /@syncfusion/ej2-compression@25.1.35:
+    resolution: {integrity: sha512-x9q6l9BOkM1fowejGUuKWK2sYFgZH5HPoVUwPpFXKXFvbJgzzVCAng+7Yojz5DIK7dfrR4KCLvp9jjqCVqZ5/Q==}
+    dependencies:
+      '@syncfusion/ej2-file-utils': 25.1.35
+    dev: false
+
+  /@syncfusion/ej2-data@25.1.35:
+    resolution: {integrity: sha512-eHWkoQcokKFiLUMpcw2IM1ul9v8HeRgIrUzowyWPpamuZASX8luczDy3VLR5AX0YeiE9aNv3QKsr04t4F1GRcQ==}
+    dependencies:
+      '@syncfusion/ej2-base': 25.1.35
+    dev: false
+
+  /@syncfusion/ej2-dropdowns@25.1.35:
+    resolution: {integrity: sha512-0P6t07FSGNzRlpm/Nsd63V+QKr58kgqjBdypDpsYmS5BKmimoLeWPboWdpi8lSWLZh4Mh4u+NM4WXXMyZjsg/A==}
+    dependencies:
+      '@syncfusion/ej2-base': 25.1.35
+      '@syncfusion/ej2-data': 25.1.35
+      '@syncfusion/ej2-inputs': 25.1.35
+      '@syncfusion/ej2-lists': 25.1.35
+      '@syncfusion/ej2-navigations': 25.1.35
+      '@syncfusion/ej2-notifications': 25.1.35
+      '@syncfusion/ej2-popups': 25.1.35
+    dev: false
+
+  /@syncfusion/ej2-excel-export@25.1.35:
+    resolution: {integrity: sha512-zqJ6e1iKY+ByUToROaTdjommnBjhW2FqycBONeDe0GzCT3lhPzT0LORLJHslYfC5kQopXzd8pwYVT85xHotF1w==}
+    dependencies:
+      '@syncfusion/ej2-base': 25.1.35
+      '@syncfusion/ej2-compression': 25.1.35
+    dev: false
+
+  /@syncfusion/ej2-file-utils@25.1.35:
+    resolution: {integrity: sha512-nBkZXnGtBt5MFpTkJdvvEKS65HGLa5UM1pQq34K/Cdx4YPlxzStQkVo4RyamXqwtadhLqmpKc9zGolHvUw7KvA==}
+    dev: false
+
+  /@syncfusion/ej2-grids@25.1.35:
+    resolution: {integrity: sha512-XHxTphdt4O55MURpyC96j/bEMimqufrPXw1UPpApiOa+It3WjxLDvh1eKj39UZyIrjV/VgGav0z9MZx/r2s/RA==}
+    dependencies:
+      '@syncfusion/ej2-base': 25.1.35
+      '@syncfusion/ej2-buttons': 25.1.35
+      '@syncfusion/ej2-calendars': 25.1.35
+      '@syncfusion/ej2-compression': 25.1.35
+      '@syncfusion/ej2-data': 25.1.35
+      '@syncfusion/ej2-dropdowns': 25.1.35
+      '@syncfusion/ej2-excel-export': 25.1.35
+      '@syncfusion/ej2-file-utils': 25.1.35
+      '@syncfusion/ej2-inputs': 25.1.35
+      '@syncfusion/ej2-lists': 25.1.35
+      '@syncfusion/ej2-navigations': 25.1.35
+      '@syncfusion/ej2-notifications': 25.1.35
+      '@syncfusion/ej2-pdf-export': 25.1.35
+      '@syncfusion/ej2-popups': 25.1.35
+      '@syncfusion/ej2-splitbuttons': 25.1.35
+    dev: false
+
+  /@syncfusion/ej2-icons@25.1.35:
+    resolution: {integrity: sha512-E8ypbeB9ISTsaj8Q29w3Ysh6HG35GOdTjfaU6JTCaZ9wP30q04B4WfN9lqcd42Q198qhynFAXd3lJyYev68aGw==}
+    dev: false
+
+  /@syncfusion/ej2-inputs@25.1.35:
+    resolution: {integrity: sha512-vVU55vBalmNKI1kon3F2IM/yzatC/2IU+Hso2fp1pFO5OzNfySCOtnWkMypVYc/9+pAG6qxuPIg7GyqjsrsWRg==}
+    dependencies:
+      '@syncfusion/ej2-base': 25.1.35
+      '@syncfusion/ej2-buttons': 25.1.35
+      '@syncfusion/ej2-popups': 25.1.35
+      '@syncfusion/ej2-splitbuttons': 25.1.35
+    dev: false
+
+  /@syncfusion/ej2-lists@25.1.35:
+    resolution: {integrity: sha512-7aFOGU67t3V/AGTB/N4mU1eVGSYhPCwkPXsvsl4BN/YcrsthdC90AXbrKgUb3Hwbuynps+du/nEDH8ujK8LNRg==}
+    dependencies:
+      '@syncfusion/ej2-base': 25.1.35
+      '@syncfusion/ej2-buttons': 25.1.35
+      '@syncfusion/ej2-data': 25.1.35
+      '@syncfusion/ej2-popups': 25.1.35
+    dev: false
+
+  /@syncfusion/ej2-navigations@25.1.35:
+    resolution: {integrity: sha512-4VeoH70R16RnfzVzVa/urGNIH3g1WkBnBvasAWQPY/TQQ8umk0EDEY22+TEzkGRWb7zc8K6Km9nQ57NxbLdDiA==}
+    dependencies:
+      '@syncfusion/ej2-base': 25.1.35
+      '@syncfusion/ej2-buttons': 25.1.35
+      '@syncfusion/ej2-data': 25.1.35
+      '@syncfusion/ej2-inputs': 25.1.35
+      '@syncfusion/ej2-lists': 25.1.35
+      '@syncfusion/ej2-popups': 25.1.35
+    dev: false
+
+  /@syncfusion/ej2-notifications@25.1.35:
+    resolution: {integrity: sha512-ioSI36uCSA9hxB8fiUAvI0u7c2eIs1sw3kC0cfL2HbGHHOmhWjm4yoTIl13sKoXU6Sv2A2V3xsFAf97cBTjFvA==}
+    dependencies:
+      '@syncfusion/ej2-base': 25.1.35
+      '@syncfusion/ej2-buttons': 25.1.35
+      '@syncfusion/ej2-popups': 25.1.35
+    dev: false
+
+  /@syncfusion/ej2-pdf-export@25.1.35:
+    resolution: {integrity: sha512-1Nt42y2n0/ExDfx93eV5aGJipU9rrJzvFa7xfRqtGObldll5S7yBpMKU6NDEoioeW+woOib4ea9+8vBtkQ+DnQ==}
+    dependencies:
+      '@syncfusion/ej2-compression': 25.1.35
+    dev: false
+
+  /@syncfusion/ej2-popups@25.1.35:
+    resolution: {integrity: sha512-tuo2YpcnCWFZntR77Cy/8rrWWAgLgxiGQC2ffXD2fnwuw5+Sp04MagefyoriAOMglXQHvNh2e+9//pVDA0NcmA==}
+    dependencies:
+      '@syncfusion/ej2-base': 25.1.35
+      '@syncfusion/ej2-buttons': 25.1.35
+    dev: false
+
+  /@syncfusion/ej2-react-base@25.1.35:
+    resolution: {integrity: sha512-chjK/THRwbRcQTKUL7NyP2VBjtS65uw6e0kieTsQvJ37c3ZZZ3/FpHt9jcqJisStrZ/xp4/y9uSPe6kqBGQBCg==}
+    dependencies:
+      '@syncfusion/ej2-base': 25.1.35
+    dev: false
+
+  /@syncfusion/ej2-react-grids@25.1.35:
+    resolution: {integrity: sha512-MGno0DQRU+nMJjcnkfx9T7kQYwNcM4macbFCESZFlF2dGK/zUy03MdSRBPvJESoYsZhsZg2Mg4bVIgFE2eqtZQ==}
+    dependencies:
+      '@syncfusion/ej2-base': 25.1.35
+      '@syncfusion/ej2-grids': 25.1.35
+      '@syncfusion/ej2-react-base': 25.1.35
+    dev: false
+
+  /@syncfusion/ej2-splitbuttons@25.1.35:
+    resolution: {integrity: sha512-S/MhCWHB59e8bm8ZRL896XxtQtNcyNNVcpclus8tsuN9sCiM7Dsg/HPtoZ04hZRgRs7nNJmyA0u+Z8E7HkaQHg==}
+    dependencies:
+      '@syncfusion/ej2-base': 25.1.35
+      '@syncfusion/ej2-popups': 25.1.35
+    dev: false
+
   /@tabler/icons-react@2.47.0(react@18.2.0):
     resolution: {integrity: sha512-iqly2FvCF/qUbgmvS8E40rVeYY7laltc5GUjRxQj59DuX0x/6CpKHTXt86YlI2whg4czvd/c8Ce8YR08uEku0g==}
     peerDependencies:
@@ -1689,15 +1845,6 @@ packages:
     engines: {node: '>=0.4.0'}
     hasBin: true
     dev: true
-
-  /adler-32@1.1.0:
-    resolution: {integrity: sha512-lRKKX9RZQBPy6CrdUqiDUsxVcZujjbkkUg++0zLLyi0EwRui+aFyEDJBXRXCqwp+pmmybdZgBNHxOAOQcgdJYg==}
-    engines: {node: '>=0.8'}
-    hasBin: true
-    dependencies:
-      exit-on-epipe: 1.0.1
-      printj: 1.1.2
-    dev: false
 
   /agent-base@6.0.2:
     resolution: {integrity: sha512-RZNwNclF7+MS/8bDg70amg32dyeZGZxiDuQmZxKLAlQjr3jGyLx+4Kkk58UO7D2QdgFIQCovuSuZESne6RG6XQ==}
@@ -2075,15 +2222,6 @@ packages:
       lodash: 4.17.21
     dev: true
 
-  /cfb@0.12.1:
-    resolution: {integrity: sha512-cP+4A0tTqtyza5gJwNwDetZ8FPjl0gPLE7mIxGKyUzOS6HkM23WaAWW/l3t7jIQSMqVXroa09Ey0lo7gV8LNxw==}
-    engines: {node: '>=0.8'}
-    hasBin: true
-    dependencies:
-      commander: 2.11.0
-      printj: 1.1.2
-    dev: false
-
   /chalk@2.4.2:
     resolution: {integrity: sha512-Mti+f9lpJNcwF4tWV8/OrTTtF1gZi+f8FqlyAdouralcFWFQWF2+NgCHShjkCb+IFBLq9buZwE1xckQU4peSuQ==}
     engines: {node: '>=4'}
@@ -2149,16 +2287,6 @@ packages:
     engines: {node: ^14.17.0 || ^16.13.0 || >=18.0.0}
     dev: true
 
-  /codepage@1.10.2:
-    resolution: {integrity: sha512-JzhJ7nYua7rMcJ6I4Cw4h1w7aN/1f5qAQb//QSAaTjTVjEEZ1mBicBWTPLf6RiaBn4dpbEFwqGBoEekOHx9K2Q==}
-    engines: {node: '>=0.8'}
-    hasBin: true
-    dependencies:
-      commander: 2.11.0
-      exit-on-epipe: 1.0.1
-      voc: 1.0.0
-    dev: false
-
   /color-convert@1.9.3:
     resolution: {integrity: sha512-QfAUtd+vFdAtFQcC8CCyYt1fYWxSqAiK2cSD6zDB8N3cpsEBAvRxp9zOGg6G/SHHJYAT88/az/IuDGALsNVbGg==}
     dependencies:
@@ -2198,10 +2326,6 @@ packages:
     dependencies:
       color-convert: 2.0.1
       color-string: 1.9.1
-    dev: false
-
-  /commander@2.11.0:
-    resolution: {integrity: sha512-b0553uYA5YAEGgyYIGYROzKQ7X5RAqedkfjiZxwi0kL1g3bOaBNNZfYkzt/CL0umgD5wc9Jec2FbB98CjkMRvQ==}
     dev: false
 
   /commander@4.1.1:
@@ -2258,15 +2382,6 @@ packages:
       parse-json: 5.2.0
       path-type: 4.0.0
       yaml: 1.10.2
-    dev: false
-
-  /crc-32@1.1.1:
-    resolution: {integrity: sha512-DWXuRN3Wtu43YRfYZ9r17720WZqM0caEjIfT6Dk1J/3sAxIyyXbUWqIACbz3cjV8l7guJRW+9pZlYMluKJ69wg==}
-    engines: {node: '>=0.8'}
-    hasBin: true
-    dependencies:
-      exit-on-epipe: 1.0.1
-      printj: 1.1.2
     dev: false
 
   /cross-fetch@3.1.8:
@@ -2989,11 +3104,6 @@ packages:
     resolution: {integrity: sha512-Z+ktTxTwv9ILfgKCk32OX3n/doe+OcLTRtqK9pcL+JsP3J1/VW8Uvl4ZjLlKqeW4rzK4oesDOGMEMRIZqtP4Iw==}
     dev: false
 
-  /exit-on-epipe@1.0.1:
-    resolution: {integrity: sha512-h2z5mrROTxce56S+pnvAV890uu7ls7f1kEvVGJbw1OlFH3/mlJ5bkXu0KRyW94v37zzHPiUd55iLn3DA7TjWpw==}
-    engines: {node: '>=0.8'}
-    dev: false
-
   /extend@3.0.2:
     resolution: {integrity: sha512-fjquC59cD7CyW6urNXK0FBufkZcoiGG80wTuPujX590cB5Ttln20E2UB4S/WARVqhXffZl2LNgS+gQdPIIim/g==}
     dev: false
@@ -3047,10 +3157,6 @@ packages:
     dependencies:
       flat-cache: 3.2.0
     dev: true
-
-  /file-saver@1.3.8:
-    resolution: {integrity: sha512-spKHSBQIxxS81N/O21WmuXA2F6wppUCsutpzenOeZzOCCJ5gEfcbqJP983IrpLXzYmXnMUa6J03SubcNPdKrlg==}
-    dev: false
 
   /file-selector@0.6.0:
     resolution: {integrity: sha512-QlZ5yJC0VxHxQQsQhXvBaC7VRJ2uaxTf+Tfpu4Z/OcVQJVpZO+DGU0rkoVW5ce2SccxugvpBJoMvUs59iILYdw==}
@@ -3123,11 +3229,6 @@ packages:
     dependencies:
       fetch-blob: 3.2.0
     dev: true
-
-  /frac@1.1.2:
-    resolution: {integrity: sha512-w/XBfkibaTl3YDqASwfDUqkna4Z2p9cFSr1aHDt0WoMTECnRfBOv2WArlZILlqgWlmdIlALXGpM2AOhEk5W3IA==}
-    engines: {node: '>=0.8'}
-    dev: false
 
   /fraction.js@4.3.7:
     resolution: {integrity: sha512-ZsDfxO51wGAXREY55a7la9LScWpwv9RxIrYABrlvOFBlH/ShPnrtsXeuUIfXKKOVicNxQ+o8JTbJvjS4M89yew==}
@@ -4528,12 +4629,6 @@ packages:
     hasBin: true
     dev: true
 
-  /printj@1.1.2:
-    resolution: {integrity: sha512-zA2SmoLaxZyArQTOPj5LXecR+RagfPSU5Kw1qP+jkWeNlrq+eJZyY2oS68SU1Z/7/myXM4lo9716laOFAVStCQ==}
-    engines: {node: '>=0.8'}
-    hasBin: true
-    dev: false
-
   /process-nextick-args@2.0.1:
     resolution: {integrity: sha512-3ouUOpQhtgrbOa17J7+uxOTpITYWaGP7/AhoR3+A+/1e9skrzelGi/dXzEYyvbxubEF6Wn2ypscTKiKJFFn1ag==}
     dev: false
@@ -4611,19 +4706,6 @@ packages:
     dependencies:
       '@babel/runtime': 7.23.9
       react: 18.2.0
-    dev: false
-
-  /react-excel-workbook@0.0.4(react-dom@18.2.0)(react@18.2.0):
-    resolution: {integrity: sha512-llZKbCGoJ2gauBySZ/IAZdcfR79/nStz6aapaWN85gpfscNH7t6nExCPPPFcXIOSjHICOG0yMns21zsZqFQ5pw==}
-    peerDependencies:
-      prop-types: ^15.0.0
-      react: ^15.0.0
-      react-dom: ^15.0.0
-    dependencies:
-      file-saver: 1.3.8
-      react: 18.2.0
-      react-dom: 18.2.0(react@18.2.0)
-      xlsx: 0.10.9
     dev: false
 
   /react-hot-toast@2.4.1(react-dom@18.2.0)(react@18.2.0):
@@ -5183,14 +5265,6 @@ packages:
     engines: {node: '>=0.10.0'}
     dev: false
 
-  /ssf@0.10.3:
-    resolution: {integrity: sha512-pRuUdW0WwyB2doSqqjWyzwCD6PkfxpHAHdZp39K3dp/Hq7f+xfMwNAWIi16DyrRg4gg9c/RvLYkJTSawTPTm1w==}
-    engines: {node: '>=0.8'}
-    hasBin: true
-    dependencies:
-      frac: 1.1.2
-    dev: false
-
   /streamsearch@1.1.0:
     resolution: {integrity: sha512-Mcc5wHehp9aXz1ax6bZUyY5afg9u2rv5cqQI3mRrYkGC8rW2hM02jWuwjtL++LS5qinSyhj2QfLyNsuc+VsExg==}
     engines: {node: '>=10.0.0'}
@@ -5702,12 +5776,6 @@ packages:
       util-deprecate: 1.0.2
     dev: false
 
-  /voc@1.0.0:
-    resolution: {integrity: sha512-mQwxWlK+zosxxDTqiFb9ZQBNgd794scgkhVwca7h9sEhvA52f3VzbOK+TOWeS8eSrFXnfuKrxElSPc5oLAetfw==}
-    engines: {node: '>=0.8'}
-    hasBin: true
-    dev: false
-
   /warning@4.0.3:
     resolution: {integrity: sha512-rpJyN222KWIvHJ/F53XSZv0Zl/accqHR8et1kpaMTD/fLCRxtV8iX8czMzY7sVZupTI3zcUTg8eycS2kNF9l6w==}
     dependencies:
@@ -5844,21 +5912,6 @@ packages:
         optional: true
       utf-8-validate:
         optional: true
-    dev: false
-
-  /xlsx@0.10.9:
-    resolution: {integrity: sha512-XZrdkPmoZt8qPpVmuKNe7EYXyckvBArwFI7SMKiqdXz9ZAXRWx6EFMKpGTyiKklPzRsm2n4cmzADinPIlPi1Jg==}
-    engines: {node: '>=0.8'}
-    deprecated: this version is no longer supported.  More info at https://cdn.sheetjs.com/xlsx/
-    hasBin: true
-    dependencies:
-      adler-32: 1.1.0
-      cfb: 0.12.1
-      codepage: 1.10.2
-      commander: 2.11.0
-      crc-32: 1.1.1
-      exit-on-epipe: 1.0.1
-      ssf: 0.10.3
     dev: false
 
   /xmlcreate@2.0.4:

@@ -271,22 +271,24 @@ const SelectSidebar = ({
               }}
               className="w-full text-gray-600 mb-2 text-sm md:text-base mr-1 outline outline-1 outline-gray-300 py-1 px-2 rounded-md flex items-center justify-center hover:outline-gray-400 cursor-pointer"
             >
-              <div className="mr-2 text-sm">Save Plans</div>
+              <div className="mr-2 text-sm">Save Options</div>
               <FaRegSave />
             </div>
-            <div className="flex gap-1 w-full">
+            <div className="flex gap-1 w-full text-sm">
               <input
                 type="text"
-                placeholder="Enter New Plan Name"
+                placeholder="Enter New Option Name"
                 value={newPlanName}
                 onChange={(e) => setNewPlanName(e.target.value)}
-                className="py-1 px-4 text-sm outline outline-1 outline-gray-300 rounded-md w-7/8 hover:cursor-pointer focus:cursor-auto hover:outline-gray-400"
+                className="py-1 px-4 text-sm outline outline-1 outline-gray-300 rounded-md hover:cursor-pointer focus:cursor-auto hover:outline-gray-400"
+                style={{ width: "180px" }} // Set width to 42 pixels
               />
               <button
                 onClick={handleAddPlan}
                 data-tooltip-id="my-tooltip"
                 data-tooltip-content="New Plan"
-                className="sb-button outline outline-1 outline-gray-300 rounded-md px-0.5 hover:outline-gray-400 w-1/8"
+                className="sb-button outline outline-1 outline-gray-300 rounded-md px-0.5 hover:outline-gray-400 flex justify-center items-center"
+                style={{ width: "35px" }} // Set width to 42 pixels
               >
                 <IoIosAdd className="h-6 w-6 text-gray-700" />
               </button>
@@ -303,9 +305,11 @@ const SelectSidebar = ({
                 <div className="flex items-center justify-between ">
                   <input
                     type="text"
-                    value={plan.isCurrentPlan ? "Current Plan" : plan.name}
+                    value={
+                      plan.isCurrentPlan ? "Current Plan Option" : plan.name
+                    }
                     onChange={(e) => handleNameChange(plan.id, e.target.value)}
-                    className="font-semibold mt-1 px-0.5 py-1 max-w-36"
+                    className="font-semibold mt-1 px-0.5 py-1 max-w-36 text-sm"
                   />
                   <div className="flex gap-1 items-center">
                     <div

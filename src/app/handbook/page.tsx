@@ -350,7 +350,9 @@ export default function QuotingPage() {
                             <FaStar className="ml-1" />
                           ) : null}
                           <p className="font-semibold p-1">
-                            {plan.isCurrentPlan ? "Current Plan" : plan?.name}
+                            {plan.isCurrentPlan
+                              ? "Current Plan Option"
+                              : plan?.name}
                           </p>
                         </div>
                         <div>

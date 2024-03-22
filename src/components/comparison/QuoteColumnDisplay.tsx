@@ -25,7 +25,6 @@ export const QuoteColumnDisplay = ({
   isEditing,
   isQuoteCard = false,
 }: QuoteColumnDisplayProps) => {
-
   return (
     <>
       <div
