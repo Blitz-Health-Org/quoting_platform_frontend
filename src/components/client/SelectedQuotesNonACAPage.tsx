@@ -1,12 +1,12 @@
 import { QuoteTypeWithCheckbox } from "@/src/app/select/page";
 import Image from "next/image";
-import { PlanAttributes } from "@/src/app/select/page";
+import PlanAttributes from "@/src/app/select/page";
 import { useState } from "react";
 
 type SelectedQuotesNonACAPageProps = {
   quotes: QuoteTypeWithCheckbox[];
   planAttributesMapping: {
-    key: keyof PlanAttributes;
+    key: any;
     label: string;
     alternateKey?: string;
   }[];
@@ -55,7 +55,7 @@ export const SelectedQuotesNonACAPage = ({
           <div className="grid-cols-9 flex justify-left text-center w-fit gap-1 h-10 font-bold items-start text-wrap text-sm">
             {planAttributesMapping.map((attribute) => (
               <div
-                key={attribute.key}
+                key={attribute.key as any}
                 className="flex justify-center gap-2 min-w-32"
                 style={{ width: `${entryWidth}px` }}
               >
