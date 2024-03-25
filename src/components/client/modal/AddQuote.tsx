@@ -4,13 +4,16 @@ import { MdUpload } from "react-icons/md";
 import React, { useState, Dispatch, SetStateAction, useContext } from "react";
 import Image from "next/image";
 import BlumeLogo from "@/public/BlumeLogo.png";
-import { FaX } from "react-icons/fa6";
-import { v4 as uuid } from "uuid";
+import { FaArrowDown, FaArrowRight, FaX } from "react-icons/fa6";
+import { v4 as uuid, validate } from "uuid";
 import { ClientType } from "@/src/types/custom/Client";
 import { SnackBarContext } from "@/src/context/SnackBarContext";
 import { useRouter } from "next/navigation";
 import { UserContext } from "@/src/context/UserContext";
 import TabHeader from "../../ui/TabHeader";
+import Toggle from "react-toggle";
+import "react-toggle/style.css"; // for ES6 modules
+
 import router from "next/router";
 
 const TABS = ["Medical", "Ancillary"];
@@ -20,6 +23,15 @@ type AddQuoteProps = {
   client: any;
   setModalOpen: any;
   type: any;
+};
+
+type OptionalParamsType = {
+  optionalRanges: {
+    censusDataRange: string;
+    ratesRange: string;
+    quotesRange: string;
+  };
+  is_aca: boolean;
 };
 
 export const AddQuote = ({
@@ -48,6 +60,16 @@ export const AddQuote = ({
   const [rangeSelection, setRangeSelection] = useState("all"); // Dropdown selection state
   const [currentTab, setCurrentTab] = useState<string>("Medical");
   const [prevCurrentTab, setPrevCurrentTab] = useState<string>(currentTab);
+  const [optionalParams, setOptionalParams] = useState<OptionalParamsType>({
+    optionalRanges: {
+      censusDataRange: "",
+      ratesRange: "",
+      quotesRange: "",
+    },
+    is_aca: false,
+  });
+
+  const [isAdvancedOpen, setIsAdvancedOpen] = useState(false);
 
   if (prevCurrentTab !== currentTab) {
     setPrevCurrentTab(currentTab);
@@ -71,27 +93,28 @@ export const AddQuote = ({
     setFile(acceptedFiles[0]);
   };
 
-  function validateCustomRange(range: string) {
-    const ranges = range
-      .split(",")
-      .map((part) => {
-        const numbers = part.trim().split("-").map(Number);
-        // If it's a single number, duplicate it to make a range [number, number]
-        if (numbers.length === 1 && !isNaN(numbers[0])) {
-          return [numbers[0], numbers[0]];
-        }
-        // If it's a proper range and both numbers are valid, return the range
-        else if (
-          numbers.length === 2 &&
-          !isNaN(numbers[0]) &&
-          !isNaN(numbers[1])
-        ) {
-          return numbers;
-        }
-        // If neither, return null to indicate invalid input
-        return null;
-      })
-      .filter(Boolean); // Filter out any null entries due to invalid input
+  function validateCustomRangeAndParse(range: string) {
+    if (range === "") {
+      setIsRangeValid(true);
+      return [];
+    }
+    const ranges = range.split(",").map((part) => {
+      const numbers = part.trim().split("-").map(Number);
+      // If it's a single number, duplicate it to make a range [number, number]
+      if (numbers.length === 1 && !isNaN(numbers[0])) {
+        return [numbers[0], numbers[0]];
+      }
+      // If it's a proper range and both numbers are valid, return the range
+      else if (
+        numbers.length === 2 &&
+        !isNaN(numbers[0]) &&
+        !isNaN(numbers[1])
+      ) {
+        return numbers;
+      }
+      // If neither, return null to indicate invalid input
+      return null;
+    });
 
     // Check if any parsing resulted in null, indicating invalid format
     if (ranges.length === 0 || ranges.includes(null)) {
@@ -99,11 +122,83 @@ export const AddQuote = ({
       return [];
     } else {
       setIsRangeValid(true);
-      return ranges; // Returns a list of tuples like [[1, 5], [8, 8], [11, 13]]
+      return ranges as number[][]; // Returns a list of tuples like [[1, 5], [8, 8], [11, 13]]
     }
   }
 
+  function validateSubRangesWithinMainRange(
+    ranges: (number[] | null)[],
+    censusDataRanges: (number[] | null)[],
+    quoteRanges: (number[] | null)[],
+    rateRanges: (number[] | null)[],
+  ) {
+    console.log(
+      "MADE IT HERE",
+      ...(censusDataRanges
+        .flat()
+        .filter(
+          (item) => item !== null && typeof item === "number",
+        ) as number[]),
+      ...(ranges
+        .flat()
+        .filter(
+          (item) => item !== null && typeof item === "number",
+        ) as number[]),
+    );
+    return !(
+      Math.max(
+        ...(censusDataRanges
+          .flat()
+          .filter(
+            (item) => item !== null && typeof item === "number",
+          ) as number[]),
+        ...(rateRanges
+          .flat()
+          .filter(
+            (item) => item !== null && typeof item === "number",
+          ) as number[]),
+        ...(quoteRanges
+          .flat()
+          .filter(
+            (item) => item !== null && typeof item === "number",
+          ) as number[]),
+      ) >
+        Math.max(
+          ...(ranges
+            .flat()
+            .filter(
+              (item) => item !== null && typeof item === "number",
+            ) as number[]),
+        ) ||
+      Math.min(
+        ...(censusDataRanges
+          .flat()
+          .filter(
+            (item) => item !== null && typeof item === "number",
+          ) as number[]),
+        ...(rateRanges
+          .flat()
+          .filter(
+            (item) => item !== null && typeof item === "number",
+          ) as number[]),
+        ...(quoteRanges
+          .flat()
+          .filter(
+            (item) => item !== null && typeof item === "number",
+          ) as number[]),
+      ) <
+        Math.min(
+          ...(ranges
+            .flat()
+            .filter(
+              (item) => item !== null && typeof item === "number",
+            ) as number[]),
+        )
+    );
+  }
+
   const handleUpload = async (ranges?: number[][]) => {
+    console.log("HELLO?????");
     if (!file) {
       setSnackbar({
         open: true,
@@ -171,6 +266,7 @@ export const AddQuote = ({
             client: client,
             userId: userId,
             ranges: ranges,
+            optionalParams: optionalParams,
           }),
         },
       );
@@ -399,11 +495,9 @@ export const AddQuote = ({
                       className="bg-gray-100 px-2 h-8 drop-shadow-sm outline outline-1 outline-gray-400/80 hover:outline-gray-400 text-sm rounded-sm w-full"
                       placeholder="e.g., 1-5, 8, 11-13"
                       onChange={(e) => {
-                        if (e.target.value && e.target.value.trim()) {
-                          const newValue = e.target.value.trim();
-                          setCustomRange(newValue);
-                          validateCustomRange(newValue);
-                        }
+                        setCustomRange(e.target.value);
+                        const newValue = e.target.value.trim();
+                        validateCustomRangeAndParse(newValue);
                       }}
                     />
                   </>
@@ -415,6 +509,83 @@ export const AddQuote = ({
                 Please enter a valid range format (e.g., 1-5, 8, 11-13).
               </div>
             )}
+            <div className="my-2">Advanced</div>
+            {isAdvancedOpen ? (
+              <FaArrowDown
+                onClick={() => {
+                  setIsAdvancedOpen(false);
+                }}
+              />
+            ) : (
+              <FaArrowRight
+                onClick={() => {
+                  setIsAdvancedOpen(true);
+                }}
+              />
+            )}
+            {isAdvancedOpen && (
+              <>
+                <label>
+                  <Toggle
+                    defaultChecked={optionalParams.is_aca}
+                    onChange={() => {
+                      setOptionalParams((prev) => {
+                        return { ...prev, is_aca: !prev.is_aca };
+                      });
+                    }}
+                  />
+                  <span>ACA</span>
+                </label>
+                <input
+                  placeholder="Census Data Page Range"
+                  className="mt-2 bg-gray-100 px-2 rounded-sm w-full drop-shadow-sm outline outline-1 h-8 outline-gray-400/80 hover:outline-gray-400"
+                  value={optionalParams.optionalRanges.censusDataRange ?? ""}
+                  onChange={(e) => {
+                    setOptionalParams((prev) => {
+                      return {
+                        ...prev,
+                        optionalRanges: {
+                          ...prev.optionalRanges,
+                          censusDataRange: e.target.value,
+                        },
+                      };
+                    });
+                  }}
+                />
+                <input
+                  placeholder="Medical Rates Page Range"
+                  className="mt-2 bg-gray-100 px-2 rounded-sm w-full drop-shadow-sm outline outline-1 h-8 outline-gray-400/80 hover:outline-gray-400"
+                  value={optionalParams.optionalRanges.ratesRange ?? ""}
+                  onChange={(e) => {
+                    setOptionalParams((prev) => {
+                      return {
+                        ...prev,
+                        optionalRanges: {
+                          ...prev.optionalRanges,
+                          ratesRange: e.target.value,
+                        },
+                      };
+                    });
+                  }}
+                />
+                <input
+                  placeholder="Quotes Page Range"
+                  className="mt-2 bg-gray-100 px-2 rounded-sm w-full drop-shadow-sm outline outline-1 h-8 outline-gray-400/80 hover:outline-gray-400"
+                  value={optionalParams.optionalRanges.quotesRange ?? ""}
+                  onChange={(e) => {
+                    setOptionalParams((prev) => {
+                      return {
+                        ...prev,
+                        optionalRanges: {
+                          ...prev.optionalRanges,
+                          quotesRange: e.target.value,
+                        },
+                      };
+                    });
+                  }}
+                />{" "}
+              </>
+            )}
             <div className="modal-body">
               {/* File Upload Section */}
               <form
@@ -424,7 +595,32 @@ export const AddQuote = ({
                   if (rangeSelection === "all") {
                     handleUpload();
                   } else {
-                    const ranges = validateCustomRange(customRange);
+                    console.log("ENTERED");
+                    const ranges = validateCustomRangeAndParse(customRange);
+                    const censusDataRanges = validateCustomRangeAndParse(
+                      optionalParams.optionalRanges.censusDataRange,
+                    );
+                    const quoteRanges = validateCustomRangeAndParse(
+                      optionalParams.optionalRanges.quotesRange,
+                    );
+                    const rateRanges = validateCustomRangeAndParse(
+                      optionalParams.optionalRanges.ratesRange,
+                    );
+                    console.log("HUH????");
+                    if (
+                      rangeSelection === "custom" &&
+                      !validateSubRangesWithinMainRange(
+                        ranges,
+                        censusDataRanges,
+                        quoteRanges,
+                        rateRanges,
+                      )
+                    ) {
+                      alert("Advanced ranges must be within the main range");
+                      setIsProcessing(false);
+                      return;
+                    }
+
                     if (!isProcessing && ranges.length) {
                       handleUpload(ranges as number[][]); // Proceed with uploading
                     }
@@ -546,6 +742,9 @@ export const AddQuote = ({
                   <option value="custom" className="w-1/2">
                     Custom
                   </option>
+                  <option value="advanced" className="w-1/2">
+                    Advanced
+                  </option>
                 </select>
                 {rangeSelection === "custom" && (
                   <>
@@ -557,7 +756,7 @@ export const AddQuote = ({
                         if (e.target.value && e.target.value.trim()) {
                           const newValue = e.target.value.trim();
                           setCustomRange(newValue);
-                          validateCustomRange(newValue);
+                          validateCustomRangeAndParse(newValue);
                         }
                       }}
                     />
@@ -579,7 +778,10 @@ export const AddQuote = ({
                   if (rangeSelection === "all") {
                     handleUpload();
                   } else {
-                    const ranges = validateCustomRange(customRange);
+                    const ranges = validateCustomRangeAndParse(customRange);
+                    validateCustomRangeAndParse(
+                      optionalParams.optionalRanges.censusDataRange,
+                    );
                     if (!isProcessing && ranges.length) {
                       handleUpload(ranges as number[][]); // Proceed with uploading
                     }
