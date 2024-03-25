@@ -24,8 +24,7 @@ import { TaskContext } from "@/src/context/TaskContext";
 import { SocketTasksContext } from "@/src/context/SocketContext";
 import AddCurrentPlanModal from "@/src/components/comparison/AddCurrentPlanModal";
 import { SnackBarContext } from "@/src/context/SnackBarContext";
-import { SelectedQuotesACAPage } from "@/src/components/client/SelectedQuotesACAPage";
-import { SelectedQuotesNonACAPage } from "@/src/components/client/SelectedQuotesNonACAPage";
+import { QuotesTable } from "@/src/components/client/QuotesTable";
 import TabHeader from "@/src/components/ui/TabHeader";
 import { ActionBar } from "./ActionBar";
 import router from "next/router";
@@ -48,7 +47,34 @@ const planAttributesMapping: {
   { key: "total_employer_cost", label: "Total Cost" },
 ];
 
-const TABS = ["Updated", "ACA", "Dental", "Vision", "STD", "LTD"];
+export type TabOption =
+  | "Updated"
+  | "ACA"
+  | "Dental"
+  | "Vision"
+  | "LTD"
+  | "Group Term Life"
+  | "AD & D";
+
+const TABS: TabOption[] = [
+  "Updated",
+  "ACA",
+  "Dental",
+  "Vision",
+  "LTD",
+  "Group Term Life",
+  "AD & D",
+];
+
+const TABS_TO_COVERAGE_TYPE_MAPPING: Record<TabOption, string> = {
+  Updated: "medical",
+  ACA: "medical",
+  Dental: "dental",
+  Vision: "vision",
+  LTD: "long_term_disability",
+  "Group Term Life": "group_term_life",
+  "AD & D": "ad_d",
+};
 
 export type QuoteTypeWithCheckbox = QuoteType & { isSelected: boolean };
 
@@ -392,7 +418,9 @@ export default function SelectQuotes() {
       console.error("Error inserting row into Supabase table:", insertError);
       return { success: false };
     } else {
-      router.push(`/quotes?clientId=${clientId}`);
+      router.push(
+        `/quotes?clientId=${clientId}&type=${TABS_TO_COVERAGE_TYPE_MAPPING[currentTab as TabOption]}`,
+      );
 
       return { success: true };
     }
@@ -476,26 +504,32 @@ export default function SelectQuotes() {
     router.push(`/`);
   };
 
-  let aca_quotes = quotes.filter(
-    (quote) => (quote.data as any)?.["metadata"]?.["is_aca"] === true,
+  function filterQuotesByCoverageType(coverage_type: string) {
+    return quotes.filter(
+      (quote) =>
+        ((quote.data as any)?.["metadata"]?.["coverage_type"] ?? "medical") ===
+        coverage_type,
+    );
+  }
+
+  let filteredQuotes = filterQuotesByCoverageType(
+    TABS_TO_COVERAGE_TYPE_MAPPING[currentTab as TabOption],
   );
 
-  let non_aca_quotes = quotes.filter(
-    (quote) => !(quote.data as any)?.["metadata"]?.["is_aca"] === true,
-  );
-
+  if (currentTab === "ACA") {
+    filteredQuotes = quotes.filter(
+      (quote) => (quote.data as any)?.["metadata"]?.["is_aca"] === true,
+    );
+  } else if (currentTab === "Updated") {
+    filteredQuotes = quotes.filter(
+      (quote) => (quote.data as any)?.["metadata"]?.["is_aca"] !== true,
+    );
+  }
   const currentPlan = plans.find((plan) => plan.isCurrentPlan);
 
   if (currentPlan) {
     const currentPlanQuotes = currentPlan.selectedQuotes;
-    aca_quotes = aca_quotes.sort((quoteA, quoteB) => {
-      if (currentPlanQuotes.map((quote) => quote.id).includes(quoteA.id)) {
-        return -1;
-      } else {
-        return 1;
-      }
-    });
-    non_aca_quotes = non_aca_quotes.sort((quoteA, quoteB) => {
+    filteredQuotes = filteredQuotes.sort((quoteA, quoteB) => {
       if (currentPlanQuotes.map((quote) => quote.id).includes(quoteA.id)) {
         return -1;
       } else {
@@ -534,7 +568,7 @@ export default function SelectQuotes() {
   };
 
   function findMinimumValue(category: string) {
-    let specificQuotes = currentTab === "ACA" ? aca_quotes : non_aca_quotes;
+    let specificQuotes = filteredQuotes;
     if (category === "employee_rate") {
       console.log(
         "oijowiej",
@@ -558,7 +592,7 @@ export default function SelectQuotes() {
   }
 
   function findMaximumValue(category: string) {
-    let specificQuotes = currentTab === "ACA" ? aca_quotes : non_aca_quotes;
+    let specificQuotes = filteredQuotes;
 
     return (
       Math.max(
@@ -647,7 +681,7 @@ export default function SelectQuotes() {
                 <SelectQuotesHeader
                   search={search}
                   setSearch={setSearch}
-                  quotes={currentTab === "ACA" ? aca_quotes : non_aca_quotes}
+                  quotes={filteredQuotes}
                   handleSort={handleSort}
                   setSelectedFilter={setSelectedFilter}
                   handleBusiness={handleBusiness}
@@ -665,8 +699,8 @@ export default function SelectQuotes() {
                     <TabHeader
                       tabs={TABS}
                       titles={[
-                        `Updated (${non_aca_quotes.length})`,
-                        `ACA (${aca_quotes.length})`,
+                        `Updated (${filteredQuotes.length})`,
+                        `ACA (${filteredQuotes.length})`,
                         `Dental`,
                         `Vision`,
                         `STD`,
@@ -678,21 +712,20 @@ export default function SelectQuotes() {
                   }
                 />
 
-                  <SelectedQuotesACAPage
-                    quotes={currentTab === "ACA" ? aca_quotes : non_aca_quotes}
-                    planAttributesMapping={planAttributesMapping}
-                    entryWidth={entryWidth}
-                    handleCheckboxChange={handleCheckboxChange}
-                    handleAddNewQuote={handleAddNewQuote}
-                    search={search}
-                    valueOOP={valueOOP}
-                    parseValue2={parseValue2}
-                    valueDeductible={valueDeductible}
-                    valueEmployeeRate={valueEmployeeRate}
-                    findMaximumValue={findMaximumValue}  
-                    findMinimumValue={findMinimumValue}
-                    />
-
+                <QuotesTable
+                  quotes={filteredQuotes}
+                  planAttributesMapping={planAttributesMapping}
+                  entryWidth={entryWidth}
+                  handleCheckboxChange={handleCheckboxChange}
+                  handleAddNewQuote={handleAddNewQuote}
+                  search={search}
+                  valueOOP={valueOOP}
+                  parseValue2={parseValue2}
+                  valueDeductible={valueDeductible}
+                  valueEmployeeRate={valueEmployeeRate}
+                  findMaximumValue={findMaximumValue}
+                  findMinimumValue={findMinimumValue}
+                />
               </div>
             </div>
           </div>
@@ -704,6 +737,9 @@ export default function SelectQuotes() {
             setNewPlanName={setNewPlanName}
             handleAddQuotesToPlan={handleAddQuotesToPlan}
             setSnackbar={setSnackbar}
+            coverageType={
+              TABS_TO_COVERAGE_TYPE_MAPPING[currentTab as TabOption]
+            }
           />
         </div>
       </main>

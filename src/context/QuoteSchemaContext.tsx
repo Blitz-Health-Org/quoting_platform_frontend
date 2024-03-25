@@ -3,7 +3,7 @@
 import { createContext, useEffect, useState } from "react";
 
 type QuoteSchemaContextProps = {
-  quoteSchema: any;
+  quoteSchema: Record<string, any>;
 };
 
 export const QuoteSchemaContext = createContext<QuoteSchemaContextProps>({

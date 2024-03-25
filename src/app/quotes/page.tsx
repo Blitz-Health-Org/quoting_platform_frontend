@@ -69,12 +69,16 @@ export default function QuotingPage() {
     },
   });
 
-  const { quoteSchema } = useContext(QuoteSchemaContext);
-  const { setSnackbar } = useContext(SnackBarContext);
-
   const searchParams = useSearchParams();
 
   const sharingId = searchParams.get("sharing");
+  const coverage_type = searchParams.get("type") ?? "medical";
+
+  const { quoteSchema } = useContext(QuoteSchemaContext);
+
+  const coverageSpecificSchema = quoteSchema[coverage_type];
+
+  const { setSnackbar } = useContext(SnackBarContext);
 
   const handleDownloadCSV = (index: any) => {
     setSnackbar({
@@ -396,14 +400,14 @@ export default function QuotingPage() {
             <div className="p-0.5 flex-grow w-full">
               <div className="h-full flex gap-2 overflow-auto">
                 <div className="border border-gray-300 h-fit border-l-0 border-t-0 border-b-0 rounded-t-md">
-                  <HeaderCard fieldObject={quoteSchema} />
+                  <HeaderCard fieldObject={coverageSpecificSchema} />
                 </div>
                 {plans.length > 0 ? (
                   plans.map((plan: any) => (
                     <GroupCard
                       key={plan.key}
                       plan={plan}
-                      fieldObject={quoteSchema}
+                      fieldObject={coverageSpecificSchema}
                       classes={classes}
                       standardContribution={standardContribution}
                       clientId={client?.id}

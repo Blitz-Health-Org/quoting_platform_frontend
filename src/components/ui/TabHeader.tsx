@@ -1,9 +1,10 @@
-import { useState, useRef, useEffect } from "react";
+import { TabOption } from "@/src/app/select/page";
+import { useState, useRef, useEffect, Dispatch, SetStateAction } from "react";
 
 type TabHeaderProps = {
   tabs: string[];
   selectedTab: string;
-  setSelectedTab: (tab: string) => void; // Function to update the selected tab
+  setSelectedTab: Dispatch<SetStateAction<string>>; // Function to update the selected tab
   titles: string[];
 };
 

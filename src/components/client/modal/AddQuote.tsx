@@ -15,6 +15,7 @@ import Toggle from "react-toggle";
 import "react-toggle/style.css"; // for ES6 modules
 
 import router from "next/router";
+import { TabOption } from "@/src/app/select/page";
 
 const TABS = ["Medical", "Ancillary"];
 
@@ -58,7 +59,7 @@ export const AddQuote = ({
   const [customRange, setCustomRange] = useState("");
   const [isRangeValid, setIsRangeValid] = useState(true);
   const [rangeSelection, setRangeSelection] = useState("all"); // Dropdown selection state
-  const [currentTab, setCurrentTab] = useState<string>("Medical");
+  const [currentTab, setCurrentTab] = useState<TabOption>("Updated");
   const [prevCurrentTab, setPrevCurrentTab] = useState<string>(currentTab);
   const [optionalParams, setOptionalParams] = useState<OptionalParamsType>({
     optionalRanges: {
