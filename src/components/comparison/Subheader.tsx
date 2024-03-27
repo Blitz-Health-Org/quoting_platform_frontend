@@ -13,7 +13,7 @@ import { IoChevronDown } from "react-icons/io5";
 import { useRouter } from "next/navigation";
 import { SnackBarContext } from "@/src/context/SnackBarContext";
 import { ContinuousSlider } from "./ContributionSlider";
-import { MdOutlineCompareArrows } from "react-icons/md";
+import { MdOutlineCompareArrows, MdEdit } from "react-icons/md";
 
 type SubheaderProps = {
   isPaneOpen: boolean;
@@ -122,27 +122,27 @@ export const Subheader: React.FC<SubheaderProps> = ({
       </div>
 
       <div className="col-span-1 text-center flex items-center justify-center gap-1">
-        <p className="truncate">Showing {plans ? plans.length : 0} Plans </p>
-        <p className="cursor-pointer truncate" onClick={handleBusiness2}>
+        <p className="truncate">Showing {plans ? plans.length : 0} Options </p>
+        {/* <p className="cursor-pointer truncate" onClick={handleBusiness2}>
           | Plan Builder
-        </p>
+        </p> */}
       </div>
 
       {/* Right-aligned buttons */}
       <div className="flex items-center lg:justify-end font-light justify-center">
+        <button
+          onClick={handleBusiness2}
+          className="flex items-center gap-2 cursor-pointer outline outline-1 outline-neutral-600 mr-2 rounded-sm bg-neutral-700/80 text-sm text-gray-100 px-2 py-1"
+        >
+          <MdEdit />
+          <p className="truncate">Edit Options</p>
+        </button>
         <button
           onClick={copyUrlToClipboard}
           className="flex items-center gap-2 cursor-pointer outline outline-1 outline-neutral-600 mr-2 rounded-sm bg-neutral-700/80 text-sm text-gray-100 px-2 py-1"
         >
           <FaShareAlt />
           <p>Share</p>
-        </button>
-        <button
-          onClick={handleDownloadCSV}
-          className="flex items-center gap-2 cursor-pointer outline outline-1 outline-neutral-600 mr-2 rounded-sm bg-neutral-700/80 text-sm text-gray-100 px-2 py-1"
-        >
-          <IoMdDownload />
-          <p className="truncate">Download CSV</p>
         </button>
         {/* <button
           onClick={() => onPaneToggle(!isPaneOpen)}
