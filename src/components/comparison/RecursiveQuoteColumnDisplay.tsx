@@ -231,7 +231,7 @@ export const RecursiveQuoteColumnDisplay = ({
 
   if (field?.isVisible === false) return <></>;
 
-  console.log("this is a field", field)
+  console.log("this is a field", field);
 
   if (["string", "number", "boolean"].includes(field.type)) {
     return (
