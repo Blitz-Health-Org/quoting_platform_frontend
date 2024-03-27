@@ -163,7 +163,7 @@ export const RecursiveQuoteColumnDisplay = ({
 
           {isEditing ? (
             <input
-              className={`break-all font-semibold w-32 text-center ${isQuoteCard && "border border-gray-300 rounded-sm w-fit"} `}
+              className={`break-all font-semibold max-w-20 w-fit text-center ${isQuoteCard && "border border-gray-300 rounded-sm"} `}
               value={
                 ["string", "number", "boolean"].includes(field.type) ? (
                   isQuoteCard ? (
@@ -230,6 +230,8 @@ export const RecursiveQuoteColumnDisplay = ({
   };
 
   if (field?.isVisible === false) return <></>;
+
+  console.log("this is a field", field)
 
   if (["string", "number", "boolean"].includes(field.type)) {
     return (
