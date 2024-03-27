@@ -104,7 +104,6 @@ export const RecursiveQuoteColumnDisplay = ({
         <div
           className={`w-full flex items-center ${hiddenFields.includes(field.label) && "bg-gray-200 text-gray-500 outline-none"} ${isQuoteCard ? "justify-center" : "justify-start"} h-10 w-full overflow-x-auto text-nowrap px-3`}
         >
-
           {field.type === "object" ? (
             isExpanded ? (
               <div className="pr-2">

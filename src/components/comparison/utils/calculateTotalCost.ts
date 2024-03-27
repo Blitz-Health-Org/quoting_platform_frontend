@@ -34,8 +34,8 @@ export function calculateTotalCost(
     employee: initialRates.employee,
     spouse: initialRates.spouse - initialRates.employee,
     child: initialRates.child - initialRates.employee,
-    family: initialRates.family - initialRates.employee
-  }
+    family: initialRates.family - initialRates.employee,
+  };
 
   let totalCost = 0.0;
   for (const employerClass of planSpecificClasses) {

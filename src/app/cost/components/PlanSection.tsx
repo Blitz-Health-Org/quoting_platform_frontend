@@ -109,7 +109,6 @@ export const PlanSection = ({
               <h3 className="font-bold mb-2">
                 {plan.data.plan_name as string}
               </h3>
-
               <p className="font-medium mb-1 mt-2">Plan Rates</p>
               <ul>
                 <li>
@@ -125,7 +124,6 @@ export const PlanSection = ({
                   Family rate: {plan.data.family_rate as string | undefined}
                 </li>
               </ul>
-
               <>
                 <p className="font-medium mb-1 mt-2">Classes</p>
                 <div>
@@ -311,24 +309,28 @@ export const PlanSection = ({
                 </div>
               </>
               Plan Rates
-            <ul>
-              <li>
-                Employee rate: {plan.data.employee_rate as string | undefined}
-              </li>
-              <li>
-                Employee + Spouse rate: {plan.data.spouse_rate as string | undefined}
-              </li>
-              <li>Employee + Child rate: {plan.data.child_rate as string | undefined}</li>
-              <li>
-                Employee + Family rate: {plan.data.family_rate as string | undefined}
-              </li>
-            </ul>
+              <ul>
+                <li>
+                  Employee rate: {plan.data.employee_rate as string | undefined}
+                </li>
+                <li>
+                  Employee + Spouse rate:{" "}
+                  {plan.data.spouse_rate as string | undefined}
+                </li>
+                <li>
+                  Employee + Child rate:{" "}
+                  {plan.data.child_rate as string | undefined}
+                </li>
+                <li>
+                  Employee + Family rate:{" "}
+                  {plan.data.family_rate as string | undefined}
+                </li>
+              </ul>
               <div className="mt-4">
                 <strong>Total Cost: </strong>
                 {totalCost}
               </div>
               <strong>Grand Total Cost: {grandTotalCost}</strong>
-
             </div>
           );
         })}
