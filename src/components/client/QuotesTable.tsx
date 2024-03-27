@@ -69,6 +69,7 @@ export const QuotesTable = ({
     schema: any,
   ) => {
     console.log("SCHEMA", schema, planAttribute);
+    console.log("QUOTEDATA", quote.data);
     if (typeof (quote.data as any)?.[planAttribute] === "string") {
       return (
         <div
@@ -79,7 +80,10 @@ export const QuotesTable = ({
           {(quote.data as any)?.[planAttribute] ?? "N/A"}
         </div>
       );
-    } else if (typeof (quote.data as any)?.[planAttribute] === "object") {
+    } else if (
+      typeof (quote.data as any)?.[planAttribute] === "object" &&
+      (quote.data as any)?.[planAttribute]
+    ) {
       return (
         Object.entries((quote.data as any)?.[planAttribute]).map(
           ([key, value]: any, index: number) => {
