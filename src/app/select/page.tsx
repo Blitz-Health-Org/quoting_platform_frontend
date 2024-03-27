@@ -510,7 +510,9 @@ export default function SelectQuotes() {
 
     if (typeof isACA !== "undefined" && coverage_type === "medical") {
       internalFilteredQuotes = internalFilteredQuotes.filter((quote) => {
-        const isAcaMetadata = quote?.["data"]?.["metadata"]?.["is_aca"];
+        const isAcaMetadata = (quote?.["data"]?.["metadata"] as any)?.[
+          "is_aca"
+        ];
         // Explicitly treat undefined as false
         const isAcaValue = isAcaMetadata === undefined ? false : isAcaMetadata;
         console.log("CHECK", isAcaMetadata, isACA, isAcaValue === isACA);
