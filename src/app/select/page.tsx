@@ -678,21 +678,20 @@ export default function SelectQuotes() {
                   }
                 />
 
-                  <SelectedQuotesACAPage
-                    quotes={currentTab === "ACA" ? aca_quotes : non_aca_quotes}
-                    planAttributesMapping={planAttributesMapping}
-                    entryWidth={entryWidth}
-                    handleCheckboxChange={handleCheckboxChange}
-                    handleAddNewQuote={handleAddNewQuote}
-                    search={search}
-                    valueOOP={valueOOP}
-                    parseValue2={parseValue2}
-                    valueDeductible={valueDeductible}
-                    valueEmployeeRate={valueEmployeeRate}
-                    findMaximumValue={findMaximumValue}  
-                    findMinimumValue={findMinimumValue}
-                    />
-
+                <SelectedQuotesACAPage
+                  quotes={currentTab === "ACA" ? aca_quotes : non_aca_quotes}
+                  planAttributesMapping={planAttributesMapping}
+                  entryWidth={entryWidth}
+                  handleCheckboxChange={handleCheckboxChange}
+                  handleAddNewQuote={handleAddNewQuote}
+                  search={search}
+                  valueOOP={valueOOP}
+                  parseValue2={parseValue2}
+                  valueDeductible={valueDeductible}
+                  valueEmployeeRate={valueEmployeeRate}
+                  findMaximumValue={findMaximumValue}
+                  findMinimumValue={findMinimumValue}
+                />
               </div>
             </div>
           </div>

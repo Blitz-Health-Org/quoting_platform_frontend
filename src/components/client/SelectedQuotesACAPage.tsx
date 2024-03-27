@@ -32,15 +32,18 @@ export const SelectedQuotesACAPage = ({
   parseValue2,
   findMaximumValue,
   valueEmployeeRate,
-  findMinimumValue
+  findMinimumValue,
 }: SelectedQuotesNonACAPageProps) => {
   if (valueDeductible[1] === 0) {
     valueDeductible[1] = findMaximumValue("deductible");
-  } if (valueOOP[1] === 0) {
+  }
+  if (valueOOP[1] === 0) {
     valueOOP[1] = findMaximumValue("out_of_pocket_max");
-  } if (valueEmployeeRate[1] === 0) {
+  }
+  if (valueEmployeeRate[1] === 0) {
     valueEmployeeRate[1] = findMaximumValue("employee_rate");
-  } if (valueEmployeeRate[0] === 0) {
+  }
+  if (valueEmployeeRate[0] === 0) {
     valueEmployeeRate[0] = findMinimumValue("employee_rate");
   }
 
@@ -48,7 +51,7 @@ export const SelectedQuotesACAPage = ({
     <>
       {" "}
       <div
-        className={`w-full overflow-x-auto ${quotes.length === 0 ? "h-full" : "h-fit"} pb-12`}
+        className={`w-full ${quotes.length === 0 ? "h-full" : "h-fit"} pb-12`}
       >
         <div className="flex py-2 w-fit border-b">
           <div className="grid-cols-9 flex justify-left text-center w-fit gap-1 h-10 font-bold items-start text-wrap text-sm">
