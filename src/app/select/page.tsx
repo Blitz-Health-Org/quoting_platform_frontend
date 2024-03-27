@@ -20,6 +20,7 @@ import { QuotesTable } from "@/src/components/client/QuotesTable";
 import TabHeader from "@/src/components/ui/TabHeader";
 import { ActionBar } from "./ActionBar";
 import { QuoteSchemaContext } from "@/src/context/QuoteSchemaContext";
+import { includes } from "lodash";
 
 export type TabOption =
   | "Updated"

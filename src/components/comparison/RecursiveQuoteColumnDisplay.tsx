@@ -93,8 +93,17 @@ export const RecursiveQuoteColumnDisplay = ({
     return (
       <div
         className={`w-full text-sm ${className} 
-        ${ field?.label == "Pharmacy" || field?.label == "Copay" || field?.label == "Rates" || field?.label == "Plan Details" || field?.label == "Total Monthly Cost" ? "bg-violet-100/70"
-        : !alternateColor && isQuoteCard ? "bg-gray-100" : "bg-white"}`}
+        ${
+          field?.label == "Pharmacy" ||
+          field?.label == "Copay" ||
+          field?.label == "Rates" ||
+          field?.label == "Plan Details" ||
+          field?.label == "Total Monthly Cost"
+            ? "bg-violet-100/70"
+            : !alternateColor && isQuoteCard
+              ? "bg-gray-100"
+              : "bg-white"
+        }`}
       >
         {field.type === "object" && (
           <hr className="w-full border-b-1 border-gray-500"></hr>
@@ -209,15 +218,20 @@ export const RecursiveQuoteColumnDisplay = ({
               }}
             />
           ) : (
-
             <p className={`break-all font-semibold max-w-64`}>
               {" "}
               {["string", "number", "boolean"].includes(field.type) ? (
                 isQuoteCard ? (
-                  editedData !== null && editedData !== undefined ?
-                    editedData 
-                  : field?.label == "Pharmacy" || field?.label == "Copay" || field?.label == "Rates" || field?.label == "Plan Details" ?
-                    "" : "N/A"
+                  editedData !== null && editedData !== undefined ? (
+                    editedData
+                  ) : field?.label == "Pharmacy" ||
+                    field?.label == "Copay" ||
+                    field?.label == "Rates" ||
+                    field?.label == "Plan Details" ? (
+                    ""
+                  ) : (
+                    "N/A"
+                  )
                 ) : field?.label ? (
                   field?.label
                 ) : (
