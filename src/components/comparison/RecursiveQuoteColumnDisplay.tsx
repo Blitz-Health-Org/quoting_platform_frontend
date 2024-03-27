@@ -163,7 +163,7 @@ export const RecursiveQuoteColumnDisplay = ({
 
           {isEditing ? (
             <input
-              className={`break-all font-semibold max-w-20 w-fit text-center ${isQuoteCard && "border border-gray-300 rounded-sm"} `}
+              className={`break-all font-semibold text-center ${isQuoteCard && "border border-gray-300 rounded-sm"} `}
               value={
                 ["string", "number", "boolean"].includes(field.type) ? (
                   isQuoteCard ? (
