@@ -506,15 +506,17 @@ export default function SelectQuotes() {
       );
     });
 
+    console.log("INTERNAL_FILTERED_QUOTES", internalFilteredQuotes);
+
     if (typeof isACA !== "undefined" && coverage_type === "medical") {
       internalFilteredQuotes = internalFilteredQuotes.filter((quote) => {
-        console.log(
-          "CHECK",
-          (quote?.["data"]?.["metadata"] as any)?.["is_aca"],
-          isACA,
-          (quote?.["data"]?.["metadata"] as any)?.["is_aca"] === isACA,
-        );
-        return (!!quote?.["data"]?.["metadata"] as any)?.["is_aca"] === isACA;
+        const isAcaMetadata = (quote?.["data"]?.["metadata"] as any)?.[
+          "is_aca"
+        ];
+        // Explicitly treat undefined as false
+        const isAcaValue = isAcaMetadata === undefined ? false : isAcaMetadata;
+        console.log("CHECK", isAcaMetadata, isACA, isAcaValue === isACA);
+        return isAcaValue === isACA;
       });
     }
 

@@ -45,6 +45,7 @@ export function GroupCard({
   const { sharingId } = useContext(ClientContext);
 
   console.log("SHARING", sharingId);
+  console.log("PLAN", plan);
 
   return (
     <PlanGroupContextProvider
@@ -60,13 +61,13 @@ export function GroupCard({
         <div
           className={`relative flex flex-col justify-center pt-3 pr-4 items-center border border-b-0 rounded-b-none border-gray-300 rounded-t-md
       ${
-        plan.selectedQuotes[0].carrier.includes("Anthem")
+        plan.selectedQuotes[0].carrier?.includes("Anthem")
           ? "bg-yellow-100/50"
-          : plan.selectedQuotes[0].carrier.includes("United")
+          : plan.selectedQuotes[0].carrier?.includes("United")
             ? "bg-blue-100/50"
-            : plan.selectedQuotes[0].carrier.includes("Cigna")
+            : plan.selectedQuotes[0].carrier?.includes("Cigna")
               ? "bg-red-100/50"
-              : plan.selectedQuotes[0].carrier.includes("Aetna")
+              : plan.selectedQuotes[0].carrier?.includes("Aetna")
                 ? "bg-violet-100/50"
                 : "bg-green-100/50"
       } 
@@ -115,7 +116,9 @@ export function GroupCard({
             {/* Vertical line break */}
             <div className="flex max-w-1/2 truncate">
               <div className="flex items-center justify-center">
-                {plan.selectedQuotes[0].carrier.includes("UnitedHealthcare") ? (
+                {plan.selectedQuotes[0].carrier?.includes(
+                  "UnitedHealthcare",
+                ) ? (
                   <Image
                     src="/United.png"
                     alt={`Logo for ${plan.selectedQuotes[0].carrier}`}
@@ -123,8 +126,8 @@ export function GroupCard({
                     height={30}
                     className="mr-2 rounded-md"
                   />
-                ) : plan.selectedQuotes[0].carrier.includes("Anthem") ||
-                  plan.selectedQuotes[0].carrier.includes(
+                ) : plan.selectedQuotes[0].carrier?.includes("Anthem") ||
+                  plan.selectedQuotes[0].carrier?.includes(
                     "Blue Cross and Blue Shield",
                   ) ? (
                   <Image
@@ -148,20 +151,20 @@ export function GroupCard({
               </div>
               <div className="flex flex-col items-start justify-center ml-1">
                 <h1 className="font-bold text-xl">
-                  {plan.selectedQuotes[0].carrier.includes("UnitedHealthcare")
+                  {plan.selectedQuotes[0].carrier?.includes("UnitedHealthcare")
                     ? "United"
-                    : plan.selectedQuotes[0].carrier.includes("Anthem") ||
-                        plan.selectedQuotes[0].carrier.includes(
+                    : plan.selectedQuotes[0].carrier?.includes("Anthem") ||
+                        plan.selectedQuotes[0].carrier?.includes(
                           "Blue Cross and Blue Shield",
                         )
                       ? "Anthem"
                       : plan.selectedQuotes[0].carrier}
                 </h1>
                 <p className="text-sm max-w-32 truncate">
-                  {plan.selectedQuotes[0].carrier.includes("UnitedHealthcare")
+                  {plan.selectedQuotes[0].carrier?.includes("UnitedHealthcare")
                     ? "uhc.com"
-                    : plan.selectedQuotes[0].carrier.includes("Anthem") ||
-                        plan.selectedQuotes[0].carrier.includes(
+                    : plan.selectedQuotes[0].carrier?.includes("Anthem") ||
+                        plan.selectedQuotes[0].carrier?.includes(
                           "Blue Cross and Blue Shield",
                         )
                       ? "anthem.com"
