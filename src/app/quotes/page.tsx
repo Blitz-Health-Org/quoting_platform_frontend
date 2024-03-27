@@ -394,7 +394,7 @@ export default function QuotingPage() {
                 plans={plans}
               />
             ) : (
-              <div className="h-12 mt-2"></div>
+              <div className="h-12 mt-12"></div>
             )}
 
             <div className="p-0.5 flex-grow w-full">

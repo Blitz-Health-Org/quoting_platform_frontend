@@ -253,7 +253,7 @@ const SelectSidebar = ({
             <button className="sb-button" onClick={() => setCollapsed(true)}>
               <LuArrowRightToLine className="h-6 w-6 text-gray-700" />
             </button>
-            <p className="font-normal text-lg">Plan Builder</p>
+            <p className="font-normal text-lg">Option Builder</p>
           </div>
         )}
 

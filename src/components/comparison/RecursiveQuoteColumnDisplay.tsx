@@ -92,17 +92,21 @@ export const RecursiveQuoteColumnDisplay = ({
 
     return (
       <div
-        className={`w-full text-sm ${className} ${!alternateColor && isQuoteCard ? "bg-gray-100" : "bg-white"}`}
+        className={`w-full text-sm ${className} 
+        ${ field?.label == "Pharmacy" || field?.label == "Copay" || field?.label == "Rates" || field?.label == "Plan Details" || field?.label == "Total Monthly Cost" ? "bg-violet-100/70"
+        : !alternateColor && isQuoteCard ? "bg-gray-100" : "bg-white"}`}
       >
         {field.type === "object" && (
           <hr className="w-full border-b-1 border-gray-500"></hr>
         )}
 
         <hr
-          className={`w-full border-gray-300 ${field.label === "Plan Name" && isQuoteCard ? "border-t-0" : ""}`}
+          className={`w-full ${field.label === "Plan Name" && isQuoteCard ? "border-t-0" : ""}
+          ${field?.label == "Pharmacy" || field?.label == "Copay" || field?.label == "Rates" || field?.label == "Plan Details" || field?.label == "Total Monthly Cost" ? "border-gray-400" : "border-gray-300"}
+          `}
         ></hr>
         <div
-          className={`w-full flex items-center ${hiddenFields.includes(field.label) && "bg-gray-200 text-gray-500 outline-none"} ${isQuoteCard ? "justify-center" : "justify-start"} h-10 w-full overflow-x-auto text-nowrap px-3`}
+          className={`w-full flex items-center ${hiddenFields.includes(field.label) && "bg-gray-200 text-gray-500 outline-none"} ${isQuoteCard ? "justify-center" : "justify-start"} h-8 w-full overflow-x-auto text-nowrap px-3`}
         >
           {field.type === "object" ? (
             isExpanded ? (
@@ -205,15 +209,15 @@ export const RecursiveQuoteColumnDisplay = ({
               }}
             />
           ) : (
+
             <p className={`break-all font-semibold max-w-64`}>
               {" "}
               {["string", "number", "boolean"].includes(field.type) ? (
                 isQuoteCard ? (
-                  editedData !== null && editedData !== undefined ? (
-                    editedData
-                  ) : (
-                    "N/A"
-                  )
+                  editedData !== null && editedData !== undefined ?
+                    editedData 
+                  : field?.label == "Pharmacy" || field?.label == "Copay" || field?.label == "Rates" || field?.label == "Plan Details" ?
+                    "" : "N/A"
                 ) : field?.label ? (
                   field?.label
                 ) : (
