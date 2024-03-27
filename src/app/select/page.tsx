@@ -1,684 +1,876 @@
-"use client";
-
-import Image, { StaticImageData } from "next/image";
+import { supabase } from "@/src/supabase";
+import { useDropzone } from "react-dropzone";
+import { MdUpload } from "react-icons/md";
+import React, { useState, Dispatch, SetStateAction, useContext } from "react";
+import Image from "next/image";
+import BlumeLogo from "@/public/BlumeLogo.png";
+import { FaArrowDown, FaArrowRight, FaX } from "react-icons/fa6";
+import { v4 as uuid, validate } from "uuid";
 import { ClientType } from "@/src/types/custom/Client";
-import { redirect, useRouter } from "next/navigation";
-import { MdFileUpload } from "react-icons/md";
-import { SnackbarAlert } from "../../components/ui/SnackbarAlert";
-import { supabase } from "../../supabase";
-import { FaRegSave, FaRegStar } from "react-icons/fa";
-import { notFound, useSearchParams } from "next/navigation";
-import React, { useCallback, useContext, useEffect, useState } from "react";
-import { IoMdArrowBack } from "react-icons/io";
-import { QuoteType } from "@/src/types/custom/Quote";
-import { IconBuilding } from "@tabler/icons-react";
-import { io } from "socket.io-client";
-import { UserContext } from "@/src/context/UserContext";
-import SelectQuotesHeader from "../../components/comparison/SelectQuotesHeader";
-import { AddQuote } from "@/src/components/client/modal/AddQuote";
-import { Navbar } from "@/src/components/comparison/Navbar";
-import SelectSidebar from "@/src/components/SelectSidebar";
-import toast from "react-hot-toast";
-import { ModalContext } from "@/src/context/ModalContext";
-import { TaskContext } from "@/src/context/TaskContext";
-import { SocketTasksContext } from "@/src/context/SocketContext";
-import AddCurrentPlanModal from "@/src/components/comparison/AddCurrentPlanModal";
 import { SnackBarContext } from "@/src/context/SnackBarContext";
-import { SelectedQuotesACAPage } from "@/src/components/client/SelectedQuotesACAPage";
-import { SelectedQuotesNonACAPage } from "@/src/components/client/SelectedQuotesNonACAPage";
-import TabHeader from "@/src/components/ui/TabHeader";
-import { ActionBar } from "./ActionBar";
+import { useRouter } from "next/navigation";
+import { UserContext } from "@/src/context/UserContext";
+import TabHeader from "../../components/ui/TabHeader";
+import Toggle from "react-toggle";
+import "react-toggle/style.css"; // for ES6 modules
 
-export interface PlanAttributes {
-  isCurrentPlan: boolean;
-  plan_id: string;
-  carrier: string;
-  plan_name: string;
-  plan_type: string;
-  office_copay: string;
-  deductible: string;
-  copay_coinsurance: string;
-  out_of_pocket_max: string;
-  additional_copay: string;
-  total_employer_cost: string;
-}
+import router from "next/router";
 
-const planAttributesMapping: {
-  key: keyof PlanAttributes;
-  label: string;
-  alternateKey?: string;
-}[] = [
-  { key: "carrier", label: "Carrier" },
-  { key: "plan_id", alternateKey: "plan_name", label: "Plan" },
-  { key: "deductible", label: "Deductible (Individual)" },
-  { key: "copay_coinsurance", label: "Copay / Coinsurance (In-Network)" },
-  { key: "out_of_pocket_max", label: "Out of Pocket (Individual)" },
-  { key: "office_copay", label: "Office Copay (PCP/Specialist)" },
-  // { key: "plan_type", label: "Network" },
-  // { key: "additional_copay", label: "Additional Copays (ER / Imaging / OP / IP)", },
-  { key: "total_employer_cost", label: "Total Cost" },
-];
+const TABS = ["Medical", "Ancillary"];
 
-const TABS = ["NON-ACA", "ACA", "Dental", "Vision", "STD", "LTD"];
+type AddQuoteProps = {
+  onClose: () => void;
+  client: any;
+  setModalOpen: any;
+  type: any;
+};
 
-export type QuoteTypeWithCheckbox = QuoteType & { isSelected: boolean };
+type OptionalParamsType = {
+  optionalRanges: {
+    censusDataRange: string;
+    ratesRange: string;
+    quotesRange: string;
+  };
+  is_aca: boolean;
+};
 
-export default function SelectQuotes() {
-  type QuoteTypeWithCheckbox = QuoteType & { isSelected: boolean };
+export const AddQuote = ({
+  onClose,
+  client,
+  setModalOpen,
+  type,
+}: AddQuoteProps) => {
+  const links: string[] = [];
 
-  const [modalOpen, setModalOpen] = useState<string>("");
-
-  const {
-    socketTasks: [socketTasks, setSocketTasks],
-  } = useContext(SocketTasksContext);
-
-  const fetchQuoteData = async (client: any) => {
-    if (client) {
-      const { data, error } = await supabase
-        .from("quotes")
-        .select()
-        .eq("client_id", client.id);
-
-      if (error) {
-        alert("Error updating data");
-      } else {
-        // Check if selected_quotes is not null
-
-        console.log("QUOTEDATA", data);
-
-        setQuotes(data);
-        setOriginalQuotes(data);
-
-        if (client.connected_plans) {
-          // Check if there is data for connected_plans
-          setPlans((client.connected_plans as any) || []); // Update plans state
-        }
-      }
+  const handleOverlayClick = (e: React.MouseEvent<HTMLDivElement>) => {
+    // Check if the click was outside the modal content
+    if (e.target === e.currentTarget) {
+      onClose(); // Close the modal
     }
-  };
-
-  // const {
-  //   socketTasks: [originalSocketTasks, setSocketTasks],
-  // } = useContext(SocketTasksContext);
-
-  // const socketTasks = originalSocketTasks?.filter(
-  //   (task) => task !== "fetch_quotes",
-  // );
-
-  const {
-    taskInfo: [taskInfo, setTaskInfo],
-  } = useContext(TaskContext);
-
-  const searchParams = useSearchParams();
-
-  const [selectedClient, setSelectedClient] = useState<ClientType>(
-    undefined as unknown as ClientType,
-  );
-
-  const { setSnackbar } = useContext(SnackBarContext);
-
-  const [selectedQuotes, setSelectedQuotes] = useState<QuoteTypeWithCheckbox[]>(
-    [],
-  );
-
-  const handleBusiness = () => {
-    setSnackbar({
-      open: true,
-      message: "This feature is coming soon!",
-      severity: "info",
-    });
-  };
-
-  async function deleteQuotes() {
-    console.log("DELETE", quotes, selectedQuotes);
-    setQuotes(
-      quotes.filter(
-        (quote) =>
-          !selectedQuotes
-            .map((selectedQuote) => selectedQuote.id)
-            .includes(quote.id),
-      ),
-    );
-    const { error } = await supabase
-      .from("quotes")
-      .delete()
-      .in(
-        "id",
-        selectedQuotes.map((quote) => quote.id),
-      );
-    handleClearCheckboxes();
-  }
-
-  const selectQuotesFirst = () => {
-    setSnackbar({
-      open: true,
-      message: "Select quotes to add them to a plan!",
-      severity: "error",
-    });
-  };
-
-  const [quotes, setQuotes] = useState<QuoteTypeWithCheckbox[]>([]);
-  const [originalQuotes, setOriginalQuotes] = useState<QuoteTypeWithCheckbox[]>(
-    [],
-  );
-
-  const [currentTab, setCurrentTab] = useState<string>("NON-ACA");
-  const [search, setSearch] = useState<string | undefined>();
-
-  const [sortOption, setSortOption] = useState("deductible"); // Initial sorting optio
-  const [sortOrder, setSortOrder] = useState("asc"); // Initial sorting order
-
-  const [entryWidth, setEntryWidth] = useState(
-    innerWidth / planAttributesMapping.length,
-  );
-
-  const createNewPlanAndAddSelectedQuotes = () => {
-    console.log("running create new plan and add selected qutoes");
-    const newPlan = {
-      id: Date.now(),
-      isCurrentPlan: false,
-      name: `Plan #${plans.length + 1}`,
-      selectedQuotes: selectedQuotes,
-    };
-    setPlans([...plans, newPlan]);
-    handleClearCheckboxes();
-    setSnackbar({
-      open: true,
-      message: "Plan added! Make sure to save your changes.",
-      severity: "success",
-    });
-  };
-
-  const actionBarEntries = [
-    {
-      label: "Delete",
-      onClick: deleteQuotes,
-      //TODO: add icon here
-    },
-    {
-      label: "Add to New Plan",
-      onClick: createNewPlanAndAddSelectedQuotes,
-    },
-  ];
-
-  useEffect(() => {
-    // Update entryWidth when the screen size changes
-
-    const handleResize = () => {
-      setEntryWidth(innerWidth / planAttributesMapping.length);
-      console.log("yeah", entryWidth);
-    };
-
-    // Attach event listener for window resize
-    window.addEventListener("resize", handleResize);
-
-    // Remove event listener on component unmount
-    return () => {
-      window.removeEventListener("resize", handleResize);
-    };
-  }, []);
-
-  const [selectedFilter, setSelectedFilter] = useState<string | null>(null);
-
-  const handleCheckboxChange = (quoteId: number) => {
-    setQuotes((prevQuotes) =>
-      prevQuotes?.map((quote) =>
-        quote.id === quoteId
-          ? { ...quote, isSelected: !quote.isSelected }
-          : quote,
-      ),
-    );
-
-    // Update selectedQuotes state
-    setSelectedQuotes((prevSelectedQuotes) => {
-      const index = prevSelectedQuotes.findIndex(
-        (quote) => quote.id === quoteId,
-      );
-      if (index !== -1) {
-        // If quote is already selected, remove it
-        return prevSelectedQuotes.filter((quote) => quote.id !== quoteId);
-      } else {
-        // If quote is not selected, add it
-        return [
-          ...prevSelectedQuotes,
-          quotes.find((quote) => quote.id === quoteId)!,
-        ];
-      }
-    });
-  };
-
-  const handleSort = (option: string | null) => {
-    if (option === null) {
-      setQuotes(originalQuotes);
-      return;
-    }
-
-    // Perform the sorting
-    //TODO: handle empty quotes
-    const sortedQuotes = quotes.slice().sort((a, b) => {
-      const valueA = parseValue((a.data as any)?.[option]);
-      const valueB = parseValue((b.data as any)?.[option]);
-
-      if (
-        valueA === Number.POSITIVE_INFINITY &&
-        valueB === Number.POSITIVE_INFINITY
-      ) {
-        return 0; // Both are "N/A", keep original order
-      } else if (valueA === Number.POSITIVE_INFINITY) {
-        return sortOrder === "asc" ? 1 : -1; // Put "N/A" at the end or beginning
-      } else if (valueB === Number.POSITIVE_INFINITY) {
-        return sortOrder === "asc" ? -1 : 1; // Put "N/A" at the end or beginning
-      }
-
-      return sortOrder === "asc" ? valueA - valueB : valueB - valueA;
-    });
-
-    // Update the state with the sorted quotes
-    setQuotes(sortedQuotes);
   };
 
   const router = useRouter();
+  const { setSnackbar } = useContext(SnackBarContext);
+  const [file, setFile] = useState<File | null>(null);
+  const [selectedPlan, setSelectedPlan] = useState<string>("bcbs_tx_aca");
 
-  const fetchClients = useCallback(async (clientId: number) => {
-    try {
-      const { data: clientData, error: clientError } = await supabase
-        .from("clients")
-        .select("*")
-        .eq("id", clientId)
-        .single();
-      if (clientError) throw clientError;
-      console.log("CLIENTDATA", clientData);
-      fetchQuoteData(clientData);
-      setSelectedClient(clientData);
+  const [isProcessing, setIsProcessing] = useState<boolean>(false);
+  const [customRange, setCustomRange] = useState("");
+  const [isRangeValid, setIsRangeValid] = useState(true);
+  const [rangeSelection, setRangeSelection] = useState("all"); // Dropdown selection state
+  const [currentTab, setCurrentTab] = useState<string>("Medical");
+  const [prevCurrentTab, setPrevCurrentTab] = useState<string>(currentTab);
+  const [optionalParams, setOptionalParams] = useState<OptionalParamsType>({
+    optionalRanges: {
+      censusDataRange: "",
+      ratesRange: "",
+      quotesRange: "",
+    },
+    is_aca: false,
+  });
 
-      return clientData;
-    } catch (error) {
-      console.error("Failed to fetch client and quotes", error);
+  const [isAdvancedOpen, setIsAdvancedOpen] = useState(false);
+
+  if (prevCurrentTab !== currentTab) {
+    setPrevCurrentTab(currentTab);
+
+    if (currentTab === "Medical") {
+      setSelectedPlan("bcbs_tx_aca");
     }
-  }, []);
 
-  function handleAddNewQuote(event: any) {
-    event?.stopPropagation();
-    setModalOpen("addNewQuote");
-    return;
+    if (currentTab === "Ancillary") {
+      setSelectedPlan("principal_ancillary");
+    }
   }
 
-  const handleClearCheckboxes = () => {
-    setQuotes((prevQuotes) =>
-      prevQuotes?.map((quote) => ({
-        ...quote,
-        isSelected: false,
-      })),
-    );
-    setSelectedQuotes([]);
+  console.log("selectedPlan", selectedPlan);
+
+  const {
+    userId: [userId],
+  } = useContext(UserContext);
+
+  const onDrop = (acceptedFiles: File[]) => {
+    setFile(acceptedFiles[0]);
   };
 
-  async function handleDeleteQuote() {
-    const selectedQuoteIds =
-      quotes?.filter((quote) => quote.isSelected).map((quote) => quote.id) ||
-      [];
-
-    const { error } = await supabase
-      .from("quotes")
-      .delete()
-      .in("id", selectedQuoteIds);
-    if (error) {
-      alert("Failed to delete quotes");
-      return;
+  function validateCustomRangeAndParse(range: string) {
+    if (range === "") {
+      setIsRangeValid(true);
+      return [];
     }
-
-    // setQuotes()
-
-    const clientId = selectedClient.id;
-
-    const { data: insertData, error: insertError } = await supabase
-      .from("clients") // Replace with your actual Supabase table name
-      .upsert({ id: selectedClient.id, selected_quotes: selectedQuoteIds });
-
-    if (insertError) {
-      console.error("Error inserting row into Supabase table:", insertError);
-      return { success: false };
-    } else {
-      router.push(`/quotes?clientId=${clientId}`);
-
-      return { success: true };
-    }
-  }
-
-  if (selectedClient && socketTasks?.includes("fetch_quotes")) {
-    fetchQuoteData(selectedClient);
-    setSocketTasks(socketTasks?.filter((task) => task !== "fetch_quotes"));
-  }
-
-  const [plans, setPlans] = useState<
-    Array<{
-      id: number;
-      name: string;
-      isCurrentPlan: boolean;
-      selectedQuotes: QuoteTypeWithCheckbox[];
-    }>
-  >([]);
-  const [newPlanName, setNewPlanName] = useState("");
-
-  const handleAddQuotesToPlan = (planId: number) => {
-    if (selectedQuotes.length === 0) {
-      selectQuotesFirst();
-    }
-
-    const updatedPlans = plans.map((plan) => {
-      if (plan.id === planId) {
-        // Filter out duplicates before updating the currentQuotes array
-        const uniqueQuotesToAdd = selectedQuotes.filter(
-          (selectedQuote) =>
-            !plan.selectedQuotes.some(
-              (planQuote) => planQuote.id === selectedQuote.id,
-            ),
-        );
-        return {
-          ...plan,
-          selectedQuotes: [...plan.selectedQuotes, ...uniqueQuotesToAdd],
-        };
+    const ranges = range.split(",").map((part) => {
+      const numbers = part.trim().split("-").map(Number);
+      // If it's a single number, duplicate it to make a range [number, number]
+      if (numbers.length === 1 && !isNaN(numbers[0])) {
+        return [numbers[0], numbers[0]];
       }
-      return plan;
+      // If it's a proper range and both numbers are valid, return the range
+      else if (
+        numbers.length === 2 &&
+        !isNaN(numbers[0]) &&
+        !isNaN(numbers[1])
+      ) {
+        return numbers;
+      }
+      // If neither, return null to indicate invalid input
+      return null;
     });
 
-    setPlans(updatedPlans);
-    handleClearCheckboxes();
-  };
-
-  const parseValue = (value: string | undefined): number => {
-    if (
-      value === undefined ||
-      value === null || // Add this check for null values
-      value === "MISSING" ||
-      value === "" ||
-      value.includes("N/A") ||
-      value.includes("/") ||
-      value.includes("+")
-    )
-      return Number.POSITIVE_INFINITY;
-
-    // Remove commas, dollar signs, and periods
-    const cleanedValue = value.replace(/[,$.]/g, "");
-
-    // If the value is a percentage (contains '%'), remove '%' and convert to a number
-    if (cleanedValue.includes("%")) {
-      return parseFloat(cleanedValue.replace("%", "")) || 0;
-    }
-
-    // If the value is a regular number or a numeric string, convert it to a number
-    return Number(cleanedValue) || 0;
-  };
-
-  useEffect(() => {
-    const clientId = searchParams.get("clientId");
-    console.log("CLIENT ID", clientId);
-
-    if (clientId) {
-      fetchClients(parseInt(clientId));
-    }
-  }, [fetchClients, searchParams]);
-
-  const handleCloseComparison = () => {
-    router.push(`/`);
-  };
-
-  const aca_quotes = quotes.filter(
-    (quote) => (quote.data as any)?.["metadata"]?.["is_aca"] === true,
-  );
-  const non_aca_quotes = quotes.filter(
-    (quote) => !(quote.data as any)?.["metadata"]?.["is_aca"] === true,
-  );
-
-  const parseValue2 = (value: string | undefined): number => {
-    if (value === "0") {
-      return 0;
-    }
-    if (
-      value === undefined ||
-      value === null ||
-      value === "deductible" ||
-      value === "MISSING" ||
-      value === "" ||
-      value.includes("N/A") ||
-      value.includes("/") ||
-      value.includes("+")
-    ) {
-      return 0;
-    }
-
-    // Before cleaning up the value, truncate digits after the decimal point
-    const withoutDecimal = value.split(".")[0];
-
-    // Remove commas, dollar signs, and any periods that might be left
-    const cleanedValue = withoutDecimal.replace(/[,+$]/g, "");
-
-    // If the value is a percentage (contains '%'), remove '%' and convert to a number
-    if (cleanedValue.includes("%")) {
-      return parseFloat(cleanedValue.replace("%", "")) || 0;
-    }
-
-    // If the value is a regular number or a numeric string, convert it to a number
-    return Number(cleanedValue);
-  };
-
-  function findMinimumValue(
-    category: "deductible" | "coinsurance" | "out_of_pocket_max",
-  ) {
-    let specificQuotes = currentTab === "ACA" ? aca_quotes : non_aca_quotes;
-    if (category === "deductible") {
-      return (
-        Math.min(
-          ...specificQuotes.map((quote) =>
-            parseValue2((quote.data as any)?.["deductible"] ?? "0"),
-          ),
-        ) | 0
-      );
-    }
-    // else if (category === "coinsurance") {
-    //   return Math.min(...quotes.map((quote) => parseValue((quote.data as any)?.["coinsurance"] ?? "0"))) | 0;
-    // }
-    else if (category === "out_of_pocket_max") {
-      // if (quotes.every((quote) => (quote.data as any)?.["out_of_pocket_max"] === null)) {
-      //   return 0;
-      // }
-      return (
-        Math.min(
-          ...specificQuotes.map((quote) =>
-            parseValue2((quote.data as any)?.["out_of_pocket_max"] ?? "0"),
-          ),
-        ) | 0
-      );
+    // Check if any parsing resulted in null, indicating invalid format
+    if (ranges.length === 0 || ranges.includes(null)) {
+      setIsRangeValid(false);
+      return [];
     } else {
-      return 0;
+      setIsRangeValid(true);
+      return ranges as number[][]; // Returns a list of tuples like [[1, 5], [8, 8], [11, 13]]
     }
   }
 
-  function findMaximumValue(
-    category: "deductible" | "coinsurance" | "out_of_pocket_max",
+  function validateSubRangesWithinMainRange(
+    ranges: (number[] | null)[],
+    censusDataRanges: (number[] | null)[],
+    quoteRanges: (number[] | null)[],
+    rateRanges: (number[] | null)[],
   ) {
-    let specificQuotes = currentTab === "ACA" ? aca_quotes : non_aca_quotes;
-    if (category === "deductible") {
-      return (
+    console.log(
+      "MADE IT HERE",
+      ...(censusDataRanges
+        .flat()
+        .filter(
+          (item) => item !== null && typeof item === "number",
+        ) as number[]),
+      ...(ranges
+        .flat()
+        .filter(
+          (item) => item !== null && typeof item === "number",
+        ) as number[]),
+    );
+    return !(
+      Math.max(
+        ...(censusDataRanges
+          .flat()
+          .filter(
+            (item) => item !== null && typeof item === "number",
+          ) as number[]),
+        ...(rateRanges
+          .flat()
+          .filter(
+            (item) => item !== null && typeof item === "number",
+          ) as number[]),
+        ...(quoteRanges
+          .flat()
+          .filter(
+            (item) => item !== null && typeof item === "number",
+          ) as number[]),
+      ) >
         Math.max(
-          ...specificQuotes.map((quote) =>
-            parseValue2((quote.data as any)?.["deductible"] ?? "0"),
-          ),
-        ) | 0
-      );
-    }
-    // else if (category === "coinsurance") {
-    //   return Math.max(...quotes.map((quote) => parseInt((quote.data as any)?.["coinsurance"] ?? '0') || 0));
-    // }
-    else if (category === "out_of_pocket_max") {
-      const values = specificQuotes.map((quote) =>
-        parseValue2((quote.data as any)?.["out_of_pocket_max"] ?? "0"),
-      );
-      console.log(values);
-      return Math.max(...values) | 0;
-    }
-    return 10000;
+          ...(ranges
+            .flat()
+            .filter(
+              (item) => item !== null && typeof item === "number",
+            ) as number[]),
+        ) ||
+      Math.min(
+        ...(censusDataRanges
+          .flat()
+          .filter(
+            (item) => item !== null && typeof item === "number",
+          ) as number[]),
+        ...(rateRanges
+          .flat()
+          .filter(
+            (item) => item !== null && typeof item === "number",
+          ) as number[]),
+        ...(quoteRanges
+          .flat()
+          .filter(
+            (item) => item !== null && typeof item === "number",
+          ) as number[]),
+      ) <
+        Math.min(
+          ...(ranges
+            .flat()
+            .filter(
+              (item) => item !== null && typeof item === "number",
+            ) as number[]),
+        )
+    );
   }
 
-  const [valueDeductible, setValueDeductible] = React.useState<number[]>([
-    findMinimumValue("deductible"),
-    findMaximumValue("deductible"),
-  ]);
-  // const [valueCoinsurance, setValueCoinsurance] = React.useState<number[]>([20, 37]);
-  const [valueOOP, setValueOOP] = React.useState<number[]>([
-    findMinimumValue("out_of_pocket_max"),
-    findMaximumValue("out_of_pocket_max"),
-  ]);
+  const handleUpload = async (ranges?: number[][]) => {
+    console.log("HELLO?????");
+    if (!file) {
+      setSnackbar({
+        open: true,
+        message: "Please upload a file",
+        severity: "error",
+      });
+      return;
+    }
+    const errFiles = [] as string[];
+    const successfulFileUrls: string[] = [];
+    const fileId = uuid();
+    try {
+      console.log("selectedPlan", selectedPlan);
+      const fileName = `${selectedPlan}/${fileId}/whole`;
+      await supabase.storage.from("images").upload(fileName, file);
 
-  useEffect(() => {
-    // Reset valueDeductible and valueOOP when currentTab changes.
-    setValueDeductible([
-      findMinimumValue("deductible"),
-      findMaximumValue("deductible"),
-    ]);
-    setValueOOP([
-      findMinimumValue("out_of_pocket_max"),
-      findMaximumValue("out_of_pocket_max"),
-    ]);
-  }, [currentTab]);
+      const { data } = supabase.storage.from("images").getPublicUrl(fileName);
 
-  if (!selectedClient) {
-    return <></>;
-  }
+      if (!data?.publicUrl) {
+        throw new Error("No url found for file");
+      }
+
+      // const fileUrl = data.publicUrl;
+
+      // await supabase
+      //   .from("quotes") // Replace with your actual Supabase table name
+      //   .upsert({
+      //     client_id: client.id,
+      //     file_url: fileUrl,
+      //     file_name: file.name,
+      //   });
+
+      // Send the fileName instead of fileUrl to backend so we can parse out the carrier name
+      successfulFileUrls.push(fileName);
+    } catch {
+      errFiles.push(file.name);
+    }
+
+    if (errFiles.length) {
+      setSnackbar({
+        open: true,
+        message: `Error occurred for the following files: ${errFiles.join(", ")}`,
+        severity: "error",
+      });
+      return;
+    } else {
+      // setSnackbar({
+      //   open: true,
+      //   message: `Your files are uploading! They can take 2-5 minutes to populate based on size and existing backlog.`,
+      //   severity: "success",
+      // });
+    }
+
+    try {
+      console.log("RUNNING ONCE");
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_BACKEND_URL}/parse`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            successfulFileUrls,
+            client: client,
+            userId: userId,
+            ranges: ranges,
+            optionalParams: optionalParams,
+          }),
+        },
+      );
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      const data = await response.json(); // Parse the JSON from the response
+
+      // If you're using React state, for example:
+      // this.setState({ parsedData: data });
+      // Or using hooks:
+      // setParsedData(data);
+    } catch (error) {
+      console.error("Fetch error: ", error);
+    }
+    if (type === "Main") {
+      router.push(`/select?clientId=${client.id}`);
+    }
+    setModalOpen("");
+    setIsProcessing(false);
+  };
+
+  // const handleUpload = async () => {
+  //   const pdfFiles = state.files.filter(
+  //     (file) => file.type === "application/pdf",
+  //   );
+  //   const nonPDFs = state.files.filter(
+  //     (file) => file.type !== "application/pdf",
+  //   );
+  //   if (pdfFiles.length === 0) {
+  //     setSnackbar({
+  //       open: true,
+  //       message: "Please upload a PDF file!",
+  //       severity: "error",
+  //     });
+  //     return;
+  //   } else {
+  //     setState({ ...state, files: pdfFiles });
+  //   }
+  //   if (state.files.length === 0) {
+  //     setSnackbar({
+  //       open: true,
+  //       message: "Please upload a file!",
+  //       severity: "error",
+  //     });
+  //   }
+  //   if (state.files.length > 0) {
+  //     const paths: string[] = [];
+  //     const fileNames: string[] = [];
+
+  //     const promises = state.files.map(async (file) => {
+  //       const randomDigit = Math.floor(Math.random() * 1024);
+  //       const newFileName = `${file.name}_${randomDigit}`;
+
+  //       const { data, error } = await supabase.storage
+  //         .from("images")
+  //         .upload(`path/${newFileName}`, file);
+
+  //       const path = data?.path;
+
+  //       if (error) {
+  //         console.error(`Error uploading file ${newFileName}:`, error);
+  //         return { success: false, fileName: newFileName };
+  //       } else {
+  //         console.log("Downloadable URL:", data);
+  //         // Append the path to the temporary array if it's not already in the list
+  //         if (path && !state.filesPaths.includes(path)) {
+  //           paths.push(path);
+  //         }
+  //         if (newFileName) {
+  //           fileNames.push(file.name);
+  //         }
+  //         return { success: true, fileName: newFileName, path };
+  //       }
+  //     });
+
+  //     const results = await Promise.all(promises);
+  //     const successUploads = results.filter((result) => result.success);
+
+  //     if (successUploads.length === state.files.length) {
+  //       // Combine old paths and new paths, avoiding duplicates
+
+  //       setState((prevState) => ({
+  //         ...prevState,
+  //         files: [],
+  //         uploadStatus: "Upload successful!",
+  //       }));
+
+  //       // Update Supabase table with the new file paths
+  //       const insertPromises = paths.map(async (path, index) => {
+  //         const { data: insertData, error: insertError } = await supabase
+  //           .from("quotes") // Replace with your actual Supabase table name
+  //           .upsert({
+  //             client_id: client.id,
+  //             file_urls: path,
+  //             file_name: fileNames[index],
+  //           });
+
+  //         if (insertError) {
+  //           console.error(
+  //             "Error inserting row into Supabase table:",
+  //             insertError,
+  //           );
+  //           return { success: false, fileName: path };
+  //         } else {
+  //           return { success: true, fileName: path };
+  //         }
+  //       });
+
+  //       const insertResults = await Promise.all(insertPromises);
+
+  //       if (insertResults.every((result) => result.success)) {
+  //         console.log("Rows inserted into Supabase successfully");
+  //         if (nonPDFs.length >= 0) {
+  //           setSnackbar({
+  //             open: true,
+  //             message: "Only your PDF files were uploaded.",
+  //             severity: "info",
+  //           });
+  //         } else {
+  //           setSnackbar({
+  //             open: true,
+  //             message: "Quotes Added",
+  //             severity: "success",
+  //           });
+  //         }
+  //         setModalOpen("viewQuote");
+  //       } else {
+  //         console.error("Error inserting some rows into Supabase");
+  //       }
+  //     } else {
+  //       setState({
+  //         ...state,
+  //         uploadStatus: "Upload failed for some files. Please try again.",
+  //       });
+  //     }
+  //   }
+  // };
+
+  const { getRootProps, getInputProps, isDragActive } = useDropzone({
+    onDrop,
+    multiple: false, // Allow multiple file uploads
+    accept: {
+      "application/pdf": [".pdf"],
+    },
+  });
 
   return (
-    <>
-      <main className="flex w-full h-full overflow-hidden pl-4 md:pl-0 bg-gray-100">
-        <Navbar selected="Quotes" />
-        <div className="w-full md:w-6/7 flex">
-          <div className="h-screen overflow-hidden flex-col w-full bg-gray-100 bg-opacity-50 pl-2 pr-6 pt-5 pb-6 text-gray-700">
-            <div className="flex w-full items-center mb-4 mt-1 justify-between">
-              <div className="flex items-center text-sm md:text-base">
-                <button
-                  className="flex items-center"
-                  onClick={handleCloseComparison}
-                >
-                  <IoMdArrowBack />
-                  <p className="ml-2 mr-2">Clients / </p>
-                </button>
-                <IconBuilding className="h-5 w-5 mr-2" />
-                <p className="mr-2">{selectedClient?.name || "Client"}</p>
-                {/* <p className="mr-1">/ Quotes</p>
-            <p className="mr-1 text-gray-400 text-xs">•</p>
-            <p className="text-gray-400">({quotes.length})</p> */}
-              </div>
-
-              <div className="flex items-center gap-2">
-                <button
-                  onClick={(event) => {
-                    handleAddNewQuote(event);
-                  }}
-                  className="text-sm md:text-base mr-1 outline outline-1 outline-gray-200 py-1 px-2 rounded-md flex items-center justify-center hover:bg-gray-100/80 cursor-pointer"
-                >
-                  <div className="mr-2">Add Quotes</div>
-                  <MdFileUpload />
-                </button>
-              </div>
-            </div>
-
-            <div className="rounded-md w-full flex-col overflow-x-hidden h-full overflow-y-scroll bg-white outline outline-1 outline-gray-200">
-              <div className="py-2 px-4 h-full">
-                <SelectQuotesHeader
-                  search={search}
-                  setSearch={setSearch}
-                  quotes={currentTab === "ACA" ? aca_quotes : non_aca_quotes}
-                  handleSort={handleSort}
-                  setSelectedFilter={setSelectedFilter}
-                  handleBusiness={handleBusiness}
-                  selectedFilter={selectedFilter}
-                  valueDeductible={valueDeductible}
-                  setValueDeductible={setValueDeductible}
-                  valueOOP={valueOOP}
-                  setValueOOP={setValueOOP}
-                  findMaximumValue={findMaximumValue}
-                  findMinimumValue={findMinimumValue}
-                  currentTab={currentTab}
-                  TabHeader={
-                    <TabHeader
-                      tabs={TABS}
-                      titles={[
-                        `Non-ACA (${non_aca_quotes.length})`,
-                        `ACA (${aca_quotes.length})`,
-                        `Dental`,
-                        `Vision`,
-                        `STD`,
-                        `LTD`,
-                      ]}
-                      selectedTab={currentTab}
-                      setSelectedTab={setCurrentTab}
-                    />
-                  }
-                />
-
-                {currentTab === "NON-ACA" && (
-                  <SelectedQuotesNonACAPage
-                    quotes={non_aca_quotes}
-                    planAttributesMapping={planAttributesMapping}
-                    entryWidth={entryWidth}
-                    handleCheckboxChange={handleCheckboxChange}
-                    handleAddNewQuote={handleAddNewQuote}
-                    search={search}
-                    valueOOP={valueOOP}
-                    parseValue2={parseValue2}
-                    valueDeductible={valueDeductible}
-                    findMaximumValue={findMaximumValue}
-                  />
-                )}
-                {currentTab === "ACA" && (
-                  <SelectedQuotesACAPage
-                    quotes={aca_quotes}
-                    planAttributesMapping={planAttributesMapping}
-                    entryWidth={entryWidth}
-                    handleCheckboxChange={handleCheckboxChange}
-                    handleAddNewQuote={handleAddNewQuote}
-                    search={search}
-                    valueOOP={valueOOP}
-                    parseValue2={parseValue2}
-                    valueDeductible={valueDeductible}
-                    findMaximumValue={findMaximumValue}
-                  />
-                )}
-              </div>
-            </div>
+    <div
+      onClick={handleOverlayClick}
+      className="fixed top-0 left-0 w-full h-full flex items-center justify-center modal-overlay z-50 bg-gray-800 bg-opacity-50"
+      style={{ backdropFilter: "blur(3px)" }}
+    >
+      <div className="bg-white p-8 rounded-md max-w-md w-full h-fit modal-content">
+        <div className="flex justify-between items-center mb-4 modal-header">
+          <div className="flex">
+            <Image
+              src={BlumeLogo}
+              alt="Description of the image"
+              width={30}
+              height={30}
+              className="mr-2 rounded-md"
+            />
+            <p className="text-2xl">Upload Quotes</p>
           </div>
-          <SelectSidebar
-            selectedClient={selectedClient}
-            setPlans={setPlans}
-            plans={plans}
-            newPlanName={newPlanName}
-            setNewPlanName={setNewPlanName}
-            handleAddQuotesToPlan={handleAddQuotesToPlan}
-            setSnackbar={setSnackbar}
-          />
+          <button
+            onClick={onClose}
+            className="text-gray-500 hover:text-gray-700 focus:outline-none"
+          >
+            <FaX />
+          </button>
         </div>
-      </main>
-
-      {modalOpen === "addCurrentPlan" && (
-        <AddCurrentPlanModal
-          setModalOpen={setModalOpen}
-          client={selectedClient}
-          fetchClients={fetchClients}
+        <TabHeader
+          tabs={TABS}
+          titles={["Medical", "Ancillary"]}
+          selectedTab={currentTab}
+          setSelectedTab={setCurrentTab}
         />
-      )}
+        {currentTab === "Medical" && (
+          <>
+            <div className="flex flex-col">
+              <label className="mr-2 text-sm mb-1">Carrier</label>
+              <select
+                className="bg-gray-100 hover:cursor-pointer hover:outline-gray-400 outline outline-1 outline-gray-400/80 rounded-sm px-2 py-1"
+                name="plan"
+                id="plan"
+                onChange={(e) => {
+                  console.log("e", e.target.value);
+                  setSelectedPlan(e.target.value);
+                }}
+              >
+                <option value="bcbs_tx_aca">BCBS TX ACA</option>
+                <option value="aetna">Aetna</option>
+                <option value="chamber_smart">Chamber Smart</option>
+                <option value="anthem">Anthem</option>
+                <option value="uhc_aca">UHC ACA</option>
+                <option value="uhc_lf">UHC Level Funded</option>
+                <option value="cigna">Cigna</option>
+                <option value="bcbs_mt">BCBS Montana</option>
+                <option value="other">Other</option>
+              </select>
+            </div>
+            <div className="flex flex-col items-start justify-center w-full my-1 gap-1 mb-2">
+              <p className="mr-2 text-sm mt-2">Page Range</p>
+              <div className="flex gap-2 w-full">
+                <select
+                  className="bg-gray-100 px-2 rounded-sm w-full drop-shadow-sm outline outline-1 h-8 outline-gray-400/80 hover:outline-gray-400"
+                  value={rangeSelection}
+                  onChange={(e) => {
+                    setRangeSelection(e.target.value);
+                  }}
+                >
+                  <option value="all" className="w-full">
+                    All
+                  </option>
+                  <option value="custom" className="w-1/2">
+                    Custom
+                  </option>
+                </select>
+                {rangeSelection === "custom" && (
+                  <>
+                    <input
+                      type="text"
+                      className="bg-gray-100 px-2 h-8 drop-shadow-sm outline outline-1 outline-gray-400/80 hover:outline-gray-400 text-sm rounded-sm w-full"
+                      placeholder="e.g., 1-5, 8, 11-13"
+                      onChange={(e) => {
+                        setCustomRange(e.target.value);
+                        const newValue = e.target.value.trim();
+                        validateCustomRangeAndParse(newValue);
+                      }}
+                    />
+                  </>
+                )}
+              </div>
+            </div>
+            {rangeSelection === "custom" && !isRangeValid && (
+              <div className="text-red-500 text-xs mb-4">
+                Please enter a valid range format (e.g., 1-5, 8, 11-13).
+              </div>
+            )}
+            <div className="my-2">Advanced</div>
+            {isAdvancedOpen ? (
+              <FaArrowDown
+                onClick={() => {
+                  setIsAdvancedOpen(false);
+                }}
+              />
+            ) : (
+              <FaArrowRight
+                onClick={() => {
+                  setIsAdvancedOpen(true);
+                }}
+              />
+            )}
+            {isAdvancedOpen && (
+              <>
+                <label>
+                  <Toggle
+                    defaultChecked={optionalParams.is_aca}
+                    onChange={() => {
+                      setOptionalParams((prev) => {
+                        return { ...prev, is_aca: !prev.is_aca };
+                      });
+                    }}
+                  />
+                  <span>ACA</span>
+                </label>
+                <input
+                  placeholder="Census Data Page Range"
+                  className="mt-2 bg-gray-100 px-2 rounded-sm w-full drop-shadow-sm outline outline-1 h-8 outline-gray-400/80 hover:outline-gray-400"
+                  value={optionalParams.optionalRanges.censusDataRange ?? ""}
+                  onChange={(e) => {
+                    setOptionalParams((prev) => {
+                      return {
+                        ...prev,
+                        optionalRanges: {
+                          ...prev.optionalRanges,
+                          censusDataRange: e.target.value,
+                        },
+                      };
+                    });
+                  }}
+                />
+                <input
+                  placeholder="Medical Rates Page Range"
+                  className="mt-2 bg-gray-100 px-2 rounded-sm w-full drop-shadow-sm outline outline-1 h-8 outline-gray-400/80 hover:outline-gray-400"
+                  value={optionalParams.optionalRanges.ratesRange ?? ""}
+                  onChange={(e) => {
+                    setOptionalParams((prev) => {
+                      return {
+                        ...prev,
+                        optionalRanges: {
+                          ...prev.optionalRanges,
+                          ratesRange: e.target.value,
+                        },
+                      };
+                    });
+                  }}
+                />
+                <input
+                  placeholder="Quotes Page Range"
+                  className="mt-2 bg-gray-100 px-2 rounded-sm w-full drop-shadow-sm outline outline-1 h-8 outline-gray-400/80 hover:outline-gray-400"
+                  value={optionalParams.optionalRanges.quotesRange ?? ""}
+                  onChange={(e) => {
+                    setOptionalParams((prev) => {
+                      return {
+                        ...prev,
+                        optionalRanges: {
+                          ...prev.optionalRanges,
+                          quotesRange: e.target.value,
+                        },
+                      };
+                    });
+                  }}
+                />{" "}
+              </>
+            )}
+            <div className="modal-body">
+              {/* File Upload Section */}
+              <form
+                onSubmit={(e) => {
+                  e.preventDefault(); // Prevent the default form submission
+                  setIsProcessing(true);
+                  if (rangeSelection === "all") {
+                    handleUpload();
+                  } else {
+                    console.log("ENTERED");
+                    const ranges = validateCustomRangeAndParse(customRange);
+                    const censusDataRanges = validateCustomRangeAndParse(
+                      optionalParams.optionalRanges.censusDataRange,
+                    );
+                    const quoteRanges = validateCustomRangeAndParse(
+                      optionalParams.optionalRanges.quotesRange,
+                    );
+                    const rateRanges = validateCustomRangeAndParse(
+                      optionalParams.optionalRanges.ratesRange,
+                    );
+                    console.log("HUH????");
+                    if (
+                      rangeSelection === "custom" &&
+                      !validateSubRangesWithinMainRange(
+                        ranges,
+                        censusDataRanges,
+                        quoteRanges,
+                        rateRanges,
+                      )
+                    ) {
+                      alert("Advanced ranges must be within the main range");
+                      setIsProcessing(false);
+                      return;
+                    }
 
-      {modalOpen === "addNewQuote" && (
-        <AddQuote
-          onClose={() => {
-            setModalOpen("");
-          }}
-          setModalOpen={setModalOpen}
-          client={selectedClient}
-          type={"Select"}
-        />
-      )}
-      {selectedQuotes.length > 0 && (
-        <ActionBar actionBarEntries={actionBarEntries} />
-      )}
-    </>
+                    if (!isProcessing && ranges.length) {
+                      handleUpload(ranges as number[][]); // Proceed with uploading
+                    }
+                  }
+                }}
+              >
+                <div className="flex flex-col items-center justify-center cursor-pointer">
+                  <div
+                    {...getRootProps()}
+                    className={`p-6 mb-2 mt-2 drop-shadow-sm outline outline-1 outline-gray-400/80 hover:outline-gray-400 w-full ${
+                      isDragActive ? "bg-gray-200/50" : "bg-gray-100/50"
+                    }`}
+                    style={{ borderRadius: "0.25rem" }}
+                  >
+                    <div className="flex items-center justify-center mb-4">
+                      <MdUpload className="h-8 w-8" />
+                    </div>
+                    <input {...getInputProps()} />
+                    <h1 className="text-lg mb-4 text-center">
+                      {isDragActive
+                        ? "Drop the files here"
+                        : "Select or Drag-In Quotes"}
+                    </h1>
+                    {file && (
+                      <div className="text-center mb-4">
+                        <p className="truncate">{file.name}</p>
+                      </div>
+                    )}
+                  </div>
+                  {/* <div className="flex items-center my-4 gap-3">
+                <p>Page Range:</p>
+                <select
+                  className="outline outline-1 outline-gray-300 rounded-sm"
+                  value={rangeSelection}
+                  onChange={(e) => {
+                    setRangeSelection(e.target.value);
+                  }}
+                >
+                  <option value="all">All</option>
+                  <option value="custom">Custom</option>
+                </select>
+                {rangeSelection === "custom" && (
+                  <>
+                    <input
+                      type="text"
+                      className="h-5 outline outline-1 outline-gray-300 text-sm rounded-sm"
+                      placeholder="e.g., 1-5, 8, 11-13"
+                      onChange={(e) => {
+                        if (e.target.value && e.target.value.trim()) {
+                          const newValue = e.target.value.trim();
+                          setCustomRange(newValue);
+                          validateCustomRange(newValue);
+                        }
+                      }}
+                    />
+                  </>
+                )}
+              </div>
+              {rangeSelection === "custom" && !isRangeValid && (
+                <div className="text-red-500 text-xs mb-4">
+                  Please enter a valid range format (e.g., 1-5, 8, 11-13).
+                </div>
+              )} */}
+
+                  <button
+                    type="submit"
+                    className="w-full bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700 focus:outline-none cursor-pointer mt-1"
+                  >
+                    Upload
+                  </button>
+
+                  <p className="text-xs text-center text-gray-700 mb-1 mt-3">
+                    We use bank-level security to encrypt and process your
+                    statements. For more information about our privacy
+                    measures,&nbsp;
+                    <a
+                      className="text-slate-900 underline"
+                      href="mailto:founders@tryblitz.ai?subject=Security%20Inquiry"
+                    >
+                      email us
+                    </a>
+                    .
+                  </p>
+                </div>
+              </form>
+            </div>
+          </>
+        )}
+        {currentTab === "Ancillary" && (
+          <>
+            <div className="flex flex-col">
+              <label className="mr-2 text-sm mb-1">Carrier</label>
+              <select
+                className="bg-gray-100 hover:cursor-pointer hover:outline-gray-400 outline outline-1 outline-gray-400/80 rounded-sm px-2 py-1"
+                name="plan"
+                id="plan"
+                onChange={(e) => {
+                  console.log("e", e.target.value);
+                  setSelectedPlan(e.target.value);
+                }}
+              >
+                <option value="principal_ancillary">Principal</option>
+                <option value="other_ancillary">Other</option>
+              </select>
+            </div>
+            <div className="flex flex-col items-start justify-center w-full my-1 gap-1 mb-2">
+              <p className="mr-2 text-sm mt-2">Page Range</p>
+              <div className="flex gap-2 w-full">
+                <select
+                  className="bg-gray-100 px-2 rounded-sm w-full drop-shadow-sm outline outline-1 h-8 outline-gray-400/80 hover:outline-gray-400"
+                  value={rangeSelection}
+                  onChange={(e) => {
+                    setRangeSelection(e.target.value);
+                  }}
+                >
+                  <option value="all" className="w-full">
+                    All
+                  </option>
+                  <option value="custom" className="w-1/2">
+                    Custom
+                  </option>
+                  <option value="advanced" className="w-1/2">
+                    Advanced
+                  </option>
+                </select>
+                {rangeSelection === "custom" && (
+                  <>
+                    <input
+                      type="text"
+                      className="bg-gray-100 px-2 h-8 drop-shadow-sm outline outline-1 outline-gray-400/80 hover:outline-gray-400 text-sm rounded-sm w-full"
+                      placeholder="e.g., 1-5, 8, 11-13"
+                      onChange={(e) => {
+                        if (e.target.value && e.target.value.trim()) {
+                          const newValue = e.target.value.trim();
+                          setCustomRange(newValue);
+                          validateCustomRangeAndParse(newValue);
+                        }
+                      }}
+                    />
+                  </>
+                )}
+              </div>
+            </div>
+            {rangeSelection === "custom" && !isRangeValid && (
+              <div className="text-red-500 text-xs mb-4">
+                Please enter a valid range format (e.g., 1-5, 8, 11-13).
+              </div>
+            )}
+            <div className="modal-body">
+              {/* File Upload Section */}
+              <form
+                onSubmit={(e) => {
+                  e.preventDefault(); // Prevent the default form submission
+                  setIsProcessing(true);
+                  if (rangeSelection === "all") {
+                    handleUpload();
+                  } else {
+                    const ranges = validateCustomRangeAndParse(customRange);
+                    validateCustomRangeAndParse(
+                      optionalParams.optionalRanges.censusDataRange,
+                    );
+                    if (!isProcessing && ranges.length) {
+                      handleUpload(ranges as number[][]); // Proceed with uploading
+                    }
+                  }
+                }}
+              >
+                <div className="flex flex-col items-center justify-center cursor-pointer">
+                  <div
+                    {...getRootProps()}
+                    className={`p-6 mb-2 mt-2 drop-shadow-sm outline outline-1 outline-gray-400/80 hover:outline-gray-400 w-full ${
+                      isDragActive ? "bg-gray-200/50" : "bg-gray-100/50"
+                    }`}
+                    style={{ borderRadius: "0.25rem" }}
+                  >
+                    <div className="flex items-center justify-center mb-4">
+                      <MdUpload className="h-8 w-8" />
+                    </div>
+                    <input {...getInputProps()} />
+                    <h1 className="text-lg mb-4 text-center">
+                      {isDragActive
+                        ? "Drop the files here"
+                        : "Select or Drag-In Quotes"}
+                    </h1>
+                    {file && (
+                      <div className="text-center mb-4">
+                        <p className="truncate">{file.name}</p>
+                      </div>
+                    )}
+                  </div>
+                  {/* <div className="flex items-center my-4 gap-3">
+                <p>Page Range:</p>
+                <select
+                  className="outline outline-1 outline-gray-300 rounded-sm"
+                  value={rangeSelection}
+                  onChange={(e) => {
+                    setRangeSelection(e.target.value);
+                  }}
+                >
+                  <option value="all">All</option>
+                  <option value="custom">Custom</option>
+                </select>
+                {rangeSelection === "custom" && (
+                  <>
+                    <input
+                      type="text"
+                      className="h-5 outline outline-1 outline-gray-300 text-sm rounded-sm"
+                      placeholder="e.g., 1-5, 8, 11-13"
+                      onChange={(e) => {
+                        if (e.target.value && e.target.value.trim()) {
+                          const newValue = e.target.value.trim();
+                          setCustomRange(newValue);
+                          validateCustomRange(newValue);
+                        }
+                      }}
+                    />
+                  </>
+                )}
+              </div>
+              {rangeSelection === "custom" && !isRangeValid && (
+                <div className="text-red-500 text-xs mb-4">
+                  Please enter a valid range format (e.g., 1-5, 8, 11-13).
+                </div>
+              )} */}
+
+                  <button
+                    type="submit"
+                    className="w-full bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700 focus:outline-none cursor-pointer mt-1"
+                  >
+                    Upload
+                  </button>
+
+                  <p className="text-xs text-center text-gray-700 mb-1 mt-3">
+                    We use bank-level security to encrypt and process your
+                    statements. For more information about our privacy
+                    measures,&nbsp;
+                    <a
+                      className="text-slate-900 underline"
+                      href="mailto:founders@tryblitz.ai?subject=Security%20Inquiry"
+                    >
+                      email us
+                    </a>
+                    .
+                  </p>
+                </div>
+              </form>
+            </div>
+          </>
+        )}
+      </div>
+    </div>
   );
-}
+};
