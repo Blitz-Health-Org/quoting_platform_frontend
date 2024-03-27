@@ -1,15 +1,21 @@
-import { QuoteTypeWithCheckbox } from "@/src/app/select/page";
+import {
+  CoverageTypeOption,
+  QuoteTypeWithCheckbox,
+} from "@/src/app/select/page";
 import Image from "next/image";
-import PlanAttributes from "@/src/app/select/page";
-import { useState } from "react";
+import { useContext, useState } from "react";
+import { QuoteSchemaContext } from "@/src/context/QuoteSchemaContext";
+import { QuoteType } from "@/src/types/custom/Quote";
+import style from "styled-jsx/style";
+
+interface PlanAttributesObjectType {
+  [key: string]: string[] | PlanAttributesObjectType;
+}
 
 type QuotesTableProps = {
   quotes: QuoteTypeWithCheckbox[];
-  planAttributesMapping: {
-    key: any;
-    label: string;
-    alternateKey?: string;
-  }[];
+  planAttributes: string[];
+  coverageType: CoverageTypeOption;
   entryWidth: number;
   handleCheckboxChange: (quoteId: number) => void;
   handleAddNewQuote: (event: any) => void;
@@ -24,7 +30,8 @@ type QuotesTableProps = {
 
 export const QuotesTable = ({
   quotes,
-  planAttributesMapping,
+  coverageType,
+  planAttributes,
   handleCheckboxChange,
   handleAddNewQuote,
   search,
@@ -49,6 +56,46 @@ export const QuotesTable = ({
     valueEmployeeRate[0] = findMinimumValue("employee_rate");
   }
 
+  const { quoteSchema } = useContext(QuoteSchemaContext);
+
+  const coverageTypeSpecificSchema = quoteSchema[coverageType];
+
+  console.log("coverageTypeSpecificSchema", coverageTypeSpecificSchema);
+
+  const renderAttributeColumn = (
+    quote: QuoteTypeWithCheckbox,
+    planAttribute: string,
+    index: number,
+    schema: any,
+  ) => {
+    console.log("SCHEMA", schema, planAttribute);
+    if (typeof (quote.data as any)?.[planAttribute] === "string") {
+      return (
+        <div
+          key={index}
+          className="flex justify-center gap-2 min-w-32"
+          style={{ width: `${entryWidth}px` }}
+        >
+          {(quote.data as any)?.[planAttribute] ?? "N/A"}
+        </div>
+      );
+    } else if (typeof (quote.data as any)?.[planAttribute] === "object") {
+      return (
+        Object.entries((quote.data as any)?.[planAttribute]).map(
+          ([key, value]: any, index: number) => {
+            return (
+              <div key={index} className="flex justify-center gap-2 min-w-32">
+                {schema?.properties?.[key].label}: {value}
+              </div>
+            );
+          },
+        ) ?? "N/A"
+      );
+    } else {
+      return "N/A";
+    }
+  };
+
   return (
     <>
       <div
@@ -56,17 +103,37 @@ export const QuotesTable = ({
       >
         <div className="flex py-2 w-fit border-b">
           <div className="grid-cols-9 flex justify-left text-center w-fit gap-1 h-10 font-bold items-start text-wrap text-sm">
-            {planAttributesMapping.map((attribute) => (
-              <div
-                key={attribute.key as any}
-                className="flex justify-center gap-2 min-w-32"
-                style={{ width: `${entryWidth}px` }}
-              >
-                <p className="max-h-12 text-wrap overflow-hidden">
-                  {attribute.label}
-                </p>
-              </div>
-            ))}
+            {planAttributes.map((attribute, index) => {
+              console.log("ATTRIBUTE", attribute);
+              if (attribute === "carrier") {
+                return (
+                  <div
+                    key={index}
+                    className="flex justify-center gap-2 min-w-32"
+                    style={{ width: `${entryWidth}px` }}
+                  >
+                    <p className="max-h-12 text-wrap overflow-hidden">
+                      Carrier
+                    </p>
+                  </div>
+                );
+              } else {
+                return (
+                  <div
+                    key={index}
+                    className="flex justify-center gap-2 min-w-32"
+                    style={{ width: `${entryWidth}px` }}
+                  >
+                    <p className="max-h-12 text-wrap overflow-hidden">
+                      {
+                        coverageTypeSpecificSchema?.properties?.[attribute]
+                          .label
+                      }
+                    </p>
+                  </div>
+                );
+              }
+            })}
           </div>
         </div>
         {/* {quotes.length} -{valueDeductible[0]} -{valueOOP[0]} -
@@ -114,13 +181,13 @@ export const QuotesTable = ({
               >
                 <div className="grid-cols-9 w-full flex justify-left text-center gap-1 h-8 items-center text-sm">
                   {/* Map through the plan attributes for each quote */}
-                  {planAttributesMapping.map((attribute: any) => (
+                  {planAttributes.map((attribute, index) => (
                     <div
-                      key={attribute.key}
+                      key={index}
                       className="min-w-32 max-h-10 overflow-y-auto"
                       style={{ width: `${entryWidth}px` }}
                     >
-                      {attribute.key === "carrier" ? (
+                      {attribute === "carrier" ? (
                         <div className="flex items-center justify-left ml-6">
                           <input
                             type="checkbox"
@@ -131,19 +198,22 @@ export const QuotesTable = ({
                           {quote.logo_url && (
                             <Image
                               src={quote.logo_url}
-                              alt={`Logo for ${(quote as any)[attribute.key]}`}
+                              alt={`Logo for ${(quote as any)[attribute]}`}
                               width={20}
                               height={20}
                               className="mr-2 rounded-md"
                             />
                           )}
-                          <p>{(quote as any)[attribute.key] || "N/A"}</p>
+                          <p>{(quote as any)[attribute] || "N/A"}</p>
                         </div>
                       ) : (
                         <p>
-                          {(quote.data as any)?.[attribute.key] ??
-                            (quote.data as any)?.[attribute?.alternateKey] ??
-                            "N/A"}
+                          {renderAttributeColumn(
+                            quote,
+                            attribute,
+                            index,
+                            coverageTypeSpecificSchema?.properties?.[attribute],
+                          )}
                         </p>
                       )}
                     </div>

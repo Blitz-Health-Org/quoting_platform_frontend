@@ -37,6 +37,8 @@ export const QuoteSchemaContextProvider = ({
     }
     fetchData();
   }, []);
+
+  console.log("QUOTESCHEMA", quoteSchema);
   return (
     <QuoteSchemaContext.Provider value={{ quoteSchema }}>
       {children}

@@ -1,51 +1,49 @@
 "use client";
 
-import Image, { StaticImageData } from "next/image";
 import { ClientType } from "@/src/types/custom/Client";
-import { redirect, useRouter } from "next/navigation";
+import { useRouter } from "next/navigation";
 import { MdFileUpload } from "react-icons/md";
-import { SnackbarAlert } from "../../components/ui/SnackbarAlert";
 import { supabase } from "../../supabase";
-import { FaRegSave, FaRegStar } from "react-icons/fa";
-import { notFound, useSearchParams } from "next/navigation";
+import { useSearchParams } from "next/navigation";
 import React, { useCallback, useContext, useEffect, useState } from "react";
 import { IoMdArrowBack } from "react-icons/io";
 import { QuoteType } from "@/src/types/custom/Quote";
 import { IconBuilding } from "@tabler/icons-react";
-import { io } from "socket.io-client";
-import { UserContext } from "@/src/context/UserContext";
 import SelectQuotesHeader from "../../components/comparison/SelectQuotesHeader";
 import { AddQuote } from "@/src/components/client/modal/AddQuote";
 import { Navbar } from "@/src/components/comparison/Navbar";
 import SelectSidebar from "@/src/components/SelectSidebar";
-import toast from "react-hot-toast";
-import { ModalContext } from "@/src/context/ModalContext";
-import { TaskContext } from "@/src/context/TaskContext";
 import { SocketTasksContext } from "@/src/context/SocketContext";
 import AddCurrentPlanModal from "@/src/components/comparison/AddCurrentPlanModal";
 import { SnackBarContext } from "@/src/context/SnackBarContext";
 import { QuotesTable } from "@/src/components/client/QuotesTable";
 import TabHeader from "@/src/components/ui/TabHeader";
 import { ActionBar } from "./ActionBar";
-import router from "next/router";
-import { min } from "lodash";
 
-const planAttributesMapping: {
-  key: string;
-  label: string;
-  alternateKey?: string;
-}[] = [
-  { key: "carrier", label: "Carrier" },
-  { key: "plan_id", alternateKey: "plan_name", label: "Plan" },
-  { key: "deductible", label: "Deductible (Individual)" },
-  { key: "coinsurance", label: "Coinsurance (In-Network)" },
-  { key: "out_of_pocket_max", label: "Out of Pocket (Individual)" },
-  { key: "office_copay_pcp", label: "Office Copay" },
-  { key: "employee_rate", label: "Employee Only Rate" },
-  // { key: "plan_type", label: "Network" },
-  // { key: "additional_copay", label: "Additional Copays (ER / Imaging / OP / IP)", },
-  { key: "total_employer_cost", label: "Total Cost" },
-];
+const displayedPlanAttributesByCoverageType: Record<string, string[]> = {
+  medical: [
+    "carrier",
+    "plan_id",
+    "deductible",
+    "coinsurance",
+    "out_of_pocket_max",
+    "office_copay_pcp",
+    "employee_rate",
+    "total_employer_cost",
+  ],
+  dental: ["child", "employee", "family", "spouse"],
+  vision: ["child", "employee", "family", "spouse"],
+  group_term_life: [
+    "accidental_death_dismemberment_benefit",
+    "group_term_life_benefit",
+  ],
+  long_term_disability: [
+    "monthly_cost",
+    "volume",
+    "lives",
+    "employee_monthly_rate",
+  ],
+};
 
 export type TabOption =
   | "Updated"
@@ -53,8 +51,7 @@ export type TabOption =
   | "Dental"
   | "Vision"
   | "LTD"
-  | "Group Term Life"
-  | "AD & D";
+  | "Group Term Life";
 
 const TABS: TabOption[] = [
   "Updated",
@@ -63,17 +60,22 @@ const TABS: TabOption[] = [
   "Vision",
   "LTD",
   "Group Term Life",
-  "AD & D",
 ];
 
-const TABS_TO_COVERAGE_TYPE_MAPPING: Record<TabOption, string> = {
+export type CoverageTypeOption =
+  | "medical"
+  | "dental"
+  | "vision"
+  | "long_term_disability"
+  | "group_term_life";
+
+const TABS_TO_COVERAGE_TYPE_MAPPING: Record<TabOption, CoverageTypeOption> = {
   Updated: "medical",
   ACA: "medical",
   Dental: "dental",
   Vision: "vision",
   LTD: "long_term_disability",
   "Group Term Life": "group_term_life",
-  "AD & D": "ad_d",
 };
 
 export type QuoteTypeWithCheckbox = QuoteType & { isSelected: boolean };
@@ -100,8 +102,6 @@ export default function SelectQuotes() {
       } else {
         // Check if selected_quotes is not null
 
-        console.log("QUOTEDATA", data);
-
         setQuotes(data);
         setOriginalQuotes(data);
 
@@ -112,18 +112,6 @@ export default function SelectQuotes() {
       }
     }
   };
-
-  // const {
-  //   socketTasks: [originalSocketTasks, setSocketTasks],
-  // } = useContext(SocketTasksContext);
-
-  // const socketTasks = originalSocketTasks?.filter(
-  //   (task) => task !== "fetch_quotes",
-  // );
-
-  const {
-    taskInfo: [taskInfo, setTaskInfo],
-  } = useContext(TaskContext);
 
   const searchParams = useSearchParams();
 
@@ -254,14 +242,20 @@ export default function SelectQuotes() {
     [],
   );
 
+  console.log("QUOTES", quotes);
+
   const [currentTab, setCurrentTab] = useState<string>("Updated");
+
+  const coverageType = TABS_TO_COVERAGE_TYPE_MAPPING[currentTab as TabOption];
+  const planAttributes = displayedPlanAttributesByCoverageType[coverageType];
+
   const [search, setSearch] = useState<string | undefined>();
 
   const [sortOption, setSortOption] = useState("deductible"); // Initial sorting optio
   const [sortOrder, setSortOrder] = useState("asc"); // Initial sorting order
 
   const [entryWidth, setEntryWidth] = useState(
-    innerWidth / planAttributesMapping.length,
+    innerWidth / planAttributes.length,
   );
 
   const actionBarEntries = [
@@ -284,8 +278,7 @@ export default function SelectQuotes() {
     // Update entryWidth when the screen size changes
 
     const handleResize = () => {
-      setEntryWidth(innerWidth / planAttributesMapping.length);
-      console.log("yeah", entryWidth);
+      setEntryWidth(innerWidth / planAttributes.length);
     };
 
     // Attach event listener for window resize
@@ -366,7 +359,6 @@ export default function SelectQuotes() {
         .eq("id", clientId)
         .single();
       if (clientError) throw clientError;
-      console.log("CLIENTDATA", clientData);
       fetchQuoteData(clientData);
       setSelectedClient(clientData);
 
@@ -504,27 +496,36 @@ export default function SelectQuotes() {
     router.push(`/`);
   };
 
-  function filterQuotesByCoverageType(coverage_type: string) {
-    return quotes.filter(
-      (quote) =>
-        ((quote.data as any)?.["metadata"]?.["coverage_type"] ?? "medical") ===
-        coverage_type,
-    );
+  function filterQuotesByCoverageType(coverage_type: string, isACA?: boolean) {
+    let internalFilteredQuotes = quotes;
+
+    internalFilteredQuotes = internalFilteredQuotes.filter((quote) => {
+      return (
+        ((quote?.["data"]?.["metadata"] as any)?.["coverage_type"] ??
+          "medical") === coverage_type
+      );
+    });
+
+    if (typeof isACA !== "undefined" && coverage_type === "medical") {
+      internalFilteredQuotes = internalFilteredQuotes.filter((quote) => {
+        console.log(
+          "CHECK",
+          (quote?.["data"]?.["metadata"] as any)?.["is_aca"],
+          isACA,
+          (quote?.["data"]?.["metadata"] as any)?.["is_aca"] === isACA,
+        );
+        return (!!quote?.["data"]?.["metadata"] as any)?.["is_aca"] === isACA;
+      });
+    }
+
+    return internalFilteredQuotes;
   }
 
   let filteredQuotes = filterQuotesByCoverageType(
     TABS_TO_COVERAGE_TYPE_MAPPING[currentTab as TabOption],
+    currentTab === "ACA",
   );
 
-  if (currentTab === "ACA") {
-    filteredQuotes = quotes.filter(
-      (quote) => (quote.data as any)?.["metadata"]?.["is_aca"] === true,
-    );
-  } else if (currentTab === "Updated") {
-    filteredQuotes = quotes.filter(
-      (quote) => (quote.data as any)?.["metadata"]?.["is_aca"] !== true,
-    );
-  }
   const currentPlan = plans.find((plan) => plan.isCurrentPlan);
 
   if (currentPlan) {
@@ -569,16 +570,6 @@ export default function SelectQuotes() {
 
   function findMinimumValue(category: string) {
     let specificQuotes = filteredQuotes;
-    if (category === "employee_rate") {
-      console.log(
-        "oijowiej",
-        Math.min(
-          ...specificQuotes.map((quote) =>
-            parseValue2((quote.data as any)?.[category] ?? "0"),
-          ),
-        ) | 0,
-      );
-    }
     return (
       Math.min(
         ...specificQuotes.map((quote) =>
@@ -698,14 +689,9 @@ export default function SelectQuotes() {
                   TabHeader={
                     <TabHeader
                       tabs={TABS}
-                      titles={[
-                        `Updated (${filteredQuotes.length})`,
-                        `ACA (${filteredQuotes.length})`,
-                        `Dental`,
-                        `Vision`,
-                        `STD`,
-                        `LTD`,
-                      ]}
+                      titles={TABS.map((tab) => {
+                        return `${tab} (${filterQuotesByCoverageType(TABS_TO_COVERAGE_TYPE_MAPPING[tab as TabOption], tab === "ACA").length})`;
+                      })}
                       selectedTab={currentTab}
                       setSelectedTab={setCurrentTab}
                     />
@@ -714,7 +700,8 @@ export default function SelectQuotes() {
 
                 <QuotesTable
                   quotes={filteredQuotes}
-                  planAttributesMapping={planAttributesMapping}
+                  coverageType={coverageType}
+                  planAttributes={planAttributes}
                   entryWidth={entryWidth}
                   handleCheckboxChange={handleCheckboxChange}
                   handleAddNewQuote={handleAddNewQuote}
