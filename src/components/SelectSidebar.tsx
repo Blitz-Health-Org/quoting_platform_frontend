@@ -10,6 +10,7 @@ import { supabase } from "../supabase";
 import { useRouter } from "next/navigation";
 import { FaRegStar, FaStar } from "react-icons/fa";
 import { Tooltip } from "react-tooltip";
+import { TabOption } from "../app/select/page";
 
 type QuoteTypeWithCheckbox = QuoteType & { isSelected: boolean };
 
@@ -26,6 +27,7 @@ type Props = {
   selectedClient: any;
   setSnackbar: any;
   setPlans: any;
+  coverageType: string;
 };
 
 const SelectSidebar = ({
@@ -36,6 +38,7 @@ const SelectSidebar = ({
   selectedClient,
   setSnackbar,
   setPlans,
+  coverageType,
 }: Props) => {
   const router = useRouter();
   const [collapsed, setCollapsed] = useState(false);
@@ -52,7 +55,7 @@ const SelectSidebar = ({
     }
     updateConnectedPlans(plans);
     comparison_created_true();
-    router.push(`/quotes?clientId=${clientId}`);
+    router.push(`/quotes?clientId=${clientId}&type=${coverageType}`);
     return { success: true };
   };
 

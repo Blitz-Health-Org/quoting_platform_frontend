@@ -3,7 +3,7 @@ import Image from "next/image";
 import PlanAttributes from "@/src/app/select/page";
 import { useState } from "react";
 
-type SelectedQuotesNonACAPageProps = {
+type QuotesTableProps = {
   quotes: QuoteTypeWithCheckbox[];
   planAttributesMapping: {
     key: any;
@@ -22,7 +22,7 @@ type SelectedQuotesNonACAPageProps = {
   findMinimumValue: any;
 };
 
-export const SelectedQuotesNonACAPage = ({
+export const QuotesTable = ({
   quotes,
   planAttributesMapping,
   handleCheckboxChange,
@@ -35,7 +35,7 @@ export const SelectedQuotesNonACAPage = ({
   parseValue2,
   findMaximumValue,
   findMinimumValue,
-}: SelectedQuotesNonACAPageProps) => {
+}: QuotesTableProps) => {
   if (valueDeductible[1] === 0) {
     valueDeductible[1] = findMaximumValue("deductible");
   }
