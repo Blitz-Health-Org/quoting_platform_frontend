@@ -27,7 +27,8 @@ export type TabOption =
   | "Dental"
   | "Vision"
   | "LTD"
-  | "Group Term Life";
+  | "Group Term Life"
+  | "Ancillary Rates";
 
 const TABS: TabOption[] = [
   "Updated",
@@ -36,6 +37,7 @@ const TABS: TabOption[] = [
   "Vision",
   "LTD",
   "Group Term Life",
+  "Ancillary Rates",
 ];
 
 export type CoverageTypeOption =
@@ -43,7 +45,8 @@ export type CoverageTypeOption =
   | "dental"
   | "vision"
   | "long_term_disability"
-  | "group_term_life";
+  | "group_term_life"
+  | "rates";
 
 const TABS_TO_COVERAGE_TYPE_MAPPING: Record<TabOption, CoverageTypeOption> = {
   Updated: "medical",
@@ -52,6 +55,7 @@ const TABS_TO_COVERAGE_TYPE_MAPPING: Record<TabOption, CoverageTypeOption> = {
   Vision: "vision",
   LTD: "long_term_disability",
   "Group Term Life": "group_term_life",
+  "Ancillary Rates": "rates",
 };
 
 export type QuoteTypeWithCheckbox = QuoteType & { isSelected: boolean };
@@ -63,8 +67,8 @@ export default function SelectQuotes() {
 
   const { quoteSchema } = useContext(QuoteSchemaContext);
 
-  const displayedPlanAttributesByCoverageType: Record<string, string[]> =
-    Object.entries(quoteSchema).reduce(
+  const displayedPlanAttributesByCoverageType: Record<string, string[]> = {
+    ...Object.entries(quoteSchema).reduce(
       (acc: Record<string, string[]>, [coverageType, coverageTypeSchema]) => {
         // Assuming coverageTypeSchema has a structure similar to { properties: { ... } }
         // and you want to collect the labels of these properties:
@@ -77,7 +81,17 @@ export default function SelectQuotes() {
         return { ...acc, [coverageType]: labels };
       },
       {},
-    );
+    ),
+    medical: [
+      "carrier",
+      "plan_id",
+      "deductible",
+      "coinsurance",
+      "out_of_pocket_max",
+      "employee_rate",
+      "total_employer_cost",
+    ],
+  };
 
   const {
     socketTasks: [socketTasks, setSocketTasks],
@@ -240,6 +254,7 @@ export default function SelectQuotes() {
 
   const coverageType = TABS_TO_COVERAGE_TYPE_MAPPING[currentTab as TabOption];
   const planAttributes = displayedPlanAttributesByCoverageType[coverageType];
+  console.log("PLANATTRIBUTES", planAttributes);
 
   const [search, setSearch] = useState<string | undefined>();
 

@@ -82,7 +82,7 @@ export const QuotesTable = ({
       );
     } else if (
       typeof (quote.data as any)?.[planAttribute] === "object" &&
-      JSON.stringify((quote.data as any)?.[planAttribute])
+      (quote.data as any)?.[planAttribute]
     ) {
       return (
         Object.entries((quote.data as any)?.[planAttribute]).map(
