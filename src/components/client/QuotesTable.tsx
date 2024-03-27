@@ -82,14 +82,14 @@ export const QuotesTable = ({
       );
     } else if (
       typeof (quote.data as any)?.[planAttribute] === "object" &&
-      (quote.data as any)?.[planAttribute]
+      JSON.stringify((quote.data as any)?.[planAttribute])
     ) {
       return (
         Object.entries((quote.data as any)?.[planAttribute]).map(
           ([key, value]: any, index: number) => {
             return (
               <div key={index} className="flex justify-center gap-2 min-w-32">
-                {schema?.properties?.[key].label}: {value}
+                {schema?.properties?.[key]?.label}: {JSON.stringify(value)}
               </div>
             );
           },
@@ -108,7 +108,6 @@ export const QuotesTable = ({
         <div className="flex py-2 w-fit border-b">
           <div className="grid-cols-9 flex justify-left text-center w-fit gap-1 h-10 font-bold items-start text-wrap text-sm">
             {planAttributes.map((attribute, index) => {
-              console.log("ATTRIBUTE", attribute);
               if (attribute === "carrier") {
                 return (
                   <div
@@ -131,7 +130,7 @@ export const QuotesTable = ({
                     <p className="max-h-12 text-wrap overflow-hidden">
                       {
                         coverageTypeSpecificSchema?.properties?.[attribute]
-                          .label
+                          ?.label
                       }
                     </p>
                   </div>

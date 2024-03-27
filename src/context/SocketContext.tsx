@@ -40,8 +40,6 @@ export function SocketProvider({ children }: { children: React.ReactNode }) {
       transports: ["websocket"],
     });
 
-    console.log("Connected to Socket.IO server", socket);
-
     // Listen for 'task_complete' events
     socket.on(`sub_task_complete/${userId}`, (data) => {
       console.log("Task Complete:", data);

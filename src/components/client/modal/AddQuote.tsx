@@ -83,8 +83,6 @@ export const AddQuote = ({
     }
   }
 
-  console.log("selectedPlan", selectedPlan);
-
   const {
     userId: [userId],
   } = useContext(UserContext);
@@ -198,7 +196,6 @@ export const AddQuote = ({
   }
 
   const handleUpload = async (ranges?: number[][]) => {
-    console.log("HELLO?????");
     if (!file) {
       setSnackbar({
         open: true,
@@ -211,7 +208,6 @@ export const AddQuote = ({
     const successfulFileUrls: string[] = [];
     const fileId = uuid();
     try {
-      console.log("selectedPlan", selectedPlan);
       const fileName = `${selectedPlan}/${fileId}/whole`;
       await supabase.storage.from("images").upload(fileName, file);
 

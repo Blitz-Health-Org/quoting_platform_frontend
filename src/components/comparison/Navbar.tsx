@@ -119,7 +119,6 @@ export const Navbar = ({ selected }: { selected: string }) => {
           <div
             style={{ fontSize: "13px" }}
             onClick={() => {
-              console.log("hello");
               setAccessToken(undefined);
               window.location.href = "/sign-in";
             }}

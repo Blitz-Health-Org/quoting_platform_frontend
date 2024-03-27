@@ -19,31 +19,7 @@ import { SnackBarContext } from "@/src/context/SnackBarContext";
 import { QuotesTable } from "@/src/components/client/QuotesTable";
 import TabHeader from "@/src/components/ui/TabHeader";
 import { ActionBar } from "./ActionBar";
-
-const displayedPlanAttributesByCoverageType: Record<string, string[]> = {
-  medical: [
-    "carrier",
-    "plan_id",
-    "deductible",
-    "coinsurance",
-    "out_of_pocket_max",
-    "office_copay_pcp",
-    "employee_rate",
-    "total_employer_cost",
-  ],
-  dental: ["child", "employee", "family", "spouse"],
-  vision: ["child", "employee", "family", "spouse"],
-  group_term_life: [
-    "accidental_death_dismemberment_benefit",
-    "group_term_life_benefit",
-  ],
-  long_term_disability: [
-    "monthly_cost",
-    "volume",
-    "lives",
-    "employee_monthly_rate",
-  ],
-};
+import { QuoteSchemaContext } from "@/src/context/QuoteSchemaContext";
 
 export type TabOption =
   | "Updated"
@@ -84,6 +60,24 @@ export default function SelectQuotes() {
   type QuoteTypeWithCheckbox = QuoteType & { isSelected: boolean };
 
   const [modalOpen, setModalOpen] = useState<string>("");
+
+  const { quoteSchema } = useContext(QuoteSchemaContext);
+
+  const displayedPlanAttributesByCoverageType: Record<string, string[]> =
+    Object.entries(quoteSchema).reduce(
+      (acc: Record<string, string[]>, [coverageType, coverageTypeSchema]) => {
+        // Assuming coverageTypeSchema has a structure similar to { properties: { ... } }
+        // and you want to collect the labels of these properties:
+        if (!coverageTypeSchema.properties) {
+          return acc;
+        }
+        const labels = Object.entries(coverageTypeSchema.properties).map(
+          ([_, propertySchema]) => (propertySchema as any).label,
+        );
+        return { ...acc, [coverageType]: labels };
+      },
+      {},
+    );
 
   const {
     socketTasks: [socketTasks, setSocketTasks],
@@ -242,8 +236,6 @@ export default function SelectQuotes() {
     [],
   );
 
-  console.log("QUOTES", quotes);
-
   const [currentTab, setCurrentTab] = useState<string>("Updated");
 
   const coverageType = TABS_TO_COVERAGE_TYPE_MAPPING[currentTab as TabOption];
@@ -348,6 +340,8 @@ export default function SelectQuotes() {
     // Update the state with the sorted quotes
     setQuotes(sortedQuotes);
   };
+
+  console.log("QUOTES", quotes);
 
   const router = useRouter();
 
@@ -485,7 +479,6 @@ export default function SelectQuotes() {
 
   useEffect(() => {
     const clientId = searchParams.get("clientId");
-    console.log("CLIENT ID", clientId);
 
     if (clientId) {
       fetchClients(parseInt(clientId));
@@ -505,8 +498,6 @@ export default function SelectQuotes() {
           "medical") === coverage_type
       );
     });
-
-    console.log("INTERNAL_FILTERED_QUOTES", internalFilteredQuotes);
 
     if (typeof isACA !== "undefined" && coverage_type === "medical") {
       internalFilteredQuotes = internalFilteredQuotes.filter((quote) => {
