@@ -64,8 +64,8 @@ export default function SelectQuotes() {
 
   const { quoteSchema } = useContext(QuoteSchemaContext);
 
-  const displayedPlanAttributesByCoverageType: Record<string, string[]> =
-    Object.entries(quoteSchema).reduce(
+  const displayedPlanAttributesByCoverageType: Record<string, string[]> = {
+    ...Object.entries(quoteSchema).reduce(
       (acc: Record<string, string[]>, [coverageType, coverageTypeSchema]) => {
         // Assuming coverageTypeSchema has a structure similar to { properties: { ... } }
         // and you want to collect the labels of these properties:
@@ -78,7 +78,16 @@ export default function SelectQuotes() {
         return { ...acc, [coverageType]: labels };
       },
       {},
-    );
+    ),
+    medical: [
+      "deductible",
+      "out_of_pocket_max",
+      "employee_rate",
+      "coinsurance",
+      "total_employer_cost",
+      "plan_id",
+    ],
+  };
 
   const {
     socketTasks: [socketTasks, setSocketTasks],

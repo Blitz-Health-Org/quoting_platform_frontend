@@ -178,7 +178,6 @@ export default function QuotingPage() {
   // };
 
   const fetchClientAndQuotes = async (clientId: string) => {
-    console.log("client id", clientId);
     try {
       const { data: clientData, error: clientError } = await supabase
         .from("clients")
@@ -394,7 +393,7 @@ export default function QuotingPage() {
                 plans={plans}
               />
             ) : (
-              <div className="h-12 mt-12"></div>
+              <div className="h-12 mt-2"></div>
             )}
 
             <div className="p-0.5 flex-grow w-full">

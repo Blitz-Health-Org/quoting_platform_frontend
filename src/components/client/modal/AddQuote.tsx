@@ -195,15 +195,20 @@ export const AddQuote = ({
     );
   }
 
-  const handleUpload = async (ranges?: number[][]) => {
+  const handleUpload = async (
+    validatedRanges?: number[][],
+    validatedOptionalParams?: any,
+  ) => {
     if (!file) {
       setSnackbar({
         open: true,
         message: "Please upload a file",
         severity: "error",
       });
+      setIsProcessing(false);
       return;
     }
+
     const errFiles = [] as string[];
     const successfulFileUrls: string[] = [];
     const fileId = uuid();
@@ -239,6 +244,7 @@ export const AddQuote = ({
         message: `Error occurred for the following files: ${errFiles.join(", ")}`,
         severity: "error",
       });
+      setIsProcessing(false);
       return;
     } else {
       // setSnackbar({
@@ -261,8 +267,8 @@ export const AddQuote = ({
             successfulFileUrls,
             client: client,
             userId: userId,
-            ranges: ranges,
-            optionalParams: optionalParams,
+            ranges: validatedRanges,
+            optionalParams: validatedOptionalParams,
           }),
         },
       );
@@ -594,24 +600,40 @@ export const AddQuote = ({
               onSubmit={(e) => {
                 e.preventDefault(); // Prevent the default form submission
                 setIsProcessing(true);
+
+                let validatedDefaultRanges,
+                  validatedCensusDataRanges,
+                  validatedQuotesDataRanges,
+                  validatedRatesRanges,
+                  validatedOptionalParams;
                 if (rangeSelection === "all") {
+                  //skip to handleUpload, no processing needed
                 } else if (rangeSelection === "custom") {
                   console.log("ENTERED");
-                  validateCustomRangeAndParse(customRange);
+                  validatedDefaultRanges =
+                    validateCustomRangeAndParse(customRange);
                 } else {
                   //advanced
-                  validateCustomRangeAndParse(
+                  validatedCensusDataRanges = validateCustomRangeAndParse(
                     optionalParams.optionalRanges.censusDataRange,
                   );
-                  validateCustomRangeAndParse(
+                  validatedQuotesDataRanges = validateCustomRangeAndParse(
                     optionalParams.optionalRanges.quotesRange,
                   );
-                  validateCustomRangeAndParse(
+                  validatedRatesRanges = validateCustomRangeAndParse(
                     optionalParams.optionalRanges.ratesRange,
                   );
+                  validatedOptionalParams = {
+                    ...optionalParams,
+                    optionalRanges: {
+                      censusDataRange: validatedCensusDataRanges,
+                      ratesRange: validatedRatesRanges,
+                      quotesRange: validatedQuotesDataRanges,
+                    },
+                  };
                 }
                 if (!isProcessing) {
-                  handleUpload();
+                  handleUpload(validatedDefaultRanges, validatedOptionalParams);
                 }
               }}
             >
