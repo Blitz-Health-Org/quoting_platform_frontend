@@ -19,31 +19,7 @@ import { SnackBarContext } from "@/src/context/SnackBarContext";
 import { QuotesTable } from "@/src/components/client/QuotesTable";
 import TabHeader from "@/src/components/ui/TabHeader";
 import { ActionBar } from "./ActionBar";
-
-const displayedPlanAttributesByCoverageType: Record<string, string[]> = {
-  medical: [
-    "carrier",
-    "plan_id",
-    "deductible",
-    "coinsurance",
-    "out_of_pocket_max",
-    "office_copay_pcp",
-    "employee_rate",
-    "total_employer_cost",
-  ],
-  dental: ["child", "employee", "family", "spouse"],
-  vision: ["child", "employee", "family", "spouse"],
-  group_term_life: [
-    "accidental_death_dismemberment_benefit",
-    "group_term_life_benefit",
-  ],
-  long_term_disability: [
-    "monthly_cost",
-    "volume",
-    "lives",
-    "employee_monthly_rate",
-  ],
-};
+import { QuoteSchemaContext } from "@/src/context/QuoteSchemaContext";
 
 export type TabOption =
   | "Updated"
@@ -51,7 +27,8 @@ export type TabOption =
   | "Dental"
   | "Vision"
   | "LTD"
-  | "Group Term Life";
+  | "Group Term Life"
+  | "Ancillary Rates";
 
 const TABS: TabOption[] = [
   "Updated",
@@ -60,6 +37,7 @@ const TABS: TabOption[] = [
   "Vision",
   "LTD",
   "Group Term Life",
+  "Ancillary Rates",
 ];
 
 export type CoverageTypeOption =
@@ -67,7 +45,8 @@ export type CoverageTypeOption =
   | "dental"
   | "vision"
   | "long_term_disability"
-  | "group_term_life";
+  | "group_term_life"
+  | "rates";
 
 const TABS_TO_COVERAGE_TYPE_MAPPING: Record<TabOption, CoverageTypeOption> = {
   Updated: "medical",
@@ -76,6 +55,7 @@ const TABS_TO_COVERAGE_TYPE_MAPPING: Record<TabOption, CoverageTypeOption> = {
   Vision: "vision",
   LTD: "long_term_disability",
   "Group Term Life": "group_term_life",
+  "Ancillary Rates": "rates",
 };
 
 export type QuoteTypeWithCheckbox = QuoteType & { isSelected: boolean };
@@ -84,6 +64,34 @@ export default function SelectQuotes() {
   type QuoteTypeWithCheckbox = QuoteType & { isSelected: boolean };
 
   const [modalOpen, setModalOpen] = useState<string>("");
+
+  const { quoteSchema } = useContext(QuoteSchemaContext);
+
+  const displayedPlanAttributesByCoverageType: Record<string, string[]> = {
+    ...Object.entries(quoteSchema).reduce(
+      (acc: Record<string, string[]>, [coverageType, coverageTypeSchema]) => {
+        // Assuming coverageTypeSchema has a structure similar to { properties: { ... } }
+        // and you want to collect the labels of these properties:
+        if (!coverageTypeSchema.properties) {
+          return acc;
+        }
+        const labels = Object.entries(coverageTypeSchema.properties).map(
+          ([_, propertySchema]) => (propertySchema as any).label,
+        );
+        return { ...acc, [coverageType]: labels };
+      },
+      {},
+    ),
+    medical: [
+      "carrier",
+      "plan_id",
+      "deductible",
+      "coinsurance",
+      "out_of_pocket_max",
+      "employee_rate",
+      "total_employer_cost",
+    ],
+  };
 
   const {
     socketTasks: [socketTasks, setSocketTasks],
@@ -120,6 +128,23 @@ export default function SelectQuotes() {
   );
 
   const { setSnackbar } = useContext(SnackBarContext);
+  const [file, setFile] = useState<File | null>(null);
+  const [selectedPlan, setSelectedPlan] = useState<string>("bcbs_tx_aca");
+
+  const [isProcessing, setIsProcessing] = useState<boolean>(false);
+  const [customRange, setCustomRange] = useState("");
+  const [isRangeValid, setIsRangeValid] = useState(true);
+  const [rangeSelection, setRangeSelection] = useState("all"); // Dropdown selection state
+  const [currentTab, setCurrentTab] = useState<string>("Medical");
+  const [prevCurrentTab, setPrevCurrentTab] = useState<string>(currentTab);
+  const [optionalParams, setOptionalParams] = useState<OptionalParamsType>({
+    optionalRanges: {
+      censusDataRange: "",
+      ratesRange: "",
+      quotesRange: "",
+    },
+    is_aca: false,
+  });
 
   const [selectedQuotes, setSelectedQuotes] = useState<QuoteTypeWithCheckbox[]>(
     [],
@@ -242,17 +267,18 @@ export default function SelectQuotes() {
     [],
   );
 
-  console.log("QUOTES", quotes);
-
   const [currentTab, setCurrentTab] = useState<string>("Updated");
 
   const coverageType = TABS_TO_COVERAGE_TYPE_MAPPING[currentTab as TabOption];
   const planAttributes = displayedPlanAttributesByCoverageType[coverageType];
+  console.log("PLANATTRIBUTES", planAttributes);
 
   const [search, setSearch] = useState<string | undefined>();
 
-  const [sortOption, setSortOption] = useState("deductible"); // Initial sorting optio
-  const [sortOrder, setSortOrder] = useState("asc"); // Initial sorting order
+
+    if (currentTab === "Medical") {
+      setSelectedPlan("bcbs_tx_aca");
+    }
 
   const [entryWidth, setEntryWidth] = useState(
     innerWidth / planAttributes.length,
@@ -301,53 +327,39 @@ export default function SelectQuotes() {
       ),
     );
 
-    // Update selectedQuotes state
-    setSelectedQuotes((prevSelectedQuotes) => {
-      const index = prevSelectedQuotes.findIndex(
-        (quote) => quote.id === quoteId,
-      );
-      if (index !== -1) {
-        // If quote is already selected, remove it
-        return prevSelectedQuotes.filter((quote) => quote.id !== quoteId);
-      } else {
-        // If quote is not selected, add it
-        return [
-          ...prevSelectedQuotes,
-          quotes.find((quote) => quote.id === quoteId)!,
-        ];
-      }
-    });
+
+  const onDrop = (acceptedFiles: File[]) => {
+    setFile(acceptedFiles[0]);
   };
 
-  const handleSort = (option: string | null) => {
-    if (option === null) {
-      setQuotes(originalQuotes);
-      return;
+  function validateCustomRangeAndParse(range: string) {
+    if (range === "") {
+      setIsRangeValid(true);
+      return [];
     }
-
-    // Perform the sorting
-    //TODO: handle empty quotes
-    const sortedQuotes = quotes.slice().sort((a, b) => {
-      const valueA = parseValue((a.data as any)?.[option]);
-      const valueB = parseValue((b.data as any)?.[option]);
-
-      if (
-        valueA === Number.POSITIVE_INFINITY &&
-        valueB === Number.POSITIVE_INFINITY
-      ) {
-        return 0; // Both are "N/A", keep original order
-      } else if (valueA === Number.POSITIVE_INFINITY) {
-        return sortOrder === "asc" ? 1 : -1; // Put "N/A" at the end or beginning
-      } else if (valueB === Number.POSITIVE_INFINITY) {
-        return sortOrder === "asc" ? -1 : 1; // Put "N/A" at the end or beginning
+    const ranges = range.split(",").map((part) => {
+      const numbers = part.trim().split("-").map(Number);
+      // If it's a single number, duplicate it to make a range [number, number]
+      if (numbers.length === 1 && !isNaN(numbers[0])) {
+        return [numbers[0], numbers[0]];
       }
-
-      return sortOrder === "asc" ? valueA - valueB : valueB - valueA;
+      // If it's a proper range and both numbers are valid, return the range
+      else if (
+        numbers.length === 2 &&
+        !isNaN(numbers[0]) &&
+        !isNaN(numbers[1])
+      ) {
+        return numbers;
+      }
+      // If neither, return null to indicate invalid input
+      return null;
     });
 
     // Update the state with the sorted quotes
     setQuotes(sortedQuotes);
   };
+
+  console.log("QUOTES", quotes);
 
   const router = useRouter();
 
@@ -366,37 +378,96 @@ export default function SelectQuotes() {
     } catch (error) {
       console.error("Failed to fetch client and quotes", error);
     }
-  }, []);
-
-  function handleAddNewQuote(event: any) {
-    event?.stopPropagation();
-    setModalOpen("addNewQuote");
-    return;
   }
 
-  const handleClearCheckboxes = () => {
-    setQuotes((prevQuotes) =>
-      prevQuotes?.map((quote) => ({
-        ...quote,
-        isSelected: false,
-      })),
+  function validateSubRangesWithinMainRange(
+    ranges: (number[] | null)[],
+    censusDataRanges: (number[] | null)[],
+    quoteRanges: (number[] | null)[],
+    rateRanges: (number[] | null)[],
+  ) {
+    console.log(
+      "MADE IT HERE",
+      ...(censusDataRanges
+        .flat()
+        .filter(
+          (item) => item !== null && typeof item === "number",
+        ) as number[]),
+      ...(ranges
+        .flat()
+        .filter(
+          (item) => item !== null && typeof item === "number",
+        ) as number[]),
     );
-    setSelectedQuotes([]);
-  };
+    return !(
+      Math.max(
+        ...(censusDataRanges
+          .flat()
+          .filter(
+            (item) => item !== null && typeof item === "number",
+          ) as number[]),
+        ...(rateRanges
+          .flat()
+          .filter(
+            (item) => item !== null && typeof item === "number",
+          ) as number[]),
+        ...(quoteRanges
+          .flat()
+          .filter(
+            (item) => item !== null && typeof item === "number",
+          ) as number[]),
+      ) >
+        Math.max(
+          ...(ranges
+            .flat()
+            .filter(
+              (item) => item !== null && typeof item === "number",
+            ) as number[]),
+        ) ||
+      Math.min(
+        ...(censusDataRanges
+          .flat()
+          .filter(
+            (item) => item !== null && typeof item === "number",
+          ) as number[]),
+        ...(rateRanges
+          .flat()
+          .filter(
+            (item) => item !== null && typeof item === "number",
+          ) as number[]),
+        ...(quoteRanges
+          .flat()
+          .filter(
+            (item) => item !== null && typeof item === "number",
+          ) as number[]),
+      ) <
+        Math.min(
+          ...(ranges
+            .flat()
+            .filter(
+              (item) => item !== null && typeof item === "number",
+            ) as number[]),
+        )
+    );
+  }
 
-  async function handleDeleteQuote() {
-    const selectedQuoteIds =
-      quotes?.filter((quote) => quote.isSelected).map((quote) => quote.id) ||
-      [];
-
-    const { error } = await supabase
-      .from("quotes")
-      .delete()
-      .in("id", selectedQuoteIds);
-    if (error) {
-      alert("Failed to delete quotes");
+  const handleUpload = async (ranges?: number[][]) => {
+    console.log("HELLO?????");
+    if (!file) {
+      setSnackbar({
+        open: true,
+        message: "Please upload a file",
+        severity: "error",
+      });
       return;
     }
+    const errFiles = [] as string[];
+    const successfulFileUrls: string[] = [];
+    const fileId = uuid();
+    try {
+      console.log("selectedPlan", selectedPlan);
+      const fileName = `${selectedPlan}/${fileId}/whole`;
+      await supabase.storage.from("images").upload(fileName, file);
 
     // setQuotes()
 
@@ -423,78 +494,21 @@ export default function SelectQuotes() {
     setSocketTasks(socketTasks?.filter((task) => task !== "fetch_quotes"));
   }
 
-  const [plans, setPlans] = useState<
-    Array<{
-      id: number;
-      name: string;
-      isCurrentPlan: boolean;
-      selectedQuotes: QuoteTypeWithCheckbox[];
-    }>
-  >([]);
-  const [newPlanName, setNewPlanName] = useState("");
-
-  const handleAddQuotesToPlan = (planId: number) => {
-    if (selectedQuotes.length === 0) {
-      selectQuotesFirst();
-    }
-
-    const updatedPlans = plans.map((plan) => {
-      if (plan.id === planId) {
-        // Filter out duplicates before updating the currentQuotes array
-        const uniqueQuotesToAdd = selectedQuotes.filter(
-          (selectedQuote) =>
-            !plan.selectedQuotes.some(
-              (planQuote) => planQuote.id === selectedQuote.id,
-            ),
-        );
-        return {
-          ...plan,
-          selectedQuotes: [...plan.selectedQuotes, ...uniqueQuotesToAdd],
-        };
+      if (!data?.publicUrl) {
+        throw new Error("No url found for file");
       }
-      return plan;
-    });
 
-    setPlans(updatedPlans);
-    handleClearCheckboxes();
-  };
-
-  const parseValue = (value: string | undefined): number => {
-    if (
-      value === undefined ||
-      value === null || // Add this check for null values
-      value === "MISSING" ||
-      value === "" ||
-      value.includes("N/A") ||
-      value.includes("/") ||
-      value.includes("+")
-    )
-      return Number.POSITIVE_INFINITY;
-
-    // Remove commas, dollar signs, and periods
-    const cleanedValue = value.replace(/[,$.]/g, "");
-
-    // If the value is a percentage (contains '%'), remove '%' and convert to a number
-    if (cleanedValue.includes("%")) {
-      return parseFloat(cleanedValue.replace("%", "")) || 0;
-    }
-
-    // If the value is a regular number or a numeric string, convert it to a number
-    return Number(cleanedValue) || 0;
-  };
+      // const fileUrl = data.publicUrl;
 
   useEffect(() => {
     const clientId = searchParams.get("clientId");
-    console.log("CLIENT ID", clientId);
 
-    if (clientId) {
-      fetchClients(parseInt(clientId));
+
+      // Send the fileName instead of fileUrl to backend so we can parse out the carrier name
+      successfulFileUrls.push(fileName);
+    } catch {
+      errFiles.push(file.name);
     }
-  }, [fetchClients, searchParams]);
-
-  const handleCloseComparison = () => {
-    router.push(`/`);
-  };
 
   function filterQuotesByCoverageType(coverage_type: string, isACA?: boolean) {
     let internalFilteredQuotes = quotes;
@@ -505,8 +519,6 @@ export default function SelectQuotes() {
           "medical") === coverage_type
       );
     });
-
-    console.log("INTERNAL_FILTERED_QUOTES", internalFilteredQuotes);
 
     if (typeof isACA !== "undefined" && coverage_type === "medical") {
       internalFilteredQuotes = internalFilteredQuotes.filter((quote) => {
@@ -646,27 +658,231 @@ export default function SelectQuotes() {
                   className="flex items-center"
                   onClick={handleCloseComparison}
                 >
-                  <IoMdArrowBack />
-                  <p className="ml-2 mr-2">Clients / </p>
-                </button>
-                <IconBuilding className="h-5 w-5 mr-2" />
-                <p className="mr-2">{selectedClient?.name || "Client"}</p>
-                {/* <p className="mr-1">/ Quotes</p>
-            <p className="mr-1 text-gray-400 text-xs">•</p>
-            <p className="text-gray-400">({quotes.length})</p> */}
+                  <option value="all" className="w-full">
+                    All
+                  </option>
+                  <option value="custom" className="w-1/2">
+                    Custom
+                  </option>
+                </select>
+                {rangeSelection === "custom" && (
+                  <>
+                    <input
+                      type="text"
+                      className="bg-gray-100 px-2 h-8 drop-shadow-sm outline outline-1 outline-gray-400/80 hover:outline-gray-400 text-sm rounded-sm w-full"
+                      placeholder="e.g., 1-5, 8, 11-13"
+                      onChange={(e) => {
+                        setCustomRange(e.target.value);
+                        const newValue = e.target.value.trim();
+                        validateCustomRangeAndParse(newValue);
+                      }}
+                    />
+                  </>
+                )}
               </div>
-
-              <div className="flex items-center gap-2">
-                <button
-                  onClick={(event) => {
-                    handleAddNewQuote(event);
+            </div>
+            {rangeSelection === "custom" && !isRangeValid && (
+              <div className="text-red-500 text-xs mb-4">
+                Please enter a valid range format (e.g., 1-5, 8, 11-13).
+              </div>
+            )}
+            <div className="my-2">Advanced</div>
+            {isAdvancedOpen ? (
+              <FaArrowDown
+                onClick={() => {
+                  setIsAdvancedOpen(false);
+                }}
+              />
+            ) : (
+              <FaArrowRight
+                onClick={() => {
+                  setIsAdvancedOpen(true);
+                }}
+              />
+            )}
+            {isAdvancedOpen && (
+              <>
+                <label>
+                  <Toggle
+                    defaultChecked={optionalParams.is_aca}
+                    onChange={() => {
+                      setOptionalParams((prev) => {
+                        return { ...prev, is_aca: !prev.is_aca };
+                      });
+                    }}
+                  />
+                  <span>ACA</span>
+                </label>
+                <input
+                  placeholder="Census Data Page Range"
+                  className="mt-2 bg-gray-100 px-2 rounded-sm w-full drop-shadow-sm outline outline-1 h-8 outline-gray-400/80 hover:outline-gray-400"
+                  value={optionalParams.optionalRanges.censusDataRange ?? ""}
+                  onChange={(e) => {
+                    setOptionalParams((prev) => {
+                      return {
+                        ...prev,
+                        optionalRanges: {
+                          ...prev.optionalRanges,
+                          censusDataRange: e.target.value,
+                        },
+                      };
+                    });
                   }}
-                  className="text-sm md:text-base mr-1 outline outline-1 outline-gray-200 py-1 px-2 rounded-md flex items-center justify-center hover:bg-gray-100/80 cursor-pointer"
+                />
+                <input
+                  placeholder="Medical Rates Page Range"
+                  className="mt-2 bg-gray-100 px-2 rounded-sm w-full drop-shadow-sm outline outline-1 h-8 outline-gray-400/80 hover:outline-gray-400"
+                  value={optionalParams.optionalRanges.ratesRange ?? ""}
+                  onChange={(e) => {
+                    setOptionalParams((prev) => {
+                      return {
+                        ...prev,
+                        optionalRanges: {
+                          ...prev.optionalRanges,
+                          ratesRange: e.target.value,
+                        },
+                      };
+                    });
+                  }}
+                />
+                <input
+                  placeholder="Quotes Page Range"
+                  className="mt-2 bg-gray-100 px-2 rounded-sm w-full drop-shadow-sm outline outline-1 h-8 outline-gray-400/80 hover:outline-gray-400"
+                  value={optionalParams.optionalRanges.quotesRange ?? ""}
+                  onChange={(e) => {
+                    setOptionalParams((prev) => {
+                      return {
+                        ...prev,
+                        optionalRanges: {
+                          ...prev.optionalRanges,
+                          quotesRange: e.target.value,
+                        },
+                      };
+                    });
+                  }}
+                />{" "}
+              </>
+            )}
+            <div className="modal-body">
+              {/* File Upload Section */}
+              <form
+                onSubmit={(e) => {
+                  e.preventDefault(); // Prevent the default form submission
+                  setIsProcessing(true);
+                  if (rangeSelection === "all") {
+                    handleUpload();
+                  } else {
+                    console.log("ENTERED");
+                    const ranges = validateCustomRangeAndParse(customRange);
+                    const censusDataRanges = validateCustomRangeAndParse(
+                      optionalParams.optionalRanges.censusDataRange,
+                    );
+                    const quoteRanges = validateCustomRangeAndParse(
+                      optionalParams.optionalRanges.quotesRange,
+                    );
+                    const rateRanges = validateCustomRangeAndParse(
+                      optionalParams.optionalRanges.ratesRange,
+                    );
+                    console.log("HUH????");
+                    if (
+                      rangeSelection === "custom" &&
+                      !validateSubRangesWithinMainRange(
+                        ranges,
+                        censusDataRanges,
+                        quoteRanges,
+                        rateRanges,
+                      )
+                    ) {
+                      alert("Advanced ranges must be within the main range");
+                      setIsProcessing(false);
+                      return;
+                    }
+
+                    if (!isProcessing && ranges.length) {
+                      handleUpload(ranges as number[][]); // Proceed with uploading
+                    }
+                  }
+                }}
+              >
+                <div className="flex flex-col items-center justify-center cursor-pointer">
+                  <div
+                    {...getRootProps()}
+                    className={`p-6 mb-2 mt-2 drop-shadow-sm outline outline-1 outline-gray-400/80 hover:outline-gray-400 w-full ${
+                      isDragActive ? "bg-gray-200/50" : "bg-gray-100/50"
+                    }`}
+                    style={{ borderRadius: "0.25rem" }}
+                  >
+                    <div className="flex items-center justify-center mb-4">
+                      <MdUpload className="h-8 w-8" />
+                    </div>
+                    <input {...getInputProps()} />
+                    <h1 className="text-lg mb-4 text-center">
+                      {isDragActive
+                        ? "Drop the files here"
+                        : "Select or Drag-In Quotes"}
+                    </h1>
+                    {file && (
+                      <div className="text-center mb-4">
+                        <p className="truncate">{file.name}</p>
+                      </div>
+                    )}
+                  </div>
+                  {/* <div className="flex items-center my-4 gap-3">
+                <p>Page Range:</p>
+                <select
+                  className="outline outline-1 outline-gray-300 rounded-sm"
+                  value={rangeSelection}
+                  onChange={(e) => {
+                    setRangeSelection(e.target.value);
+                  }}
                 >
-                  <div className="mr-2">Add Quotes</div>
-                  <MdFileUpload />
-                </button>
+                  <option value="all">All</option>
+                  <option value="custom">Custom</option>
+                </select>
+                {rangeSelection === "custom" && (
+                  <>
+                    <input
+                      type="text"
+                      className="h-5 outline outline-1 outline-gray-300 text-sm rounded-sm"
+                      placeholder="e.g., 1-5, 8, 11-13"
+                      onChange={(e) => {
+                        if (e.target.value && e.target.value.trim()) {
+                          const newValue = e.target.value.trim();
+                          setCustomRange(newValue);
+                          validateCustomRange(newValue);
+                        }
+                      }}
+                    />
+                  </>
+                )}
               </div>
+              {rangeSelection === "custom" && !isRangeValid && (
+                <div className="text-red-500 text-xs mb-4">
+                  Please enter a valid range format (e.g., 1-5, 8, 11-13).
+                </div>
+              )} */}
+
+                  <button
+                    type="submit"
+                    className="w-full bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700 focus:outline-none cursor-pointer mt-1"
+                  >
+                    Upload
+                  </button>
+
+                  <p className="text-xs text-center text-gray-700 mb-1 mt-3">
+                    We use bank-level security to encrypt and process your
+                    statements. For more information about our privacy
+                    measures,&nbsp;
+                    <a
+                      className="text-slate-900 underline"
+                      href="mailto:founders@tryblitz.ai?subject=Security%20Inquiry"
+                    >
+                      email us
+                    </a>
+                    .
+                  </p>
+                </div>
+              </form>
             </div>
 
             <div className="rounded-md w-full flex-col overflow-x-scroll h-full overflow-y-scroll bg-white outline outline-1 outline-gray-200">
@@ -715,7 +931,35 @@ export default function SelectQuotes() {
                   findMaximumValue={findMaximumValue}
                   findMinimumValue={findMinimumValue}
                 />
+
               </div>
+              {rangeSelection === "custom" && !isRangeValid && (
+                <div className="text-red-500 text-xs mb-4">
+                  Please enter a valid range format (e.g., 1-5, 8, 11-13).
+                </div>
+              )} */}
+
+                  <button
+                    type="submit"
+                    className="w-full bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700 focus:outline-none cursor-pointer mt-1"
+                  >
+                    Upload
+                  </button>
+
+                  <p className="text-xs text-center text-gray-700 mb-1 mt-3">
+                    We use bank-level security to encrypt and process your
+                    statements. For more information about our privacy
+                    measures,&nbsp;
+                    <a
+                      className="text-slate-900 underline"
+                      href="mailto:founders@tryblitz.ai?subject=Security%20Inquiry"
+                    >
+                      email us
+                    </a>
+                    .
+                  </p>
+                </div>
+              </form>
             </div>
           </div>
           <SelectSidebar
@@ -755,5 +999,6 @@ export default function SelectQuotes() {
         <ActionBar actionBarEntries={actionBarEntries} />
       )}
     </>
+
   );
-}
+};
