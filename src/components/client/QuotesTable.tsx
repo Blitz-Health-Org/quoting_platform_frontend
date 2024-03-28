@@ -61,6 +61,7 @@ export const QuotesTable = ({
   const coverageTypeSpecificSchema = quoteSchema[coverageType];
 
   console.log("coverageTypeSpecificSchema", coverageTypeSpecificSchema);
+  console.log("plan attributes", planAttributes)
 
   const renderAttributeColumn = (
     quote: QuoteTypeWithCheckbox,
@@ -192,13 +193,32 @@ export const QuotesTable = ({
                     >
                       {attribute === "carrier" ? (
                         <div className="flex items-center justify-left ml-6">
-                          <input
-                            type="checkbox"
-                            checked={quote.isSelected}
-                            onChange={() => handleCheckboxChange(quote.id)}
-                            className="mr-4"
+                        <input
+                          type="checkbox"
+                          checked={quote.isSelected}
+                          onChange={() => handleCheckboxChange(quote.id)}
+                          className="mr-4"
+                        />
+                        {(quote as any)[attribute].includes("United") ? (
+                          <Image
+                            src="/United.png"
+                            alt={`Logo for United`}
+                            width={20}
+                            height={20}
+                            className="mr-2 rounded-md"
                           />
-                          {quote.logo_url && (
+                        ) : (quote as any)[attribute].includes(
+                            "Blue Cross",
+                          ) ? (
+                          <Image
+                            src="/Anthem.jpeg"
+                            alt={`Logo for Anthem / BCBS`}
+                            width={20}
+                            height={20}
+                            className="mr-2 rounded-md"
+                          />
+                        ) : (
+                          quote.logo_url && (
                             <Image
                               src={quote.logo_url}
                               alt={`Logo for ${(quote as any)[attribute]}`}
@@ -206,9 +226,19 @@ export const QuotesTable = ({
                               height={20}
                               className="mr-2 rounded-md"
                             />
-                          )}
-                          <p>{(quote as any)[attribute] || "N/A"}</p>
-                        </div>
+                          )
+                        )}
+                        <p className="truncate">
+                          {(quote as any)[attribute] ===
+                          "UnitedHealthcare"
+                            ? "United"
+                            : (quote as any)[attribute] ===
+                                "Anthem Blue Cross and Blue Shield"
+                              ? "Anthem BCBS"
+                              : (quote as any)[attribute]}
+                        </p>
+                      </div>
+
                       ) : (
                         <p>
                           {renderAttributeColumn(

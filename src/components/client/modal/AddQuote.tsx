@@ -600,42 +600,6 @@ export const AddQuote = ({
               onSubmit={(e) => {
                 e.preventDefault(); // Prevent the default form submission
                 setIsProcessing(true);
-<<<<<<< HEAD
-
-                let validatedDefaultRanges,
-                  validatedCensusDataRanges,
-                  validatedQuotesDataRanges,
-                  validatedRatesRanges,
-                  validatedOptionalParams;
-                if (rangeSelection === "all") {
-                  //skip to handleUpload, no processing needed
-                } else if (rangeSelection === "custom") {
-                  console.log("ENTERED");
-                  validatedDefaultRanges =
-                    validateCustomRangeAndParse(customRange);
-                } else {
-                  //advanced
-                  validatedCensusDataRanges = validateCustomRangeAndParse(
-                    optionalParams.optionalRanges.censusDataRange,
-                  );
-                  validatedQuotesDataRanges = validateCustomRangeAndParse(
-                    optionalParams.optionalRanges.quotesRange,
-                  );
-                  validatedRatesRanges = validateCustomRangeAndParse(
-                    optionalParams.optionalRanges.ratesRange,
-                  );
-                  validatedOptionalParams = {
-                    ...optionalParams,
-                    optionalRanges: {
-                      censusDataRange: validatedCensusDataRanges,
-                      ratesRange: validatedRatesRanges,
-                      quotesRange: validatedQuotesDataRanges,
-                    },
-                  };
-                }
-                if (!isProcessing) {
-                  handleUpload(validatedDefaultRanges, validatedOptionalParams);
-=======
                 if (rangeSelection === "all") {
                 } else if (rangeSelection === "custom") {
                   console.log("ENTERED");
@@ -654,7 +618,6 @@ export const AddQuote = ({
                 }
                 if (!isProcessing) {
                   handleUpload();
->>>>>>> c6492b85840b73f9e039261c6749d4b4d5338bc2
                 }
               }}
             >

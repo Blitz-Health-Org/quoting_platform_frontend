@@ -80,6 +80,7 @@ export default function SelectQuotes() {
       {},
     ),
     medical: [
+      "carrier",
       "deductible",
       "out_of_pocket_max",
       "employee_rate",
