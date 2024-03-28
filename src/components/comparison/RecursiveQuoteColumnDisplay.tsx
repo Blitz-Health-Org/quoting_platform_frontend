@@ -174,9 +174,14 @@ export const RecursiveQuoteColumnDisplay = ({
             ))
           )}
 
-          {isEditing ? (
+          {isEditing &&
+          field?.label != "Pharmacy" &&
+          field?.label != "Copay" &&
+          field?.label != "Rates" &&
+          field?.label != "Plan Details" ? (
             <input
-              className={`break-all font-semibold text-center ${isQuoteCard && "border border-gray-300 rounded-sm"} `}
+              className={`break-all w-min font-semibold text-center ${isQuoteCard && "border border-gray-300 rounded-sm"} `}
+              style={{ width: "120px" }}
               value={
                 ["string", "number", "boolean"].includes(field.type) ? (
                   isQuoteCard ? (
@@ -218,7 +223,10 @@ export const RecursiveQuoteColumnDisplay = ({
               }}
             />
           ) : (
-            <p className={`break-all font-semibold max-w-64`}>
+            <p
+              className={`break-all ${field?.label == "Pharmacy" || field?.label == "Copay" || field?.label == "Rates" || field?.label == "Plan Details" || field?.label == "Plan ID" || field?.label == "Network" || field?.label == "Metal Tier" || field?.label == "Total Monthly Cost" ? "font-medium" : "font-normal"}`}
+              style={isQuoteCard ? { width: "120px" } : {}}
+            >
               {" "}
               {["string", "number", "boolean"].includes(field.type) ? (
                 isQuoteCard ? (

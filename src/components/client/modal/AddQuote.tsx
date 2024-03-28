@@ -600,6 +600,7 @@ export const AddQuote = ({
               onSubmit={(e) => {
                 e.preventDefault(); // Prevent the default form submission
                 setIsProcessing(true);
+<<<<<<< HEAD
 
                 let validatedDefaultRanges,
                   validatedCensusDataRanges,
@@ -634,6 +635,26 @@ export const AddQuote = ({
                 }
                 if (!isProcessing) {
                   handleUpload(validatedDefaultRanges, validatedOptionalParams);
+=======
+                if (rangeSelection === "all") {
+                } else if (rangeSelection === "custom") {
+                  console.log("ENTERED");
+                  validateCustomRangeAndParse(customRange);
+                } else {
+                  //advanced
+                  validateCustomRangeAndParse(
+                    optionalParams.optionalRanges.censusDataRange,
+                  );
+                  validateCustomRangeAndParse(
+                    optionalParams.optionalRanges.quotesRange,
+                  );
+                  validateCustomRangeAndParse(
+                    optionalParams.optionalRanges.ratesRange,
+                  );
+                }
+                if (!isProcessing) {
+                  handleUpload();
+>>>>>>> c6492b85840b73f9e039261c6749d4b4d5338bc2
                 }
               }}
             >
