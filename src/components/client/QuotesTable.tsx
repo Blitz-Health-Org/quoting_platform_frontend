@@ -182,7 +182,15 @@ export const QuotesTable = ({
                 key={quote.id}
                 className={`flex items-center w-fit py-2 border-b ${index % 2 === 0 ? "bg-gray-100" : "bg-white"}`}
               >
-                <div className="grid-cols-9 w-full flex justify-left text-center gap-1 h-8 items-center text-sm">
+                <div className="grid-cols-9 relative w-full flex justify-left text-center gap-1 h-8 items-center text-sm">
+                  <div className="flex absolute left-2 items-center justify-left ml-6">
+                    <input
+                      type="checkbox"
+                      checked={quote.isSelected}
+                      onChange={() => handleCheckboxChange(quote.id)}
+                      className="mr-4"
+                    />
+                  </div>
                   {/* Map through the plan attributes for each quote */}
                   {planAttributes.map((attribute, index) => (
                     <div
@@ -191,13 +199,7 @@ export const QuotesTable = ({
                       style={{ width: `${entryWidth}px` }}
                     >
                       {attribute === "carrier" ? (
-                        <div className="flex items-center justify-left ml-6">
-                          <input
-                            type="checkbox"
-                            checked={quote.isSelected}
-                            onChange={() => handleCheckboxChange(quote.id)}
-                            className="mr-4"
-                          />
+                        <>
                           {quote.logo_url && (
                             <Image
                               src={quote.logo_url}
@@ -208,7 +210,7 @@ export const QuotesTable = ({
                             />
                           )}
                           <p>{(quote as any)[attribute] || "N/A"}</p>
-                        </div>
+                        </>
                       ) : (
                         <p>
                           {renderAttributeColumn(

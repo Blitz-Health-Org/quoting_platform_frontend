@@ -80,12 +80,13 @@ export default function SelectQuotes() {
       {},
     ),
     medical: [
+      "plan_id",
+      "carrier",
       "deductible",
       "out_of_pocket_max",
       "employee_rate",
       "coinsurance",
       "total_employer_cost",
-      "plan_id",
     ],
   };
 
