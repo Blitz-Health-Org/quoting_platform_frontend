@@ -44,9 +44,6 @@ export function GroupCard({
 
   const { sharingId } = useContext(ClientContext);
 
-  console.log("SHARING", sharingId);
-  console.log("PLAN", plan);
-
   return (
     <PlanGroupContextProvider
       value={{

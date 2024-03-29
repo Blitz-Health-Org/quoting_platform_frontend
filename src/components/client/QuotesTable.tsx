@@ -55,6 +55,7 @@ export const QuotesTable = ({
   if (valueEmployeeRate[0] === 0) {
     valueEmployeeRate[0] = findMinimumValue("employee_rate");
   }
+  console.log("QUOTES", quotes);
 
   const { quoteSchema } = useContext(QuoteSchemaContext);
 
@@ -69,7 +70,7 @@ export const QuotesTable = ({
     schema: any,
   ) => {
     console.log("SCHEMA", schema, planAttribute);
-    console.log("QUOTEDATA", quote.data);
+    console.log("QUOTEDATA", quote.data, (quote.data as any)?.[planAttribute]);
     if (typeof (quote.data as any)?.[planAttribute] === "string") {
       return (
         <div

@@ -118,7 +118,7 @@ export const ClassSection = ({
             })
           }
           value={newClass.class_name}
-          className="font-bold"
+          className="font-bold border border-black"
         />
       )}
       {isNewClassBeingCreated ? (

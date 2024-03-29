@@ -33,11 +33,32 @@ export const PlanSection = ({
   isCustomClassesActivated,
   handleUpdateClassInfo,
 }: PlanSectionProps) => {
+  planSpecificClassInfo = planSpecificClassInfo.filter((planClassItem) => {
+    return classes
+      .map((classItem) => classItem.id)
+      .includes(planClassItem.class_id);
+    //if the plan id is not in the plans array, filter it out
+  });
+
   const [editedPlanClassId, setEditedPlanClassId] = useState<
     string | undefined
   >(undefined);
+  const [prevEditedPlanClassId, setPrevEditedPlanClassId] = useState<
+    string | undefined
+  >(editedPlanClassId);
+  const [isEditingPlanRates, setIsEditingPlanRates] = useState<boolean>(false);
+  const [editedPlanRates, setEditedPlanRates] = useState<PlanRatesType>(
+    plans.map((plan) => {
+      return {
+        plan_id: plan.id,
+        spouse_rate: (plan.data.spouse_rate as string | undefined) ?? "N/A",
+        employee_rate: (plan.data.employee_rate as string | undefined) ?? "N/A",
+        child_rate: (plan.data.child_rate as string | undefined) ?? "N/A",
+        family_rate: (plan.data.family_rate as string | undefined) ?? "N/A",
+      };
+    }),
+  );
 
-  //Default class results not saved (probably bad design but I'm too lazy to populate them into the supabase). planSpecificClassInfo not used without custom classes
   const [editedPlanSpecificClassInfo, setEditedPlanSpecificClassInfo] =
     useState<PlanSpecificClassInfoType>(planSpecificClassInfo);
 
@@ -46,17 +67,32 @@ export const PlanSection = ({
   const [previousClassIdList, setPreviousClassIdList] =
     useState<number[]>(currentClassIdList);
 
-  console.log("EDIT", editedPlanSpecificClassInfo);
-  console.log(
-    "prev",
-    previousClassIdList,
-    currentClassIdList,
-    planSpecificClassInfo,
-  );
   if (!lodash.isEqual(previousClassIdList, currentClassIdList)) {
     setPreviousClassIdList(currentClassIdList);
     setEditedPlanSpecificClassInfo(planSpecificClassInfo);
   }
+
+  const handleSubmitPlanRates = () => {
+    //TODO: Implement update plan rates, could pass in as callback
+  };
+
+  const handlePlanRateChange = (
+    planId: number,
+    field: string,
+    value: string,
+  ) => {
+    setEditedPlanRates((currentRates) =>
+      currentRates.map((rate) => {
+        if (rate.plan_id === planId) {
+          return {
+            ...rate,
+            [field]: value,
+          };
+        }
+        return rate;
+      }),
+    );
+  };
 
   const handleInputChange = (
     planId: number,
@@ -81,7 +117,21 @@ export const PlanSection = ({
     );
   };
 
-  let grandTotalCost = 0.0;
+  let tempGrandTotalCost = 0.0;
+
+  //create dictionary for total costs calculation
+  const totalCostMapping = plans.reduce((acc: Record<number, any>, plan) => {
+    const planClassInfo = planSpecificClassInfo.filter(
+      (classInfo) => classInfo.plan_id === plan.id,
+    );
+
+    const totalCost = calculateTotalCost(censusData, plan, planClassInfo);
+    acc[plan.id] = totalCost;
+    tempGrandTotalCost += parseFloat(parseFloat(totalCost).toFixed(2));
+    return acc;
+  }, {});
+
+  const grandTotalCost = tempGrandTotalCost.toFixed(2);
 
   return (
     <div className="flex-col">
@@ -91,15 +141,6 @@ export const PlanSection = ({
       </div>
       <div className="grid grid-cols-2 gap-4">
         {plans.map((plan) => {
-          const planSpecificClasses = editedPlanSpecificClassInfo.filter(
-            (planSpecificClass) => {
-              return planSpecificClass.plan_id === plan.id;
-            },
-          );
-
-          const totalCost = calculateTotalCost({}, plan, planSpecificClasses);
-          grandTotalCost += parseFloat(totalCost);
-
           return (
             <div
               key={plan.id}
@@ -110,20 +151,112 @@ export const PlanSection = ({
                 {plan.data.plan_name as string}
               </h3>
               <p className="font-medium mb-1 mt-2">Plan Rates</p>
-              <ul>
-                <li>
-                  Employee rate: {plan.data.employee_rate as string | undefined}
-                </li>
-                <li>
-                  Spouse rate: {plan.data.spouse_rate as string | undefined}
-                </li>
-                <li>
-                  Child rate: {plan.data.child_rate as string | undefined}
-                </li>
-                <li>
-                  Family rate: {plan.data.family_rate as string | undefined}
-                </li>
-              </ul>
+              {isEditingPlanRates ? (
+                <button
+                  onClick={() => {
+                    setIsEditingPlanRates(false);
+                    handleSubmitPlanRates();
+                  }}
+                >
+                  Submit
+                </button>
+              ) : (
+                <button onClick={() => setIsEditingPlanRates(true)}>
+                  Edit
+                </button>
+              )}
+              {isEditingPlanRates ? (
+                <ul>
+                  <li>
+                    Employee rate:
+                    <input
+                      value={
+                        editedPlanRates.find((rate) => rate.plan_id === plan.id)
+                          ?.employee_rate
+                      }
+                      onChange={(e) =>
+                        handlePlanRateChange(
+                          plan.id,
+                          "employee_rate",
+                          e.target.value,
+                        )
+                      }
+                    />
+                  </li>
+                  <li>
+                    Spouse rate:
+                    <input
+                      value={
+                        editedPlanRates.find((rate) => rate.plan_id === plan.id)
+                          ?.spouse_rate
+                      }
+                      onChange={(e) =>
+                        handlePlanRateChange(
+                          plan.id,
+                          "spouse_rate",
+                          e.target.value,
+                        )
+                      }
+                    />
+                  </li>
+                  <li>
+                    Child rate:
+                    <input
+                      value={
+                        editedPlanRates.find((rate) => rate.plan_id === plan.id)
+                          ?.child_rate
+                      }
+                      onChange={(e) =>
+                        handlePlanRateChange(
+                          plan.id,
+                          "child_rate",
+                          e.target.value,
+                        )
+                      }
+                    />
+                  </li>
+                  <li>
+                    Family rate:
+                    <input
+                      value={
+                        editedPlanRates.find((rate) => rate.plan_id === plan.id)
+                          ?.family_rate
+                      }
+                      onChange={(e) =>
+                        handlePlanRateChange(
+                          plan.id,
+                          "family_rate",
+                          e.target.value,
+                        )
+                      }
+                    />
+                  </li>
+                </ul>
+              ) : (
+                <ul>
+                  <li>
+                    Employee rate:{" "}
+                    {editedPlanRates.find((rate) => rate.plan_id === plan.id)
+                      ?.employee_rate ?? "N/A"}
+                  </li>
+                  <li>
+                    Spouse rate:{" "}
+                    {editedPlanRates.find((rate) => rate.plan_id === plan.id)
+                      ?.spouse_rate ?? "N/A"}
+                  </li>
+                  <li>
+                    Child rate:{" "}
+                    {editedPlanRates.find((rate) => rate.plan_id === plan.id)
+                      ?.child_rate ?? "N/A"}
+                  </li>
+                  <li>
+                    Family rate:{" "}
+                    {editedPlanRates.find((rate) => rate.plan_id === plan.id)
+                      ?.family_rate ?? "N/A"}
+                  </li>
+                </ul>
+              )}{" "}
+              )
               <>
                 <p className="font-medium mb-1 mt-2">Classes</p>
                 <div>
@@ -200,48 +333,45 @@ export const PlanSection = ({
                                           </span>
                                         )}
                                       </li>
-                                      {isCustomClassesActivated && (
-                                        <li>
-                                          {editedPlanClassId ===
-                                          planSpecificClassId ? (
-                                            <>
-                                              <span>
-                                                No. of{" "}
-                                                {tier[0].toUpperCase() +
-                                                  tier.slice(1)}
-                                                :{" "}
-                                              </span>
-                                              <input
-                                                value={
-                                                  editedPlanSpecificClass?.[
-                                                    tier
-                                                  ].num_lives
-                                                }
-                                                onChange={(e) =>
-                                                  handleInputChange(
-                                                    plan.id,
-                                                    classItem.id as number,
-                                                    tier,
-                                                    "num_lives",
-                                                    e.target.value,
-                                                  )
-                                                }
-                                              />
-                                            </>
-                                          ) : (
+                                      <li>
+                                        {editedPlanClassId ===
+                                        planSpecificClassId ? (
+                                          <>
                                             <span>
                                               No. of{" "}
                                               {tier[0].toUpperCase() +
                                                 tier.slice(1)}
                                               :{" "}
-                                              {
+                                            </span>
+                                            <input
+                                              value={
                                                 editedPlanSpecificClass?.[tier]
                                                   .num_lives
                                               }
-                                            </span>
-                                          )}
-                                        </li>
-                                      )}
+                                              onChange={(e) =>
+                                                handleInputChange(
+                                                  plan.id,
+                                                  classItem.id as number,
+                                                  tier,
+                                                  "num_lives",
+                                                  e.target.value,
+                                                )
+                                              }
+                                            />
+                                          </>
+                                        ) : (
+                                          <span>
+                                            No. of{" "}
+                                            {tier[0].toUpperCase() +
+                                              tier.slice(1)}
+                                            :{" "}
+                                            {
+                                              editedPlanSpecificClass?.[tier]
+                                                .num_lives
+                                            }
+                                          </span>
+                                        )}
+                                      </li>
                                     </ul>
                                   </li>
                                 );
@@ -255,10 +385,10 @@ export const PlanSection = ({
                                     cleanedEditedPlanSpecificClass,
                                     parseSucceeded,
                                   ] = cleanInput({
-                                    employee: editedPlanSpecificClass.employee,
-                                    spouse: editedPlanSpecificClass.spouse,
-                                    family: editedPlanSpecificClass.family,
-                                    child: editedPlanSpecificClass.child,
+                                    employee: editedPlanSpecificClass?.employee,
+                                    spouse: editedPlanSpecificClass?.spouse,
+                                    family: editedPlanSpecificClass?.family,
+                                    child: editedPlanSpecificClass?.child,
                                   });
                                   if (!parseSucceeded) {
                                     alert("Invalid Input. Please re-enter");
@@ -281,11 +411,12 @@ export const PlanSection = ({
                             ) : (
                               <button
                                 className="flex w-full justify-center px-2 py-1 mt-2 items-center gap-2 outline outline-1 outline-gray-300 rounded-sm bg-gray-100/20 hover:bg-gray-100/50"
-                                onClick={() =>
+                                onClick={() => {
+                                  //TODO: Switching doesn't update edit
                                   setEditedPlanClassId(
                                     `${plan.id}-${classItem.id}`,
-                                  )
-                                }
+                                  );
+                                }}
                               >
                                 <MdEdit />
                                 <p>Edit</p>
@@ -308,29 +439,10 @@ export const PlanSection = ({
                       })}
                 </div>
               </>
-              Plan Rates
-              <ul>
-                <li>
-                  Employee rate: {plan.data.employee_rate as string | undefined}
-                </li>
-                <li>
-                  Employee + Spouse rate:{" "}
-                  {plan.data.spouse_rate as string | undefined}
-                </li>
-                <li>
-                  Employee + Child rate:{" "}
-                  {plan.data.child_rate as string | undefined}
-                </li>
-                <li>
-                  Employee + Family rate:{" "}
-                  {plan.data.family_rate as string | undefined}
-                </li>
-              </ul>
               <div className="mt-4">
                 <strong>Total Cost: </strong>
-                {totalCost}
+                {totalCostMapping[plan.id]}
               </div>
-              <strong>Grand Total Cost: {grandTotalCost}</strong>
             </div>
           );
         })}
