@@ -106,7 +106,7 @@ export const QuotesTable = ({
       <div
         className={`w-full overflow-x-auto ${quotes.length <= 5 ? "h-full" : "h-fit"} pb-12`}
       >
-        <div className="flex py-2 w-fit border-b">
+        <div className="flex py-2 border-b">
           <div className="grid-cols-9 flex justify-left text-center w-fit gap-1 h-10 font-bold items-start text-wrap text-sm">
             {planAttributes.map((attribute, index) => {
               if (attribute === "carrier") {
@@ -184,7 +184,7 @@ export const QuotesTable = ({
                 className={`flex items-center w-fit py-2 border-b ${index % 2 === 0 ? "bg-gray-100" : "bg-white"}`}
               >
                 <div className="grid-cols-9 relative w-full flex justify-left text-center gap-1 h-8 items-center text-sm">
-                  <div className="flex absolute left-2 items-center justify-left ml-6">
+                  <div className="flex absolute left-2 items-center justify-left ml-2">
                     <input
                       type="checkbox"
                       checked={quote.isSelected}
@@ -200,7 +200,7 @@ export const QuotesTable = ({
                       style={{ width: `${entryWidth}px` }}
                     >
                       {attribute === "carrier" ? (
-                        <>
+                        <div className="flex justify-center">
                           {quote.logo_url && (
                             <Image
                               src={quote.logo_url}
@@ -211,7 +211,7 @@ export const QuotesTable = ({
                             />
                           )}
                           <p>{(quote as any)[attribute] || "N/A"}</p>
-                        </>
+                        </div>
                       ) : (
                         <p>
                           {renderAttributeColumn(
