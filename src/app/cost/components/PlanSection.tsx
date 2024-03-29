@@ -9,9 +9,9 @@ import {
   TierType,
   calculateTotalCost,
 } from "@/src/components/comparison/utils/calculateTotalCost";
-import { Dispatch, SetStateAction, useState } from "react";
+import { Dispatch, SetStateAction, useEffect, useState } from "react";
 type PlanSectionProps = {
-  plans: QuoteType[];
+  planIds: number[];
   classes: ClassType[];
   isCustomClassesActivated: boolean;
   planSpecificClassInfo: PlanSpecificClassInfoType;
@@ -24,9 +24,11 @@ type PlanSectionProps = {
 import lodash from "lodash";
 import { CensusDataType } from "../page";
 import { MdEdit, MdSave } from "react-icons/md";
+import { supabase } from "@/src/supabase";
+import router from "next/router";
 
 export const PlanSection = ({
-  plans,
+  planIds,
   classes,
   planSpecificClassInfo,
   censusData,
@@ -36,6 +38,36 @@ export const PlanSection = ({
   const [editedPlanClassId, setEditedPlanClassId] = useState<
     string | undefined
   >(undefined);
+
+  const fetchData = async () => {
+    
+    try {
+      const { data: quotesData, error: quotesError } = await supabase
+        .from("quotes")
+        .select("*")
+        .in("id", planIds);
+  
+      if (quotesError) {
+        console.error("Error fetching quotes:", quotesError);
+        return;
+      }
+  
+      console.log("this is what quotes data looks like", quotesData)
+      setPlans(quotesData)
+
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    }
+    
+  };
+
+  const [plans, setPlans] = useState<QuoteType[]>([]);
+
+  useEffect(() => {
+    fetchData();
+  }, [])
+
+  console.log("plan specific class info", planSpecificClassInfo)
 
   //Default class results not saved (probably bad design but I'm too lazy to populate them into the supabase). planSpecificClassInfo not used without custom classes
   const [editedPlanSpecificClassInfo, setEditedPlanSpecificClassInfo] =
@@ -82,6 +114,10 @@ export const PlanSection = ({
   };
 
   let grandTotalCost = 0.0;
+
+  if (plans.length === 0) {
+    return <></>
+  }
 
   return (
     <div className="flex-col">

@@ -47,7 +47,7 @@ export function GroupCard({
 
   const { sharingId } = useContext(ClientContext);
   const [quotes, setQuotes] = useState<any[]>([]);
-  console.log("fuck me", plan);
+  // console.log("fuck me", plan);
 
   useEffect(() => {
     fetchQuoteData(clientId)
@@ -72,8 +72,8 @@ export function GroupCard({
     }
   };
 
-  console.log("SHARING", sharingId);
-  console.log("PLAN", plan);
+  // console.log("SHARING", sharingId);
+  // console.log("PLAN", plan);
 
   if (!quotes.length) {
     return <></>
@@ -209,9 +209,9 @@ export function GroupCard({
         <div className="min-w-80 flex w-full h-fit text-center border border-l-0 border-t-0 border-b-0 border-gray-300">
           { plan.selectedQuotes.map((identifier: number) => {
             const selectedOne = quotes.find(quote => quote.id === identifier) as any;
-            console.log("yo", quotes)
-            console.log("what", selectedOne);
-            console.log("the fuck", identifier)
+            // console.log("yo", quotes)
+            // console.log("what", selectedOne);
+            // console.log("the fuck", identifier)
               return <QuoteCard
                 isContributionSettingsExpanded={isContributionSettingsExpanded}
                 quote={selectedOne}

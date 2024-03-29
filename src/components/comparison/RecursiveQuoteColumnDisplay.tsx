@@ -64,7 +64,7 @@ export const RecursiveQuoteColumnDisplay = ({
     const { isEditing, setEditedQuotes } = useContext(PlanGroupContext);
 
     const { hiddenComparisonFields, sharingId } = useContext(ClientContext);
-    console.log("SHARING IN LABEL", sharingId);
+    // console.log("SHARING IN LABEL", sharingId);
 
     const [hiddenFields, setHiddenFields] = hiddenComparisonFields;
 

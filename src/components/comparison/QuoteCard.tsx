@@ -56,7 +56,7 @@ export const QuoteCard = ({
   //   quote,
   //   planSpecificClasses);
 
-  console.log("QUOTE QUOTE QUOTE", quote);
+  // console.log("QUOTE QUOTE QUOTE", quote);
   const calculatedTotalCost = quote.data.total_employer_cost;
 
   return (

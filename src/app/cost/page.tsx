@@ -173,8 +173,9 @@ export default function CostPage() {
       }) as PlanGroupType;
       setPlanGroup(newPlanGroup);
 
-      const plans = newPlanGroup.selectedQuotes;
-      const planIds = plans.map((plan) => plan.id);
+      const planIds = newPlanGroup.selectedQuotes;
+      // const planIds = plans.map((plan) => plan.id);
+      // console.log("here are some plans", plans, planIds)
 
       //fetches custom classes and planspecific
       await fetchAndSetClasses(clientData, planIds);
@@ -198,8 +199,10 @@ export default function CostPage() {
 
   //toggle custom classes (disables default)
 
-  const plans = (planGroup as PlanGroupType).selectedQuotes;
-  const planIds = plans.map((plan) => plan.id);
+  const planIds = (planGroup as PlanGroupType).selectedQuotes;
+  // const planIds = plans.map((plan) => plan.id);
+
+  console.log("kill me", planSpecificClassInfo)
 
   return (
     <main className="flex w-full h-screen overflow-hidden pl-4 md:pl-0 bg-gray-100">
@@ -326,7 +329,7 @@ export default function CostPage() {
             <div className="w-4/5">
               <div className="w-full px-4 py-2 mb-4 rounded-md">
                 <PlanSection
-                  plans={plans}
+                  planIds={planIds}
                   classes={defaultOrCustomClasses}
                   isCustomClassesActivated={isCustomClassesActivated}
                   planSpecificClassInfo={planSpecificClassInfo}

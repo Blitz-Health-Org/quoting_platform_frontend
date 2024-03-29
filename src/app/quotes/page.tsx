@@ -213,7 +213,7 @@ export default function QuotingPage() {
         }
 
         newPlans = newPlans.reduce(
-          (acc: QuoteType[], newPlan: PlanGroupType) => {
+          (acc: number[], newPlan: PlanGroupType) => {
             // Append each selectedQuotes list to the accumulator
             return acc.concat(newPlan.selectedQuotes);
           },

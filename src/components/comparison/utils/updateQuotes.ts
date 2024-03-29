@@ -2,11 +2,12 @@ import { supabase } from "@/src/supabase";
 import { QuoteType } from "@/src/types/custom/Quote";
 
 export async function handleUpdateQuotes(
-  updatedQuotes: QuoteType[],
+  updatedQuotes: number[],
   clientId: number,
   planId: number,
-  fetchClientAndQuotes: any,
+  fetchClientAndQuotes: any
 ) {
+  console.log("here are updated quotes", updatedQuotes);
   const { data: client, error: clientError } = await supabase
     .from("clients")
     .select()
