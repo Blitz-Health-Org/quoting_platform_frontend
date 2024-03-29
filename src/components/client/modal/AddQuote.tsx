@@ -31,7 +31,7 @@ type OptionalParamsType = {
     ratesRange: string;
     quotesRange: string;
   };
-  is_aca: boolean;
+  isAgeBanded: boolean;
 };
 
 export const AddQuote = ({
@@ -66,7 +66,7 @@ export const AddQuote = ({
       ratesRange: "",
       quotesRange: "",
     },
-    is_aca: false,
+    isAgeBanded: false,
   });
 
   const [isAdvancedOpen, setIsAdvancedOpen] = useState(false);
@@ -124,86 +124,27 @@ export const AddQuote = ({
     }
   }
 
-  function validateSubRangesWithinMainRange(
-    ranges: (number[] | null)[],
-    censusDataRanges: (number[] | null)[],
-    quoteRanges: (number[] | null)[],
-    rateRanges: (number[] | null)[],
-  ) {
-    console.log(
-      "MADE IT HERE",
-      ...(censusDataRanges
-        .flat()
-        .filter(
-          (item) => item !== null && typeof item === "number",
-        ) as number[]),
-      ...(ranges
-        .flat()
-        .filter(
-          (item) => item !== null && typeof item === "number",
-        ) as number[]),
-    );
-    return !(
-      Math.max(
-        ...(censusDataRanges
-          .flat()
-          .filter(
-            (item) => item !== null && typeof item === "number",
-          ) as number[]),
-        ...(rateRanges
-          .flat()
-          .filter(
-            (item) => item !== null && typeof item === "number",
-          ) as number[]),
-        ...(quoteRanges
-          .flat()
-          .filter(
-            (item) => item !== null && typeof item === "number",
-          ) as number[]),
-      ) >
-        Math.max(
-          ...(ranges
-            .flat()
-            .filter(
-              (item) => item !== null && typeof item === "number",
-            ) as number[]),
-        ) ||
-      Math.min(
-        ...(censusDataRanges
-          .flat()
-          .filter(
-            (item) => item !== null && typeof item === "number",
-          ) as number[]),
-        ...(rateRanges
-          .flat()
-          .filter(
-            (item) => item !== null && typeof item === "number",
-          ) as number[]),
-        ...(quoteRanges
-          .flat()
-          .filter(
-            (item) => item !== null && typeof item === "number",
-          ) as number[]),
-      ) <
-        Math.min(
-          ...(ranges
-            .flat()
-            .filter(
-              (item) => item !== null && typeof item === "number",
-            ) as number[]),
-        )
-    );
-  }
-
-  const handleUpload = async (ranges?: number[][]) => {
+  const handleUpload = async (
+    validatedRanges?: number[][],
+    validatedOptionalParams: any = {
+      is_aca: false,
+      optionalRanges: {
+        censusDataRange: [],
+        ratesRange: [],
+        quotesRange: [],
+      },
+    },
+  ) => {
     if (!file) {
       setSnackbar({
         open: true,
         message: "Please upload a file",
         severity: "error",
       });
+      setIsProcessing(false);
       return;
     }
+
     const errFiles = [] as string[];
     const successfulFileUrls: string[] = [];
     const fileId = uuid();
@@ -239,6 +180,7 @@ export const AddQuote = ({
         message: `Error occurred for the following files: ${errFiles.join(", ")}`,
         severity: "error",
       });
+      setIsProcessing(false);
       return;
     } else {
       // setSnackbar({
@@ -249,7 +191,10 @@ export const AddQuote = ({
     }
 
     try {
-      console.log("RUNNING ONCE");
+      console.log("RUNNING ONCE", {
+        ...optionalParams,
+        validatedOptionalParams,
+      });
       const response = await fetch(
         `${process.env.NEXT_PUBLIC_BACKEND_URL}/parse`,
         {
@@ -261,8 +206,11 @@ export const AddQuote = ({
             successfulFileUrls,
             client: client,
             userId: userId,
-            ranges: ranges,
-            optionalParams: optionalParams,
+            ranges: validatedRanges,
+            optionalParams:
+              rangeSelection === "advanced"
+                ? { ...optionalParams, ...validatedOptionalParams }
+                : undefined,
           }),
         },
       );
@@ -526,12 +474,12 @@ export const AddQuote = ({
               Advanced Options
               <label>
                 <div className="flex my-4">
-                  <span>Is ACA:</span>
+                  <span>Age-banded:</span>
                   <Toggle
-                    defaultChecked={optionalParams.is_aca}
+                    defaultChecked={optionalParams.isAgeBanded}
                     onChange={() => {
                       setOptionalParams((prev) => {
-                        return { ...prev, is_aca: !prev.is_aca };
+                        return { ...prev, is_aca: !prev.isAgeBanded };
                       });
                     }}
                     className="ml-3"
@@ -594,24 +542,40 @@ export const AddQuote = ({
               onSubmit={(e) => {
                 e.preventDefault(); // Prevent the default form submission
                 setIsProcessing(true);
+
+                let validatedDefaultRanges,
+                  validatedCensusDataRanges,
+                  validatedQuotesDataRanges,
+                  validatedRatesRanges,
+                  validatedOptionalParams;
                 if (rangeSelection === "all") {
+                  //skip to handleUpload, no processing needed
                 } else if (rangeSelection === "custom") {
                   console.log("ENTERED");
-                  validateCustomRangeAndParse(customRange);
+                  validatedDefaultRanges =
+                    validateCustomRangeAndParse(customRange);
                 } else {
                   //advanced
-                  validateCustomRangeAndParse(
+                  validatedCensusDataRanges = validateCustomRangeAndParse(
                     optionalParams.optionalRanges.censusDataRange,
                   );
-                  validateCustomRangeAndParse(
+                  validatedQuotesDataRanges = validateCustomRangeAndParse(
                     optionalParams.optionalRanges.quotesRange,
                   );
-                  validateCustomRangeAndParse(
+                  validatedRatesRanges = validateCustomRangeAndParse(
                     optionalParams.optionalRanges.ratesRange,
                   );
+                  validatedOptionalParams = {
+                    ...optionalParams,
+                    optionalRanges: {
+                      censusDataRange: validatedCensusDataRanges,
+                      ratesRange: validatedRatesRanges,
+                      quotesRange: validatedQuotesDataRanges,
+                    },
+                  };
                 }
                 if (!isProcessing) {
-                  handleUpload();
+                  handleUpload(validatedDefaultRanges, validatedOptionalParams);
                 }
               }}
             >

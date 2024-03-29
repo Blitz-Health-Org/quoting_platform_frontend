@@ -11,7 +11,7 @@ export function generateRateSheetData() {
   let data: Object[] = [
     {
       Category: "Miscellaneous",
-      "Monthly Spend": "=C11/12",
+      "  Spend": "=C11/12",
       "Annual Spend": 1250,
       "Last Year Spend": 1558,
       "Percentage Change": "=C11/D11",

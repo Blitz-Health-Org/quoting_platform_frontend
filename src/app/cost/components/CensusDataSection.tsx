@@ -39,7 +39,7 @@ export const CensusDataSection = ({
               <input
                 type="number"
                 className="px-2 w-4/5 outline outline-1 outline-gray-200"
-                value={editedCensusData[tier].num_lives ?? undefined}
+                value={editedCensusData[tier]?.num_lives ?? undefined}
                 onChange={(e) =>
                   handleChange(
                     tier as keyof CensusDataType,
@@ -49,7 +49,7 @@ export const CensusDataSection = ({
               />
             </div>
           ) : (
-            <span>{`${tier}: ${editedCensusData[tier].num_lives ?? "N/A"}`}</span>
+            <span>{`${tier}: ${editedCensusData[tier]?.num_lives ?? "N/A"}`}</span>
           )}
         </div>
       ))}

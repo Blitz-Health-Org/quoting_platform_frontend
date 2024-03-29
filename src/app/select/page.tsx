@@ -55,17 +55,15 @@ const TABS_TO_COVERAGE_TYPE_MAPPING: Record<TabOption, CoverageTypeOption> = {
   "Group Term Life": "group_term_life",
 };
 
-export type QuoteTypeWithCheckbox = QuoteType & { isSelected: boolean };
+export type QuoteTypeWithCheckbox = QuoteType & { isSelected: boolean }; //Ethan: removed setting this because it's redundant
 
 export default function SelectQuotes() {
-  type QuoteTypeWithCheckbox = QuoteType & { isSelected: boolean };
-
   const [modalOpen, setModalOpen] = useState<string>("");
 
   const { quoteSchema } = useContext(QuoteSchemaContext);
 
-  const displayedPlanAttributesByCoverageType: Record<string, string[]> =
-    Object.entries(quoteSchema).reduce(
+  const displayedPlanAttributesByCoverageType: Record<string, string[]> = {
+    ...Object.entries(quoteSchema).reduce(
       (acc: Record<string, string[]>, [coverageType, coverageTypeSchema]) => {
         // Assuming coverageTypeSchema has a structure similar to { properties: { ... } }
         // and you want to collect the labels of these properties:
@@ -78,7 +76,17 @@ export default function SelectQuotes() {
         return { ...acc, [coverageType]: labels };
       },
       {},
-    );
+    ),
+    medical: [
+      "plan_id",
+      "carrier",
+      "deductible",
+      "out_of_pocket_max",
+      "employee_rate",
+      "coinsurance",
+      "total_employer_cost",
+    ],
+  };
 
   const {
     socketTasks: [socketTasks, setSocketTasks],
@@ -286,14 +294,6 @@ export default function SelectQuotes() {
   const [selectedFilter, setSelectedFilter] = useState<string | null>(null);
 
   const handleCheckboxChange = (quoteId: number) => {
-    setQuotes((prevQuotes) =>
-      prevQuotes?.map((quote) =>
-        quote.id === quoteId
-          ? { ...quote, isSelected: !quote.isSelected }
-          : quote,
-      ),
-    );
-
     // Update selectedQuotes state
     setSelectedQuotes((prevSelectedQuotes) => {
       const index = prevSelectedQuotes.findIndex(
@@ -370,48 +370,8 @@ export default function SelectQuotes() {
   }
 
   const handleClearCheckboxes = () => {
-    setQuotes((prevQuotes) =>
-      prevQuotes?.map((quote) => ({
-        ...quote,
-        isSelected: false,
-      })),
-    );
     setSelectedQuotes([]);
   };
-
-  async function handleDeleteQuote() {
-    const selectedQuoteIds =
-      quotes?.filter((quote) => quote.isSelected).map((quote) => quote.id) ||
-      [];
-
-    const { error } = await supabase
-      .from("quotes")
-      .delete()
-      .in("id", selectedQuoteIds);
-    if (error) {
-      alert("Failed to delete quotes");
-      return;
-    }
-
-    // setQuotes()
-
-    const clientId = selectedClient.id;
-
-    const { data: insertData, error: insertError } = await supabase
-      .from("clients") // Replace with your actual Supabase table name
-      .upsert({ id: selectedClient.id, selected_quotes: selectedQuoteIds });
-
-    if (insertError) {
-      console.error("Error inserting row into Supabase table:", insertError);
-      return { success: false };
-    } else {
-      router.push(
-        `/quotes?clientId=${clientId}&type=${TABS_TO_COVERAGE_TYPE_MAPPING[currentTab as TabOption]}`,
-      );
-
-      return { success: true };
-    }
-  }
 
   if (selectedClient && socketTasks?.includes("fetch_quotes")) {
     fetchQuoteData(selectedClient);
@@ -507,7 +467,6 @@ export default function SelectQuotes() {
         ];
         // Explicitly treat undefined as false
         const isAcaValue = isAcaMetadata === undefined ? false : isAcaMetadata;
-        console.log("CHECK", isAcaMetadata, isACA, isAcaValue === isACA);
         return isAcaValue === isACA;
       });
     }

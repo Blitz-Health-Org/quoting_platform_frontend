@@ -44,9 +44,6 @@ export function GroupCard({
 
   const { sharingId } = useContext(ClientContext);
 
-  console.log("SHARING", sharingId);
-  console.log("PLAN", plan);
-
   return (
     <PlanGroupContextProvider
       value={{
@@ -108,7 +105,7 @@ export function GroupCard({
           <div className="flex rounded-md w-full gap-3 h-fit mb-6 mt-2 justify-center items-center px-2">
             <div className="max-w-1/2 flex items-center justify-center truncate gap-1 text-wrap">
               {plan.isCurrentPlan ? <FaStar /> : null}
-              <h1 className="font-bold text-lg truncate">
+              <h1 className="font-semibold text-lg truncate">
                 {plan.isCurrentPlan ? "Current Plan Option" : plan.name}
               </h1>
             </div>
@@ -150,7 +147,7 @@ export function GroupCard({
                 )}
               </div>
               <div className="flex flex-col items-start justify-center ml-1">
-                <h1 className="font-bold text-xl">
+                <h1 className="font-semibold text-xl">
                   {plan.selectedQuotes[0].carrier?.includes("UnitedHealthcare")
                     ? "United"
                     : plan.selectedQuotes[0].carrier?.includes("Anthem") ||
