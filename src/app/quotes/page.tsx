@@ -222,7 +222,7 @@ export default function QuotingPage() {
 
         fetchAndSetClasses(
           clientData,
-          newPlans.map((plan: any) => plan.id),
+          newPlans,
         );
       }
       const scopedPlans = clientData.connected_plans;

@@ -147,7 +147,7 @@ export default function SelectQuotes() {
               ...currentPlan,
               selectedQuotes: [
                 ...currentPlan.selectedQuotes,
-                ...selectedQuotes,
+                ...selectedQuotes.map(quote => quote.id),
               ],
             }
           : plan,
@@ -203,7 +203,8 @@ export default function SelectQuotes() {
       id: Date.now(),
       isCurrentPlan: false,
       name: `Option #${plans.length + 1}`,
-      selectedQuotes: selectedQuotes,
+      lineOfCoverage: modalOpen,
+      selectedQuotes: selectedQuotes.map(quote => quote.id),
     };
     setPlans([...plans, newPlan]);
     handleClearCheckboxes();
@@ -216,6 +217,19 @@ export default function SelectQuotes() {
 
   async function deleteQuotes() {
     console.log("DELETE", quotes, selectedQuotes);
+  
+    const updatedPlans = plans.map((plan) => {
+      const updatedQuotes = plan.selectedQuotes.filter(
+        (quote) =>
+          !selectedQuotes.find((selectedQuote) => selectedQuote.id === quote)
+      );
+      return {
+        ...plan,
+        selectedQuotes: updatedQuotes,
+      };
+    })
+    setPlans(updatedPlans || [])
+    
     setQuotes(
       quotes.filter(
         (quote) =>
@@ -231,7 +245,9 @@ export default function SelectQuotes() {
         "id",
         selectedQuotes.map((quote) => quote.id),
       );
+      
     handleClearCheckboxes();
+    
   }
 
   const selectQuotesFirst = () => {
@@ -431,9 +447,10 @@ export default function SelectQuotes() {
   const [plans, setPlans] = useState<
     Array<{
       id: number;
+      lineOfCoverage: string;
       name: string;
       isCurrentPlan: boolean;
-      selectedQuotes: QuoteTypeWithCheckbox[];
+      selectedQuotes: number[];
     }>
   >([]);
   const [newPlanName, setNewPlanName] = useState("");
@@ -446,15 +463,13 @@ export default function SelectQuotes() {
     const updatedPlans = plans.map((plan) => {
       if (plan.id === planId) {
         // Filter out duplicates before updating the currentQuotes array
-        const uniqueQuotesToAdd = selectedQuotes.filter(
-          (selectedQuote) =>
-            !plan.selectedQuotes.some(
-              (planQuote) => planQuote.id === selectedQuote.id,
-            ),
-        );
+        const uniqueQuoteIdsToAdd = selectedQuotes
+          .filter((selectedQuote) =>
+            !plan.selectedQuotes.some((planQuote) => planQuote === selectedQuote.id))
+          .map((selectedQuote) => selectedQuote.id); // Mapping to ids
         return {
           ...plan,
-          selectedQuotes: [...plan.selectedQuotes, ...uniqueQuotesToAdd],
+          selectedQuotes: [...plan.selectedQuotes, ...uniqueQuoteIdsToAdd], // Using ids
         };
       }
       return plan;
@@ -535,7 +550,7 @@ export default function SelectQuotes() {
   if (currentPlan) {
     const currentPlanQuotes = currentPlan.selectedQuotes;
     filteredQuotes = filteredQuotes.sort((quoteA, quoteB) => {
-      if (currentPlanQuotes.map((quote) => quote.id).includes(quoteA.id)) {
+      if (currentPlanQuotes.includes(quoteA.id)) {
         return -1;
       } else {
         return 1;
@@ -731,6 +746,7 @@ export default function SelectQuotes() {
             coverageType={
               TABS_TO_COVERAGE_TYPE_MAPPING[currentTab as TabOption]
             }
+            quotes={quotes}
           />
         </div>
       </main>

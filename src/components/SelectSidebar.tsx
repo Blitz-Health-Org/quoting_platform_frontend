@@ -19,7 +19,8 @@ type Props = {
     id: number;
     name: string;
     isCurrentPlan: boolean;
-    selectedQuotes: QuoteTypeWithCheckbox[];
+    lineOfCoverage: string;
+    selectedQuotes: number[];
   }>;
   newPlanName: any;
   setNewPlanName: any;
@@ -28,6 +29,7 @@ type Props = {
   setSnackbar: any;
   setPlans: any;
   coverageType: string;
+  quotes: QuoteTypeWithCheckbox[];
 };
 
 const SelectSidebar = ({
@@ -39,6 +41,7 @@ const SelectSidebar = ({
   setSnackbar,
   setPlans,
   coverageType,
+  quotes,
 }: Props) => {
   const router = useRouter();
   const [collapsed, setCollapsed] = useState(false);
@@ -68,7 +71,7 @@ const SelectSidebar = ({
         return {
           ...plan,
           selectedQuotes: plan.selectedQuotes.filter(
-            (selectedQuote) => selectedQuote.id !== quote.id,
+            (selectedQuote) => selectedQuote !== quote.id,
           ),
         };
       }
@@ -356,8 +359,9 @@ const SelectSidebar = ({
                   {plan.selectedQuotes.length > 0 && (
                     <div className="w-full">
                       <ul className="w-full">
-                        {plan.selectedQuotes.map((quote) => (
-                          <li key={quote.id} className="mt-2 w-full">
+                        {plan.selectedQuotes.map((identification) => {
+                          const quote = quotes.find(quote=> quote.id === identification) as QuoteTypeWithCheckbox;
+                          return <li key={quote.id} className="mt-2 w-full">
                             <div className="flex justify-between w-full gap-1">
                               <div className="flex gap-1 items-center">
                                 {(quote.data as any)["carrier"]?.includes(
@@ -411,7 +415,8 @@ const SelectSidebar = ({
                               </button>
                             </div>
                           </li>
-                        ))}
+                        }
+                        )}
                       </ul>
                     </div>
                   )}

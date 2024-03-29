@@ -69,8 +69,8 @@ export const QuotesTable = ({
     index: number,
     schema: any,
   ) => {
-    console.log("SCHEMA", schema, planAttribute);
-    console.log("QUOTEDATA", quote.data);
+    // console.log("SCHEMA", schema, planAttribute);
+    // console.log("QUOTEDATA", quote.data);
     if (typeof (quote.data as any)?.[planAttribute] === "string") {
       return (
         <div

@@ -2,13 +2,16 @@ import { QuoteType } from "@/src/types/custom/Quote";
 import { QuoteCard } from "./QuoteCard";
 import Image from "next/image";
 import { FaEdit, FaSave, FaStar } from "react-icons/fa";
-import { Dispatch, SetStateAction, useContext, useState } from "react";
+import { Dispatch, SetStateAction, useContext, useEffect, useState } from "react";
 import { useRecoilState } from "recoil";
 import { contributionSettingsAtom } from "./contributionSettingsAtom";
 import { IoIosSettings } from "react-icons/io";
 import { PlanGroupContextProvider } from "@/src/context/PlanGroupContext";
 import { PlanSpecificClassInfoType } from "@/src/types/custom/Class";
 import { ClientContext } from "@/src/context/ClientContext";
+import { QuoteTypeWithCheckbox } from "@/src/app/select/page";
+import { supabase } from "@/src/supabase";
+import router from "next/router";
 
 type GroupCardProps = {
   plan: any;
@@ -43,9 +46,38 @@ export function GroupCard({
   const [isEditing, setIsEditing] = useState<boolean>(false);
 
   const { sharingId } = useContext(ClientContext);
+  const [quotes, setQuotes] = useState<any[]>([]);
+  console.log("fuck me", plan);
+
+  useEffect(() => {
+    fetchQuoteData(clientId)
+  }, [])
+
+  const firstQuote = quotes.find(quote => quote.id === plan.selectedQuotes[0]) as any;
+
+  const fetchQuoteData = async (clientId: any) => {
+    if (clientId) {
+      const { data, error } = await supabase
+        .from("quotes")
+        .select()
+        .eq("client_id", clientId);
+
+      if (error) {
+        alert("Error updating data");
+        router.push("/404");
+      } else {
+        // Check if selected_quotes is not null
+        setQuotes(data);
+      }
+    }
+  };
 
   console.log("SHARING", sharingId);
   console.log("PLAN", plan);
+
+  if (!quotes.length) {
+    return <></>
+  }
 
   return (
     <PlanGroupContextProvider
@@ -61,13 +93,13 @@ export function GroupCard({
         <div
           className={`relative flex flex-col justify-center pt-3 pr-4 items-center border border-b-0 rounded-b-none border-gray-300 rounded-t-md
       ${
-        plan.selectedQuotes[0].carrier?.includes("Anthem")
+        firstQuote.carrier?.includes("Anthem")
           ? "bg-yellow-100/50"
-          : plan.selectedQuotes[0].carrier?.includes("United")
+          : firstQuote.carrier?.includes("United")
             ? "bg-blue-100/50"
-            : plan.selectedQuotes[0].carrier?.includes("Cigna")
+            : firstQuote.carrier?.includes("Cigna")
               ? "bg-red-100/50"
-              : plan.selectedQuotes[0].carrier?.includes("Aetna")
+              : firstQuote.carrier?.includes("Aetna")
                 ? "bg-violet-100/50"
                 : "bg-green-100/50"
       } 
@@ -116,32 +148,32 @@ export function GroupCard({
             {/* Vertical line break */}
             <div className="flex max-w-1/2 truncate">
               <div className="flex items-center justify-center">
-                {plan.selectedQuotes[0].carrier?.includes(
+                {firstQuote.carrier?.includes(
                   "UnitedHealthcare",
                 ) ? (
                   <Image
                     src="/United.png"
-                    alt={`Logo for ${plan.selectedQuotes[0].carrier}`}
+                    alt={`Logo for ${firstQuote.carrier}`}
                     width={30}
                     height={30}
                     className="mr-2 rounded-md"
                   />
-                ) : plan.selectedQuotes[0].carrier?.includes("Anthem") ||
-                  plan.selectedQuotes[0].carrier?.includes(
+                ) : firstQuote.carrier?.includes("Anthem") ||
+                    firstQuote.carrier?.includes(
                     "Blue Cross and Blue Shield",
                   ) ? (
                   <Image
                     src="/Anthem.jpeg"
-                    alt={`Logo for ${plan.selectedQuotes[0].carrier}`}
+                    alt={`Logo for ${firstQuote.carrier}`}
                     width={30}
                     height={30}
                     className="mr-2 rounded-md"
                   />
                 ) : (
-                  plan.selectedQuotes[0].logo_url && (
+                  firstQuote.logo_url && (
                     <Image
-                      src={plan.selectedQuotes[0].logo_url}
-                      alt={`Logo for ${plan.selectedQuotes[0].carrier}`}
+                      src={firstQuote.logo_url}
+                      alt={`Logo for ${firstQuote.carrier}`}
                       width={30}
                       height={30}
                       className="mr-2 rounded-md"
@@ -151,40 +183,44 @@ export function GroupCard({
               </div>
               <div className="flex flex-col items-start justify-center ml-1">
                 <h1 className="font-semibold text-xl">
-                  {plan.selectedQuotes[0].carrier?.includes("UnitedHealthcare")
+                  {firstQuote.carrier?.includes("UnitedHealthcare")
                     ? "United"
-                    : plan.selectedQuotes[0].carrier?.includes("Anthem") ||
-                        plan.selectedQuotes[0].carrier?.includes(
+                    : firstQuote.carrier?.includes("Anthem") ||
+                          firstQuote.carrier?.includes(
                           "Blue Cross and Blue Shield",
                         )
                       ? "Anthem"
-                      : plan.selectedQuotes[0].carrier}
+                      : firstQuote.carrier}
                 </h1>
                 <p className="text-sm max-w-32 truncate">
-                  {plan.selectedQuotes[0].carrier?.includes("UnitedHealthcare")
+                  {firstQuote.carrier?.includes("UnitedHealthcare")
                     ? "uhc.com"
-                    : plan.selectedQuotes[0].carrier?.includes("Anthem") ||
-                        plan.selectedQuotes[0].carrier?.includes(
+                    : firstQuote.carrier?.includes("Anthem") ||
+                          firstQuote.carrier?.includes(
                           "Blue Cross and Blue Shield",
                         )
                       ? "anthem.com"
-                      : plan.selectedQuotes[0].website}
+                      : firstQuote.website}
                 </p>
               </div>
             </div>
           </div>
         </div>
         <div className="min-w-80 flex w-full h-fit text-center border border-l-0 border-t-0 border-b-0 border-gray-300">
-          {plan.selectedQuotes.map((quote: QuoteType) => (
-            <QuoteCard
-              isContributionSettingsExpanded={isContributionSettingsExpanded}
-              quote={quote}
-              fieldObject={fieldObject}
-              key={quote.id}
-              planSpecificClassInfo={planSpecificClassInfo}
-              classes={classes}
-              standardContribution={standardContribution}
-            />
+          { plan.selectedQuotes.map((identifier: number) => {
+            const selectedOne = quotes.find(quote => quote.id === identifier) as any;
+            console.log("yo", quotes)
+            console.log("what", selectedOne);
+            console.log("the fuck", identifier)
+              return <QuoteCard
+                isContributionSettingsExpanded={isContributionSettingsExpanded}
+                quote={selectedOne}
+                fieldObject={fieldObject}
+                key={identifier}
+                planSpecificClassInfo={planSpecificClassInfo}
+                classes={classes}
+                standardContribution={standardContribution}
+              />
             // <QuoteCard
             //   key={quote.id}
             //   quote={quote}
@@ -192,7 +228,7 @@ export function GroupCard({
             //   classes={classes}
             //   standardContribution={standardContribution}
             // />
-          ))}
+          } )}
         </div>
       </div>
     </PlanGroupContextProvider>
